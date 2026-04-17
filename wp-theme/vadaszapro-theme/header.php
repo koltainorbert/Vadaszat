@@ -10,9 +10,6 @@
 
 <div class="va-site-wrap">
 
-    <!-- ═══ Fejléc teteje: reklám ═══════════════════════ -->
-    <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('header_top'); ?>
-
     <!-- ═══ Header ══════════════════════════════════════ -->
     <header class="va-header">
         <div class="va-header__inner">
@@ -21,8 +18,8 @@
                 <?php if ( has_custom_logo() ):
                     the_custom_logo();
                 else: ?>
-                    <span style="font-size:1.4rem;line-height:1;">🦌</span>
-                    <span class="va-logo__text">Vadász<span>Apró</span></span>
+                    <span class="va-logo__icon" aria-hidden="true">&#127993;</span>
+                    <span class="va-logo__text">Vad&aacute;sz<span>Apr&oacute;</span><em class="va-logo__dot">vadaszapro.net</em></span>
                 <?php endif; ?>
             </a>
 
@@ -72,13 +69,12 @@
                         <a href="<?php echo esc_url( get_permalink($register_page) ); ?>" class="va-header__submit-btn">Regisztráció</a>
                     <?php endif; ?>
                 <?php endif; ?>
-                <button class="va-hamburger" id="va-hamburger" aria-label="Menü">☰</button>
+                <button class="va-hamburger" id="va-hamburger" aria-label="Men&uuml;">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
         </div>
     </header>
-
-    <!-- Fejléc alatti reklám -->
-    <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('header_bottom'); ?>
 
     <!-- ═══ VIDEO HERO (csak főoldalon) ════════════════════ -->
     <?php if ( is_front_page() ):
