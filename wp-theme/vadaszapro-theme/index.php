@@ -213,6 +213,260 @@ get_header(); ?>
 })();
 </script>
 
+<script>
+/* ════════════════════════════════════════════════════════════
+   VADÁSZATI IDÉNY SIDEBAR WIDGET
+   Forrás: 79/2004. (V.4.) FVM rendelet
+   ════════════════════════════════════════════════════════════ */
+(function(){
+  /* Budapest idő */
+  function nowBP(){
+    var d=new Date(), parts={};
+    new Intl.DateTimeFormat('en-US',{
+      timeZone:'Europe/Budapest',
+      year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
+    }).formatToParts(d).forEach(function(p){if(p.type!=='literal')parts[p.type]=+p.value;});
+    return parts; // month:1-12
+  }
+
+  var MFH=['január','február','március','április','május','június',
+           'július','augusztus','szeptember','október','november','december'];
+  var MF=['Január','Február','Március','Április','Május','Június',
+          'Július','Augusztus','Szeptember','Október','November','December'];
+
+  /* Szökőév: 2026 nem szökőév */
+  var MD=[31,28,31,30,31,30,31,31,30,31,30,31];
+  var TOTAL=365;
+
+  function doy(m,d){var i=0;for(var x=1;x<m;x++)i+=MD[x-1];return i+d-1;}
+
+  function isInSeason(seasons,m,d){
+    var t=doy(m,d);
+    for(var i=0;i<seasons.length;i++){
+      var s=seasons[i],ms=s[0],ds=s[1],me=s[2],de=s[3];
+      if(ms<=me){if(t>=doy(ms,ds)&&t<=doy(me,de))return true;}
+      else{if(t>=doy(ms,ds)||t<=doy(me,de))return true;}
+    }
+    return false;
+  }
+
+  function nextChangeMs(seasons,m,d){
+    var cur=isInSeason(seasons,m,d),nm=m,nd=d;
+    for(var i=1;i<=400;i++){
+      nd++;if(nd>MD[nm-1]){nd=1;nm++;}if(nm>12)nm=1;
+      if(isInSeason(seasons,nm,nd)!==cur)return{m:nm,d:nd};
+    }
+    return null;
+  }
+
+  function msTillDate(tm,td){
+    var bp=nowBP();
+    var msToMidnight=((23-bp.hour)*3600+(59-bp.minute)*60+(60-bp.second))*1000;
+    var nm=bp.month,nd=bp.day,days=0;
+    while(!(nm===tm&&nd===td)){
+      nd++;if(nd>MD[nm-1]){nd=1;nm++;}if(nm>12)nm=1;
+      days++;if(days>400)break;
+    }
+    return msToMidnight+days*86400000;
+  }
+
+  function fmtMs(ms){
+    if(ms<=0)return '0s';
+    var s=Math.floor(ms/1000),
+        dn=Math.floor(s/86400),
+        h=Math.floor((s%86400)/3600),
+        mn=Math.floor((s%3600)/60),
+        sc=s%60;
+    if(dn>0)return dn+'n '+h+'ó';
+    if(h>0)return h+'ó '+mn+'p';
+    return mn+'p '+sc+'s';
+  }
+
+  /* Vadászati adatok */
+  var groups=[
+    {label:'GÍM',color:'#1ec854',animals:[
+      {name:'Gímszarvas – bika',sub:'Cervus elaphus ♂',seasons:[[9,1,12,31]]},
+      {name:'Gímszarvas – tehén/ünő',sub:'Cervus elaphus ♀',seasons:[[10,1,1,31]]},
+      {name:'Gímszarvas – borjú',sub:'Cervus elaphus juv.',seasons:[[8,1,1,31]]},
+    ]},
+    {label:'DÁM',color:'#f5a623',animals:[
+      {name:'Dámszarvas – bak',sub:'Dama dama ♂',seasons:[[9,1,12,31]]},
+      {name:'Dámszarvas – suta',sub:'Dama dama ♀',seasons:[[10,1,1,31]]},
+      {name:'Dámszarvas – gida',sub:'Dama dama juv.',seasons:[[8,1,1,31]]},
+    ]},
+    {label:'ŐZ',color:'#3d9ff5',animals:[
+      {name:'Őzbak',sub:'Capreolus capreolus ♂',seasons:[[4,15,9,30]]},
+      {name:'Őzsuta',sub:'Capreolus capreolus ♀',seasons:[[10,1,1,31]]},
+      {name:'Őzgida',sub:'Capreolus capreolus juv.',seasons:[[8,1,1,31]]},
+    ]},
+    {label:'MUFLON',color:'#cc44cc',animals:[
+      {name:'Muflon – kos',sub:'Ovis musimon ♂',seasons:[[8,1,1,31]]},
+      {name:'Muflon – juh',sub:'Ovis musimon ♀',seasons:[[10,1,1,31]]},
+      {name:'Muflon – bárány',sub:'Ovis musimon juv.',seasons:[[8,1,1,31]]},
+    ]},
+    {label:'VADDISZNÓ',color:'#f55050',animals:[
+      {name:'Vaddisznó – kan',sub:'Sus scrofa ♂',seasons:[[1,1,12,31]]},
+      {name:'Vaddisznó – koca',sub:'Sus scrofa ♀',seasons:[[7,1,12,31]]},
+      {name:'Vaddisznó – malac',sub:'Sus scrofa juv.',seasons:[[7,1,12,31]]},
+    ]},
+    {label:'APRÓVAD',color:'#f5d020',animals:[
+      {name:'Mezei nyúl',sub:'Lepus europaeus',seasons:[[10,1,12,31]]},
+      {name:'Fácán – kakas',sub:'Phasianus colchicus ♂',seasons:[[10,1,1,31]]},
+      {name:'Fácán – tyúk',sub:'Phasianus colchicus ♀',seasons:[[10,1,11,30]]},
+      {name:'Fogoly',sub:'Perdix perdix',seasons:[[10,1,11,30]]},
+      {name:'Balkáni gerle',sub:'Streptopelia decaocto',seasons:[[6,1,2,28]]},
+      {name:'Vadgalamb',sub:'Columba palumbus',seasons:[[8,15,1,31]]},
+      {name:'Erdei szalonka',sub:'Scolopax rusticola',seasons:[[3,1,4,30],[10,1,11,30]]},
+    ]},
+    {label:'SZÁRNYASVAD',color:'#20d4d4',animals:[
+      {name:'Fürj',sub:'Coturnix coturnix',seasons:[[8,15,10,31]]},
+      {name:'Seregély',sub:'Sturnus vulgaris',seasons:[[8,1,1,31]]},
+    ]},
+    {label:'VÍZI',color:'#ff8c00',animals:[
+      {name:'Tőkés réce – gácsér',sub:'Anas platyrhynchos ♂',seasons:[[8,15,1,31]]},
+      {name:'Tőkés réce – tojó',sub:'Anas platyrhynchos ♀',seasons:[[8,15,1,31]]},
+      {name:'Böjti réce',sub:'Anas querquedula',seasons:[[8,15,11,30]]},
+      {name:'Nyílfarkú réce',sub:'Anas acuta',seasons:[[8,15,1,31]]},
+      {name:'Nagy lilik',sub:'Anser albifrons',seasons:[[10,1,1,31]]},
+      {name:'Vetési lúd',sub:'Anser fabalis',seasons:[[10,1,1,31]]},
+      {name:'Nyári lúd',sub:'Anser anser',seasons:[[8,15,1,31]]},
+    ]},
+    {label:'RAGADOZÓ',color:'#b0b0b0',animals:[
+      {name:'Vörösróka',sub:'Vulpes vulpes',seasons:[[1,1,12,31]]},
+      {name:'Aranysakál',sub:'Canis aureus',seasons:[[1,1,12,31]]},
+      {name:'Borz',sub:'Meles meles',seasons:[[9,1,11,30]]},
+      {name:'Nyest / Nyuszt',sub:'Martes foina / M. martes',seasons:[[10,1,2,28]]},
+      {name:'Dolmányos varjú',sub:'Corvus cornix',seasons:[[1,1,12,31]]},
+      {name:'Szarka',sub:'Pica pica',seasons:[[1,1,12,31]]},
+    ]},
+  ];
+
+  /* Countdown elemeinek nyilvántartása */
+  var _cdList=[];
+
+  function updateCDs(){
+    for(var i=0;i<_cdList.length;i++){
+      var c=_cdList[i], ms=msTillDate(c.m,c.d);
+      c.el.textContent=fmtMs(ms)+(c.open?' van hátra':' múlva nyílik');
+    }
+  }
+
+  function build(){
+    var bp=nowBP(), tm=bp.month, td=bp.day;
+    var todayDoy=doy(tm,td);
+    var open=[], soon=[], seen={};
+
+    for(var gi=0;gi<groups.length;gi++){
+      var g=groups[gi];
+      for(var ai=0;ai<g.animals.length;ai++){
+        var a=g.animals[ai];
+        if(seen[a.name])continue;
+        var inSeason=isInSeason(a.seasons,tm,td);
+        if(inSeason){
+          /* daysLeft: közelebb találjuk meg a zárást */
+          var nxt=nextChangeMs(a.seasons,tm,td);
+          var dLeft=nxt?(doy(nxt.m,nxt.d)-todayDoy+TOTAL)%TOTAL:0;
+          var isNew=(doy(a.seasons[0][0],a.seasons[0][1])===todayDoy);
+          open.push({name:a.name,sub:a.sub,color:g.color,
+                     daysLeft:dLeft,isNew:isNew,
+                     closeM:nxt?nxt.m:12,closeD:nxt?nxt.d:31,
+                     closing:nxt?(MF[nxt.m-1]+' '+nxt.d+'.'):'Dec 31.'});
+          seen[a.name]=1;
+        } else {
+          /* hamarosan nyílik (14 napon belül)? */
+          for(var si=0;si<a.seasons.length;si++){
+            var ss=a.seasons[si];
+            var sd=doy(ss[0],ss[1]);
+            var diff=sd-todayDoy;
+            if(diff>0&&diff<=14&&!seen[a.name]){
+              soon.push({name:a.name,sub:a.sub,color:g.color,
+                         openIn:diff,openM:ss[0],openD:ss[1],
+                         openDate:MF[ss[0]-1]+' '+ss[1]+'.'});
+              seen[a.name]=2; break;
+            }
+          }
+        }
+      }
+    }
+
+    open.sort(function(a,b){return a.daysLeft-b.daysLeft;});
+    soon.sort(function(a,b){return a.openIn-b.openIn;});
+
+    /* Date display */
+    var dateEl=document.getElementById('sw-date');
+    if(dateEl)dateEl.textContent=bp.year+'. '+MFH[tm-1]+' '+td+'.';
+
+    var cntEl=document.getElementById('sw-open-cnt');
+    if(cntEl)cntEl.textContent=open.length+' faj vadászható ma';
+
+    /* Open list */
+    var openEl=document.getElementById('sw-open');
+    if(!openEl)return;
+    openEl.innerHTML='';
+    _cdList=[];
+
+    for(var oi=0;oi<open.length;oi++){
+      var a=open[oi];
+      var urgency=a.daysLeft===0?'urgent':a.daysLeft<=5?'urgent':a.daysLeft<=14?'warn':'ok';
+      var row=document.createElement('div');
+      row.className='sw-row'+(a.isNew?' sw-row--new':'');
+      row.style.borderLeftColor=a.color;
+      var cdId='sw-cd-'+oi;
+      row.innerHTML='<div class="sw-dot sw-dot--on"></div>'
+        +'<div class="sw-body">'
+        +'<div class="sw-name">'+a.name+'</div>'
+        +'<div class="sw-sub">'+a.sub+'</div>'
+        +'<div class="sw-cd sw-cd--'+urgency+'" id="'+cdId+'">…</div>'
+        +'</div>';
+      openEl.appendChild(row);
+      _cdList.push({el:document.getElementById(cdId),m:a.closeM,d:a.closeD,open:true});
+    }
+
+    if(!open.length){
+      openEl.innerHTML='<div class="sw-empty">Ma nincs nyitott idény.</div>';
+    }
+
+    /* Soon section */
+    var soonLbl=document.getElementById('sw-soon-lbl');
+    var soonEl=document.getElementById('sw-soon');
+    if(!soonEl)return;
+    soonEl.innerHTML='';
+
+    if(soon.length){
+      if(soonLbl)soonLbl.textContent='Hamarosan nyílik';
+      for(var si2=0;si2<soon.length;si2++){
+        var a2=soon[si2];
+        var row2=document.createElement('div');
+        row2.className='sw-row sw-row--soon';
+        row2.style.borderLeftColor=a2.color;
+        var cdId2='sw-cd-soon-'+si2;
+        row2.innerHTML='<div class="sw-dot sw-dot--off"></div>'
+          +'<div class="sw-body">'
+          +'<div class="sw-name">'+a2.name+'</div>'
+          +'<div class="sw-cd sw-cd--soon" id="'+cdId2+'">…</div>'
+          +'</div>';
+        soonEl.appendChild(row2);
+        _cdList.push({el:document.getElementById(cdId2),m:a2.openM,d:a2.openD,open:false});
+      }
+    } else {
+      if(soonLbl)soonLbl.textContent='';
+    }
+
+    updateCDs();
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    build();
+    setInterval(updateCDs,1000);
+    /* Napi újraépítés éjfélkor */
+    var bp=nowBP();
+    var msToMidnight=((23-bp.hour)*3600+(59-bp.minute)*60+(60-bp.second)+1)*1000;
+    setTimeout(function(){build();setInterval(build,86400000);},msToMidnight);
+  });
+})();
+</script>
+
 <!-- FŐ TARTALOM -->
 <main class="va-home-main">
 
