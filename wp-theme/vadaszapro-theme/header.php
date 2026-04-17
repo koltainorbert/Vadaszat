@@ -89,14 +89,13 @@
         <div class="vh__overlay"></div>
 
         <div class="vh__content">
-            <div class="vh__badge">&#127993; Magyarorsz&aacute;g #1 vad&aacute;sz apróhirdetése</div>
+            <div class="vh__badge">Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala</div>
             <h2 class="vh__title">
-                Vad&aacute;sz<span>Apró</span><br>
-                &mdash; ahol a vad&aacute;szat él
+                Vad&aacute;sz<span>Baz&aacute;r</span><br>
+                &eacute;s Aukci&oacute;
             </h2>
             <p class="vh__sub">
-                Fegyverek, felszerelések, vadászterületek egy helyen.
-                Adj fel hirdetést percek alatt, találj vevőt azonnal.
+                Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala
             </p>
             <div class="vh__actions">
                 <?php if ( $submit_page ): ?>
