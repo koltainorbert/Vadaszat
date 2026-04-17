@@ -34,13 +34,23 @@ Mentéskor a `va_sync_listing_meta($post_id)` szinkronizálja automatikusan (`sa
 - Lezárt aukció flag: `va_auction_closed` meta = '1'
 
 ### 5. Deploy parancs (LocalWP)
+**Ajanlott mod:** VS Code task → `Deploy All` (vagy `Deploy Plugin` / `Deploy Theme`)
+
+A deploy gepenkent kulonbozo utvonalakat hasznal. Minden gepen kell egy `.vscode/local-config.ps1` fajl (gitignoralt, NE commitald):
+```powershell
+# sablon: .vscode/local-config.example.ps1
+$LOCAL_WP_PLUGIN = "D:\LocalWP\...\wp-content\plugins\vadaszapro-core"
+$LOCAL_WP_THEME  = "D:\LocalWP\...\wp-content\themes\vadaszapro-theme"
+```
+
+**Kezzel is futtathato:**
 Plugin:
 ```powershell
-$src="D:\Vadaszat2026\wp-plugin\vadaszapro-core"; $dst="D:\LocalWP\apr-vadsz\app\public\wp-content\plugins\vadaszapro-core"; Copy-Item "$src\*" $dst -Recurse -Force
+. .vscode/local-config.ps1 ; Copy-Item 'wp-plugin/vadaszapro-core/*' $LOCAL_WP_PLUGIN -Recurse -Force
 ```
-Téma:
+Tema:
 ```powershell
-$src="D:\Vadaszat2026\wp-theme\vadaszapro-theme"; $dst="D:\LocalWP\apr-vadsz\app\public\wp-content\themes\vadaszapro-theme"; Copy-Item "$src\*" $dst -Recurse -Force
+. .vscode/local-config.ps1 ; Copy-Item 'wp-theme/vadaszapro-theme/*' $LOCAL_WP_THEME -Recurse -Force
 ```
 
 ### 6. Adatbázis táblák

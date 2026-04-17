@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "2.0.0",
   "tasks": [
     {
@@ -36,6 +36,30 @@
       "runOptions": {
         "runOn": "folderOpen"
       },
+      "problemMatcher": []
+    },
+    {
+      "label": "Deploy Plugin",
+      "type": "shell",
+      "command": ". .vscode/local-config.ps1 ; Copy-Item 'wp-plugin/vadaszapro-core/*' $LOCAL_WP_PLUGIN -Recurse -Force ; Write-Host 'Plugin deploy kesz!'",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "none",
+      "problemMatcher": []
+    },
+    {
+      "label": "Deploy Theme",
+      "type": "shell",
+      "command": ". .vscode/local-config.ps1 ; Copy-Item 'wp-theme/vadaszapro-theme/*' $LOCAL_WP_THEME -Recurse -Force ; Write-Host 'Tema deploy kesz!'",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "none",
+      "problemMatcher": []
+    },
+    {
+      "label": "Deploy All",
+      "type": "shell",
+      "command": ". .vscode/local-config.ps1 ; Copy-Item 'wp-plugin/vadaszapro-core/*' $LOCAL_WP_PLUGIN -Recurse -Force ; Copy-Item 'wp-theme/vadaszapro-theme/*' $LOCAL_WP_THEME -Recurse -Force ; Write-Host 'Deploy kesz!'",
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "none",
       "problemMatcher": []
     },
     {
