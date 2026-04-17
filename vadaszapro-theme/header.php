@@ -26,23 +26,17 @@
             <!-- Navigáció -->
             <nav class="va-nav" id="va-main-nav">
                 <?php
-                wp_nav_menu([
-                    'theme_location' => 'primary',
-                    'container'      => false,
-                    'items_wrap'     => '%3$s',
-                    'fallback_cb'    => function() {
-                        $search_page  = get_page_by_path('va-hirdetes-kereses');
-                        $auction_page = get_page_by_path('va-aukciok');
-                        echo '<a href="' . esc_url( $search_page  ? get_permalink($search_page)  : home_url('/hirdetes') ) . '" class="va-nav__item">Hirdetések</a>';
-                        echo '<a href="' . esc_url( $auction_page ? get_permalink($auction_page) : home_url('/aukcio') ) . '" class="va-nav__item va-nav__item--accent">🔨 Aukciók</a>';
-                        echo '<a href="' . esc_url( home_url('/kategoria') ) . '" class="va-nav__item">Kategóriák</a>';
-                        echo '<a href="' . esc_url( home_url('/kapcsolat') ) . '" class="va-nav__item">Kapcsolat</a>';
-                    },
-                    'link_before'    => '',
-                    'link_after'     => '',
-                    'walker'         => class_exists('VA_Nav_Walker') ? new VA_Nav_Walker() : null,
+                $nav_items = apply_filters('va_nav_items', [
+                    ['url' => home_url('/hirdetes'),  'label' => 'Hirdetések', 'class' => ''],
+                    ['url' => home_url('/aukcio'),    'label' => '🔨 Aukciók', 'class' => 'va-nav__item--accent'],
+                    ['url' => home_url('/kategoria'), 'label' => 'Kategóriák', 'class' => ''],
+                    ['url' => home_url('/kapcsolat'), 'label' => 'Kapcsolat',  'class' => ''],
                 ]);
+                foreach ( $nav_items as $item ):
+                    $cls = 'va-nav__item' . ( $item['class'] ? ' ' . $item['class'] : '' );
                 ?>
+                    <a href="<?php echo esc_url($item['url']); ?>" class="<?php echo esc_attr($cls); ?>"><?php echo esc_html($item['label']); ?></a>
+                <?php endforeach; ?>
             </nav>
 
             <!-- Jobb oldal -->
