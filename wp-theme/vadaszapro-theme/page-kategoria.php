@@ -277,51 +277,6 @@ function va_cat_icon( string $name ): string {
 
         /* ── INGATLAN & SZÁLLÁS: vadászkunyhó ── */
         case 'Ingatlan & Szállás':
-            return '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Fal rönkök (log cabin texture) -->
-                <rect x="8" y="34" width="48" height="22" rx="3" fill="#cc0000"/>
-                <line x1="8" y1="40" x2="56" y2="40" stroke="rgba(0,0,0,.2)" stroke-width="2"/>
-                <line x1="8" y1="46" x2="56" y2="46" stroke="rgba(0,0,0,.2)" stroke-width="2"/>
-                <line x1="8" y1="52" x2="56" y2="52" stroke="rgba(0,0,0,.2)" stroke-width="2"/>
-                <!-- Tető -->
-                <path d="M4 36 L32 10 L60 36 Z" fill="#ff1a1a"/>
-                <!-- Tető él -->
-                <path d="M4 36 L32 10 L60 36" stroke="#880000" stroke-width="1.5" fill="none"/>
-                <!-- Kémény -->
-                <rect x="42" y="10" width="7" height="16" rx="1.5" fill="#aa0000"/>
-                <!-- Kémény füst -->
-                <path d="M44 10 Q43 5 46 3 Q48 5 46 8 Q50 4 49 1" stroke="rgba(255,255,255,.35)" stroke-width="2" fill="none" stroke-linecap="round"/>
-                <!-- Ajtó -->
-                <rect x="26" y="42" width="12" height="14" rx="2" fill="#880000"/>
-                <circle cx="35" cy="49" r="1.5" fill="#ff4444"/>
-                <!-- Ablak bal -->
-                <rect x="11" y="37" width="10" height="8" rx="1.5" fill="rgba(255,220,100,.25)"/>
-                <line x1="16" y1="37" x2="16" y2="45" stroke="rgba(0,0,0,.2)" stroke-width="1"/>
-                <line x1="11" y1="41" x2="21" y2="41" stroke="rgba(0,0,0,.2)" stroke-width="1"/>
-                <!-- Ablak jobb -->
-                <rect x="43" y="37" width="10" height="8" rx="1.5" fill="rgba(255,220,100,.25)"/>
-                <line x1="48" y1="37" x2="48" y2="45" stroke="rgba(0,0,0,.2)" stroke-width="1"/>
-                <line x1="43" y1="41" x2="53" y2="41" stroke="rgba(0,0,0,.2)" stroke-width="1"/>
-            </svg>';
-
-        default: /* Egyéb — vadász jelkép + kérdőjel -->*/
-            return '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Külső kör -->
-                <circle cx="32" cy="32" r="24" stroke="#ff1a1a" stroke-width="2.5" fill="rgba(255,0,0,.05)"/>
-                <!-- Belső szaggatott -->
-                <circle cx="32" cy="32" r="15" stroke="#ff1a1a" stroke-width="1.5" stroke-dasharray="4 3" fill="none" opacity=".5"/>
-                <!-- Kereszthaj -->
-                <line x1="32" y1="8"  x2="32" y2="22" stroke="#ff1a1a" stroke-width="2.5" stroke-linecap="round"/>
-                <line x1="32" y1="42" x2="32" y2="56" stroke="#ff1a1a" stroke-width="2.5" stroke-linecap="round"/>
-                <line x1="8"  y1="32" x2="22" y2="32" stroke="#ff1a1a" stroke-width="2.5" stroke-linecap="round"/>
-                <line x1="42" y1="32" x2="56" y2="32" stroke="#ff1a1a" stroke-width="2.5" stroke-linecap="round"/>
-                <!-- Középpont -->
-                <circle cx="32" cy="32" r="5" fill="#ff0000"/>
-                <circle cx="32" cy="32" r="2" fill="white" opacity=".9"/>
-            </svg>';
-    }
-}
-
 /* ── Top-level kategóriák lekérése ─────────────────────────────────────── */
 $top_terms = get_terms( [
     'taxonomy'   => 'va_category',
