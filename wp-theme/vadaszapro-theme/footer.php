@@ -9,12 +9,13 @@
                 <div class="va-sidebar__widget">
                     <div class="va-sidebar__widget-title">Gyors elérés</div>
                     <?php
-                    $links = [
-                        get_page_by_path('va-hirdetes-feladas') => '📤 Hirdetés feladása',
-                        get_page_by_path('va-aukciok')          => '🔨 Aukciók',
-                        get_page_by_path('va-fiok')             => '👤 Fiókom',
+                    $quick_links = [
+                        'va-hirdetes-feladas' => '📤 Hirdetés feladása',
+                        'va-aukciok'          => '🔨 Aukciók',
+                        'va-fiok'             => '👤 Fiókom',
                     ];
-                    foreach ($links as $page => $label) {
+                    foreach ($quick_links as $slug => $label) {
+                        $page = get_page_by_path($slug);
                         if ($page) {
                             echo '<a href="' . esc_url(get_permalink($page)) . '" style="display:block;padding:8px 0;color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.05);">' . esc_html($label) . '</a>';
                         }
