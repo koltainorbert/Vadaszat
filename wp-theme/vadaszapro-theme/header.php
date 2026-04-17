@@ -89,7 +89,7 @@
             ?>
             <a href="<?php echo esc_url( get_term_link($cat) ); ?>" class="va-cat-item">
                 <span class="va-cat-item__icon"><?php echo $icon; ?></span>
-                <?php echo esc_html($cat->name); ?>
+                <span><?php echo esc_html($cat->name); ?></span>
             </a>
             <?php endforeach; ?>
         </div>
