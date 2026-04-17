@@ -25,9 +25,8 @@ function va_cat_icon( string $name ): string {
     $url = 'https://images.unsplash.com/photo-' . $id . '?w=220&h=220&fit=crop&crop=entropy&auto=format&q=80';
     return '<img src="' . esc_url( $url ) . '" alt="' . esc_attr( $name ) . '" loading="lazy">';
 }
-            return '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Cső (barrel) -->
-                <rect x="12" y="26" width="42" height="5.5" rx="2.75" fill="#ff1a1a"/>
+
+/* ── Top-level kategóriák lekérése
                 <!-- Szájék (muzzle) -->
                 <rect x="52" y="24" width="5" height="9.5" rx="1.5" fill="#cc0000"/>
                 <!-- Csőtár / magazin -->
@@ -275,8 +274,6 @@ function va_cat_icon( string $name ): string {
                 <rect x="36" y="28" width="5" height="2.5" rx="1.25" fill="rgba(0,0,0,.3)"/>
             </svg>';
 
-        /* ── INGATLAN & SZÁLLÁS: vadászkunyhó ── */
-        case 'Ingatlan & Szállás':
 /* ── Top-level kategóriák lekérése ─────────────────────────────────────── */
 $top_terms = get_terms( [
     'taxonomy'   => 'va_category',
