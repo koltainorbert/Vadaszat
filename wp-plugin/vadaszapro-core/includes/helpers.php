@@ -130,3 +130,47 @@ function va_get_user_bids( int $user_id ): array {
         $user_id
     ));
 }
+
+/* ── Listing meta gyorstábla szinkron ─────────────────────
+ * Hívd meg minden mentéskor: va_sync_listing_meta($post_id)
+ * A wp_va_listing_meta tábla gyors ár/szűrés alapja.
+─────────────────────────────────────────────────────── */
+function va_sync_listing_meta( int $post_id ): void {
+    global $wpdb;
+
+    $cats    = get_the_terms( $post_id, 'va_category' );
+    $county  = get_the_terms( $post_id, 'va_county' );
+    $cond    = get_the_terms( $post_id, 'va_condition' );
+    $expires = get_post_meta( $post_id, 'va_expires', true );
+
+    $data = [
+        'post_id'      => $post_id,
+        'price'        => (float) ( get_post_meta( $post_id, 'va_price',    true ) ?: 0 ),
+        'price_type'   => get_post_meta( $post_id, 'va_price_type', true ) ?: 'fixed',
+        'category_id'  => $cats   && ! is_wp_error( $cats )   ? (int) $cats[0]->term_id   : null,
+        'county_id'    => $county && ! is_wp_error( $county ) ? (int) $county[0]->term_id : null,
+        'condition_id' => $cond   && ! is_wp_error( $cond   ) ? (int) $cond[0]->term_id   : null,
+        'location'     => (string) get_post_meta( $post_id, 'va_location', true ),
+        'expires'      => $expires ? date( 'Y-m-d', strtotime( $expires ) ) : null,
+        'featured'     => get_post_meta( $post_id, 'va_featured', true ) === '1' ? 1 : 0,
+        'views'        => (int) get_post_meta( $post_id, 'va_views', true ),
+    ];
+
+    $formats = [ '%d', '%f', '%s', '%d', '%d', '%d', '%s', '%s', '%d', '%d' ];
+
+    $exists = $wpdb->get_var( $wpdb->prepare(
+        "SELECT post_id FROM {$wpdb->prefix}va_listing_meta WHERE post_id = %d", $post_id
+    ));
+
+    if ( $exists ) {
+        $wpdb->update( $wpdb->prefix . 'va_listing_meta', $data, [ 'post_id' => $post_id ], $formats, [ '%d' ] );
+    } else {
+        $wpdb->insert( $wpdb->prefix . 'va_listing_meta', $data, $formats );
+    }
+}
+
+/* ── Auto-szinkron mentéskor ─────────────────────────── */
+add_action( 'save_post_va_listing', function( $post_id ) {
+    if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) return;
+    va_sync_listing_meta( $post_id );
+}, 20 );
