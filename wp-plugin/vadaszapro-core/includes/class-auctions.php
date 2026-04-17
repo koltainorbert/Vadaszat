@@ -151,40 +151,47 @@ class VA_Auctions {
         global $wpdb;
 
         $now = current_time( 'mysql' );
-        $auctions = get_posts([
-            'post_type'      => 'va_auction',
-            'post_status'    => 'publish',
-            'meta_query'     => [
-                [
-                    'key'     => 'va_auction_end',
-                    'value'   => $now,
-                    'compare' => '<',
-                    'type'    => 'DATETIME',
+
+        // Batch 100-asával – 2-3M hirdetésnél sem tölt mindent memóriába
+        $page = 0;
+        do {
+            $auctions = get_posts([
+                'post_type'      => 'va_auction',
+                'post_status'    => 'publish',
+                'meta_query'     => [
+                    [
+                        'key'     => 'va_auction_end',
+                        'value'   => $now,
+                        'compare' => '<',
+                        'type'    => 'DATETIME',
+                    ],
+                    [
+                        'key'     => 'va_auction_closed',
+                        'compare' => 'NOT EXISTS',
+                    ],
                 ],
-                [
-                    'key'     => 'va_auction_winner',
-                    'compare' => 'NOT EXISTS',
-                ],
-            ],
-            'posts_per_page' => -1,
-            'fields'         => 'ids',
-        ]);
+                'posts_per_page' => 100,
+                'offset'         => $page * 100,
+                'fields'         => 'ids',
+                'no_found_rows'  => true,
+            ]);
 
-        foreach ( $auctions as $auction_id ) {
-            // Nyertes: a legmagasabb licit
-            $winner = $wpdb->get_row( $wpdb->prepare(
-                "SELECT user_id, amount FROM {$wpdb->prefix}va_bids WHERE auction_id = %d ORDER BY amount DESC LIMIT 1",
-                $auction_id
-            ));
+            foreach ( $auctions as $auction_id ) {
+                $winner = $wpdb->get_row( $wpdb->prepare(
+                    "SELECT user_id, amount FROM {$wpdb->prefix}va_bids WHERE auction_id = %d ORDER BY amount DESC LIMIT 1",
+                    $auction_id
+                ));
 
-            // Lezárva flag – frontend azonnal látja, cron nélkül is
-            update_post_meta( $auction_id, 'va_auction_closed', '1' );
+                update_post_meta( $auction_id, 'va_auction_closed', '1' );
 
-            if ( $winner ) {
-                update_post_meta( $auction_id, 'va_auction_winner', $winner->user_id );
-                self::notify_winner( $auction_id, $winner->user_id, $winner->amount );
+                if ( $winner ) {
+                    update_post_meta( $auction_id, 'va_auction_winner', $winner->user_id );
+                    self::notify_winner( $auction_id, $winner->user_id, $winner->amount );
+                }
             }
-        }
+
+            $page++;
+        } while ( count( $auctions ) === 100 );
     }
 
     /* ── E-mail értesítők ──────────────────────────────── */

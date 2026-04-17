@@ -104,9 +104,32 @@ function va_activate() {
         UNIQUE KEY user_post (user_id, post_id)
     ) $charset;";
 
+    // Hirdetés meta gyorstábla – kereshetőség és szűrés index nélküli meta_query helyett
+    // 2-3M hirdetésnél ez a tábla teszi lehetővé a gyors ár/lokáció/kategória szűrést.
+    $sql3 = "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}va_listing_meta (
+        post_id     BIGINT UNSIGNED NOT NULL,
+        price       DECIMAL(14,2)   DEFAULT NULL,
+        price_type  VARCHAR(20)     DEFAULT 'fixed',
+        county_id   BIGINT UNSIGNED DEFAULT NULL,
+        category_id BIGINT UNSIGNED DEFAULT NULL,
+        condition_id BIGINT UNSIGNED DEFAULT NULL,
+        location    VARCHAR(100)    DEFAULT NULL,
+        expires     DATE            DEFAULT NULL,
+        featured    TINYINT(1)      NOT NULL DEFAULT 0,
+        views       BIGINT UNSIGNED NOT NULL DEFAULT 0,
+        PRIMARY KEY (post_id),
+        KEY price (price),
+        KEY county_id (county_id),
+        KEY category_id (category_id),
+        KEY featured (featured),
+        KEY expires (expires),
+        KEY cat_price (category_id, price)
+    ) $charset;";
+
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta( $sql );
     dbDelta( $sql2 );
+    dbDelta( $sql3 );
 
     // Alapértelmezett oldalak létrehozása ha nem léteznek
     va_create_default_pages();

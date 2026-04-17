@@ -88,30 +88,33 @@ function va_user_watches( int $post_id ): bool {
 }
 
 /* ── Felhasználó hirdetései ───────────────────────────── */
-function va_get_user_listings( int $user_id, string $status = 'any' ): array {
+function va_get_user_listings( int $user_id, string $status = 'any', int $per_page = 50, int $page = 1 ): array {
     return get_posts([
         'post_type'      => [ 'va_listing', 'va_auction' ],
         'post_status'    => $status === 'any' ? [ 'publish', 'pending', 'draft' ] : $status,
         'author'         => $user_id,
-        'posts_per_page' => -1,
+        'posts_per_page' => $per_page,
+        'offset'         => ( $page - 1 ) * $per_page,
         'orderby'        => 'date',
         'order'          => 'DESC',
+        'no_found_rows'  => true,
     ]);
 }
 
 /* ── Felhasználó watchlist-je ─────────────────────────── */
-function va_get_user_watchlist( int $user_id ): array {
+function va_get_user_watchlist( int $user_id, int $per_page = 20, int $page = 1 ): array {
     global $wpdb;
     $ids = $wpdb->get_col( $wpdb->prepare(
-        "SELECT post_id FROM {$wpdb->prefix}va_watchlist WHERE user_id = %d ORDER BY created_at DESC",
-        $user_id
+        "SELECT post_id FROM {$wpdb->prefix}va_watchlist WHERE user_id = %d ORDER BY created_at DESC LIMIT %d OFFSET %d",
+        $user_id, $per_page, ( $page - 1 ) * $per_page
     ));
     if ( ! $ids ) return [];
     return get_posts([
         'post_type'      => [ 'va_listing', 'va_auction' ],
         'post_status'    => 'publish',
         'include'        => $ids,
-        'posts_per_page' => -1,
+        'posts_per_page' => $per_page,
+        'no_found_rows'  => true,
     ]);
 }
 
