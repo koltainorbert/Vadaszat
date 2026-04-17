@@ -237,7 +237,7 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
                         <?php echo $count > 0 ? esc_html($count) . ' hirdetés' : 'Hirdetés hamarosan'; ?>
                     </div>
 
-                    <?php if ( ! empty( $children ) ) : ?>
+                    <!-- Chips — MINDIG renderelt div a layout egységességért -->
                     <div class="vcc__chips">
                         <?php foreach ( array_slice( $children, 0, 3 ) as $ch ) : ?>
                         <span class="vcc__chip"><?php echo esc_html( $ch->name ); ?></span>
@@ -246,7 +246,6 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
                         <span class="vcc__chip vcc__chip--more">+<?php echo count($children) - 3; ?></span>
                         <?php endif; ?>
                     </div>
-                    <?php endif; ?>
                 </div>
 
                 <!-- Footer -->
