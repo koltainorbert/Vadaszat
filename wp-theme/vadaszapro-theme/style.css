@@ -1,0 +1,141 @@
+/*
+Theme Name:   VadászApró Theme
+Theme URI:    https://vadaszapro.net
+Description:  Vadászati apróhirdetési téma – SDH design (sötét, #ff0000 accent)
+Version:      1.0.0
+Author:       SDH
+Text Domain:  vadaszapro-theme
+*/
+
+/* ============================================================
+   VadászApró Téma – Alap Stílusok
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-size: 16px; scroll-behavior: smooth; }
+
+body {
+  background-color: rgb(6,6,6);
+  background-image: radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 30px 30px;
+  color: #fff;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Layout ───────────────────────────────────────── */
+.va-site-wrap { min-height: 100vh; display: flex; flex-direction: column; }
+
+.va-container { max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%; }
+
+/* 3 oszlopos layout: bal sáv | tartalom | jobb sáv */
+.va-content-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  gap: 24px;
+  padding: 28px 0;
+  align-items: start;
+}
+
+@media (max-width: 1200px) {
+  .va-content-layout { grid-template-columns: 250px 1fr; }
+  .va-sidebar--right { display: none; }
+}
+
+@media (max-width: 900px) {
+  .va-content-layout { grid-template-columns: 1fr; }
+  .va-sidebar--left  { display: none; }
+}
+
+/* ── Header ───────────────────────────────────────── */
+.va-header {
+  background: rgba(6,6,6,0.95);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  position: sticky; top: 0; z-index: 100;
+}
+
+.va-header__ad { text-align: center; padding: 6px 0; background: rgba(0,0,0,0.4); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+.va-header__inner {
+  display: flex; align-items: center; gap: 24px;
+  padding: 0 20px; height: 64px; max-width: 1400px; margin: 0 auto;
+}
+
+.va-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+.va-logo__img { width: 40px; height: 40px; object-fit: contain; }
+.va-logo__text { font-size: 20px; font-weight: 900; color: #fff; }
+.va-logo__text span { color: #ff0000; }
+
+/* Navigáció */
+.va-nav { display: flex; align-items: center; gap: 4px; flex: 1; }
+.va-nav__item { padding: 8px 14px; border-radius: 5px; color: rgba(255,255,255,0.7); text-decoration: none; font-size: 14px; font-weight: 500; transition: 0.2s; white-space: nowrap; }
+.va-nav__item:hover, .va-nav__item.active { color: #fff; background: rgba(255,255,255,0.06); }
+.va-nav__item--accent { color: #ff0000 !important; font-weight: 700; }
+
+/* Header jobb oldal */
+.va-header__right { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+.va-header__submit-btn { background: #ff0000; color: #fff; padding: 8px 18px; border-radius: 5px; font-size: 13px; font-weight: 700; text-decoration: none; transition: 0.2s; white-space: nowrap; }
+.va-header__submit-btn:hover { background: #cc0000; }
+.va-header__user { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.7); font-size: 13px; text-decoration: none; }
+.va-header__user:hover { color: #fff; }
+
+/* Hamburger (mobil) */
+.va-hamburger { display: none; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; padding: 4px; }
+@media (max-width: 768px) {
+  .va-hamburger { display: block; }
+  .va-nav { display: none; position: absolute; top: 64px; left: 0; right: 0; background: rgba(10,10,10,0.98); flex-direction: column; align-items: flex-start; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .va-nav.open { display: flex; }
+  .va-nav__item { width: 100%; padding: 12px 16px; }
+}
+
+/* ── Hero sáv (főoldalon) ─────────────────────────── */
+.va-hero {
+  background: linear-gradient(135deg, rgba(255,0,0,0.15) 0%, rgba(6,6,6,0) 60%),
+              radial-gradient(ellipse at top left, rgba(255,0,0,0.1) 0%, transparent 50%);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  padding: 60px 20px 48px;
+  text-align: center;
+}
+.va-hero__title { font-size: clamp(28px, 5vw, 48px); font-weight: 900; margin-bottom: 12px; }
+.va-hero__title span { color: #ff0000; }
+.va-hero__sub { font-size: 16px; color: rgba(255,255,255,0.6); margin-bottom: 32px; }
+.va-hero__search { display: flex; gap: 10px; max-width: 600px; margin: 0 auto; }
+.va-hero__search input { flex: 1; padding: 14px 18px; border-radius: 6px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); color: #fff; font-size: 15px; }
+.va-hero__search input:focus { outline: none; border-color: #ff0000; }
+.va-hero__search button { padding: 14px 28px; background: #ff0000; color: #fff; border: none; border-radius: 6px; font-weight: 700; font-size: 15px; cursor: pointer; transition: 0.2s; }
+.va-hero__search button:hover { background: #cc0000; }
+.va-hero__stats { display: flex; gap: 32px; justify-content: center; margin-top: 28px; flex-wrap: wrap; }
+.va-hero__stat { text-align: center; }
+.va-hero__stat-num { font-size: 28px; font-weight: 900; color: #ff0000; display: block; }
+.va-hero__stat-label { font-size: 12px; color: rgba(255,255,255,0.5); }
+
+/* ── Kategória gyorsmenü ──────────────────────────── */
+.va-cat-bar { background: rgba(14,14,14,0.8); border-bottom: 1px solid rgba(255,255,255,0.06); padding: 14px 0; overflow-x: auto; }
+.va-cat-bar__inner { display: flex; gap: 10px; max-width: 1400px; margin: 0 auto; padding: 0 20px; flex-wrap: nowrap; }
+.va-cat-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px 16px; background: rgba(255,255,255,0.04); border-radius: 6px; text-decoration: none; color: rgba(255,255,255,0.7); font-size: 12px; font-weight: 500; white-space: nowrap; transition: 0.2s; border: 1px solid transparent; flex-shrink: 0; }
+.va-cat-item:hover { background: rgba(255,0,0,0.08); border-color: rgba(255,0,0,0.3); color: #fff; }
+.va-cat-item__icon { font-size: 22px; }
+
+/* ── Oldalsávok ───────────────────────────────────── */
+.va-sidebar { display: flex; flex-direction: column; gap: 16px; }
+.va-sidebar__widget { background: rgba(14,14,14,0.8); border: 1px solid rgba(255,255,255,0.08); border-radius: 6px; padding: 16px; }
+.va-sidebar__widget-title { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+.va-ad-zone--sidebar_left, .va-ad-zone--sidebar_right { width: 100%; }
+
+/* ── Footer ───────────────────────────────────────── */
+.va-footer {
+  background: rgba(0,0,0,0.6); border-top: 1px solid rgba(255,255,255,0.08);
+  margin-top: auto; padding: 40px 0 20px;
+}
+.va-footer__ad { text-align: center; margin-bottom: 30px; }
+.va-footer__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto 30px; padding: 0 20px; }
+.va-footer__col-title { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 12px; }
+.va-footer__link { display: block; color: rgba(255,255,255,0.5); font-size: 13px; text-decoration: none; margin-bottom: 8px; transition: color 0.2s; }
+.va-footer__link:hover { color: #ff0000; }
+.va-footer__bottom { text-align: center; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); color: rgba(255,255,255,0.35); font-size: 12px; max-width: 1400px; margin: 0 auto; padding-left: 20px; padding-right: 20px; }
+.va-footer__bottom a { color: #ff0000; text-decoration: none; }
+
+/* ── Hirdetés detail (single) ─────────────────────── */
+.va-single { max-width: 100%; }
