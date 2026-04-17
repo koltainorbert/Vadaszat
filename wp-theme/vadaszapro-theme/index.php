@@ -18,14 +18,14 @@ get_header(); ?>
     <div class="va-hero__stats">
         <?php
         $stats = [
-            wp_count_posts('va_listing')->publish => 'Aktív hirdetés',
-            wp_count_posts('va_auction')->publish  => 'Futó aukció',
-            count_users()['total_users']            => 'Regisztrált felhasználó',
+            [ 'num' => (int) wp_count_posts('va_listing')->publish, 'label' => 'Aktív hirdetés' ],
+            [ 'num' => (int) wp_count_posts('va_auction')->publish,  'label' => 'Futó aukció' ],
+            [ 'num' => (int) count_users()['total_users'],            'label' => 'Regisztrált felhasználó' ],
         ];
-        foreach ($stats as $num => $label): ?>
+        foreach ($stats as $stat): ?>
         <div class="va-hero__stat">
-            <span class="va-hero__stat-num"><?php echo number_format($num, 0, ',', ' '); ?></span>
-            <span class="va-hero__stat-label"><?php echo esc_html($label); ?></span>
+            <span class="va-hero__stat-num"><?php echo number_format($stat['num'], 0, ',', ' '); ?></span>
+            <span class="va-hero__stat-label"><?php echo esc_html($stat['label']); ?></span>
         </div>
         <?php endforeach; ?>
     </div>

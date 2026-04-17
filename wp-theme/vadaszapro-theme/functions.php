@@ -30,8 +30,6 @@ add_action( 'widgets_init', function () {
 /* ── Enqueue ──────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], '1.0.0' );
-    wp_enqueue_style( 'va-frontend', get_template_directory_uri() . '/assets/css/frontend.css', [], '1.0.0' );
-    wp_enqueue_script( 'va-theme', get_template_directory_uri() . '/assets/js/theme.js', [ 'jquery' ], '1.0.0', true );
 });
 
 /* ── Custom login/register page átirányítás ──────── */
