@@ -1102,6 +1102,59 @@ textarea { min-height: 110px; resize: vertical; }
 @media (max-width: 820px)  { .vcp-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 @media (max-width: 460px)  { .vcp-grid { grid-template-columns: 1fr; } }
 
+/* ── Holdnaptár ──────────────────────────────────────────────────── */
+.va-moon {
+  background: rgba(15,4,4,.82);
+  border: 1px solid rgba(255,30,0,.2);
+  border-radius: 20px;
+  padding: 18px 20px 16px;
+  margin-bottom: 28px;
+  box-shadow: 0 4px 40px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,30,0,.1);
+}
+.va-moon__hd {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.va-moon__title {
+  font-size: .72rem; font-weight: 800;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: #ff4444;
+}
+.va-moon__time {
+  font-size: .6rem; color: rgba(255,255,255,.28);
+}
+.va-moon__bd {
+  display: flex; align-items: center; gap: 22px;
+}
+.va-moon__canvas-wrap { position: relative; flex-shrink: 0; }
+.va-moon__illum {
+  position: absolute; bottom: 2px; left: 50%;
+  transform: translateX(-50%);
+  font-size: .58rem; font-weight: 700;
+  color: rgba(255,195,60,.85);
+  background: rgba(0,0,0,.75);
+  padding: 1px 7px; border-radius: 999px;
+  white-space: nowrap;
+}
+.va-moon__info {
+  flex: 1; display: flex; flex-direction: column; gap: 4px;
+}
+.va-moon__phase {
+  font-size: .95rem; font-weight: 800; color: #fff; line-height: 1.2;
+}
+.va-moon__age {
+  font-size: .67rem; color: rgba(255,195,60,.6); margin-bottom: 4px;
+}
+.va-moon__next { display: flex; flex-direction: column; gap: 4px; }
+.va-moon__nr {
+  display: grid; grid-template-columns: 18px 1fr auto;
+  gap: 6px; align-items: center;
+  font-size: .62rem; color: rgba(255,255,255,.4);
+}
+.va-moon__nrd {
+  color: rgba(255,90,0,.9); font-weight: 700; text-align: right;
+}
+
 /* ── Card — STRICT 3-zone layout ────────────────────────────────── */
 .vcc {
   /* Magasságot a CSS grid sor kezeli — minden kártya egy sorban egyenlő magas */
