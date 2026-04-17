@@ -59,24 +59,62 @@ class VA_Taxonomy {
 
         /* Kategóriák */
         $categories = [
-            'Fegyver'               => [
-                'Sörétes fegyver',
-                'Golyós fegyver',
-                'Kombinált fegyver',
+            'Fegyverek'              => [
+                'Golyós puska',
+                'Sörétes puska',
+                'Vegyescsövű puska',
+                'Maroklőfegyver',
                 'Légfegyver',
-                'Fekete poros fegyver',
+                'Hatástalanított',
+                'Egyéb fegyver',
             ],
-            'Lőszer'                => [
-                'Sörétes lőszer',
+            'Lőszer & Töltény'       => [
                 'Golyós lőszer',
-                'Légfegyver lőszer',
+                'Sörétes lőszer',
+                'Légpuska lőszer',
             ],
-            'Optika & Kiegészítők'  => [],
-            'Ruházat & Felszerelés' => [],
-            'Vadászkutya'           => [],
-            'Vadászterület & Bérlet'=> [],
-            'Trófeák'               => [],
-            'Egyéb'                 => [],
+            'Optika & Elektronika'   => [
+                'Céltávcsövek',
+                'Éjjellátó',
+                'Hőkamera',
+                'Vadkamera',
+                'Vadászlámpa',
+            ],
+            'Kések & Eszközök'       => [
+                'Kések',
+                'Kürtök & Sípok',
+            ],
+            'Ruházat'                => [
+                'Vadász ruházat',
+                'Cipő & Bakancs',
+                'Egyéb ruházat',
+            ],
+            'Felszerelés'            => [
+                'Vadász felszerelés',
+                'Sportlövő felszerelés',
+            ],
+            'Trófea & Dísztárgy'     => [
+                'Trófeák',
+                'Dísztárgyak',
+            ],
+            'Vadászkutya'            => [],
+            'Vadászterület & Bérlet' => [
+                'Vadászati lehetőség',
+                'Vadkárelhárítás',
+            ],
+            'Jármű'                  => [],
+            'Ingatlan & Szállás'     => [
+                'Ingatlan',
+                'Szállás',
+            ],
+            'Egyéb'                  => [
+                'Takarmány',
+                'Könyv & Folyóirat',
+                'Vadászati hagyaték',
+                'Állás',
+                'Csere',
+                'Szolgáltatás',
+            ],
         ];
 
         foreach ( $categories as $parent => $children ) {
