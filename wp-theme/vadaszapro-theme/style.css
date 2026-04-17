@@ -135,6 +135,7 @@ hr { border-color: var(--border); }
 /* WP alapértelmezett li struktúra is kezelje */
 .va-nav li { list-style: none; }
 .va-nav li > a,
+.va-nav__item {
   position: relative;
   padding: 8px 18px;
   color: rgba(255,255,255,.6);
@@ -142,7 +143,9 @@ hr { border-color: var(--border); }
   letter-spacing: .06em; text-transform: uppercase;
   transition: color .2s; white-space: nowrap;
   text-decoration: none;
+  display: inline-block;
 }
+.va-nav li > a::after,
 .va-nav__item::after {
   content: '';
   position: absolute;
@@ -152,8 +155,10 @@ hr { border-color: var(--border); }
   transition: left .22s, right .22s;
   border-radius: 2px 2px 0 0;
 }
+.va-nav li > a:hover,
 .va-nav__item:hover,
 .va-nav__item.active { color: #fff; }
+.va-nav li > a:hover::after,
 .va-nav__item:hover::after,
 .va-nav__item.active::after { left: 14px; right: 14px; }
 
