@@ -4,38 +4,10 @@
  */
 get_header(); ?>
 
-<!-- HERO szekció (csak főoldalon) -->
-<?php if ( is_front_page() ): ?>
-<div class="va-hero" style="margin: -28px -20px 28px;">
-    <div class="va-hero__title">Magyarország <span>vadászati</span> apróhirdetési oldala</div>
-    <div class="va-hero__sub">Fegyverek, lőszerek, optikák, felszerelések – vásárolj és adj el!</div>
-
-    <div class="va-hero__search">
-        <input type="text" placeholder="Mit keresel? (pl. Beretta, 12/70, Blaser...)" id="va-hero-search">
-        <button onclick="window.location='<?php echo esc_url(home_url('/va-hirdetes-kereses')); ?>?s='+document.getElementById('va-hero-search').value">Keresés</button>
-    </div>
-
-    <div class="va-hero__stats">
-        <?php
-        $stats = [
-            [ 'num' => (int) wp_count_posts('va_listing')->publish, 'label' => 'Aktív hirdetés' ],
-            [ 'num' => (int) wp_count_posts('va_auction')->publish,  'label' => 'Futó aukció' ],
-            [ 'num' => (int) count_users()['total_users'],            'label' => 'Regisztrált felhasználó' ],
-        ];
-        foreach ($stats as $stat): ?>
-        <div class="va-hero__stat">
-            <span class="va-hero__stat-num"><?php echo number_format($stat['num'], 0, ',', ' '); ?></span>
-            <span class="va-hero__stat-label"><?php echo esc_html($stat['label']); ?></span>
-        </div>
-        <?php endforeach; ?>
-    </div>
-</div>
-<?php endif; ?>
-
 <?php if ( is_front_page() ): ?>
 <div class="va-home-layout">
 
-<!-- BAL SIDEBAR -->
+<!-- ═══ BAL SIDEBAR — csak holdnaptár ═════════════════════════════ -->
 <aside class="va-home-sidebar">
 <section class="va-moon" id="holdnaptar">
   <div class="va-moon__hd">
@@ -44,10 +16,17 @@ get_header(); ?>
   </div>
   <div class="va-moon__bd">
     <div class="va-moon__canvas-wrap">
-      <canvas id="mCanvas" width="180" height="180"></canvas>
+      <canvas id="mCanvas" width="208" height="208"></canvas>
       <div class="va-moon__illum" id="mIllum">–</div>
     </div>
   </div>
+  <div class="va-moon__info">
+    <div class="va-moon__phase" id="mPhase">–</div>
+    <div class="va-moon__age"   id="mAge">–</div>
+    <div class="va-moon__next"  id="mNext"></div>
+  </div>
+</section>
+</aside>
   <div class="va-moon__info">
     <div class="va-moon__phase" id="mPhase">–</div>
     <div class="va-moon__age"   id="mAge">–</div>
@@ -230,6 +209,32 @@ get_header(); ?>
 
 <!-- FŐ TARTALOM -->
 <main class="va-home-main">
+
+<!-- HERO -->
+<div class="va-hero">
+    <div class="va-hero__title">Magyarország <span>vadászati</span> apróhirdetési oldala</div>
+    <div class="va-hero__sub">Fegyverek, lőszerek, optikák, felszerelések – vásárolj és adj el!</div>
+    <div class="va-hero__search">
+        <input type="text" placeholder="Mit keresel? (pl. Beretta, 12/70, Blaser...)" id="va-hero-search">
+        <button onclick="window.location='<?php echo esc_url(home_url('/va-hirdetes-kereses')); ?>?s='+document.getElementById('va-hero-search').value">Keresés</button>
+    </div>
+    <div class="va-hero__stats">
+        <?php
+        $stats = [
+            [ 'num' => (int) wp_count_posts('va_listing')->publish, 'label' => 'Aktív hirdetés' ],
+            [ 'num' => (int) wp_count_posts('va_auction')->publish,  'label' => 'Futó aukció' ],
+            [ 'num' => (int) count_users()['total_users'],            'label' => 'Regisztrált felhasználó' ],
+        ];
+        foreach ($stats as $stat): ?>
+        <div class="va-hero__stat">
+            <span class="va-hero__stat-num"><?php echo number_format($stat['num'], 0, ',', ' '); ?></span>
+            <span class="va-hero__stat-label"><?php echo esc_html($stat['label']); ?></span>
+        </div>
+        <?php endforeach; ?>
+    </div>
+</div>
+
+<!-- HIRDETÉSEK -->
 <div style="margin-bottom:24px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <h2 style="font-size:18px;font-weight:800;">🆕 Legújabb hirdetések</h2>

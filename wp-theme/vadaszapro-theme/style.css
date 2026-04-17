@@ -366,8 +366,10 @@ hr { border-color: var(--border); }
    HERO SZEKCIÓ
 ────────────────────────────────────────────────────────── */
 .va-hero {
-  text-align: center; padding: 60px 20px 48px;
-  position: relative; border-bottom: 1px solid var(--border); margin: 0;
+  text-align: center; padding: 36px 16px 36px;
+  position: relative; border-bottom: 1px solid var(--border);
+  margin: 0 0 24px; border-radius: 16px;
+  background: rgba(255,255,255,.02);
 }
 .va-hero::before {
   content: ''; position: absolute; inset: 0;
