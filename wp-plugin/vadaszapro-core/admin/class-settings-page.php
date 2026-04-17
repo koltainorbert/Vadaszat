@@ -37,7 +37,16 @@ class VA_Settings_Page {
         /* Reklámzónák */
         foreach ( array_keys( VA_Ad_Zones::ZONES ) as $zone ) {
             register_setting( 'va_ad_settings', 'va_ad_zone_' . $zone, [
-                'sanitize_callback' => function( $val ) { return wp_kses_post( wp_unslash( $val ) ); },
+                'sanitize_callback' => function( $val ) {
+                    $allowed = array_merge( wp_kses_allowed_html('post'), [
+                        'a'   => [ 'href'=>[], 'target'=>[], 'rel'=>[], 'style'=>[], 'class'=>[] ],
+                        'img' => [ 'src'=>[], 'alt'=>[], 'width'=>[], 'height'=>[], 'style'=>[], 'class'=>[] ],
+                        'div' => [ 'style'=>[], 'class'=>[] ],
+                        'script' => [], // Google Ads iframe-ek miatt
+                        'iframe' => [ 'src'=>[], 'width'=>[], 'height'=>[], 'style'=>[], 'frameborder'=>[], 'scrolling'=>[], 'allowtransparency'=>[] ],
+                    ]);
+                    return wp_kses( wp_unslash( $val ), $allowed );
+                },
             ]);
         }
 
