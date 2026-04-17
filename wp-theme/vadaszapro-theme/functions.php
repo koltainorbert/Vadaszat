@@ -29,7 +29,7 @@ add_action( 'widgets_init', function () {
 
 /* ── Enqueue ──────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
-    wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], '2.8.0' );
+    wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], '2.8.1' );
 });
 
 /* ── Alapoldalak automatikus létrehozása (egyszer fut) ── */
