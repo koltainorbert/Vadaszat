@@ -11,7 +11,8 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'VA_VERSION',  '1.0.0' );
+define( 'VA_VERSION',        '1.0.0' );
+define( 'VA_REWRITE_VER',   '1.0.2' );   // Növeld meg ha CPT/tax slug változik!
 define( 'VA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'VA_TEXT_DOMAIN', 'vadaszapro' );
@@ -50,6 +51,18 @@ add_action( 'plugins_loaded', function () {
         VA_Listing_Columns::init();
     }
 });
+
+/* ── Auto rewrite flush – verziókövetéssel ──────────
+ * Ha VA_REWRITE_VER változik (pl. új CPT slug),
+ * a WP automatikusan újragenerálja a rewrite táblákat.
+ * Emberi beavatkozás nem kell.
+────────────────────────────────────────────────── */
+add_action( 'init', function () {
+    if ( get_option( 'va_rewrite_ver' ) !== VA_REWRITE_VER ) {
+        flush_rewrite_rules( false );
+        update_option( 'va_rewrite_ver', VA_REWRITE_VER );
+    }
+}, 999 );
 
 /* ── Activation / Deactivation ───────────────────── */
 register_activation_hook( __FILE__,   'va_activate'   );
