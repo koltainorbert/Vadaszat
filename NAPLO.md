@@ -2,7 +2,51 @@
 
 ---
 
-## 2026. 04. 17. – Session #1
+## 2026. 04. 17. – Session #3 (délelőtt + délután)
+
+### Mit csináltunk [x]
+- [x] `single-va_listing.php` teljes újraírás — sérült UTF-8 fájl törölve, HTML entitásokkal újraírva (encoding-biztos megoldás)
+  - Minden magyar szöveg HTML entitásként: `R&eacute;szletek`, `Felad&oacute;` stb.
+  - JS watchlist szöveg: `\u0151` Unicode escape
+  - 2-column layout megőrizve (`.sl__` prefix)
+- [x] Videó HERO szekció hozzáadva a főoldalra (`header.php`)
+  - Teljes viewport (`100vh`) autoplay/muted/loop mp4 háttér
+  - Rétegzett overlay: teteje átlátszó, alja belefut `rgb(6,6,6)`-ba
+  - Bal oldali piros accent vonal
+  - CTA gombok: Hirdetés feladása + böngészés
+  - Stats sor: élő adatok (hirdetések, aukciók, felhasználók száma)
+  - Animált scroll jelzés
+  - Videó URL: `va_hero_video_url` WP opcióból szerkeszthető
+- [x] Header / Navbar teljes 2026 modernizálás
+  - `position: fixed` + **scroll-aware glass effect** (40px után aktiválódik)
+  - Logo: octagon piros ikon + `vadaszapro.net` subtitle
+  - Nav link hover: piros alulvonás slide-animáció (nem background highlight)
+  - CTA gomb: corner-cut szögletes design + erős red glow
+  - Hamburger: 3 vonal → X CSS animáció, body scroll lock mobilon
+  - Aktív nav item URL alapú automatikus jelölés
+  - Belső oldalak: `padding-top: var(--nav)` (`.va-site-wrap--inner`)
+  - Főoldalon: hero videó tölti a 100vh-t
+- [x] Reklámzónák eltávolítva fejlécből (`header_top`, `header_bottom` — ki van szedve)
+- [x] Minden git-be pusholva (origin/main = HEAD)
+
+### Hol tartunk
+A téma vizuálisan teljesen megújult. A főoldalon video hero van, a header modern glass-effect navbarral rendelkezik. Az egész encoding-biztos (HTML entitások mindenhol).
+
+**Deploy path:**
+- Plugin: `D:\LocalWP\apr-vadsz\app\public\wp-content\plugins\vadaszapro-core`
+- Téma: `D:\LocalWP\apr-vadsz\app\public\wp-content\themes\vadaszapro-theme`
+
+### Nyitott TODO-k
+- [ ] Főoldal hirdetés grid / category kártyák szekció a hero alá
+- [ ] `archive.php` grid kártya dizájn egységesítés
+- [ ] Keresési oldal (`[va_listing_search]`) vizuális refresh
+- [ ] Hirdetés feladás form UX javítás
+- [ ] Mobilon hero videó tesztelés (poster kép beállítás iOS-re)
+- [ ] `va_hero_video_url` beállítás WP adminba bevezetni (Settings oldalra)
+
+---
+
+
 
 ### Mit csináltunk [x]
 - [x] Projekt architektúra megtervezve (WordPress plugin + téma)
