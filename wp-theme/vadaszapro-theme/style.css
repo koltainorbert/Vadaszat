@@ -75,10 +75,11 @@ hr { border-color: var(--border); }
 .va-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 400;
   height: var(--nav);
-  /* átlátszóból indul, scroll után backstop */
-  background: transparent;
+  background: rgba(6,4,4,.82);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid rgba(255,0,0,.12);
   transition: background .35s, backdrop-filter .35s, border-color .35s, box-shadow .35s;
-  border-bottom: 1px solid transparent;
 }
 .va-header.scrolled {
   background: rgba(6,4,4,.88);
