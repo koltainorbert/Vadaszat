@@ -75,10 +75,45 @@
 </div><!-- .va-site-wrap -->
 
 <script>
-// Hamburger menü
-document.getElementById('va-hamburger').addEventListener('click', function(){
-    document.getElementById('va-main-nav').classList.toggle('open');
-});
+(function(){
+    // Hamburger + scroll-aware header
+    var hdr  = document.querySelector('.va-header');
+    var hbtn = document.getElementById('va-hamburger');
+    var nav  = document.getElementById('va-main-nav');
+
+    // Scroll: header glass-effect bekapcsol
+    function onScroll(){
+        if( window.scrollY > 40 ) hdr.classList.add('scrolled');
+        else hdr.classList.remove('scrolled');
+    }
+    window.addEventListener('scroll', onScroll, {passive:true});
+    onScroll();
+
+    // Hamburger toggle
+    if(hbtn && nav){
+        hbtn.addEventListener('click', function(){
+            var open = nav.classList.toggle('open');
+            hbtn.classList.toggle('open', open);
+            document.body.style.overflow = open ? 'hidden' : '';
+        });
+        // Kattint\u00e1s nav-on k\u00edv\u00fcl z\u00e1rja
+        document.addEventListener('click', function(e){
+            if(nav.classList.contains('open') && !nav.contains(e.target) && e.target !== hbtn && !hbtn.contains(e.target)){
+                nav.classList.remove('open');
+                hbtn.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        });
+    }
+
+    // Aktiv nav item
+    var cur = location.pathname;
+    document.querySelectorAll('.va-nav__item').forEach(function(a){
+        if(a.getAttribute('href') && cur.indexOf(a.getAttribute('href')) === 0 && a.getAttribute('href') !== '/'){
+            a.classList.add('active');
+        }
+    });
+})();
 </script>
 
 <?php wp_footer(); ?>

@@ -8,7 +8,7 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
-<div class="va-site-wrap">
+<div class="va-site-wrap<?php echo ! is_front_page() ? ' va-site-wrap--inner' : ''; ?>">
 
     <!-- ═══ Header ══════════════════════════════════════ -->
     <header class="va-header">
