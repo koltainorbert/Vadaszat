@@ -3,7 +3,6 @@
             <!-- Jobb oldalsáv -->
             <aside class="va-sidebar va-sidebar--right">
                 <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('sidebar_right'); ?>
-                <?php if ( is_active_sidebar('va-sidebar-right') ) dynamic_sidebar('va-sidebar-right'); ?>
 
                 <!-- Gyors linkek widget -->
                 <div class="va-sidebar__widget">

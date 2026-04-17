@@ -103,7 +103,6 @@
             <!-- Bal oldalsáv -->
             <aside class="va-sidebar va-sidebar--left">
                 <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('sidebar_left'); ?>
-                <?php if ( is_active_sidebar('va-sidebar-left') ) dynamic_sidebar('va-sidebar-left'); ?>
             </aside>
 
             <!-- Fő tartalom (ide jön a content) -->
