@@ -41,7 +41,7 @@
     {
       "label": "Deploy Plugin",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -Command \". .vscode/local-config.ps1 ; Copy-Item 'wp-plugin/vadaszapro-core/*' $LOCAL_WP_PLUGIN -Recurse -Force ; Write-Host 'Plugin deploy kesz!'\"",
+      "command": "powershell -ExecutionPolicy Bypass -File .vscode/deploy-plugin.ps1",
       "options": { "cwd": "${workspaceFolder}" },
       "group": "none",
       "problemMatcher": []
@@ -49,7 +49,7 @@
     {
       "label": "Deploy Theme",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -Command \". .vscode/local-config.ps1 ; Copy-Item 'wp-theme/vadaszapro-theme/*' $LOCAL_WP_THEME -Recurse -Force ; Write-Host 'Tema deploy kesz!'\"",
+      "command": "powershell -ExecutionPolicy Bypass -File .vscode/deploy-theme.ps1",
       "options": { "cwd": "${workspaceFolder}" },
       "group": "none",
       "problemMatcher": []
@@ -57,7 +57,7 @@
     {
       "label": "Deploy All",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -Command \". .vscode/local-config.ps1 ; Copy-Item 'wp-plugin/vadaszapro-core/*' $LOCAL_WP_PLUGIN -Recurse -Force ; Copy-Item 'wp-theme/vadaszapro-theme/*' $LOCAL_WP_THEME -Recurse -Force ; Write-Host 'Deploy kesz!'\"",
+      "command": "powershell -ExecutionPolicy Bypass -File .vscode/deploy.ps1",
       "options": { "cwd": "${workspaceFolder}" },
       "group": "none",
       "problemMatcher": []
