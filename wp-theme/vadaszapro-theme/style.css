@@ -1027,14 +1027,15 @@ textarea { min-height: 110px; resize: vertical; }
 .vh__scroll-line {
   width: 1px;
   height: 42px;
-  background: linear-gradient(to bottom, transparent, #fff);
+  background: linear-gradient(to bottom, transparent, #ff0000);
 }
 
 .vh__scroll-dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #fff;
+  background: #ff0000;
+  box-shadow: 0 0 6px rgba(255,0,0,.7);
 }
 
 @keyframes vh-bob {
