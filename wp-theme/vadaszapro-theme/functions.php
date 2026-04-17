@@ -55,15 +55,67 @@ function va_breadcrumb(): void {
     echo '</ul></nav>';
 }
 
-/* ── Kategória SVG ikonok (animált, 2026) ─────────── */
+/* ── Kategória emoji ikonok ───────────────────────── */
 function va_category_icon( int $term_id ): string {
-    $icons = [
-        'Fegyver' => '<svg class="va-svg-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="4" y="14" width="22" height="7" rx="2" stroke="#e8000d" stroke-width="2" fill="none" stroke-dasharray="200" stroke-dashoffset="0"/>
-            <rect x="26" y="15" width="6" height="5" rx="1" stroke="#e8000d" stroke-width="2" fill="none" stroke-dasharray="200" stroke-dashoffset="0"/>
-            <line x1="8" y1="14" x2="8" y2="10" stroke="#e8000d" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="10" cy="22" r="2" fill="#e8000d" class="va-pop"/>
-        </svg>',
+    // Slug-alapú emoji ikonok (referencia: koltainorbert/tt1 vadasz-apro)
+    $slug_icons = [
+        'golyos-puska'       => '🎯',
+        'soretes-puska'      => '🔫',
+        'vegyescsovu'        => '🎯',
+        'maroklofegyver'     => '🔫',
+        'egyeb-fegyver'      => '⚙️',
+        'loszer'             => '🔴',
+        'kesek'              => '🔪',
+        'tavcsovek'          => '🔭',
+        'ejjellato'          => '👁️',
+        'hokamera'           => '🌡️',
+        'vadkamera'          => '📷',
+        'vadaszlampa'        => '💡',
+        'vadasz-ruhazat'     => '🧥',
+        'cipo-bakancs'       => '👢',
+        'egyeb-ruhazat'      => '👕',
+        'vadasz-felsz'       => '🎒',
+        'sportlovo-felsz'    => '🏆',
+        'trofea'             => '🦌',
+        'vadasz-kutya'       => '🐕',
+        'vadasz-lehetoseg'   => '🌲',
+        'vadkarelharias'     => '⚡',
+        'szallas'            => '🏡',
+        'ingatlan'           => '🏘️',
+        'jarmu'              => '🚙',
+        'takarmany'          => '🌾',
+        'konyv'              => '📚',
+        'disztargy'          => '🏺',
+        'kurtok-sipok'       => '📯',
+        'szolgaltatas'       => '🔧',
+        'allas'              => '💼',
+        'csere'              => '🔄',
+        'hagyatek'           => '📦',
+        'egyeb'              => '📌',
+    ];
+    // Névalapú fallback
+    $name_icons = [
+        'Fegyver'                => '🔫',
+        'Golyós fegyver'         => '🎯',
+        'Sörétes fegyver'        => '🔫',
+        'Kombinált fegyver'      => '🎯',
+        'Légfegyver'             => '🔫',
+        'Lőszer'                 => '🔴',
+        'Optika & Kiegészítők'   => '🔭',
+        'Ruházat & Felszerelés'  => '🧥',
+        'Vadászkutya'            => '🐕',
+        'Vadászterület & Bérlet' => '🌲',
+        'Trófeák'                => '🦌',
+        'Egyéb'                  => '📌',
+    ];
+
+    $term = get_term( $term_id, 'va_category' );
+    if ( is_wp_error( $term ) || ! $term ) return '📌';
+    return $slug_icons[ $term->slug ] ?? $name_icons[ $term->name ] ?? '📌';
+}
+// Eltávolított régi SVG-ek helyett ez az üres dummy (kompatibilitás)
+$_unused = [
+        'Fegyver' => '',
 
         'Sörétes fegyver' => '<svg class="va-svg-icon" width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
             <rect x="3" y="15" width="24" height="6" rx="2" stroke="#e8000d" stroke-width="2" fill="none" stroke-dasharray="200" stroke-dashoffset="0"/>
