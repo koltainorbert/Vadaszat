@@ -21,6 +21,7 @@
                 <?php if ( has_custom_logo() ):
                     the_custom_logo();
                 else: ?>
+                    <span style="font-size:1.4rem;line-height:1;">🦌</span>
                     <span class="va-logo__text">Vadász<span>Apró</span></span>
                 <?php endif; ?>
             </a>
@@ -65,7 +66,7 @@
                     $register_page = get_page_by_path('va-regisztracio');
                 ?>
                     <?php if ($login_page): ?>
-                        <a href="<?php echo esc_url( get_permalink($login_page) ); ?>" class="va-header__user">Bejelentkezés</a>
+                        <a href="<?php echo esc_url( get_permalink($login_page) ); ?>" class="va-header__user-login">Bejelentkezés</a>
                     <?php endif; ?>
                     <?php if ($register_page): ?>
                         <a href="<?php echo esc_url( get_permalink($register_page) ); ?>" class="va-header__submit-btn">Regisztráció</a>
