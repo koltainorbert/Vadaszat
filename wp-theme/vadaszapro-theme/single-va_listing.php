@@ -25,9 +25,7 @@ $county      = get_the_terms( $post_id, 'va_county' );
 $condition   = get_the_terms( $post_id, 'va_condition' );
 $author      = get_userdata( get_the_author_meta('ID') );
 
-wp_enqueue_style(  'va-frontend', get_template_directory_uri() . '/assets/css/frontend.css', [], '1.0.0' );
-wp_enqueue_script( 'va-frontend', get_template_directory_uri() . '/assets/js/frontend.js', ['jquery'], '1.0.0', true );
-wp_localize_script( 'va-frontend', 'VA_Data', [
+wp_localize_script( 'va-main', 'VA_Data', [
     'ajax_url' => admin_url('admin-ajax.php'),
     'nonce'    => wp_create_nonce('va_user_nonce'),
     'post_id'  => $post_id,
@@ -131,7 +129,7 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
                 <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:8px;">Feladó</div>
                 <div style="font-weight:700;font-size:15px;"><?php echo esc_html($author ? $author->display_name : ''); ?></div>
 
-                <?php $author_phone = get_user_meta($author->ID, 'va_phone', true); ?>
+                <?php $author_phone = $author ? get_user_meta($author->ID, 'va_phone', true) : ''; ?>
                 <?php $show_phone = $phone ?: $author_phone; ?>
                 <?php if ($show_phone): ?>
                     <button class="va-contact-box__show-btn" data-phone="<?php echo esc_attr($show_phone); ?>" style="margin-top:12px;">
