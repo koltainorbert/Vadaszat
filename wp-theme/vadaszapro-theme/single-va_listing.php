@@ -152,7 +152,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
             </div>
 
             <!-- Feladó többi hirdetése -->
-            <?php $other = new WP_Query(['post_type' => 'va_listing', 'post_status' => 'publish', 'author' => $author->ID, 'posts_per_page' => 3, 'post__not_in' => [$post_id]]);
+            <?php if ($author): $other = new WP_Query(['post_type' => 'va_listing', 'post_status' => 'publish', 'author' => $author->ID, 'posts_per_page' => 3, 'post__not_in' => [$post_id]]);
             if ($other->have_posts()): ?>
             <div class="va-sidebar__widget" style="margin-top:16px;">
                 <div class="va-sidebar__widget-title">Feladó további hirdetései</div>
@@ -162,7 +162,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
                     </a>
                 <?php endwhile; wp_reset_postdata(); ?>
             </div>
-            <?php endif; ?>
+            <?php endif; endif; ?>
         </div>
     </div>
 </div>
