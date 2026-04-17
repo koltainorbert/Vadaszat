@@ -26,13 +26,19 @@ get_header(); ?>
     <div class="va-moon__next"  id="mNext"></div>
   </div>
 </section>
-</aside>
-  <div class="va-moon__info">
-    <div class="va-moon__phase" id="mPhase">–</div>
-    <div class="va-moon__age"   id="mAge">–</div>
-    <div class="va-moon__next"  id="mNext"></div>
+
+<!-- ═══ VADÁSZATI IDÉNY WIDGET ════════════════════════════ -->
+<section class="va-season" id="ideny-widget">
+  <div class="va-season__hd">
+    <span class="va-season__title">🏹 Vadászati idény</span>
+    <span class="va-season__date" id="sw-date">–</span>
   </div>
+  <div class="va-season__cnt" id="sw-open-cnt"></div>
+  <div id="sw-open"></div>
+  <div class="va-season__soon-lbl" id="sw-soon-lbl"></div>
+  <div id="sw-soon"></div>
 </section>
+
 </aside>
 <script>
 (function(){
