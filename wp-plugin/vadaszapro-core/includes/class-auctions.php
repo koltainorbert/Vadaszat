@@ -9,13 +9,23 @@ class VA_Auctions {
 
     public static function init() {
         add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue' ] );
-        add_action( 'wp_ajax_va_place_bid',        [ __CLASS__, 'ajax_place_bid' ] );
-        add_action( 'wp_ajax_nopriv_va_place_bid', [ __CLASS__, 'ajax_place_bid_nopriv' ] );
+        add_action( 'wp_ajax_va_place_bid',             [ __CLASS__, 'ajax_place_bid' ] );
+        add_action( 'wp_ajax_nopriv_va_place_bid',      [ __CLASS__, 'ajax_place_bid_nopriv' ] );
         add_action( 'wp_ajax_va_get_bid_status',        [ __CLASS__, 'ajax_get_bid_status' ] );
         add_action( 'wp_ajax_nopriv_va_get_bid_status', [ __CLASS__, 'ajax_get_bid_status' ] );
-        // Cronjob: lejárt aukciók lezárása naponta
+
+        // Egyedi cron intervallum: 5 perc
+        add_filter( 'cron_schedules', function( $schedules ) {
+            $schedules['va_every_5min'] = [
+                'interval' => 300,
+                'display'  => 'Minden 5 percben (VadászApró)',
+            ];
+            return $schedules;
+        });
+
+        // Lejárt aukciók lezárása – 5 percenként
         if ( ! wp_next_scheduled( 'va_close_expired_auctions' ) ) {
-            wp_schedule_event( time(), 'hourly', 'va_close_expired_auctions' );
+            wp_schedule_event( time(), 'va_every_5min', 'va_close_expired_auctions' );
         }
         add_action( 'va_close_expired_auctions', [ __CLASS__, 'close_expired_auctions' ] );
     }
@@ -121,6 +131,10 @@ class VA_Auctions {
         $bid_count   = intval( get_post_meta( $auction_id, 'va_bid_count', true ) ?: 0 );
 
         $is_over = $end && strtotime( $end ) < time();
+        // Ha lejárt, azonnal írjuk ki a closed flag-et (nem kell várni a cronra)
+        if ( $is_over && ! get_post_meta( $auction_id, 'va_auction_closed', true ) ) {
+            update_post_meta( $auction_id, 'va_auction_closed', '1' );
+        }
 
         wp_send_json_success([
             'current_bid'     => $current_bid,
@@ -163,9 +177,11 @@ class VA_Auctions {
                 $auction_id
             ));
 
+            // Lezárva flag – frontend azonnal látja, cron nélkül is
+            update_post_meta( $auction_id, 'va_auction_closed', '1' );
+
             if ( $winner ) {
                 update_post_meta( $auction_id, 'va_auction_winner', $winner->user_id );
-                // Értesítő e-mailek
                 self::notify_winner( $auction_id, $winner->user_id, $winner->amount );
             }
         }

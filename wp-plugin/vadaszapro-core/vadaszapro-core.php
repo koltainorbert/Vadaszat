@@ -72,6 +72,12 @@ function va_activate() {
     VA_Post_Types::init();
     VA_Taxonomy::init();
     flush_rewrite_rules();
+    update_option( 'va_rewrite_ver', VA_REWRITE_VER );
+
+    // Régi hourly cron törlése, új 5 perces ütemezés
+    $old = wp_next_scheduled( 'va_close_expired_auctions' );
+    if ( $old ) wp_unschedule_event( $old, 'va_close_expired_auctions' );
+    wp_schedule_event( time(), 'va_every_5min', 'va_close_expired_auctions' );
 
     global $wpdb;
     $charset = $wpdb->get_charset_collate();
