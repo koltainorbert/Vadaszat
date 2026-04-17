@@ -41,7 +41,7 @@
     {
       "label": "Deploy Plugin",
       "type": "shell",
-      "command": "powershell -ExecutionPolicy Bypass -Command \". .vscode/local-config.ps1 ; Copy-Item 'wp-plugin/vadaszapro-core' $LOCAL_WP_PLUGIN -Recurse -Force ; Write-Host 'Plugin deploy kesz!'\"",
+      "command": "powershell -ExecutionPolicy Bypass -Command \". .vscode/local-config.ps1 ; Copy-Item 'wp-plugin/vadaszapro-core/*' $LOCAL_WP_PLUGIN -Recurse -Force ; Write-Host 'Plugin deploy kesz!'\"",
       "options": { "cwd": "${workspaceFolder}" },
       "group": "none",
       "problemMatcher": []
