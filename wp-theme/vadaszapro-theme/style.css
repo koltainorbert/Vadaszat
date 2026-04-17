@@ -521,3 +521,188 @@ textarea { min-height: 110px; resize: vertical; }
 }
 .va-empty__icon { font-size: 48px; margin-bottom: 12px; }
 .va-empty__text { color: var(--t2); font-size: .9rem; }
+
+/* ══════════════════════════════════════════════════════════
+   SINGLE LISTING PAGE  (.sl__ prefix)
+══════════════════════════════════════════════════════════ */
+.sl { max-width: 1100px; margin: 0 auto; }
+
+.sl__featured-bar {
+  background: linear-gradient(90deg, #b8860b, #ffcc00, #b8860b);
+  color: #000; font-size: .72rem; font-weight: 800;
+  letter-spacing: .1em; text-transform: uppercase;
+  text-align: center; padding: 7px;
+  border-radius: 8px 8px 0 0; margin-bottom: 2px;
+}
+
+/* Layout: 2 col desktop */
+.sl__layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+  align-items: start;
+}
+@media(max-width:900px){ .sl__layout { grid-template-columns: 1fr; } }
+
+/* Card alap */
+.sl__card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.sl__card-title {
+  font-size: .6rem; font-weight: 800; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--t3);
+  margin-bottom: 14px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── Galéria ── */
+.sl__gallery { margin-bottom: 14px; }
+.sl__main-wrap {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  border-radius: 12px; overflow: hidden;
+  aspect-ratio: 4/3; display: flex;
+  align-items: center; justify-content: center;
+}
+.sl__main-img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  transition: opacity .2s;
+}
+.sl__main-empty {
+  font-size: 72px; opacity: .3;
+}
+.sl__thumbs {
+  display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
+}
+.sl__thumb {
+  width: 72px; height: 72px; object-fit: cover;
+  border-radius: 8px; cursor: pointer;
+  border: 2px solid transparent;
+  opacity: .6; transition: all .15s;
+}
+.sl__thumb:hover { opacity: 1; }
+.sl__thumb--active {
+  border-color: var(--a); opacity: 1;
+  box-shadow: 0 0 0 3px rgba(255,0,0,.25);
+}
+
+/* ── Fejléc kártya ── */
+.sl__cat-pill {
+  display: inline-block; font-size: .65rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  background: rgba(255,0,0,.12); color: var(--a3);
+  border: 1px solid rgba(255,0,0,.25);
+  padding: 3px 10px; border-radius: 20px;
+  margin-bottom: 10px; text-decoration: none;
+}
+.sl__cat-pill:hover { background: rgba(255,0,0,.2); }
+.sl__title {
+  font-size: 1.5rem; font-weight: 800; color: #fff;
+  margin: 0 0 10px; line-height: 1.25;
+}
+.sl__price {
+  font-size: 1.7rem; font-weight: 900;
+  color: var(--a); margin-bottom: 14px;
+}
+.sl__meta-row {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.sl__meta-row span {
+  font-size: .72rem; color: var(--t3);
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  padding: 3px 9px; border-radius: 20px;
+}
+.sl__expired { color: var(--a) !important; border-color: rgba(255,0,0,.3) !important; }
+
+/* ── Paraméterek ── */
+.sl__params-grid { display: flex; flex-direction: column; gap: 2px; }
+.sl__param-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.sl__param-row:last-child { border-bottom: none; }
+.sl__param-label { font-size: .78rem; color: var(--t3); }
+.sl__param-val   { font-size: .82rem; color: #fff; font-weight: 600; }
+.sl__license-warn {
+  margin-top: 12px; padding: 9px 12px;
+  background: rgba(255,180,0,.08);
+  border: 1px solid rgba(255,180,0,.25);
+  border-radius: 8px; color: #ffb400;
+  font-size: .78rem; font-weight: 600;
+}
+
+/* ── Feladó / kontakt ── */
+.sl__seller {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 16px;
+}
+.sl__seller-av {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,0,0,.15); border: 2px solid rgba(255,0,0,.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem; font-weight: 900; color: var(--a);
+  flex-shrink: 0;
+}
+.sl__seller-name { font-size: .9rem; font-weight: 700; color: #fff; }
+.sl__seller-since { font-size: .7rem; color: var(--t3); margin-top: 2px; }
+
+.sl__btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; padding: 11px 16px; border-radius: 9px;
+  font-size: .82rem; font-weight: 700; cursor: pointer;
+  border: 1px solid var(--border);
+  text-decoration: none; margin-top: 8px; transition: all .15s;
+}
+.sl__btn--phone {
+  background: var(--a); color: #fff; border-color: transparent;
+  box-shadow: 0 0 20px rgba(255,0,0,.3);
+}
+.sl__btn--phone:hover { background: #cc0000; }
+.sl__phone-reveal {
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; margin-top: 8px; padding: 11px;
+  background: rgba(255,0,0,.08); border: 1px solid rgba(255,0,0,.25);
+  border-radius: 9px; color: var(--a); font-size: 1rem; font-weight: 800;
+  text-decoration: none; letter-spacing: .04em;
+}
+.sl__btn--email {
+  background: rgba(255,255,255,.05); color: var(--t2);
+}
+.sl__btn--email:hover { background: rgba(255,255,255,.1); color: #fff; }
+.sl__btn--watch {
+  background: rgba(255,255,255,.04); color: var(--t2);
+}
+.sl__btn--watch.active { color: #ff6b6b; border-color: rgba(255,0,0,.3); }
+.sl__btn--watch:hover { background: rgba(255,255,255,.08); color: #fff; }
+
+/* ── Leírás ── */
+.sl__desc-body {
+  font-size: .88rem; color: var(--t2); line-height: 1.7;
+}
+
+/* ── Feladó hirdetései ── */
+.sl__more-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,.05);
+  text-decoration: none; transition: background .12s;
+}
+.sl__more-item:last-child { border-bottom: none; }
+.sl__more-item:hover .sl__more-title { color: #fff; }
+.sl__more-img {
+  width: 54px; height: 54px; object-fit: cover;
+  border-radius: 8px; flex-shrink: 0;
+  background: rgba(255,255,255,.04);
+}
+.sl__more-img--empty {
+  display: flex; align-items: center; justify-content: center; font-size: 22px;
+}
+.sl__more-title { font-size: .8rem; color: var(--t2); margin-bottom: 3px; }
+.sl__more-price { font-size: .78rem; color: var(--a); font-weight: 700; }
