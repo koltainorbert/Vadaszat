@@ -221,7 +221,7 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
 
                 <!-- Pulsing ring + icon -->
                 <div class="vcc__icon-wrap">
-                    <div class="vcc__ring"></div>
+                    <div class="vcc__ring vcc__ring--1"></div>
                     <div class="vcc__ring vcc__ring--2"></div>
                     <div class="vcc__icon">
                         <?php echo va_cat_icon( $term->name ); ?>
@@ -239,11 +239,11 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
 
                     <?php if ( ! empty( $children ) ) : ?>
                     <div class="vcc__chips">
-                        <?php foreach ( array_slice( $children, 0, 4 ) as $ch ) : ?>
+                        <?php foreach ( array_slice( $children, 0, 3 ) as $ch ) : ?>
                         <span class="vcc__chip"><?php echo esc_html( $ch->name ); ?></span>
                         <?php endforeach; ?>
-                        <?php if ( count( $children ) > 4 ) : ?>
-                        <span class="vcc__chip vcc__chip--more">+<?php echo count($children) - 4; ?></span>
+                        <?php if ( count( $children ) > 3 ) : ?>
+                        <span class="vcc__chip vcc__chip--more">+<?php echo count($children) - 3; ?></span>
                         <?php endif; ?>
                     </div>
                     <?php endif; ?>
