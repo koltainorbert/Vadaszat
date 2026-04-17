@@ -4,8 +4,6 @@
  */
 get_header();
 
-echo '<div style="background:#ff0000;color:#fff;padding:8px;font-size:11px;">DEBUG: template fut. have_posts=' . (int)have_posts() . ' | is_singular=' . (int)is_singular() . ' | post_type=' . get_post_type() . '</div>';
-
 if ( ! have_posts() ) { get_footer(); return; }
 the_post();
 
