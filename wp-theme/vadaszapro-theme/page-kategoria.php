@@ -5,12 +5,26 @@
  */
 get_header();
 
-/* ── SVG ikon tár ──────────────────────────────────────────────────────── */
+/* ── Fotó tár — Unsplash valódi képek ─────────────────────────────────── */
 function va_cat_icon( string $name ): string {
-    switch ( $name ) {
-
-        /* ── FEGYVEREK: vadászpuska oldalnézet ── */
-        case 'Fegyverek':
+    $photos = [
+        'Fegyverek'              => '1595590424283-b8f17842773f', // vadászpuska
+        'Lőszer & Töltény'       => '1578496479914-7ef3b0193be3', // töltények
+        'Optika & Elektronika'   => '1564419320461-6870880221ad', // távcső/optika
+        'Kések & Eszközök'       => '1588392382834-a891154bca4d', // vadászkés
+        'Ruházat'                => '1506905925346-21bda4d32df4', // terepszínű ruha
+        'Felszerelés'            => '1553776590-89774f79bcd0',    // hátizsák/felszerelés
+        'Trófea & Dísztárgy'     => '1484406566174-9da000fda645', // szarvas agancs
+        'Vadászkutya'            => '1587300003388-59208cc962cb', // vadászkutya
+        'Vadászterület & Bérlet' => '1448375240586-882707db888b', // erdő/terület
+        'Jármű'                  => '1533591379926-3c7965df9d2f', // terepjáró
+        'Ingatlan & Szállás'     => '1518780664697-55e3ad937233', // vadászkunyhó
+        'Egyéb'                  => '1513836279014-a89f7a76ae86', // őszi erdő
+    ];
+    $id  = $photos[ $name ] ?? '1513836279014-a89f7a76ae86';
+    $url = 'https://images.unsplash.com/photo-' . $id . '?w=220&h=220&fit=crop&crop=entropy&auto=format&q=80';
+    return '<img src="' . esc_url( $url ) . '" alt="' . esc_attr( $name ) . '" loading="lazy">';
+}
             return '<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <!-- Cső (barrel) -->
                 <rect x="12" y="26" width="42" height="5.5" rx="2.75" fill="#ff1a1a"/>
