@@ -18,8 +18,7 @@
                 <?php if ( has_custom_logo() ):
                     the_custom_logo();
                 else: ?>
-                    <span class="va-logo__icon" aria-hidden="true">&#127993;</span>
-                    <span class="va-logo__text">Vad&aacute;sz<span>Apr&oacute;</span><em class="va-logo__dot">vadaszapro.net</em></span>
+                    <span class="va-logo__text">Vad&aacute;sz<span>Baz&aacute;r</span></span>
                 <?php endif; ?>
             </a>
 
