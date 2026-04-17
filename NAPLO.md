@@ -48,3 +48,36 @@ D:\Vadaszat2026\
 - [ ] Google Maps helyszín térkép
 
 ---
+
+## 2026. 04. – Session: Dizájn teljes újraírás (dark theme)
+
+### Mit csináltunk [x]
+- [x] Referencia design lekérve: `https://github.com/koltainorbert/tt1/vadasz-apro/public/index.html`
+- [x] `style.css` v3.0.0 – teljes újraírás a referencia alapján:
+  - Háttér: `rgb(6,6,6)` + pont rács (`radial-gradient`, 28px)
+  - Akcentszín: `#ff0000` / `#ff4444`
+  - Fehér szöveg (`#fff`) mindenhol
+  - Header: sticky, sötét, piros `border-bottom`, `backdrop-filter: blur`
+  - Cat-bar: sticky, vízszintes pill-stílusú kategória gombok emoji ikonokkal
+  - Kártyák: `rgba(255,255,255,.025)` háttér, `rgba(255,255,255,.07)` keret
+  - Hover: `translateY(-3px)` + piros ragyogás
+  - Footer: `rgb(12,10,10)` háttér
+  - Form inputok: sötét háttér, fehér szöveg, piros focus
+  - Scrollbar: piros
+- [x] `functions.php` – `va_category_icon()` átírva: SVG ikonok → emoji ikonok
+  - slug + név alapú keresés (pl. `golyos-puska` → `🎯`, `trofea` → `🦌`)
+  - 34 kategória slug leképezve
+- [x] `header.php` – 🦌 emoji hozzáadva a logó mellé; bejelentkezés gomb stílus javítva
+- [x] Összes fájl másolva `D:\LocalWP\apr-vadsz\app\public\...`
+
+### Hol tartunk
+WordPress theme v3.0 deployed a LocalWP-be. A dizájn sötét (dark), piros akcenttel,
+emoji kategória ikonokkal – pontosan a referencia (vadasz-apro/public/index.html) stílusában.
+
+### TODO
+- [ ] Böngészőben megnézni az eredményt (localhost), esetleges apró igazítások
+- [ ] Plugin card template (`va_template('listing/card')`) osztályok ellenőrzése (`.va-card__img` stb.)
+- [ ] Hirdetés felvétel tesztelés
+- [ ] Push (Ctrl+Shift+B)
+
+---
