@@ -29,8 +29,34 @@ add_action( 'widgets_init', function () {
 
 /* ── Enqueue ──────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
-    wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], '1.3.0' );
+    wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], '2.0.0' );
 });
+
+/* ── Alapoldalak automatikus létrehozása (egyszer fut) ── */
+add_action( 'wp_loaded', function () {
+    if ( get_option( 'va_pages_created_v3' ) ) return;
+    $pages = [
+        'kategoria'           => 'Kategóriák',
+        'va-hirdetes-kereses' => 'Hirdetés keresés',
+        'va-hirdetes-feladas' => 'Hirdetés feladás',
+        'va-bejelentkezes'    => 'Bejelentkezés',
+        'va-regisztracio'     => 'Regisztráció',
+        'va-fiok'             => 'Fiókom',
+        'va-aukciok'          => 'Aukciók',
+    ];
+    foreach ( $pages as $slug => $title ) {
+        if ( ! get_page_by_path( $slug ) ) {
+            wp_insert_post( [
+                'post_title'   => $title,
+                'post_name'    => $slug,
+                'post_status'  => 'publish',
+                'post_type'    => 'page',
+                'post_content' => '',
+            ] );
+        }
+    }
+    update_option( 'va_pages_created_v3', '1' );
+} );
 
 /* ── Custom login/register page átirányítás ──────── */
 add_action( 'template_redirect', function () {
