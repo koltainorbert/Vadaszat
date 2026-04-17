@@ -181,8 +181,8 @@ hr { border-color: var(--border); }
   background: #ff0000;
   color: #fff !important;
   border: none;
-  padding: 9px 22px;
-  font-size: .75rem; font-weight: 800;
+  padding: 8px 20px;
+  font-size: .76rem; font-weight: 800;
   letter-spacing: .1em; text-transform: uppercase;
   text-decoration: none; white-space: nowrap;
   border-radius: 999px;
@@ -216,7 +216,7 @@ hr { border-color: var(--border); }
   background: transparent;
   border: 1px solid rgba(255,255,255,.18);
   color: rgba(255,255,255,.7) !important;
-  padding: 7px 18px;
+  padding: 8px 20px;
   font-size: .76rem; font-weight: 600;
   text-decoration: none; white-space: nowrap;
   border-radius: 999px;
