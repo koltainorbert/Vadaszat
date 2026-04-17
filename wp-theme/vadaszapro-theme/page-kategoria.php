@@ -237,15 +237,14 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
                         <?php echo $count > 0 ? esc_html($count) . ' hirdetés' : 'Hirdetés hamarosan'; ?>
                     </div>
 
-                    <!-- Chips — MINDIG renderelt div a layout egységességért -->
+                    <!-- Chipek — összes alkategória látszik -->
+                    <?php if ( ! empty( $children ) ) : ?>
                     <div class="vcc__chips">
-                        <?php foreach ( array_slice( $children, 0, 3 ) as $ch ) : ?>
+                        <?php foreach ( $children as $ch ) : ?>
                         <span class="vcc__chip"><?php echo esc_html( $ch->name ); ?></span>
                         <?php endforeach; ?>
-                        <?php if ( count( $children ) > 3 ) : ?>
-                        <span class="vcc__chip vcc__chip--more">+<?php echo count($children) - 3; ?></span>
-                        <?php endif; ?>
                     </div>
+                    <?php endif; ?>
                 </div>
 
                 <!-- Footer -->
