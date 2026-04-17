@@ -24,8 +24,8 @@ Text Domain:  vadaszapro-theme
   --t3:       rgba(255,255,255,.32);
   --card:     rgba(255,255,255,.025);
   --card-h:   rgba(255,255,255,.05);
-  --r:        10px;
-  --r2:       14px;
+  --r:        16px;
+  --r2:       22px;
   --nav:      54px;
 }
 
@@ -203,7 +203,7 @@ hr { border-color: var(--border); }
   padding: 7px 14px;
   font-size: .76rem; font-weight: 600;
   text-decoration: none; white-space: nowrap;
-  border-radius: 2px;
+  border-radius: var(--r);
   transition: background .18s, border-color .18s;
 }
 .va-header__user:hover {
@@ -219,7 +219,7 @@ hr { border-color: var(--border); }
   padding: 7px 14px;
   font-size: .76rem; font-weight: 600;
   text-decoration: none; white-space: nowrap;
-  border-radius: 2px;
+  border-radius: var(--r);
   transition: all .18s;
 }
 .va-header__user-login:hover {
@@ -242,7 +242,7 @@ hr { border-color: var(--border); }
   height: 2px; width: 100%;
   background: #fff;
   transition: transform .28s, opacity .2s, width .28s;
-  border-radius: 2px;
+  border-radius: 4px;
   transform-origin: center;
 }
 .va-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -906,7 +906,7 @@ textarea { min-height: 110px; resize: vertical; }
   color: #ff0000;
   border: 1px solid rgba(255,0,0,.4);
   padding: 5px 14px;
-  border-radius: 2px;
+  border-radius: var(--r);
   margin-bottom: 22px;
   background: rgba(255,0,0,.07);
 }
@@ -945,7 +945,7 @@ textarea { min-height: 110px; resize: vertical; }
   align-items: center;
   gap: 9px;
   padding: 15px 34px;
-  border-radius: 3px;
+  border-radius: var(--r2);
   font-weight: 700;
   font-size: .95rem;
   letter-spacing: .04em;
