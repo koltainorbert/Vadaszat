@@ -1233,6 +1233,7 @@ textarea { min-height: 110px; resize: vertical; }
   .vcp-hero { padding: 50px 16px 44px; }
   .vcc { height: 310px; grid-template-rows: 130px 1fr 44px; }
 }
+/* ═══ RÉGI DUPLIKÁLT BLOKK TÖRÖLVE ═══
   position: relative; padding: 90px 32px 80px;
   text-align: center; overflow: hidden;
 }
