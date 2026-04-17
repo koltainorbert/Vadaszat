@@ -1,6 +1,6 @@
 <?php
 /**
- * single-va_listing.php €“ HirdetĂs rĂszletes oldal (v2 €“ modern 2026)
+ * single-va_listing.php Ă˘â€šÂ¬Ă˘â‚¬Ĺ› HirdetĂ„â€šs rĂ„â€šszletes oldal (v2 Ă˘â€šÂ¬Ă˘â‚¬Ĺ› modern 2026)
  */
 get_header();
 
@@ -26,7 +26,7 @@ $county      = get_the_terms( $post_id, 'va_county' );
 $condition   = get_the_terms( $post_id, 'va_condition' );
 $author      = get_userdata( get_the_author_meta('ID') );
 
-// KĂpek gyĹjtĂse
+// KĂ„â€špek gyĂ„Ä…jtĂ„â€šse
 $att_args = [
     'post_type'      => 'attachment',
     'posts_per_page' => 12,
@@ -51,15 +51,15 @@ wp_localize_script( 'va-main', 'VA_Data', [
 <div class="sl">
 
     <?php if ( $featured ): ?>
-    <div class="sl__featured-bar"> Kiemelt hirdetĂs</div>
+    <div class="sl__featured-bar"> Kiemelt hirdetĂ„â€šs</div>
     <?php endif; ?>
 
     <div class="sl__layout">
 
-        <!-- ••• BAL OSZLOP €“ galĂria + leĂrĂˇs •••••••••• -->
+        <!-- Ă˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬Ë BAL OSZLOP Ă˘â€šÂ¬Ă˘â‚¬Ĺ› galĂ„â€šria + leĂ„â€šrĂ„â€šĂ‹â€ˇs Ă˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬Ë -->
         <div class="sl__left">
 
-            <!-- GalĂria -->
+            <!-- GalĂ„â€šria -->
             <div class="sl__gallery">
                 <div class="sl__main-wrap">
                     <?php if ( ! empty($attachment_ids) ):
@@ -69,7 +69,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
                              id="sl-main-img" class="sl__main-img"
                              alt="<?php the_title_attribute(); ?>">
                     <?php else: ?>
-                        <div class="sl__main-img sl__main-empty">đźŽŻ</div>
+                        <div class="sl__main-img sl__main-empty">Ă„â€ÄąĹźÄąËťÄąÂ»</div>
                     <?php endif; ?>
                 </div>
 
@@ -87,20 +87,20 @@ wp_localize_script( 'va-main', 'VA_Data', [
                 <?php endif; ?>
             </div>
 
-            <!-- LeĂrĂˇs -->
+            <!-- LeĂ„â€šrĂ„â€šĂ‹â€ˇs -->
             <?php if ( get_the_content() ): ?>
             <div class="sl__card sl__desc">
-                <div class="sl__card-title">LeĂrĂˇs</div>
+                <div class="sl__card-title">LeĂ„â€šrĂ„â€šĂ‹â€ˇs</div>
                 <div class="sl__desc-body"><?php the_content(); ?></div>
             </div>
             <?php endif; ?>
 
         </div>
 
-        <!-- ••• JOBB OSZLOP •••••••••••••••••••••••••• -->
+        <!-- Ă˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬Ë JOBB OSZLOP Ă˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬ËĂ˘â‚¬Ë -->
         <div class="sl__right">
 
-            <!-- KategĂłria + cĂm + Ăˇr -->
+            <!-- KategĂ„â€šÄąâ€šria + cĂ„â€šm + Ă„â€šĂ‹â€ˇr -->
             <div class="sl__card sl__head">
                 <?php if ( $categories && !is_wp_error($categories) ): ?>
                     <a href="<?php echo esc_url(get_term_link($categories[0])); ?>" class="sl__cat-pill">
@@ -112,32 +112,32 @@ wp_localize_script( 'va-main', 'VA_Data', [
 
                 <div class="sl__meta-row">
                     <?php if ( $county && !is_wp_error($county) ): ?>
-                        <span>đź“Ť <?php echo esc_html($county[0]->name); ?></span>
+                        <span>Ă„â€ÄąĹźĂ˘â‚¬Ĺ›ÄąÂ¤ <?php echo esc_html($county[0]->name); ?></span>
                     <?php endif; ?>
                     <?php if ( $location ): ?>
-                        <span>đźŹ™ <?php echo esc_html($location); ?></span>
+                        <span>Ă„â€ÄąĹźÄąÄ…Ă˘â€žË <?php echo esc_html($location); ?></span>
                     <?php endif; ?>
                     <?php if ( $condition && !is_wp_error($condition) ): ?>
-                        <span>đź“Š <?php echo esc_html($condition[0]->name); ?></span>
+                        <span>Ă„â€ÄąĹźĂ˘â‚¬Ĺ›ÄąÂ  <?php echo esc_html($condition[0]->name); ?></span>
                     <?php endif; ?>
-                    <span>đź‘ <?php echo esc_html($views); ?> megtekintĂs</span>
-                    <span>đź—“ <?php echo esc_html(get_the_date('Y. m. d.')); ?></span>
+                    <span>Ă„â€ÄąĹźĂ˘â‚¬Â <?php echo esc_html($views); ?> megtekintĂ„â€šs</span>
+                    <span>Ă„â€ÄąĹźĂ˘â‚¬â€ťĂ˘â‚¬Ĺ› <?php echo esc_html(get_the_date('Y. m. d.')); ?></span>
                     <?php if ( $expires ): ?>
                         <span class="<?php echo strtotime($expires) < time() ? 'sl__expired' : ''; ?>">
-                            Ź LejĂˇr: <?php echo esc_html($expires); ?>
+                            ÄąÄ… LejĂ„â€šĂ‹â€ˇr: <?php echo esc_html($expires); ?>
                         </span>
                     <?php endif; ?>
                 </div>
             </div>
 
-            <!-- ParamĂterek -->
+            <!-- ParamĂ„â€šterek -->
             <?php if ( $brand || $model || $caliber || $year || $license_req === '1' ): ?>
             <div class="sl__card sl__params">
-                <div class="sl__card-title">RĂszletek</div>
+                <div class="sl__card-title">RĂ„â€šszletek</div>
                 <div class="sl__params-grid">
                     <?php if ($brand): ?>
                         <div class="sl__param-row">
-                            <span class="sl__param-label">MĂˇrka</span>
+                            <span class="sl__param-label">MĂ„â€šĂ‹â€ˇrka</span>
                             <span class="sl__param-val"><?php echo esc_html($brand); ?></span>
                         </div>
                     <?php endif; ?>
@@ -155,20 +155,20 @@ wp_localize_script( 'va-main', 'VA_Data', [
                     <?php endif; ?>
                     <?php if ($year): ?>
                         <div class="sl__param-row">
-                            <span class="sl__param-label">GyĂˇrtĂˇsi Ăv</span>
+                            <span class="sl__param-label">GyĂ„â€šĂ‹â€ˇrtĂ„â€šĂ‹â€ˇsi Ă„â€šv</span>
                             <span class="sl__param-val"><?php echo esc_html($year); ?></span>
                         </div>
                     <?php endif; ?>
                 </div>
                 <?php if ( $license_req === '1' ): ?>
-                    <div class="sl__license-warn">šďŹ Fegyverengedély szükséges</div>
+                    <div class="sl__license-warn">Fegyverengedely szukseges</div>
                 <?php endif; ?>
             </div>
             <?php endif; ?>
 
-            <!-- FeladĂł + kapcsolat -->
+            <!-- FeladĂ„â€šÄąâ€š + kapcsolat -->
             <div class="sl__card sl__contact">
-                <div class="sl__card-title">FeladĂł</div>
+                <div class="sl__card-title">FeladĂ„â€šÄąâ€š</div>
                 <div class="sl__seller">
                     <div class="sl__seller-av">
                         <?php echo strtoupper( substr( $author ? $author->display_name : 'X', 0, 1 ) ); ?>
@@ -176,7 +176,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
                     <div>
                         <div class="sl__seller-name"><?php echo esc_html($author ? $author->display_name : 'Ismeretlen'); ?></div>
                         <?php if ($author): ?>
-                        <div class="sl__seller-since">Tag <?php echo esc_html(date('Y', strtotime($author->user_registered))); ?> Ăłta</div>
+                        <div class="sl__seller-since">Tag <?php echo esc_html(date('Y', strtotime($author->user_registered))); ?> ota</div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -186,7 +186,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
                 $show_phone   = $phone ?: $author_phone;
                 if ( $show_phone ): ?>
                     <button class="sl__btn sl__btn--phone" data-phone="<?php echo esc_attr($show_phone); ?>">
-                        đź“ž TelefonszĂˇm megjelenĂtĂse
+                        Telefonszam megjelenitese
                     </button>
                     <a href="tel:<?php echo esc_attr(preg_replace('/[^+0-9]/','',$show_phone)); ?>"
                        class="sl__phone-reveal" id="sl-phone" style="display:none;">
@@ -196,7 +196,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
 
                 <?php if ( $email_show === '1' && $author ): ?>
                     <a href="mailto:<?php echo esc_attr($author->user_email); ?>" class="sl__btn sl__btn--email">
-                        ś‰ďŹ Ăśzenet kĂĽldĂse
+                        Äąâ€şĂ˘â‚¬Â°Ă„ĹąÄąÄ… Ă„â€šÄąâ€şzenet kĂ„â€šĂ„ËťldĂ„â€šse
                     </a>
                 <?php endif; ?>
 
@@ -204,12 +204,12 @@ wp_localize_script( 'va-main', 'VA_Data', [
                     $watching = va_user_watches($post_id); ?>
                     <button class="sl__btn sl__btn--watch<?php echo $watching?' active':''; ?>"
                             data-post-id="<?php echo esc_attr($post_id); ?>">
-                        <?php echo $watching ? 'ťďŹ KedvencekbĹ‘l eltĂˇvolĂtĂˇs' : 'đźŤ MentĂs kedvencekbe'; ?>
+                        <?php echo $watching ? ('Kedvencekbol eltavolitas') : ('Mentes kedvencekbe'); ?>
                     </button>
                 <?php endif; ?>
             </div>
 
-            <!-- FeladĂł tĂbbi hirdetĂse -->
+            <!-- FeladĂ„â€šÄąâ€š tĂ„â€šbbi hirdetĂ„â€šse -->
             <?php if ( $author ):
                 $other = new WP_Query([
                     'post_type'      => 'va_listing',
@@ -222,7 +222,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
                 if ( $other->have_posts() ):
             ?>
             <div class="sl__card sl__more">
-                <div class="sl__card-title">FeladĂł tovĂˇbbi hirdetĂsei</div>
+                <div class="sl__card-title">FeladĂ„â€šÄąâ€š tovĂ„â€šĂ‹â€ˇbbi hirdetĂ„â€šsei</div>
                 <?php while ( $other->have_posts() ): $other->the_post();
                     $p_id    = get_the_ID();
                     $p_price = get_post_meta($p_id,'va_price',true);
@@ -232,7 +232,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
                         <?php if ( has_post_thumbnail() ):
                             echo get_the_post_thumbnail(null,[54,54],['class'=>'sl__more-img']);
                         else: ?>
-                            <div class="sl__more-img sl__more-img--empty">đźŽŻ</div>
+                            <div class="sl__more-img sl__more-img--empty">Ă„â€ÄąĹźÄąËťÄąÂ»</div>
                         <?php endif; ?>
                         <div class="sl__more-info">
                             <div class="sl__more-title"><?php the_title(); ?></div>
@@ -249,7 +249,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
 
 <script>
 (function(){
-    // GalĂria
+    // GalĂ„â€šria
     document.querySelectorAll('.sl__thumb').forEach(function(t){
         t.addEventListener('click',function(){
             var mi = document.getElementById('sl-main-img');
@@ -258,7 +258,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
             this.classList.add('sl__thumb--active');
         });
     });
-    // TelefonszĂˇm
+    // Telefonszam
     var pb = document.querySelector('.sl__btn--phone');
     if(pb) pb.addEventListener('click',function(){
         var el = document.getElementById('sl-phone');
@@ -274,7 +274,7 @@ wp_localize_script( 'va-main', 'VA_Data', [
             }).then(function(r){return r.json();}).then(function(d){
                 if(d.success){
                     b.classList.toggle('active');
-                    b.textContent = b.classList.contains('active') ? 'ťďŹ KedvencekbĹ‘l eltĂˇvolĂtĂˇs' : 'đźŤ MentĂs kedvencekbe';
+                    b.textContent = b.classList.contains('active') ? 'ÄąÄ„Ă„ĹąÄąÄ… KedvencekbĂ„Ä…Ă˘â‚¬Âl eltĂ„â€šĂ‹â€ˇvolĂ„â€štĂ„â€šĂ‹â€ˇs' : 'Ă„â€ÄąĹźÄąÂ¤ MentĂ„â€šs kedvencekbe';
                 }
             });
         });
