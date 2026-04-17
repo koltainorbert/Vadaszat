@@ -491,3 +491,33 @@ textarea { min-height: 110px; resize: vertical; }
 }
 .va-footer__bottom a { color: var(--a3); }
 .va-footer__bottom a:hover { color: var(--a2); }
+
+/* ──────────────────────────────────────────────────────────
+   ARCHÍVUM FEJLÉC
+────────────────────────────────────────────────────────── */
+.va-archive-header {
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+.va-archive-header__title {
+  font-size: 1.4rem; font-weight: 700; color: #fff; margin: 0; flex: 1 1 auto;
+}
+.va-archive-header__desc {
+  width: 100%; font-size: .82rem; color: var(--t2); margin: 4px 0 0; order: 3;
+}
+.va-archive-header__count {
+  font-size: .75rem; color: var(--t3);
+  background: rgba(255,255,255,.05); border: 1px solid var(--border);
+  border-radius: 20px; padding: 3px 10px; white-space: nowrap;
+}
+
+/* ──────────────────────────────────────────────────────────
+   ÜRES ÁLLAPOT
+────────────────────────────────────────────────────────── */
+.va-empty {
+  text-align: center; padding: 64px 20px;
+  background: rgba(255,255,255,.02); border: 1px solid var(--border);
+  border-radius: var(--r);
+}
+.va-empty__icon { font-size: 48px; margin-bottom: 12px; }
+.va-empty__text { color: var(--t2); font-size: .9rem; }
