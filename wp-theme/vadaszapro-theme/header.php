@@ -80,6 +80,71 @@
     <!-- Fejléc alatti reklám -->
     <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('header_bottom'); ?>
 
+    <!-- ═══ VIDEO HERO (csak főoldalon) ════════════════════ -->
+    <?php if ( is_front_page() ):
+        $hero_video = get_option('va_hero_video_url', content_url('uploads/2026/04/521380_Gun_Woman_1920x1080.mp4'));
+        $submit_page = get_page_by_path('va-hirdetes-feladas');
+        $search_page = get_page_by_path('va-hirdetes-kereses');
+        $listing_count = wp_count_posts('va_listing')->publish;
+        $auction_count = wp_count_posts('va_auction')->publish;
+        $user_count = count_users()['total_users'];
+    ?>
+    <div class="vh">
+        <?php if ( $hero_video ): ?>
+        <video class="vh__video" autoplay muted loop playsinline preload="auto"
+               aria-hidden="true">
+            <source src="<?php echo esc_url($hero_video); ?>" type="video/mp4">
+        </video>
+        <?php endif; ?>
+
+        <div class="vh__overlay"></div>
+
+        <div class="vh__content">
+            <div class="vh__badge">&#127993; Magyarorsz&aacute;g #1 vad&aacute;sz apróhirdetése</div>
+            <h2 class="vh__title">
+                Vad&aacute;sz<span>Apró</span><br>
+                &mdash; ahol a vad&aacute;szat él
+            </h2>
+            <p class="vh__sub">
+                Fegyverek, felszerelések, vadászterületek egy helyen.
+                Adj fel hirdetést percek alatt, találj vevőt azonnal.
+            </p>
+            <div class="vh__actions">
+                <?php if ( $submit_page ): ?>
+                <a href="<?php echo esc_url( get_permalink($submit_page) ); ?>" class="vh__btn vh__btn--primary">
+                    &#43; Hirdet&eacute;s felad&aacute;sa
+                </a>
+                <?php endif; ?>
+                <a href="<?php echo esc_url( $search_page ? get_permalink($search_page) : home_url('/hirdetes') ); ?>" class="vh__btn vh__btn--ghost">
+                    Hirdet&eacute;sek b&ouml;ng&eacute;sz&eacute;se &rarr;
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="vh__stats">
+            <div class="vh__stat">
+                <span class="vh__stat-num"><?php echo esc_html( number_format_i18n($listing_count) ); ?>&#43;</span>
+                <span class="vh__stat-label">aktív hirdetés</span>
+            </div>
+            <div class="vh__stat">
+                <span class="vh__stat-num"><?php echo esc_html( number_format_i18n($auction_count) ); ?></span>
+                <span class="vh__stat-label">aukció</span>
+            </div>
+            <div class="vh__stat">
+                <span class="vh__stat-num"><?php echo esc_html( number_format_i18n($user_count) ); ?></span>
+                <span class="vh__stat-label">regisztrált vadász</span>
+            </div>
+        </div>
+
+        <!-- Scroll jel -->
+        <div class="vh__scroll" aria-hidden="true">
+            <div class="vh__scroll-line"></div>
+            <div class="vh__scroll-dot"></div>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- Kategória gyorsmenü (csak főoldalon + archívumban) -->
     <?php if ( is_front_page() || is_post_type_archive(['va_listing','va_auction']) || is_tax(['va_category','va_county']) ): ?>
     <div class="va-cat-bar">
