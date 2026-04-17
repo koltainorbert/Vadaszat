@@ -132,7 +132,9 @@ hr { border-color: var(--border); }
   display: flex; align-items: center; justify-content: center;
   gap: 0;
 }
-.va-nav__item {
+/* WP alapértelmezett li struktúra is kezelje */
+.va-nav li { list-style: none; }
+.va-nav li > a,
   position: relative;
   padding: 8px 18px;
   color: rgba(255,255,255,.6);
