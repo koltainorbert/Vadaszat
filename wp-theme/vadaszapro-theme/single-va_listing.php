@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * single-va_listing.php â€“ HirdetĂ©s rĂ©szletes oldal (v2 â€“ modern 2026)
  */
