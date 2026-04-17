@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * page-kategoria.php – Vadász Kategóriák oldal
  * Automatikusan betöltődik a /kategoria URL-re (page slug = kategoria).
@@ -26,9 +26,10 @@ function va_cat_icon( string $name ): string {
     return '<img src="' . esc_url( $url ) . '" alt="' . esc_attr( $name ) . '" loading="lazy">';
 }
 
-/* ── Top-level kategóriák lekérése
-                <!-- Szájék (muzzle) -->
-                <rect x="52" y="24" width="5" height="9.5" rx="1.5" fill="#cc0000"/>
+/* ── Top-level kategóriák lekérése ─────────────────────────────────────── */
+$top_terms = get_terms( [
+    'taxonomy'   => 'va_category',
+    'parent'     => 0,
                 <!-- Csőtár / magazin -->
                 <rect x="28" y="31.5" width="8" height="13" rx="2" fill="#cc0000"/>
                 <!-- Ravasz szekrény -->
