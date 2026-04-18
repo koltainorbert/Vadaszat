@@ -98,8 +98,10 @@ add_action( 'wp_loaded', function () {
         'va-bejelentkezes'    => 'Bejelentkezés',
         'va-regisztracio'     => 'Regisztráció',
         'va-fiok'             => 'Fiókom',
-        'va-aukciok'          => 'Aukciók',
     ];
+    if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true ) {
+        $pages['va-aukciok'] = 'Aukciók';
+    }
     foreach ( $pages as $slug => $title ) {
         if ( ! get_page_by_path( $slug ) ) {
             wp_insert_post( [
@@ -187,7 +189,7 @@ function va_breadcrumb(): void {
     if ( is_singular( 'va_listing' ) ) {
         echo '<li><a href="' . esc_url( get_post_type_archive_link( 'va_listing' ) ) . '">Hirdetések</a></li>';
         echo '<li>' . esc_html( get_the_title() ) . '</li>';
-    } elseif ( is_singular( 'va_auction' ) ) {
+    } elseif ( ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true ) && is_singular( 'va_auction' ) ) {
         echo '<li><a href="' . esc_url( get_post_type_archive_link( 'va_auction' ) ) . '">Aukciók</a></li>';
         echo '<li>' . esc_html( get_the_title() ) . '</li>';
     } elseif ( is_page() ) {

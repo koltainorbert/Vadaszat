@@ -9,6 +9,7 @@
 <?php wp_body_open(); ?>
 
 <div class="va-site-wrap<?php echo ! is_front_page() ? ' va-site-wrap--inner' : ''; ?>">
+    <?php $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true; ?>
 
     <!-- ═══ Header ══════════════════════════════════════ -->
     <header class="va-header">
@@ -27,10 +28,16 @@
                 <?php
                 $nav_items = apply_filters('va_nav_items', [
                     ['url' => home_url('/hirdetes'),  'label' => 'Hirdetések', 'class' => ''],
-                    ['url' => home_url('/aukcio'),    'label' => '🔨 Aukciók', 'class' => 'va-nav__item--accent'],
                     ['url' => home_url('/kategoria'), 'label' => 'Kategóriák', 'class' => ''],
                     ['url' => home_url('/kapcsolat'), 'label' => 'Kapcsolat',  'class' => ''],
                 ]);
+                if ( $auctions_enabled ) {
+                    array_splice( $nav_items, 1, 0, [[
+                        'url'   => home_url('/aukcio'),
+                        'label' => '🔨 Aukciók',
+                        'class' => 'va-nav__item--accent',
+                    ]] );
+                }
                 foreach ( $nav_items as $item ):
                     $cls = 'va-nav__item' . ( $item['class'] ? ' ' . $item['class'] : '' );
                 ?>
@@ -47,6 +54,7 @@
             <script>
             (function(){
                 var ajaxUrl = '<?php echo esc_url( admin_url('admin-ajax.php') ); ?>';
+                var auctionsEnabled = <?php echo $auctions_enabled ? 'true' : 'false'; ?>;
                 var input   = document.getElementById('va-live-search-input');
                 var dropdown= document.getElementById('va-search-dropdown');
                 var timer;
@@ -70,7 +78,7 @@
                     var baseUrl     = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>';
                     if (catItem) {
                         allLink.href = catItem.url; // ?cat=ID → kategória összes hirdetése
-                    } else if (auctionItem) {
+                    } else if (auctionsEnabled && auctionItem) {
                         allLink.href = baseUrl + '?post_type=va_auction&s=' + encodeURIComponent(input.value); // aukciók listája
                     } else if (userItem) {
                         allLink.href = baseUrl + '?user_search=1&q=' + encodeURIComponent(input.value); // összes felhasználó
@@ -150,13 +158,13 @@
         <div class="vh__overlay"></div>
 
         <div class="vh__content">
-            <div class="vh__badge">Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala</div>
+            <div class="vh__badge"><?php echo $auctions_enabled ? 'Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala' : 'Magyarorsz&aacute;g els&#337; vad&aacute;szati hirdet&#337;oldala'; ?></div>
             <h2 class="vh__title">
                 Vad&aacute;sz<span>Baz&aacute;r</span><br>
-                &eacute;s Aukci&oacute;
+                <?php echo $auctions_enabled ? '&eacute;s Aukci&oacute;' : '&eacute;s Apr&oacute;hirdet&eacute;s'; ?>
             </h2>
             <p class="vh__sub">
-                Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala
+                <?php echo $auctions_enabled ? 'Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala' : 'Magyarorsz&aacute;g els&#337; vad&aacute;szati hirdet&#337;oldala'; ?>
             </p>
             <div class="vh__actions">
                 <?php if ( $submit_page ): ?>
@@ -179,7 +187,13 @@
     <?php endif; ?>
 
     <!-- Kategória gyorsmenü (csak főoldalon + archívumban) -->
-    <?php if ( is_post_type_archive(['va_listing','va_auction']) || is_tax(['va_category','va_county']) ): ?>
+    <?php
+    $archive_types = [ 'va_listing' ];
+    if ( $auctions_enabled ) {
+        $archive_types[] = 'va_auction';
+    }
+    ?>
+    <?php if ( is_post_type_archive($archive_types) || is_tax(['va_category','va_county']) ): ?>
     <div class="va-cat-bar">
         <div class="va-cat-bar__inner">
             <?php $top_cats = get_terms(['taxonomy' => 'va_category', 'parent' => 0, 'hide_empty' => false, 'number' => 10]);

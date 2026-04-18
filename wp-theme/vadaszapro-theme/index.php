@@ -927,6 +927,7 @@ if ($featured->have_posts()): ?>
 <?php endif; ?>
 
 <!-- Futó aukciók -->
+<?php if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true ): ?>
 <?php $auctions = new WP_Query(['post_type' => 'va_auction', 'post_status' => 'publish', 'posts_per_page' => 4, 'orderby' => 'date', 'order' => 'DESC']);
 if ($auctions->have_posts()): ?>
 <div style="margin-bottom:24px;">
@@ -942,6 +943,7 @@ if ($auctions->have_posts()): ?>
     </div>
 </div>
 <?php endif; ?>
+    <?php endif; ?>
 
   </main><!-- va-home-main -->
 </div><!-- va-home-layout -->

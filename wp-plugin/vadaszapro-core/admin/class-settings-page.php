@@ -189,6 +189,8 @@ class VA_Settings_Page {
     public static function render_users() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
+        $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
+
         $users = get_users([
             'role__in'   => [ 'subscriber', 'contributor', 'editor' ],
             'number'     => 50,
@@ -214,7 +216,7 @@ class VA_Settings_Page {
                 <?php foreach ( $users as $user ):
                     $phone     = get_user_meta( $user->ID, 'va_phone', true );
                     $listings  = count_user_posts( $user->ID, 'va_listing' );
-                    $auctions  = count_user_posts( $user->ID, 'va_auction' );
+                    $auctions  = $auctions_enabled ? count_user_posts( $user->ID, 'va_auction' ) : 0;
                 ?>
                     <tr>
                         <td><?php echo esc_html( $user->user_login ); ?></td>
@@ -222,7 +224,13 @@ class VA_Settings_Page {
                         <td><?php echo esc_html( $user->user_email ); ?></td>
                         <td><?php echo esc_html( $phone ?: '–' ); ?></td>
                         <td><?php echo esc_html( date_i18n( 'Y.m.d', strtotime( $user->user_registered ) ) ); ?></td>
-                        <td><?php echo esc_html( $listings ); ?> hird. / <?php echo esc_html( $auctions ); ?> aukció</td>
+                        <td>
+                            <?php if ( $auctions_enabled ): ?>
+                                <?php echo esc_html( $listings ); ?> hird. / <?php echo esc_html( $auctions ); ?> aukció
+                            <?php else: ?>
+                                <?php echo esc_html( $listings ); ?> hirdetés
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <a href="<?php echo esc_url( get_edit_user_link( $user->ID ) ); ?>">Szerkesztés</a>
                         </td>
@@ -237,6 +245,8 @@ class VA_Settings_Page {
     /* ══ Statisztika oldal ════════════════════════════════ */
     public static function render_stats() {
         if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
 
         global $wpdb;
         $total_listings  = wp_count_posts( 'va_listing' );
@@ -264,18 +274,22 @@ class VA_Settings_Page {
                     <span class="va-stat-num"><?php echo esc_html( $total_listings->pending ); ?></span>
                     <span class="va-stat-label">Jóváhagyásra vár</span>
                 </div>
+                <?php if ( $auctions_enabled ): ?>
                 <div class="va-stat-card">
                     <span class="va-stat-num"><?php echo esc_html( $total_auctions->publish ); ?></span>
                     <span class="va-stat-label">Aktív aukció</span>
                 </div>
+                <?php endif; ?>
                 <div class="va-stat-card">
                     <span class="va-stat-num"><?php echo esc_html( $total_users['total_users'] ); ?></span>
                     <span class="va-stat-label">Regisztrált felhasználó</span>
                 </div>
+                <?php if ( $auctions_enabled ): ?>
                 <div class="va-stat-card">
                     <span class="va-stat-num"><?php echo esc_html( $total_bids ?: 0 ); ?></span>
                     <span class="va-stat-label">Összes licit</span>
                 </div>
+                <?php endif; ?>
                 <div class="va-stat-card">
                     <span class="va-stat-num"><?php echo esc_html( $total_watchlist ?: 0 ); ?></span>
                     <span class="va-stat-label">Figyelő (watchlist)</span>

@@ -14,7 +14,11 @@ $url_q           = sanitize_text_field( wp_unslash( $_GET['q']           ?? '' )
 $url_cat         = intval( $_GET['cat']         ?? 0 );
 $url_author_id   = intval( $_GET['author_id']   ?? 0 );
 $url_user_search = ! empty( $_GET['user_search'] );
-$url_post_type   = in_array( $_GET['post_type'] ?? '', [ 'va_listing', 'va_auction' ], true ) ? $_GET['post_type'] : 'va_listing';
+$allowed_post_types = [ 'va_listing' ];
+if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+    $allowed_post_types[] = 'va_auction';
+}
+$url_post_type   = in_array( $_GET['post_type'] ?? '', $allowed_post_types, true ) ? $_GET['post_type'] : 'va_listing';
 
 // ── Felhasználó-kereső mód ────────────────────────────────────
 if ( $url_user_search ) {
