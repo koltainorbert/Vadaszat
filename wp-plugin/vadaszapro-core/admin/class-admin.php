@@ -27,6 +27,7 @@ class VA_Admin {
 
         add_submenu_page( 'vadaszapro', 'Általános beállítások', 'Általános',     'manage_options', 'vadaszapro',             [ VA_Settings_Page::class, 'render_general'  ] );
         add_submenu_page( 'vadaszapro', 'Design beállítások',    'Design',        'manage_options', 'vadaszapro-design',     [ VA_Settings_Page::class, 'render_design'   ] );
+        add_submenu_page( 'vadaszapro', 'Fejléc + Lábléc',        'Fejléc + Lábléc','manage_options', 'vadaszapro-header-footer', [ VA_Settings_Page::class, 'render_header_footer' ] );
         add_submenu_page( 'vadaszapro', 'Reklámzónák',           'Reklámzónák',   'manage_options', 'vadaszapro-reklam',      [ VA_Settings_Page::class, 'render_ad_zones'  ] );
         add_submenu_page( 'vadaszapro', 'Hirdetés beállítások',  'Hirdetések',    'manage_options', 'vadaszapro-hirdetes',    [ VA_Settings_Page::class, 'render_listings'  ] );
         if ( $auctions_enabled ) {
