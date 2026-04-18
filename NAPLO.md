@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #84 (Toggle esztetikai ujrarendezes: 1 sor, 1 magassag)
+
+### Mit csinaltunk [x]
+- [x] Account-type sor ujratervezve `inline-flex` elrendezessel (stabil 1 sor)
+- [x] Egységes vizualis sor-magassag bevezetve (`--va-account-row-h`)
+- [x] Label elemek es kapcsolo kozeppontra igazítva, harmonikusabb aranyokkal
+- [x] Toggle meretek ujrakalibralva (42x24, 18px knob), nem dominans de jol olvashato
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #83 (Toggle magassag a szoveg ala)
 
 ### Mit csinaltunk [x]
