@@ -39,6 +39,7 @@ class VA_Settings_Page {
             'va_home_hero_video_url'      => content_url( 'uploads/2026/04/521380_Gun_Woman_1920x1080.mp4' ),
             'va_contact_hero_video_url'   => content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ),
             'va_category_video_url'       => content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ),
+            'va_tax_category_video_url'   => content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ),
         ];
         foreach ( $video_urls as $key => $default ) {
             register_setting( 'va_general_settings', $key, [ 'sanitize_callback' => 'esc_url_raw' ] );
@@ -98,7 +99,8 @@ class VA_Settings_Page {
                     <?php self::field_email( 'va_contact_email',        'Kapcsolati e-mail' ); ?>
                     <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
                     <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
-                    <?php self::field_url(   'va_category_video_url', 'Kategóriák alatti videó URL' ); ?>
+                    <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
+                    <?php self::field_url(   'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
                     <?php self::field_num(   'va_listings_per_page',    'Hirdetés / oldal', 5, 100 ); ?>
                     <?php self::field_num(   'va_listing_validity_days','Hirdetés érvényessége (nap)', 1, 365 ); ?>
                     <?php self::field_num(   'va_max_images_per_listing','Max. képek száma hirdetésenként', 1, 20 ); ?>

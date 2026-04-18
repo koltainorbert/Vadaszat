@@ -6,7 +6,10 @@ get_header();
 
 $term = get_queried_object();
 $icon = function_exists('va_category_icon') ? va_category_icon( (int) $term->term_id ) : '🎯';
-$categories_video = get_option( 'va_category_video_url', content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ) );
+$categories_video = get_option(
+    'va_tax_category_video_url',
+    get_option( 'va_category_video_url', content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ) )
+);
 ?>
 <div class="va-wrap">
     <div class="vcp-video vcp-video--tax" style="margin-top:0;margin-bottom:24px;">
