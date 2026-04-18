@@ -370,10 +370,11 @@ get_header(); ?>
         if(inSeason){
           /* daysLeft: közelebb találjuk meg a zárást */
           var nxt=nextChangeMs(a.seasons,tm,td);
-          var dLeft=nxt?(doy(nxt.m,nxt.d)-todayDoy+TOTAL)%TOTAL:0;
+          var dLeft=nxt?(doy(nxt.m,nxt.d)-todayDoy+TOTAL)%TOTAL:9999;
+          var neverCloses=!nxt;
           var isNew=(doy(a.seasons[0][0],a.seasons[0][1])===todayDoy);
           open.push({name:a.name,sub:a.sub,color:g.color,
-                     daysLeft:dLeft,isNew:isNew,
+                     daysLeft:dLeft,isNew:isNew,neverCloses:neverCloses,
                      closeM:nxt?nxt.m:12,closeD:nxt?nxt.d:31,
                      closing:nxt?(MF[nxt.m-1]+' '+nxt.d+'.'):'Dec 31.'});
           seen[a.name]=1;
@@ -417,19 +418,19 @@ get_header(); ?>
 
     for(var oi=0;oi<open.length;oi++){
       var a=open[oi];
-      var urgency=a.daysLeft===0?'urgent':a.daysLeft<=7?'urgent':a.daysLeft<=14?'warn':'ok';
+      var urgency=a.neverCloses?'ok':(a.daysLeft===0?'urgent':a.daysLeft<=7?'urgent':a.daysLeft<=14?'warn':'ok');
       var row=document.createElement('div');
-      row.className='sw-row'+(a.isNew?' sw-row--new':'')+(a.daysLeft<=7&&!a.isNew?' sw-row--closing':'');
+      row.className='sw-row'+(a.isNew?' sw-row--new':'')+(a.daysLeft<=7&&!a.isNew&&!a.neverCloses?' sw-row--closing':'');
       row.style.borderLeftColor=a.color;
       var cdId='sw-cd-'+oi;
       row.innerHTML='<div class="sw-dot sw-dot--on"></div>'
         +'<div class="sw-body">'
-        +'<div class="sw-name">'+a.name+(a.daysLeft<=7&&!a.isNew?' <span class="sw-closing-lbl">&#9888;&#9888; Z&Aacute;RUL</span>':'')+'</div>'
+        +'<div class="sw-name">'+a.name+(a.daysLeft<=7&&!a.isNew&&!a.neverCloses?' <span class="sw-closing-lbl">&#9888;&#9888; Z&Aacute;RUL</span>':'')+'</div>'
         +'<div class="sw-sub">'+a.sub+'</div>'
-        +'<div class="sw-cd sw-cd--'+urgency+'" id="'+cdId+'">…</div>'
+        +'<div class="sw-cd sw-cd--'+urgency+'" id="'+cdId+'">'+(a.neverCloses?'Egész évben':'…')+'</div>'
         +'</div>';
       openEl.appendChild(row);
-      _cdList.push({el:document.getElementById(cdId),m:a.closeM,d:a.closeD,open:true});
+      if(!a.neverCloses)_cdList.push({el:document.getElementById(cdId),m:a.closeM,d:a.closeD,open:true});
     }
 
     if(!open.length){
