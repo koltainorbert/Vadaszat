@@ -605,7 +605,7 @@ function fmtHp(ms){
   var totalMin=Math.max(0,Math.floor(ms/60000));
   var h=Math.floor(totalMin/60);
   var m=totalMin%60;
-  return h+'h '+m+' percig';
+  return h+' óra '+m+' percig';
 }
 function sunriseIcon(){
   return '<svg class="va-hnaptar__sun-ico va-hnaptar__sun-ico--rise" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17h16"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 4v5"/><path d="m9.5 7.5 2.5-2.5 2.5 2.5"/></svg>';
