@@ -112,12 +112,16 @@ hr { border-color: var(--border); }
   flex: 1 1 380px; max-width: 420px;
   height: 42px; box-sizing: border-box;
   background: none;
+  outline: none;
 }
 .va-header__search-input {
-  background: none; border: none; outline: none;
+  background: transparent !important; border: none; outline: none;
   color: #fff; font-size: .85rem; font-style: italic;
   flex: 1; min-width: 0;
+  -webkit-appearance: none;
+  box-shadow: none !important;
 }
+.va-header__search-input:-webkit-autofill { background: transparent !important; }
 .va-header__search-input::placeholder { color: rgba(255,255,255,.4); }
 .va-header__search-btn {
   flex-shrink: 0;
