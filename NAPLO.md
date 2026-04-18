@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #48 (Ideiglenes hold szimulacio eltavolitasa, elesites)
+
+### Mit csinaltunk [x]
+- [x] A fooldali Holdnaptar ideiglenes Valos / Telik / Fogy demo vezerloi eltavolitva
+- [x] A kezicsuszka es a szimulacios allapotok kiszedve a frontendbol
+- [x] Az eles, valos idon alapulo hold widget maradt meg automatikus frissitessel
+- [x] Hibavizsgalat: modosított fajlok rendben
+
+---
+
 ## 2026. 04. 18. – Session #47 (Hold peremfeny visszaallitasa egy lepessel)
 
 ### Mit csinaltunk [x]

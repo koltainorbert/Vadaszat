@@ -36,14 +36,6 @@ get_header(); ?>
     <div class="va-moon__meter" aria-label="Hold megvilágítottság">
       <div class="va-moon__meter-fill" id="mIllumBar"></div>
     </div>
-    <div class="va-moon__sim">
-      <div class="va-moon__sim-actions">
-        <button type="button" class="va-moon__sim-btn is-active" data-moon-mode="real">Valós</button>
-        <button type="button" class="va-moon__sim-btn" data-moon-mode="wax">Telik</button>
-        <button type="button" class="va-moon__sim-btn" data-moon-mode="wane">Fogy</button>
-      </div>
-      <input type="range" class="va-moon__sim-range" id="mPhaseRange" min="0" max="1000" value="0" aria-label="Holdfázis szimuláció">
-    </div>
   </div>
   <div class="va-moon__info">
     <div class="va-moon__phase" id="mPhase">–</div>
@@ -111,7 +103,6 @@ get_header(); ?>
   moonPhoto.onload=function(){moonPhotoReady=true;update();};
   moonPhoto.onerror=function(){moonPhotoReady=false;};
   moonPhoto.src=MOON_PHOTO_URL;
-  var sim={mode:'real',phase:0};
   function budapestHour(date){
     return Number(new Intl.DateTimeFormat('en-GB',{
       timeZone:'Europe/Budapest',hour:'2-digit',hour12:false
@@ -286,63 +277,10 @@ get_header(); ?>
     if(h<24)return Math.round(h)+'\u00a0óra múlva';
     return Math.round(h/24)+'\u00a0nap múlva';
   }
-  function simFrac(phase){
-    return (1-cos(phase*2*PI))/2;
-  }
-  function setActiveMode(mode){
-    var buttons=document.querySelectorAll('.va-moon__sim-btn');
-    buttons.forEach(function(btn){
-      btn.classList.toggle('is-active',btn.getAttribute('data-moon-mode')===mode);
-    });
-  }
-  function getMoonState(now){
-    if(sim.mode==='real'){
-      var real=moonIllum(now);
-      real.simulated=false;
-      return real;
-    }
-    return {phase:sim.phase,frac:simFrac(sim.phase),simulated:true};
-  }
-  function stepSimulation(){
-    if(sim.mode==='wax'){
-      sim.phase+=0.0035;
-      if(sim.phase>.5)sim.phase=0;
-    }else if(sim.mode==='wane'){
-      sim.phase+=0.0035;
-      if(sim.phase>1)sim.phase=.5;
-    }else{
-      return;
-    }
-    update();
-  }
-  function bindSimulation(){
-    var range=document.getElementById('mPhaseRange');
-    if(!range)return;
-    document.querySelectorAll('.va-moon__sim-btn').forEach(function(btn){
-      btn.addEventListener('click',function(){
-        sim.mode=btn.getAttribute('data-moon-mode');
-        if(sim.mode==='wax'&&(sim.phase<0||sim.phase>.5))sim.phase=0;
-        if(sim.mode==='wane'&&sim.phase<.5)sim.phase=.5;
-        if(sim.mode==='real'){
-          var now=new Date(),real=moonIllum(now);
-          sim.phase=real.phase;
-        }
-        setActiveMode(sim.mode);
-        update();
-      });
-    });
-    range.addEventListener('input',function(){
-      sim.mode='manual';
-      sim.phase=Number(range.value)/1000;
-      setActiveMode('');
-      update();
-    });
-  }
   /* ── Frissítés ── */
   function update(){
-    var now=new Date(),il=getMoonState(now),ph=il.phase,fr=il.frac;
+    var now=new Date(),il=moonIllum(now),ph=il.phase,fr=il.frac;
     var cv=document.getElementById('mCanvas');if(!cv)return;
-    var range=document.getElementById('mPhaseRange');
     draw(cv,ph,fr,now);
     document.getElementById('mPhase').textContent=phName(ph);
     document.getElementById('mAge').textContent=(ph*SYN).toFixed(1)+' napos hold';
@@ -350,29 +288,18 @@ get_header(); ?>
     document.getElementById('mIllumBar').style.width=Math.max(4,Math.round(fr*100))+'%';
     var nx=[{i:'🌑',l:'Újhold',f:0},{i:'🌓',l:'Első negyed',f:.25},
             {i:'🌕',l:'Telihold',f:.5},{i:'🌗',l:'Utolsó negyed',f:.75}];
-    if(range)range.value=Math.round(ph*1000);
-    if(il.simulated){
-      document.getElementById('mTime').textContent=sim.mode==='wax'?'Szimuláció • Telik':(sim.mode==='wane'?'Szimuláció • Fogy':'Szimuláció • Kézi');
-      document.getElementById('mNext').innerHTML='<div class="va-moon__sim-note">Ideiglenes nézet: húzd a csúszkát, vagy indítsd a Telik / Fogy animációt.</div>';
-    }else{
-      document.getElementById('mTime').textContent=now.toLocaleString('hu-HU',{
-        timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',
-        hour:'2-digit',minute:'2-digit'
-      });
-      document.getElementById('mNext').innerHTML=nx.map(function(n){
-        return '<div class="va-moon__nr"><span>'+n.i+'</span><span>'+n.l+'</span>'
-              +'<span class="va-moon__nrd">'+until(nextPhase(now,n.f),now)+'</span></div>';
-      }).join('');
-      setActiveMode('real');
-    }
+    document.getElementById('mTime').textContent=now.toLocaleString('hu-HU',{
+      timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',
+      hour:'2-digit',minute:'2-digit'
+    });
+    document.getElementById('mNext').innerHTML=nx.map(function(n){
+      return '<div class="va-moon__nr"><span>'+n.i+'</span><span>'+n.l+'</span>'
+            +'<span class="va-moon__nrd">'+until(nextPhase(now,n.f),now)+'</span></div>';
+    }).join('');
   }
   document.addEventListener('DOMContentLoaded',function(){
-    var real=moonIllum(new Date());
-    sim.phase=real.phase;
-    bindSimulation();
     update();
     setInterval(update,60000);
-    setInterval(stepSimulation,70);
   });
 })();
 </script>
