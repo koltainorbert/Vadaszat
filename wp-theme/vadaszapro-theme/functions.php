@@ -10,8 +10,8 @@ add_action( 'after_setup_theme', function () {
     add_theme_support( 'title-tag' );
     add_theme_support( 'post-thumbnails' );
     add_theme_support( 'html5', [ 'search-form', 'comment-form', 'gallery', 'caption' ] );
-    add_image_size( 'va-card',   400, 300, true );
-    add_image_size( 'va-detail', 900, 600, false );
+    add_image_size( 'va-card',   600, 450, true );  // Hard crop 4:3 – kártyakép szabvány
+    add_image_size( 'va-detail', 1200, 800, false ); // Arányőrző – részletoldal
 
     register_nav_menus([
         'primary'   => 'Főmenü',

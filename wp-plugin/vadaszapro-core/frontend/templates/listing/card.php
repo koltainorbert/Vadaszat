@@ -35,11 +35,8 @@ $watching  = va_user_watches( $post_id );
 
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
         <?php if ( has_post_thumbnail( $post_id ) ):
-            $thumb_url = get_the_post_thumbnail_url( $post_id, 'medium' );
-        ?>
-            <div class="va-card__bg" style="background-image:url('<?php echo esc_url($thumb_url); ?>')"></div>
-            <img src="<?php echo esc_url($thumb_url); ?>" class="va-card__thumb" alt="<?php the_title_attribute(['post' => $post_id]); ?>">
-        <?php else: ?>
+            echo get_the_post_thumbnail( $post_id, 'va-card', [ 'class' => 'va-card__thumb', 'alt' => esc_attr( get_the_title( $post_id ) ) ] );
+        else: ?>
             <div class="va-card__thumb-placeholder">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="40" height="40" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
             </div>
