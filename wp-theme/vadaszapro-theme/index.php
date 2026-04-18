@@ -469,6 +469,242 @@ get_header(); ?>
 <!-- FŐ TARTALOM -->
 <main class="va-home-main">
 
+<!-- VADÁSZ NAPTÁR GANTT -->
+<div class="va-hnaptar" id="va-hnaptar-wrap">
+<div class="va-hnaptar__hd">
+  <span class="va-hnaptar__title">&#127993; Vad&aacute;szati id&eacute;nyek 2026</span>
+  <span class="va-hnaptar__sub">Csoportra kattintva &ouml;sszecsukhat&oacute; &middot; <span style="color:#ff0000;font-weight:700;">|</span> = ma</span>
+</div>
+<div class="va-hnaptar__legend" id="va-hn-legend"></div>
+<div class="va-hnaptar__scroll">
+  <div class="va-hnaptar__chart" id="va-hn-chart"></div>
+</div>
+</div>
+
+<style>
+.va-hnaptar{margin-bottom:24px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
+.va-hnaptar__hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:12px 16px 10px;border-bottom:1px solid rgba(255,0,0,.12);}
+.va-hnaptar__title{font-size:.88rem;font-weight:800;letter-spacing:.06em;color:#fff;}
+.va-hnaptar__sub{font-size:.68rem;color:rgba(255,255,255,.35);}
+.va-hnaptar__legend{display:flex;flex-wrap:wrap;gap:5px 14px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
+.va-hn-leg{display:flex;align-items:center;gap:5px;font-size:.65rem;color:rgba(255,255,255,.6);}
+.va-hn-leg-dot{width:13px;height:8px;border-radius:2px;flex-shrink:0;}
+.va-hnaptar__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.va-hnaptar__chart{min-width:520px;}
+/* month header */
+.va-hn-mh{display:flex;position:sticky;top:0;z-index:10;background:rgb(12,12,12);border-bottom:1px solid rgba(255,255,255,.08);}
+.va-hn-mh-name{width:160px;min-width:160px;flex-shrink:0;padding:6px 10px;font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.07);}
+.va-hn-mh-months{flex:1;display:flex;position:relative;}
+.va-hn-mh-month{flex:1;text-align:center;font-size:.6rem;font-weight:700;color:rgba(255,255,255,.45);padding:6px 0;border-left:1px solid rgba(255,255,255,.07);}
+.va-hn-mh-month.cur{color:#ff0000;}
+/* group header */
+.va-hn-gh{display:flex;align-items:center;background:rgba(255,0,0,.07);border-top:1px solid rgba(255,0,0,.15);cursor:pointer;user-select:none;transition:background .15s;}
+.va-hn-gh:hover{background:rgba(255,0,0,.13);}
+.va-hn-gl{width:160px;min-width:160px;flex-shrink:0;padding:7px 10px;font-size:.62rem;font-weight:700;color:#ff0000;letter-spacing:.09em;text-transform:uppercase;border-right:1px solid rgba(255,0,0,.15);display:flex;align-items:center;gap:5px;}
+.va-hn-arr{font-size:.55rem;transition:transform .2s;display:inline-block;}
+.va-hn-gl.collapsed .va-hn-arr{transform:rotate(-90deg);}
+.va-hn-gba{flex:1;position:relative;height:28px;}
+/* animal row */
+.va-hn-row{display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.035);min-height:32px;transition:background .12s;}
+.va-hn-row:hover{background:rgba(255,255,255,.035);}
+.va-hn-name{width:160px;min-width:160px;flex-shrink:0;padding:4px 10px;font-size:.68rem;font-weight:600;color:#fff;border-right:1px solid rgba(255,255,255,.05);line-height:1.25;}
+.va-hn-name .sub{display:block;font-size:.56rem;font-weight:400;color:rgba(255,255,255,.3);margin-top:1px;font-style:italic;}
+.va-hn-acd{display:flex;align-items:center;gap:3px;margin-top:3px;font-size:.52rem;font-weight:700;}
+.va-hn-acd-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.va-hn-acd.on .va-hn-acd-dot{background:#00ff66;box-shadow:0 0 5px #00ff66;animation:va-hn-blink .9s ease-in-out infinite;}
+.va-hn-acd.off .va-hn-acd-dot{background:#ff3030;}
+.va-hn-acd.on .va-hn-acd-txt{color:#00ff66;}
+.va-hn-acd.off .va-hn-acd-txt{color:#ff5050;}
+.va-hn-acd-lbl{color:rgba(255,255,255,.28);font-weight:400;font-size:.5rem;}
+@keyframes va-hn-blink{0%,100%{opacity:1}50%{opacity:.2}}
+.va-hn-ba{flex:1;position:relative;height:32px;}
+.va-hn-ba,.va-hn-gba{--mp:8.3333%;}
+.va-hn-ba::before,.va-hn-gba::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(var(--mp) - 1px),rgba(255,255,255,.04) calc(var(--mp) - 1px),rgba(255,255,255,.04) var(--mp));}
+.va-hn-tl{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,0,0,.85);z-index:5;pointer-events:none;}
+.va-hn-tlbl{position:absolute;top:2px;font-size:.5rem;color:#ff0000;font-weight:700;white-space:nowrap;transform:translateX(-50%);}
+.va-hn-sbar{position:absolute;top:50%;transform:translateY(-50%);height:14px;border-radius:3px;opacity:.85;cursor:default;transition:opacity .15s,height .15s;}
+.va-hn-sbar:hover{opacity:1;height:20px;}
+.va-hn-sbar::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.95);color:#fff;font-size:.6rem;padding:3px 8px;border-radius:4px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:100;border:1px solid rgba(255,255,255,.1);}
+.va-hn-sbar:hover::after{opacity:1;}
+.va-hn-body.hidden{display:none;}
+</style>
+
+<script>
+(function(){
+'use strict';
+var YEAR=2026;
+var MD=[31,28,31,30,31,30,31,31,30,31,30,31];
+var MN=["Jan","Feb","M\u00e1r","\u00c1pr","M\u00e1j","J\u00fan","J\u00fal","Aug","Szep","Okt","Nov","Dec"];
+var MF=["Janu\u00e1r","Febru\u00e1r","M\u00e1rcius","\u00c1prilis","M\u00e1jus","J\u00fanius","J\u00falius","Augusztus","Szeptember","Okt\u00f3ber","November","December"];
+var TOTAL=365;
+function doy(m,d){var i=0;for(var x=1;x<m;x++)i+=MD[x-1];return i+d-1;}
+function nowBPsimple(){var d=new Date(),parts={};new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(d).forEach(function(p){if(p.type!=='literal')parts[p.type]=+p.value;});return parts;}
+var _bp=nowBPsimple();
+var TODAY={m:_bp.month,d:_bp.day};
+var TODAY_PCT=(doy(TODAY.m,TODAY.d)/TOTAL*100).toFixed(4)+'%';
+
+function isInSeason(seasons,m,d){
+  var t=doy(m,d);
+  for(var i=0;i<seasons.length;i++){
+    var s=seasons[i];
+    if(s[0]<=s[2]){if(t>=doy(s[0],s[1])&&t<=doy(s[2],s[3]))return true;}
+    else{if(t>=doy(s[0],s[1])||t<=doy(s[2],s[3]))return true;}
+  }
+  return false;
+}
+function nextSeasonChange(seasons,m,d){
+  var cur=isInSeason(seasons,m,d),nm=m,nd=d;
+  for(var i=1;i<=400;i++){nd++;if(nd>MD[nm-1]){nd=1;nm++;}if(nm>12)nm=1;if(isInSeason(seasons,nm,nd)!==cur)return{m:nm,d:nd};}
+  return null;
+}
+function msTillBPDate(tm,td){
+  var bp=nowBPsimple();
+  var ms=((23-bp.hour)*3600+(59-bp.minute)*60+(60-bp.second))*1000;
+  var nm=bp.month,nd=bp.day,days=0;
+  while(!(nm===tm&&nd===td)){nd++;if(nd>MD[nm-1]){nd=1;nm++;}if(nm>12)nm=1;days++;if(days>400)break;}
+  return ms+days*86400000;
+}
+function fmtMs(ms){
+  if(ms<=0)return '0s';
+  var s=Math.floor(ms/1000),dn=Math.floor(s/86400),h=Math.floor((s%86400)/3600),mn=Math.floor((s%3600)/60),sc=s%60;
+  if(dn>0)return dn+'n '+h+'\u00f3';
+  if(h>0)return h+'\u00f3 '+mn+'p';
+  return mn+'p '+sc+'s';
+}
+function segs(seasons){
+  var out=[];
+  for(var i=0;i<seasons.length;i++){
+    var s=seasons[i],ms=s[0],ds=s[1],me=s[2],de=s[3];
+    if(ms<=me){var sv=doy(ms,ds),ev=doy(me,de);out.push({sp:sv/TOTAL*100,wp:(ev-sv+1)/TOTAL*100,lbl:MF[ms-1]+' '+ds+'. \u2013 '+MF[me-1]+' '+de+'.'});}
+    else{var e1=doy(me,de);if(e1>=0)out.push({sp:0,wp:(e1+1)/TOTAL*100,lbl:'Jan 1. \u2013 '+MF[me-1]+' '+de+'.'});var s2=doy(ms,ds);out.push({sp:s2/TOTAL*100,wp:(TOTAL-s2)/TOTAL*100,lbl:MF[ms-1]+' '+ds+'. \u2013 Dec 31.'});}
+  }
+  return out;
+}
+
+var groups=[
+  {label:"G\u00cdM",color:"#1ec854",animals:[
+    {name:"G\u00edmszarvas \u2013 bika",sub:"Cervus elaphus \u2642",seasons:[[9,1,12,31]]},
+    {name:"G\u00edmszarvas \u2013 teh\u00e9n/\u00fcn\u0151",sub:"Cervus elaphus \u2640",seasons:[[10,1,1,31]]},
+    {name:"G\u00edmszarvas \u2013 borj\u00fa",sub:"Cervus elaphus juv.",seasons:[[8,1,1,31]]},
+  ]},
+  {label:"D\u00c1M",color:"#f5a623",animals:[
+    {name:"D\u00e1mszarvas \u2013 bak",sub:"Dama dama \u2642",seasons:[[9,1,12,31]]},
+    {name:"D\u00e1mszarvas \u2013 suta",sub:"Dama dama \u2640",seasons:[[10,1,1,31]]},
+    {name:"D\u00e1mszarvas \u2013 gida",sub:"Dama dama juv.",seasons:[[8,1,1,31]]},
+  ]},
+  {label:"\u0150Z",color:"#3d9ff5",animals:[
+    {name:"\u0150zbak",sub:"Capreolus capreolus \u2642",seasons:[[4,15,9,30]]},
+    {name:"\u0150zsuta",sub:"Capreolus capreolus \u2640",seasons:[[10,1,1,31]]},
+    {name:"\u0150zgida",sub:"Capreolus capreolus juv.",seasons:[[8,1,1,31]]},
+  ]},
+  {label:"MUFLON",color:"#cc44cc",animals:[
+    {name:"Muflon \u2013 kos",sub:"Ovis musimon \u2642",seasons:[[8,1,1,31]]},
+    {name:"Muflon \u2013 juh",sub:"Ovis musimon \u2640",seasons:[[10,1,1,31]]},
+    {name:"Muflon \u2013 b\u00e1r\u00e1ny",sub:"Ovis musimon juv.",seasons:[[8,1,1,31]]},
+  ]},
+  {label:"VADDISZN\u00d3",color:"#f55050",animals:[
+    {name:"Vaddiszn\u00f3 \u2013 kan",sub:"Sus scrofa \u2642",seasons:[[1,1,12,31]]},
+    {name:"Vaddiszn\u00f3 \u2013 koca",sub:"Sus scrofa \u2640",seasons:[[7,1,12,31]]},
+    {name:"Vaddiszn\u00f3 \u2013 malac",sub:"Sus scrofa juv.",seasons:[[7,1,12,31]]},
+  ]},
+  {label:"APR\u00d3VAD",color:"#f5d020",animals:[
+    {name:"Mezei ny\u00fal",sub:"Lepus europaeus",seasons:[[10,1,12,31]]},
+    {name:"F\u00e1c\u00e1n \u2013 kakas",sub:"Phasianus colchicus \u2642",seasons:[[10,1,1,31]]},
+    {name:"F\u00e1c\u00e1n \u2013 ty\u00fak",sub:"Phasianus colchicus \u2640",seasons:[[10,1,11,30]]},
+    {name:"Fogoly",sub:"Perdix perdix",seasons:[[10,1,11,30]]},
+    {name:"Balk\u00e1ni gerle",sub:"Streptopelia decaocto",seasons:[[6,1,2,28]]},
+    {name:"Vadgalamb",sub:"Columba palumbus",seasons:[[8,15,1,31]]},
+    {name:"Erdei szalonka",sub:"Scolopax rusticola",seasons:[[3,1,4,30],[10,1,11,30]]},
+  ]},
+  {label:"SZ\u00c1RNYASVAD",color:"#20d4d4",animals:[
+    {name:"F\u00fcrj",sub:"Coturnix coturnix",seasons:[[8,15,10,31]]},
+    {name:"Serely",sub:"Sturnus vulgaris",seasons:[[8,1,1,31]]},
+  ]},
+  {label:"V\u00cdZI",color:"#ff8c00",animals:[
+    {name:"T\u0151k\u00e9s r\u00e9ce \u2013 g\u00e1cs\u00e9r",sub:"Anas platyrhynchos \u2642",seasons:[[8,15,1,31]]},
+    {name:"T\u0151k\u00e9s r\u00e9ce \u2013 toj\u00f3",sub:"Anas platyrhynchos \u2640",seasons:[[8,15,1,31]]},
+    {name:"B\u00f6jti r\u00e9ce",sub:"Anas querquedula",seasons:[[8,15,11,30]]},
+    {name:"Ny\u00edlfark\u00fa r\u00e9ce",sub:"Anas acuta",seasons:[[8,15,1,31]]},
+    {name:"Nagy lilik",sub:"Anser albifrons",seasons:[[10,1,1,31]]},
+    {name:"Vet\u00e9si l\u00fad",sub:"Anser fabalis",seasons:[[10,1,1,31]]},
+    {name:"Ny\u00e1ri l\u00fad",sub:"Anser anser",seasons:[[8,15,1,31]]},
+  ]},
+  {label:"RAGADOZ\u00d3",color:"#b0b0b0",animals:[
+    {name:"V\u00f6r\u00f6sr\u00f3ka",sub:"Vulpes vulpes",seasons:[[1,1,12,31]]},
+    {name:"Aranysakal",sub:"Canis aureus",seasons:[[1,1,12,31]]},
+    {name:"Borz",sub:"Meles meles",seasons:[[9,1,11,30]]},
+    {name:"Nyest / Nyuszt",sub:"Martes foina / M. martes",seasons:[[10,1,2,28]]},
+    {name:"Dolm\u00e1nyos varj\u00fa",sub:"Corvus cornix",seasons:[[1,1,12,31]]},
+    {name:"Szarka",sub:"Pica pica",seasons:[[1,1,12,31]]},
+  ]},
+];
+
+/* Jelmagyarázat */
+var legEl=document.getElementById('va-hn-legend');
+if(legEl){groups.forEach(function(g){var d=document.createElement('div');d.className='va-hn-leg';d.innerHTML='<div class="va-hn-leg-dot" style="background:'+g.color+'"></div>'+g.label;legEl.appendChild(d);});}
+
+/* Chart build */
+var chart=document.getElementById('va-hn-chart');
+if(!chart)return;
+var _acdList=[];
+
+function makeTL(){var t=document.createElement('div');t.className='va-hn-tl';t.style.left=TODAY_PCT;return t;}
+function makeBA(h){var ba=document.createElement('div');ba.className='va-hn-ba';ba.style.height=h+'px';ba.appendChild(makeTL());return ba;}
+
+/* Month header */
+var mh=document.createElement('div');mh.className='va-hn-mh';
+var mhn=document.createElement('div');mhn.className='va-hn-mh-name';mhn.textContent='Vadfaj';mh.appendChild(mhn);
+var mhm=document.createElement('div');mhm.className='va-hn-mh-months';
+for(var mi=0;mi<12;mi++){var md=document.createElement('div');md.className='va-hn-mh-month'+(mi===TODAY.m-1?' cur':'');md.textContent=MN[mi];mhm.appendChild(md);}
+var tl0=document.createElement('div');tl0.className='va-hn-tl';tl0.style.left=TODAY_PCT;
+var tlbl=document.createElement('div');tlbl.className='va-hn-tlbl';tlbl.textContent='ma';tlbl.style.left=TODAY_PCT;
+mhm.appendChild(tl0);mhm.appendChild(tlbl);mh.appendChild(mhm);chart.appendChild(mh);
+
+groups.forEach(function(g){
+  var gh=document.createElement('div');gh.className='va-hn-gh';
+  var gl=document.createElement('div');gl.className='va-hn-gl';
+  gl.innerHTML='<span class="va-hn-arr">\u25be</span>'+g.label;gh.appendChild(gl);
+  var gba=document.createElement('div');gba.className='va-hn-gba';gba.appendChild(makeTL());gh.appendChild(gba);
+  chart.appendChild(gh);
+  var gbody=document.createElement('div');gbody.className='va-hn-body';
+  g.animals.forEach(function(a){
+    var row=document.createElement('div');row.className='va-hn-row';
+    var nd=document.createElement('div');nd.className='va-hn-name';
+    nd.innerHTML=a.name+(a.sub?'<span class="sub">'+a.sub+'</span>':'');
+    var acd=document.createElement('div');acd.className='va-hn-acd';
+    acd.innerHTML='<div class="va-hn-acd-dot"></div><span class="va-hn-acd-txt"></span><span class="va-hn-acd-lbl"></span>';
+    nd.appendChild(acd);_acdList.push({el:acd,seasons:a.seasons});
+    row.appendChild(nd);
+    var ba=makeBA(32);
+    segs(a.seasons).forEach(function(s){
+      var bar=document.createElement('div');bar.className='va-hn-sbar';
+      bar.style.left=s.sp+'%';bar.style.width=s.wp+'%';bar.style.background=g.color;
+      bar.dataset.tip=a.name+': '+s.lbl;ba.appendChild(bar);
+    });
+    row.appendChild(ba);gbody.appendChild(row);
+  });
+  chart.appendChild(gbody);
+  gh.addEventListener('click',function(){var h=gbody.classList.toggle('hidden');gl.classList.toggle('collapsed',h);});
+});
+
+function updateCDs(){
+  var bp=nowBPsimple();
+  _acdList.forEach(function(c){
+    var on=isInSeason(c.seasons,bp.month,bp.day);
+    var nxt=nextSeasonChange(c.seasons,bp.month,bp.day);
+    var dot=c.el.querySelector('.va-hn-acd-dot');
+    var txt=c.el.querySelector('.va-hn-acd-txt');
+    var lbl=c.el.querySelector('.va-hn-acd-lbl');
+    c.el.className='va-hn-acd '+(on?'on':'off');
+    if(nxt){txt.textContent=fmtMs(msTillBPDate(nxt.m,nxt.d));lbl.textContent=on?' \u203a tilalom':' \u203a ny\u00edt\u00e1s';}
+    else{txt.textContent='\u2013';lbl.textContent='';}
+  });
+}
+updateCDs();
+setInterval(updateCDs,1000);
+})();
+</script>
+
 <!-- HERO -->
 <div class="va-hero">
     <div class="va-hero__title">Magyarország <span>vadászati</span> apróhirdetési oldala</div>
