@@ -9,16 +9,18 @@ $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] 
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 
 // URL paraméterek
-$url_s   = sanitize_text_field( wp_unslash( $_GET['s']   ?? '' ) );
-$url_cat = intval( $_GET['cat'] ?? 0 );
+$url_s         = sanitize_text_field( wp_unslash( $_GET['s']         ?? '' ) );
+$url_cat       = intval( $_GET['cat']       ?? 0 );
+$url_author_id = intval( $_GET['author_id'] ?? 0 );
 
 wp_enqueue_script( 'va-frontend', VA_PLUGIN_URL . 'frontend/js/frontend.js', [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-frontend', 'VA_Data', [
-    'ajax_url'    => admin_url( 'admin-ajax.php' ),
-    'nonce'       => wp_create_nonce( 'va_user_nonce' ),
-    'post_id'     => 0,
-    'initial_s'   => $url_s,
-    'initial_cat' => $url_cat,
+    'ajax_url'         => admin_url( 'admin-ajax.php' ),
+    'nonce'            => wp_create_nonce( 'va_user_nonce' ),
+    'post_id'          => 0,
+    'initial_s'        => $url_s,
+    'initial_cat'      => $url_cat,
+    'initial_author_id'=> $url_author_id,
 ]);
 wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 ?>

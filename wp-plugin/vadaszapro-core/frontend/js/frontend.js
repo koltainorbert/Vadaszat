@@ -56,7 +56,8 @@
       min_price:  $('#va-min-price').val(),
       max_price:  $('#va-max-price').val(),
       sort:       $('#va-sort').val(),
-      post_type:  $form.data('post-type') || 'va_listing'
+      post_type:  $form.data('post-type') || 'va_listing',
+      author_id:  $form.data('author-id') || 0
     };
 
     $.post(VA_Data.ajax_url, data, function(res) {
@@ -162,8 +163,9 @@
   // ── Oldal betöltésekor szűrő init ────────────────────────
   if ($('#va-filter-form').length && $('#va-listing-results').length) {
     if (typeof VA_Data !== 'undefined') {
-      if (VA_Data.initial_s)   { $('#va-kw').val(VA_Data.initial_s); }
-      if (VA_Data.initial_cat) { $('#va-cat').val(VA_Data.initial_cat); }
+      if (VA_Data.initial_s)          { $('#va-kw').val(VA_Data.initial_s); }
+      if (VA_Data.initial_cat)        { $('#va-cat').val(VA_Data.initial_cat); }
+      if (VA_Data.initial_author_id)  { $('#va-filter-form').data('author-id', VA_Data.initial_author_id); }
     }
     va_load_listings(1);
   }

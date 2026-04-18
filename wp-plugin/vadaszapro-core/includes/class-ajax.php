@@ -331,13 +331,14 @@ class VA_Ajax {
             'number'         => 3,
             'fields'         => [ 'ID', 'display_name', 'user_login' ],
         ]);
+        $search_page_for_user = get_page_by_path( 'va-hirdetes-kereses' );
+        $search_url_for_user  = $search_page_for_user ? get_permalink( $search_page_for_user ) : home_url( '/va-hirdetes-kereses/' );
         foreach ( $users as $u ) {
-            $author_page = get_author_posts_url( $u->ID );
-            $avatar      = get_avatar_url( $u->ID, [ 'size' => 80 ] );
+            $avatar  = get_avatar_url( $u->ID, [ 'size' => 80 ] );
             $results[] = [
                 'id'    => $u->ID,
                 'title' => $u->display_name,
-                'url'   => $author_page,
+                'url'   => add_query_arg( 'author_id', $u->ID, $search_url_for_user ),
                 'price' => '@' . $u->user_login,
                 'thumb' => $avatar,
                 'type'  => 'user',
