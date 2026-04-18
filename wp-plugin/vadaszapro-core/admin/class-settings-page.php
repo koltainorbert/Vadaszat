@@ -27,6 +27,8 @@ class VA_Settings_Page {
             'va_site_description'    => 'Magyarország vadászati apróhirdetési oldala',
             'va_contact_email'       => get_option('admin_email'),
             'va_enable_auctions'     => '1',
+            'va_enable_login'        => '1',
+            'va_enable_register'     => '1',
             'va_header_logo_height'  => 36,
             'va_hero_logo_height'    => 72,
             'va_hero_logo_position'  => 'left',
@@ -547,6 +549,8 @@ class VA_Settings_Page {
                     <?php self::field_select('va_tax_hero_align',       'Alkategória hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_select('va_contact_hero_align',   'Kapcsolat hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_toggle('va_enable_auctions',       'Aukció funkció engedélyezése' ); ?>
+                    <?php self::field_toggle('va_enable_login',          'Bejelentkezés engedélyezése' ); ?>
+                    <?php self::field_toggle('va_enable_register',       'Regisztráció engedélyezése' ); ?>
                     <?php self::field_num(   'va_listings_per_page',    'Hirdetés / oldal', 5, 100 ); ?>
                     <?php self::field_num(   'va_listing_validity_days','Hirdetés érvényessége (nap)', 1, 365 ); ?>
                     <?php self::field_num(   'va_max_images_per_listing','Max. képek száma hirdetésenként', 1, 20 ); ?>
