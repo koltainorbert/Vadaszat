@@ -95,7 +95,7 @@
 .va-form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--va-muted); font-weight: 500; }
 .va-form-group label .required { color: var(--va-accent); margin-left: 2px; }
 .va-input, .va-select, .va-textarea {
-  width: 100%; padding: 10px 20px 10px 14px; border-radius: var(--va-radius);
+  width: 100%; padding: 10px 38px 10px 14px; border-radius: var(--va-radius);
   background: var(--va-surface); border: 1px solid var(--va-border);
   color: #fff; font-size: 14px;
   transition: border-color var(--va-transition);
