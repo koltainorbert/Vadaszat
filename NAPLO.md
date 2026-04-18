@@ -41,6 +41,10 @@
 - [x] Header menü link a `/kapcsolat` oldalra megerősítve
 - [x] Deploy: `Deploy All` kész
 
+### Hero videó csere
+- [x] Főoldali header hero videó fallback URL cserélve új offroad videóra
+- [x] Új videó: `/wp-content/uploads/2026/04/0_Offroad_4x4_1920x1080.mp4`
+
 ---
 
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)
