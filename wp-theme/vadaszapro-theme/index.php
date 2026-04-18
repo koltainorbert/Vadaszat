@@ -336,7 +336,7 @@ get_header(); ?>
       {name:'Vetési lúd',sub:'Anser fabalis',seasons:[[10,1,1,31]]},
       {name:'Nyári lúd',sub:'Anser anser',seasons:[[8,15,1,31]]},
     ]},
-    {label:'RAGADOZÓ',color:'#b0b0b0',animals:[
+    {label:'RAGADOZÓ',color:'#ffb300',animals:[
       {name:'Vörösróka',sub:'Vulpes vulpes',seasons:[[1,1,12,31]]},
       {name:'Aranysakál',sub:'Canis aureus',seasons:[[1,1,12,31]]},
       {name:'Borz',sub:'Meles meles',seasons:[[9,1,11,30]]},
@@ -394,7 +394,12 @@ get_header(); ?>
       }
     }
 
-    open.sort(function(a,b){return a.daysLeft-b.daysLeft;});
+    open.sort(function(a,b){
+      if(a.isNew&&!b.isNew)return -1;if(!a.isNew&&b.isNew)return 1;
+      var aU=a.daysLeft<=7,bU=b.daysLeft<=7;
+      if(aU&&!bU)return -1;if(!aU&&bU)return 1;
+      return a.daysLeft-b.daysLeft;
+    });
     soon.sort(function(a,b){return a.openIn-b.openIn;});
 
     /* Date display */
@@ -412,14 +417,14 @@ get_header(); ?>
 
     for(var oi=0;oi<open.length;oi++){
       var a=open[oi];
-      var urgency=a.daysLeft===0?'urgent':a.daysLeft<=5?'urgent':a.daysLeft<=14?'warn':'ok';
+      var urgency=a.daysLeft===0?'urgent':a.daysLeft<=7?'urgent':a.daysLeft<=14?'warn':'ok';
       var row=document.createElement('div');
-      row.className='sw-row'+(a.isNew?' sw-row--new':'');
+      row.className='sw-row'+(a.isNew?' sw-row--new':'')+(a.daysLeft<=7&&!a.isNew?' sw-row--closing':'');
       row.style.borderLeftColor=a.color;
       var cdId='sw-cd-'+oi;
       row.innerHTML='<div class="sw-dot sw-dot--on"></div>'
         +'<div class="sw-body">'
-        +'<div class="sw-name">'+a.name+'</div>'
+        +'<div class="sw-name">'+a.name+(a.daysLeft<=7&&!a.isNew?' <span class="sw-closing-lbl">&#9888;&#9888; Z&Aacute;RUL</span>':'')+'</div>'
         +'<div class="sw-sub">'+a.sub+'</div>'
         +'<div class="sw-cd sw-cd--'+urgency+'" id="'+cdId+'">…</div>'
         +'</div>';
@@ -531,6 +536,10 @@ get_header(); ?>
 .va-hn-sbar::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 5px);left:50%;transform:translateX(-50%);background:rgba(0,0,0,.95);color:#fff;font-size:.6rem;padding:3px 8px;border-radius:4px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;z-index:100;border:1px solid rgba(255,255,255,.1);}
 .va-hn-sbar:hover::after{opacity:1;}
 .va-hn-body.hidden{display:none;}
+/* Closing soon – sidebar */
+.sw-row--closing{background:rgba(255,30,30,.07)!important;box-shadow:0 0 10px rgba(255,0,0,.2),inset 0 0 16px rgba(255,0,0,.05);animation:sw-cl-pulse 1.5s ease-in-out infinite;}
+@keyframes sw-cl-pulse{0%,100%{box-shadow:0 0 8px rgba(255,0,0,.12);}50%{box-shadow:0 0 20px rgba(255,0,0,.38),inset 0 0 14px rgba(255,0,0,.1);}}
+.sw-closing-lbl{font-size:.56rem;font-weight:900;color:#ff3030;letter-spacing:.05em;margin-left:4px;vertical-align:middle;}
 </style>
 
 <script>
@@ -633,7 +642,7 @@ var groups=[
     {name:"Vet\u00e9si l\u00fad",sub:"Anser fabalis",seasons:[[10,1,1,31]]},
     {name:"Ny\u00e1ri l\u00fad",sub:"Anser anser",seasons:[[8,15,1,31]]},
   ]},
-  {label:"RAGADOZ\u00d3",color:"#b0b0b0",animals:[
+  {label:"RAGADOZ\u00d3",color:"#ffb300",animals:[
     {name:"V\u00f6r\u00f6sr\u00f3ka",sub:"Vulpes vulpes",seasons:[[1,1,12,31]]},
     {name:"Aranysakal",sub:"Canis aureus",seasons:[[1,1,12,31]]},
     {name:"Borz",sub:"Meles meles",seasons:[[9,1,11,30]]},
