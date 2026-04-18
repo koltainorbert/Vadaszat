@@ -50,9 +50,10 @@
 .va-input, .va-select, .va-textarea {
   width: 100%; padding: 10px 14px; border-radius: var(--va-radius);
   background: var(--va-surface); border: 1px solid var(--va-border);
-  color: var(--va-text); font-size: 14px;
+  color: #fff; font-size: 14px;
   transition: border-color var(--va-transition);
 }
+.va-select option { background: #1a1a1a; color: #fff; }
 .va-input:focus, .va-select:focus, .va-textarea:focus {
   outline: none; border-color: var(--va-accent);
 }

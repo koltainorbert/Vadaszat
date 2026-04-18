@@ -81,7 +81,7 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                 <input type="text" id="va-kw" class="va-input" placeholder="Kulcsszó..." value="<?php echo esc_attr( $url_s ); ?>">
 
                 <select id="va-cat" class="va-select">
-                    <option value="">– Kategóriák –</option>
+                    <option value="">Kategória</option>
                     <?php foreach ( $categories as $cat ): ?>
                         <option value="<?php echo esc_attr( $cat->term_id ); ?>"><?php echo esc_html( $cat->name ); ?></option>
                         <?php $children = get_terms( [ 'taxonomy' => 'va_category', 'parent' => $cat->term_id, 'hide_empty' => false ] );
