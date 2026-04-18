@@ -220,6 +220,124 @@ class VA_Ajax {
         self::redirect_submit_page();
     }
 
+    /* ── Kredit csomag vásárlás ────────────────────────── */
+    public static function buy_credits(): void {
+        check_ajax_referer( 'va_buy_credits', 'nonce' );
+        if ( ! is_user_logged_in() ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+
+        $qty = absint( $_POST['qty'] ?? 0 );
+        if ( $qty < 1 ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen mennyiség.' ] );
+        }
+
+        $packages = self::get_credit_packages();
+        // Legolcsóbb egységár-logika: a legmagasabb darabszámú csomag ami <= $qty
+        $unit_price = (int) get_option( 'va_listing_price_after_free', 1990 );
+        $total      = $unit_price * $qty;
+
+        // Keresünk matching csomagot
+        foreach ( array_reverse( $packages ) as $pkg ) {
+            if ( $qty >= $pkg['qty'] ) {
+                $unit_price = $pkg['unit_price'];
+                $total      = $pkg['total'];
+                break;
+            }
+        }
+
+        $payment_url = trim( (string) get_option( 'va_listing_payment_url', '' ) );
+
+        if ( $payment_url === '' ) {
+            wp_send_json_error( [ 'message' => 'Fizetési szolgáltató nincs beállítva. Kérjük, lépjen kapcsolatba az adminisztrátorral.' ] );
+        }
+
+        $token  = wp_generate_password( 32, false, false );
+        $user_id = get_current_user_id();
+
+        // Token elmentése átmeneti adatban
+        set_transient( 'va_credit_token_' . $token, [
+            'user_id'    => $user_id,
+            'qty'        => $qty,
+            'amount'     => $total,
+            'created_at' => time(),
+        ], 3600 );
+
+        $return_url = home_url( '/' );
+        $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
+        if ( $submit_page ) {
+            $return_url = get_permalink( $submit_page );
+        }
+
+        $success_url = add_query_arg([
+            'va_credit_payment' => 'success',
+            'token'             => rawurlencode( $token ),
+        ], $return_url );
+        $cancel_url = add_query_arg([
+            'va_credit_payment' => 'cancel',
+            'token'             => rawurlencode( $token ),
+        ], $return_url );
+
+        $checkout_url = add_query_arg([
+            'intent'      => 'credit_purchase',
+            'qty'         => $qty,
+            'amount'      => $total,
+            'token'       => $token,
+            'success_url' => rawurlencode( $success_url ),
+            'cancel_url'  => rawurlencode( $cancel_url ),
+        ], $payment_url );
+
+        wp_send_json_success( [
+            'checkout_url' => esc_url_raw( $checkout_url ),
+            'total'        => $total,
+            'qty'          => $qty,
+        ] );
+    }
+
+    /* ── Kredit fizetés callback ───────────────────────── */
+    public static function handle_credit_payment_callback(): void {
+        $state = isset( $_GET['va_credit_payment'] ) ? sanitize_key( (string) wp_unslash( $_GET['va_credit_payment'] ) ) : '';
+        if ( $state === '' ) return;
+
+        $token = isset( $_GET['token'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['token'] ) ) : '';
+        if ( $token === '' || ! is_user_logged_in() ) return;
+
+        $data = get_transient( 'va_credit_token_' . $token );
+        if ( ! $data || (int) $data['user_id'] !== get_current_user_id() ) {
+            va_set_flash( 'error', 'A fizetési session érvénytelen vagy lejárt.' );
+            self::redirect_submit_page();
+            return;
+        }
+
+        if ( $state === 'cancel' ) {
+            delete_transient( 'va_credit_token_' . $token );
+            va_set_flash( 'warning', 'A fizetés megszakadt.' );
+            self::redirect_submit_page();
+            return;
+        }
+
+        if ( $state === 'success' ) {
+            $qty     = absint( $data['qty'] );
+            $user_id = (int) $data['user_id'];
+            $current = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
+            update_user_meta( $user_id, 'va_listing_credits', $current + $qty );
+            delete_transient( 'va_credit_token_' . $token );
+            va_set_flash( 'success', $qty . ' hirdetési kredit jóváírva! Most már feladhatod a hirdetésedet.' );
+            self::redirect_submit_page();
+        }
+    }
+
+    /* ── Kredit csomagok definíciója ───────────────────── */
+    public static function get_credit_packages(): array {
+        $base = (int) get_option( 'va_listing_price_after_free', 1990 );
+        return [
+            [ 'qty' => 1,  'label' => '1 hirdetés',   'unit_price' => $base,               'total' => $base,        'badge' => '' ],
+            [ 'qty' => 3,  'label' => '3 hirdetés',   'unit_price' => (int)round($base*.9), 'total' => (int)round($base*3*.9),  'badge' => '–10%' ],
+            [ 'qty' => 5,  'label' => '5 hirdetés',   'unit_price' => (int)round($base*.8), 'total' => (int)round($base*5*.8),  'badge' => '–20%' ],
+            [ 'qty' => 10, 'label' => '10 hirdetés',  'unit_price' => (int)round($base*.7), 'total' => (int)round($base*10*.7), 'badge' => '–30%' ],
+        ];
+    }
+
     private static function generate_invoice( int $post_id ): string {
         $prefix_raw = (string) get_option( 'va_invoice_prefix', 'VA' );
         $prefix = strtoupper( preg_replace( '/[^A-Z0-9\-]/', '', remove_accents( $prefix_raw ) ) );
