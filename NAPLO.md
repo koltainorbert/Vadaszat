@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #66 (Favicon bal sarok utanjavitas)
+
+### Mit csinaltunk [x]
+- [x] Favicon biztonsagi margoja tovabb novelve (14%)
+- [x] Fajlvariant frissitve `safe3`-ra, hogy garantaltan ujrageneraljon
+- [x] Celzott javitas: bal sarok lecsapas megszuntetese
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #65 (Favicon bal oldal lecsapas javitas)
 
 ### Mit csinaltunk [x]

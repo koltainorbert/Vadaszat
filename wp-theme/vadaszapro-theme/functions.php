@@ -67,7 +67,7 @@ function va_build_square_favicon_from_attachment( int $attachment_id, int $size 
     }
 
     // Versionalt fajlnev, hogy a regi cache-elt ikon ne maradjon bent.
-    $variant = 'safe2';
+    $variant = 'safe3';
     $target_file = trailingslashit( $subdir ) . $attachment_id . '-' . $size . '-' . $variant . '.png';
     $target_url  = trailingslashit( $upload['baseurl'] ) . 'va-favicons/' . $attachment_id . '-' . $size . '-' . $variant . '.png';
 
@@ -110,8 +110,8 @@ function va_build_square_favicon_from_attachment( int $attachment_id, int $size 
                 $transparent = imagecolorallocatealpha( $canvas, 0, 0, 0, 127 );
                 imagefill( $canvas, 0, 0, $transparent );
 
-                // 8% belso margot adunk, hogy a jel ne legyen lecsapva szelen.
-                $inset = max( 1, (int) round( $size * 0.08 ) );
+                // 14% belso margot adunk, hogy a bal felső sarok biztosan ne vagodjon.
+                $inset = max( 1, (int) round( $size * 0.14 ) );
                 $inner = max( 1, $size - ( 2 * $inset ) );
 
                 imagecopyresampled(
