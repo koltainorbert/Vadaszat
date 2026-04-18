@@ -5,6 +5,56 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* ══════════════════════════════════════════════════════
+ * ⚡ SEBESSÉG – WordPress bloat eltávolítás
+ * ══════════════════════════════════════════════════════ */
+add_action( 'init', function () {
+    // Emoji – felesleges JS+CSS minden oldalon
+    remove_action( 'wp_head',             'print_emoji_detection_script', 7 );
+    remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+    remove_action( 'wp_print_styles',     'print_emoji_styles' );
+    remove_action( 'admin_print_styles',  'print_emoji_styles' );
+    remove_filter( 'the_content_feed',    'wp_staticize_emoji' );
+    remove_filter( 'comment_text_rss',    'wp_staticize_emoji' );
+    remove_filter( 'wp_mail',             'wp_staticize_emoji_for_email' );
+
+    // Felesleges head meta
+    remove_action( 'wp_head', 'wp_generator' );             // WP verzió elrejtése (biztonság is)
+    remove_action( 'wp_head', 'rsd_link' );
+    remove_action( 'wp_head', 'wlwmanifest_link' );
+    remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+    remove_action( 'wp_head', 'feed_links',          2 );
+    remove_action( 'wp_head', 'feed_links_extra',    3 );
+    remove_action( 'wp_head', 'rest_output_link_wp_head' );
+    remove_action( 'wp_head', 'wp_oembed_add_discovery_links' );
+    remove_action( 'template_redirect', 'rest_output_link_header', 11 );
+} );
+
+// jQuery migrate – nincs rá szükség
+add_action( 'wp_default_scripts', function ( $scripts ) {
+    if ( ! is_admin() && isset( $scripts->registered['jquery'] ) ) {
+        $scripts->registered['jquery']->deps = array_diff(
+            $scripts->registered['jquery']->deps,
+            [ 'jquery-migrate' ]
+        );
+    }
+} );
+
+// Összes script defer – kivéve admin és inline
+add_filter( 'script_loader_tag', function ( $tag, $handle ) {
+    if ( is_admin() ) return $tag;
+    // Inline scriptek és már defer/async tagek ne duplázódjanak
+    if ( str_contains( $tag, ' defer' ) || str_contains( $tag, ' async' ) ) return $tag;
+    if ( ! str_contains( $tag, ' src=' ) ) return $tag;
+    return str_replace( ' src=', ' defer src=', $tag );
+}, 10, 2 );
+
+// DNS prefetch + preconnect
+add_action( 'wp_head', function () {
+    echo '<link rel="preconnect" href="' . esc_url( home_url() ) . '">' . "\n";
+    echo '<link rel="dns-prefetch" href="//s.gravatar.com">' . "\n";
+}, 1 );
+
 /* ── Theme setup ──────────────────────────────────── */
 add_action( 'after_setup_theme', function () {
     add_theme_support( 'title-tag' );

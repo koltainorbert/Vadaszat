@@ -35,7 +35,17 @@ $watching  = va_user_watches( $post_id );
 
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
         <?php if ( has_post_thumbnail( $post_id ) ):
-            echo get_the_post_thumbnail( $post_id, 'va-card', [ 'class' => 'va-card__thumb', 'alt' => esc_attr( get_the_title( $post_id ) ) ] );
+            // Első 4 kártya LCP jelölt – fetchpriority=high, többi lazy
+            static $va_card_count = 0;
+            $va_card_count++;
+            $is_lcp = $va_card_count <= 4;
+            echo get_the_post_thumbnail( $post_id, 'va-card', [
+                'class'         => 'va-card__thumb',
+                'alt'           => esc_attr( get_the_title( $post_id ) ),
+                'loading'       => $is_lcp ? 'eager' : 'lazy',
+                'fetchpriority' => $is_lcp ? 'high' : 'low',
+                'decoding'      => $is_lcp ? 'sync'  : 'async',
+            ] );
         else: ?>
             <div class="va-card__thumb-placeholder">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="40" height="40" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>

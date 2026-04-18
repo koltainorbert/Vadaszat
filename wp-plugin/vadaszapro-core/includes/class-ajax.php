@@ -22,6 +22,10 @@ class VA_Ajax {
         add_action( 'wp_ajax_va_filter_listings',        [ __CLASS__, 'filter_listings' ] );
         add_action( 'wp_ajax_nopriv_va_filter_listings', [ __CLASS__, 'filter_listings' ] );
 
+        // Cache invalidáció – hirdetés mentésekor a szűrő cache törlődik
+        add_action( 'save_post_va_listing', [ __CLASS__, 'flush_filter_cache' ] );
+        add_action( 'save_post_va_auction', [ __CLASS__, 'flush_filter_cache' ] );
+
         // Élő keresés
         add_action( 'wp_ajax_va_live_search',        [ __CLASS__, 'live_search' ] );
         add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
@@ -189,7 +193,8 @@ class VA_Ajax {
 
     /* ── Hirdetések szűrő AJAX ─────────────────────────── */
     /* Skálázható megoldás: wp_va_listing_meta indexelt custom táblát használ
-     * meta_query / EAV helyett – 3M hirdetésnél is gyors marad.           */
+     * meta_query / EAV helyett – 3M hirdetésnél is gyors marad.
+     * Transient cache: 5 perc, automatikusan törlődik új hirdetésnél.     */
     public static function filter_listings() {
         global $wpdb;
 
@@ -204,9 +209,20 @@ class VA_Ajax {
         $post_type = in_array( sanitize_key( $_POST['post_type'] ?? '' ), [ 'va_listing', 'va_auction' ], true )
                      ? sanitize_key( $_POST['post_type'] )
                      : 'va_listing';
+        $keyword   = sanitize_text_field( wp_unslash( $_POST['keyword'] ?? '' ) );
+        $sort      = sanitize_key( $_POST['sort'] ?? 'date' );
 
         $per_page = intval( get_option( 'va_listings_per_page', 20 ) );
         $offset   = ( $paged - 1 ) * $per_page;
+
+        // ── Transient cache kulcs ─────────────────────────
+        $cache_key = 'va_fl_' . md5( serialize( compact(
+            'paged','category','county','condition','min_price','max_price','keyword','sort','post_type','per_page'
+        ) ) );
+        $cached = get_transient( $cache_key );
+        if ( $cached !== false ) {
+            wp_send_json_success( $cached );
+        }
 
         $lm    = $wpdb->prefix . 'va_listing_meta';
         $posts = $wpdb->posts;
@@ -279,12 +295,17 @@ class VA_Ajax {
         }
         $html = ob_get_clean();
 
-        wp_send_json_success([
+        $result = [
             'html'         => $html,
             'total'        => $total,
             'max_pages'    => $per_page > 0 ? (int) ceil( $total / $per_page ) : 1,
             'current_page' => $paged,
-        ]);
+        ];
+
+        // Cache 5 percre – törlődik ha új hirdetés/módosítás (save_post hook)
+        set_transient( $cache_key, $result, 5 * MINUTE_IN_SECONDS );
+
+        wp_send_json_success( $result );
     }
 
     /* ── Élő keresés (header dropdown) ─────────────────── */
