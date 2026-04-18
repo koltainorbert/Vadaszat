@@ -53,6 +53,16 @@ class VA_Settings_Page {
             update_option( 'va_brand_icon_url', '' );
         }
 
+        // Logók (fejléc + hero)
+        register_setting( 'va_general_settings', 'va_header_logo_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        if ( get_option( 'va_header_logo_url' ) === false ) {
+            update_option( 'va_header_logo_url', '' );
+        }
+        register_setting( 'va_general_settings', 'va_hero_logo_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        if ( get_option( 'va_hero_logo_url' ) === false ) {
+            update_option( 'va_hero_logo_url', '' );
+        }
+
         /* Reklámzónák */
         foreach ( array_keys( VA_Ad_Zones::ZONES ) as $zone ) {
             register_setting( 'va_ad_settings', 'va_ad_zone_' . $zone, [
@@ -104,7 +114,9 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_site_name',           'Oldal neve' ); ?>
                     <?php self::field_text(  'va_site_description',     'Oldal alcíme / leírás' ); ?>
                     <?php self::field_email( 'va_contact_email',        'Kapcsolati e-mail' ); ?>
-                    <?php self::field_url(   'va_brand_icon_url',       'Fejléc ikon URL (automata favicon)' ); ?>
+                    <?php self::field_media( 'va_brand_icon_url',       'Ikon (automata favicon)' ); ?>
+                    <?php self::field_media( 'va_header_logo_url',      'Fejléc logó' ); ?>
+                    <?php self::field_media( 'va_hero_logo_url',        'Hero logó (főoldal)' ); ?>
                     <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
                     <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
                     <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
@@ -337,6 +349,19 @@ class VA_Settings_Page {
         $val = esc_attr( get_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"url\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text code";
         echo " placeholder=\"https://.../video.mp4\"></td></tr>";
+    }
+
+    private static function field_media( string $key, string $label ): void {
+        $val = esc_attr( get_option( $key, '' ) );
+        $preview = $val !== '' ? '<img src="' . $val . '" alt="" class="va-media-preview">' : '';
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
+        echo "<div class=\"va-media-field\">";
+        echo "<input type=\"url\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text code va-media-input\" placeholder=\"https://.../logo.png\">";
+        echo "<button type=\"button\" class=\"button va-media-pick\" data-target=\"{$key}\">Tallózás</button>";
+        echo "<button type=\"button\" class=\"button va-media-clear\" data-target=\"{$key}\">Törlés</button>";
+        echo "</div>";
+        echo "<div class=\"va-media-preview-wrap\" id=\"{$key}_preview\">{$preview}</div>";
+        echo "</td></tr>";
     }
 
     private static function field_num( string $key, string $label, int $min = 0, int $max = 9999 ): void {

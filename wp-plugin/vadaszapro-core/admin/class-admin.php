@@ -46,8 +46,11 @@ class VA_Admin {
             return;
         }
 
+        wp_enqueue_media();
         wp_enqueue_style(  'va-admin', VA_PLUGIN_URL . 'admin/admin.css', [], VA_VERSION );
-        wp_enqueue_script( 'va-admin', VA_PLUGIN_URL . 'admin/admin.js',  [ 'jquery', 'wp-color-picker' ], VA_VERSION, true );
+        if ( file_exists( VA_PLUGIN_DIR . 'admin/admin.js' ) ) {
+            wp_enqueue_script( 'va-admin', VA_PLUGIN_URL . 'admin/admin.js',  [ 'jquery', 'wp-color-picker' ], VA_VERSION, true );
+        }
         wp_enqueue_style( 'wp-color-picker' );
     }
 }
