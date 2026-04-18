@@ -55,25 +55,105 @@ add_action( 'wp_head', function () {
     echo '<link rel="dns-prefetch" href="//s.gravatar.com">' . "\n";
 }, 1 );
 
+function va_build_square_favicon_from_attachment( int $attachment_id, int $size ): string {
+    $upload = wp_get_upload_dir();
+    if ( empty( $upload['basedir'] ) || empty( $upload['baseurl'] ) ) {
+        return '';
+    }
+
+    $subdir = trailingslashit( $upload['basedir'] ) . 'va-favicons';
+    if ( ! file_exists( $subdir ) ) {
+        wp_mkdir_p( $subdir );
+    }
+
+    $target_file = trailingslashit( $subdir ) . $attachment_id . '-' . $size . '.png';
+    $target_url  = trailingslashit( $upload['baseurl'] ) . 'va-favicons/' . $attachment_id . '-' . $size . '.png';
+
+    if ( file_exists( $target_file ) ) {
+        return $target_url;
+    }
+
+    $src = get_attached_file( $attachment_id );
+    if ( ! $src || ! file_exists( $src ) ) {
+        return '';
+    }
+
+    $editor = wp_get_image_editor( $src );
+    if ( is_wp_error( $editor ) ) {
+        return '';
+    }
+
+    $size_data = $editor->get_size();
+    $w = (int) ( $size_data['width'] ?? 0 );
+    $h = (int) ( $size_data['height'] ?? 0 );
+    if ( $w <= 0 || $h <= 0 ) {
+        return '';
+    }
+
+    $side = min( $w, $h );
+    $x = (int) floor( ( $w - $side ) / 2 );
+    $y = (int) floor( ( $h - $side ) / 2 );
+
+    $cropped = $editor->crop( $x, $y, $side, $side, $size, $size );
+    if ( is_wp_error( $cropped ) ) {
+        return '';
+    }
+
+    $saved = $editor->save( $target_file, 'image/png' );
+    if ( is_wp_error( $saved ) ) {
+        return '';
+    }
+
+    return $target_url;
+}
+
+function va_get_brand_favicon_urls(): array {
+    $icon_url = trim( (string) get_option( 'va_brand_icon_url', '' ) );
+    if ( $icon_url === '' ) {
+        return [];
+    }
+
+    $urls = [
+        '32'  => esc_url( $icon_url ),
+        '180' => esc_url( $icon_url ),
+    ];
+
+    $attachment_id = attachment_url_to_postid( $icon_url );
+    if ( ! $attachment_id ) {
+        return $urls;
+    }
+
+    $icon32  = va_build_square_favicon_from_attachment( $attachment_id, 32 );
+    $icon180 = va_build_square_favicon_from_attachment( $attachment_id, 180 );
+
+    if ( $icon32 !== '' ) {
+        $urls['32'] = esc_url( $icon32 );
+    }
+    if ( $icon180 !== '' ) {
+        $urls['180'] = esc_url( $icon180 );
+    }
+
+    return $urls;
+}
+
 // Automata favicon a fejléc ikon URL alapján
 add_action( 'wp_head', function () {
-    $icon = trim( (string) get_option( 'va_brand_icon_url', '' ) );
-    if ( $icon === '' ) {
+    $favicons = va_get_brand_favicon_urls();
+    if ( empty( $favicons ) ) {
         return;
     }
 
-    $icon_url = esc_url( $icon );
-    echo '<link rel="icon" href="' . $icon_url . '">' . "\n";
-    echo '<link rel="shortcut icon" href="' . $icon_url . '">' . "\n";
-    echo '<link rel="apple-touch-icon" href="' . $icon_url . '">' . "\n";
+    echo '<link rel="icon" sizes="32x32" href="' . esc_url( $favicons['32'] ) . '">' . "\n";
+    echo '<link rel="shortcut icon" href="' . esc_url( $favicons['32'] ) . '">' . "\n";
+    echo '<link rel="apple-touch-icon" sizes="180x180" href="' . esc_url( $favicons['180'] ) . '">' . "\n";
 }, 2 );
 
 add_filter( 'get_site_icon_url', function( $url ) {
     if ( ! empty( $url ) ) {
         return $url;
     }
-    $icon = trim( (string) get_option( 'va_brand_icon_url', '' ) );
-    return $icon !== '' ? esc_url( $icon ) : $url;
+    $favicons = va_get_brand_favicon_urls();
+    return ! empty( $favicons['32'] ) ? esc_url( $favicons['32'] ) : $url;
 }, 10, 1 );
 
 /* ── Theme setup ──────────────────────────────────── */

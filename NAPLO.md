@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 04. 18. – Session #9 (Logó méretezés adminból + favicon torzulás javítás)
+
+### Mit csináltunk [x]
+- [x] Új admin méret mezők:
+  - `va_header_logo_height` (Fejléc logó magasság px)
+  - `va_hero_logo_height` (Hero logó magasság px)
+- [x] Header és hero logó magasság beállítás opció alapján renderelve
+- [x] Header logó vizuális tisztítás:
+  - háttér/keret/saroklekerekítés/árnyék eltávolítva
+  - `object-fit: contain` (ne torzuljon)
+- [x] Hero logó megtartva + külön méret opció adminból
+- [x] Favicon torzulás ellen automata négyzetes generálás az ikon attachmentből:
+  - `32x32` és `180x180` PNG favicon fájlok készülnek (`/uploads/va-favicons/`)
+  - head linkek ezeket használják
+  - `get_site_icon_url` fallback is ezekre mutat
+- [x] Deploy futtatva (`Deploy All`), PHP hibák nélkül
+
+---
+
 ## 2026. 04. 18. – Session #8 (Médiatáras logó/ikon + favicon torzulás javítás)
 
 ### Mit csináltunk [x]
