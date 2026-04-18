@@ -408,6 +408,9 @@ class VA_Settings_Page {
             'va_layout_grid_cols_tablet'      => '2',
             'va_layout_grid_cols_mobile'      => '1',
             'va_layout_grid_gap'              => '14',
+            'va_layout_bp_desktop_tablet'     => '1200',
+            'va_layout_bp_tablet_mobile'      => '560',
+            'va_layout_bp_sidebar_hide'       => '1100',
 
             // Card appearance
             'va_layout_card_radius'           => '6',
@@ -961,7 +964,13 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_layout_grid_cols_tablet', 'Tablet oszlopok száma', 1, 4 ); ?>
                     <?php self::field_num( 'va_layout_grid_cols_mobile', 'Mobil oszlopok száma', 1, 2 ); ?>
                     <?php self::field_num( 'va_layout_grid_gap', 'Kártyák közti gap (px)', 4, 40 ); ?>
+                    <?php self::field_num( 'va_layout_bp_desktop_tablet', 'Töréspont: desktop → tablet (px)', 680, 2000 ); ?>
+                    <?php self::field_num( 'va_layout_bp_tablet_mobile', 'Töréspont: tablet → mobil (px)', 320, 1200 ); ?>
+                    <?php self::field_num( 'va_layout_bp_sidebar_hide', 'Jobb oldalsáv rejtése (px alatt)', 480, 1800 ); ?>
                 </table>
+
+                <h2>Mobil Preview (felső admin sáv)</h2>
+                <p class="description">Frontend nézetben, bejelentkezett adminként a felső fekete sávban megjelenik egy <strong>VA Breakpoint Preview</strong> menü. Itt 1 kattintással válthatsz preset szélességekre, és <strong>egyedi px</strong> értéket is megadhatsz (Bricks-szerű workflow).</p>
 
                 <h2>Kártya Design</h2>
                 <table class="form-table">
