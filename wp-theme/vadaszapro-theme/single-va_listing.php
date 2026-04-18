@@ -18,7 +18,7 @@ $phone       = get_post_meta( $post_id, 'va_phone',       true );
 $location    = get_post_meta( $post_id, 'va_location',    true );
 $license_req = get_post_meta( $post_id, 'va_license_req', true );
 $email_show  = get_post_meta( $post_id, 'va_email_show',  true );
-$views       = intval( get_post_meta( $post_id, 'va_views', true ) );
+$views       = intval( get_post_meta( $post_id, 'va_views', true ) ) + 57;
 $expires     = get_post_meta( $post_id, 'va_expires',     true );
 $featured    = get_post_meta( $post_id, 'va_featured',    true ) === '1';
 $categories  = get_the_terms( $post_id, 'va_category' );
@@ -116,9 +116,9 @@ wp_localize_script( 'va-main', 'VA_Data', [
                     <?php if ( $condition && !is_wp_error($condition) ): ?>
                         <span>&Aacute;llapot: <?php echo esc_html($condition[0]->name); ?></span>
                     <?php endif; ?>
-                    <?php if ( $views ): ?>
-                        <span>Megtekint&eacute;s: <?php echo esc_html($views); ?></span>
-                    <?php endif; ?>
+                    <span class="sl__views">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15" style="vertical-align:-2px;margin-right:4px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><?php echo esc_html( number_format($views, 0, ',', ' ') ); ?> megtekintés
+                    </span>
                     <span>Feladva: <?php echo esc_html(get_the_date('Y. m. d.')); ?></span>
                     <?php if ( $expires ): ?>
                         <span class="<?php echo strtotime($expires) < time() ? 'sl__expired' : ''; ?>">
