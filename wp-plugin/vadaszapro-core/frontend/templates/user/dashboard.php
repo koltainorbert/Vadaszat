@@ -18,9 +18,10 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
 ]);
 
 $user     = wp_get_current_user();
+$auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
 $listings = va_get_user_listings( $user->ID );
 $watchlist= va_get_user_watchlist( $user->ID );
-$bids     = va_get_user_bids( $user->ID );
+$bids     = $auctions_enabled ? va_get_user_bids( $user->ID ) : [];
 $phone    = get_user_meta( $user->ID, 'va_phone', true );
 $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
 ?>
@@ -32,7 +33,9 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
         <!-- Bal navigáció -->
         <nav class="va-dashboard__nav">
             <span class="va-dashboard__nav-item active" data-tab="listings">📋 Hirdetéseim (<?php echo count( $listings ); ?>)</span>
+            <?php if ( $auctions_enabled ): ?>
             <span class="va-dashboard__nav-item" data-tab="bids">🔨 Licitjeim (<?php echo count( $bids ); ?>)</span>
+            <?php endif; ?>
             <span class="va-dashboard__nav-item" data-tab="watchlist">♥ Kedvenceim (<?php echo count( $watchlist ); ?>)</span>
             <span class="va-dashboard__nav-item" data-tab="profile">👤 Profilom</span>
             <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="va-dashboard__nav-item" style="color:#ff0000;margin-top:20px;">🚪 Kijelentkezés</a>
@@ -96,6 +99,7 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
                 <?php endif; ?>
             </div>
 
+            <?php if ( $auctions_enabled ): ?>
             <!-- Tab: Licitjeim -->
             <div id="va-tab-bids" class="va-dashboard__section">
                 <h2 class="va-dashboard__title">Licitjeim</h2>
@@ -130,6 +134,7 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
                     <p style="color:rgba(255,255,255,0.5);">Még nem adtál le licitet.</p>
                 <?php endif; ?>
             </div>
+            <?php endif; ?>
 
             <!-- Tab: Kedvenceim -->
             <div id="va-tab-watchlist" class="va-dashboard__section">

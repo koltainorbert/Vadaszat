@@ -5,6 +5,11 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* ── Aukció funkció globális kapcsoló ─────────────────── */
+function va_auctions_enabled(): bool {
+    return get_option( 'va_enable_auctions', '1' ) === '1';
+}
+
 /* ── Megtekintés szám (determinisztikus alap + valós) ─── */
 function va_display_views( int $post_id ): int {
     $base = 30 + ( $post_id % 70 );
@@ -53,6 +58,26 @@ function va_is_page( string $slug ): bool {
     return $page && is_page( $page->ID );
 }
 
+/* ── Aukció oldalak tiltása kikapcsolt módban ─────────── */
+add_action( 'template_redirect', function() {
+    if ( va_auctions_enabled() ) {
+        return;
+    }
+
+    $requested_post_type = sanitize_key( $_GET['post_type'] ?? '' );
+    $is_auction_request  = is_singular( 'va_auction' )
+        || is_post_type_archive( 'va_auction' )
+        || va_is_page( 'va-aukciok' )
+        || $requested_post_type === 'va_auction';
+
+    if ( ! $is_auction_request ) {
+        return;
+    }
+
+    wp_safe_redirect( home_url( '/hirdetes/' ) );
+    exit;
+}, 1 );
+
 /* ── Ár formázás ──────────────────────────────────────── */
 function va_format_price( $price, string $type = 'fixed' ): string {
     if ( $type === 'negotiable' ) return 'Alkudható';
@@ -95,8 +120,13 @@ function va_user_watches( int $post_id ): bool {
 
 /* ── Felhasználó hirdetései ───────────────────────────── */
 function va_get_user_listings( int $user_id, string $status = 'any', int $per_page = 50, int $page = 1 ): array {
+    $post_types = [ 'va_listing' ];
+    if ( va_auctions_enabled() ) {
+        $post_types[] = 'va_auction';
+    }
+
     return get_posts([
-        'post_type'      => [ 'va_listing', 'va_auction' ],
+        'post_type'      => $post_types,
         'post_status'    => $status === 'any' ? [ 'publish', 'pending', 'draft' ] : $status,
         'author'         => $user_id,
         'posts_per_page' => $per_page,
@@ -115,8 +145,14 @@ function va_get_user_watchlist( int $user_id, int $per_page = 20, int $page = 1 
         $user_id, $per_page, ( $page - 1 ) * $per_page
     ));
     if ( ! $ids ) return [];
+
+    $post_types = [ 'va_listing' ];
+    if ( va_auctions_enabled() ) {
+        $post_types[] = 'va_auction';
+    }
+
     return get_posts([
-        'post_type'      => [ 'va_listing', 'va_auction' ],
+        'post_type'      => $post_types,
         'post_status'    => 'publish',
         'include'        => $ids,
         'posts_per_page' => $per_page,
@@ -126,6 +162,10 @@ function va_get_user_watchlist( int $user_id, int $per_page = 20, int $page = 1 
 
 /* ── Licitek user által ────────────────────────────────── */
 function va_get_user_bids( int $user_id ): array {
+    if ( ! va_auctions_enabled() ) {
+        return [];
+    }
+
     global $wpdb;
     return $wpdb->get_results( $wpdb->prepare(
         "SELECT b.*, p.post_title

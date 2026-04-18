@@ -96,7 +96,9 @@ function va_activate() {
     // Régi hourly cron törlése, új 5 perces ütemezés
     $old = wp_next_scheduled( 'va_close_expired_auctions' );
     if ( $old ) wp_unschedule_event( $old, 'va_close_expired_auctions' );
-    wp_schedule_event( time(), 'va_every_5min', 'va_close_expired_auctions' );
+    if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : get_option( 'va_enable_auctions', '1' ) === '1' ) {
+        wp_schedule_event( time(), 'va_every_5min', 'va_close_expired_auctions' );
+    }
 
     global $wpdb;
     $charset = $wpdb->get_charset_collate();
@@ -164,9 +166,12 @@ function va_create_default_pages() {
         'va-bejelentkezes'     => [ 'title' => 'Bejelentkezés',        'content' => '[va_login_form]' ],
         'va-regisztracio'      => [ 'title' => 'Regisztráció',         'content' => '[va_register_form]' ],
         'va-fiok'              => [ 'title' => 'Fiókom',               'content' => '[va_user_dashboard]' ],
-        'va-aukciok'           => [ 'title' => 'Aukciók',              'content' => '[va_auction_list]' ],
         'va-hirdetes-kereses'  => [ 'title' => 'Hirdetések keresése',  'content' => '[va_listing_search]' ],
     ];
+
+    if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : get_option( 'va_enable_auctions', '1' ) === '1' ) {
+        $pages['va-aukciok'] = [ 'title' => 'Aukciók', 'content' => '[va_auction_list]' ];
+    }
 
     foreach ( $pages as $slug => $data ) {
         if ( ! get_page_by_path( $slug ) ) {

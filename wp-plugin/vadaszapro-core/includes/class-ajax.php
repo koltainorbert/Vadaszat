@@ -24,7 +24,9 @@ class VA_Ajax {
 
         // Cache invalidáció – hirdetés mentésekor a szűrő cache törlődik
         add_action( 'save_post_va_listing', [ __CLASS__, 'flush_filter_cache' ] );
-        add_action( 'save_post_va_auction', [ __CLASS__, 'flush_filter_cache' ] );
+        if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+            add_action( 'save_post_va_auction', [ __CLASS__, 'flush_filter_cache' ] );
+        }
 
         // Élő keresés
         add_action( 'wp_ajax_va_live_search',        [ __CLASS__, 'live_search' ] );
@@ -206,7 +208,12 @@ class VA_Ajax {
         $max_price = floatval( $_POST['max_price'] ?? 0 );
         $keyword   = sanitize_text_field( wp_unslash( $_POST['keyword'] ?? '' ) );
         $sort      = sanitize_key( $_POST['sort'] ?? 'date' );
-        $post_type = in_array( sanitize_key( $_POST['post_type'] ?? '' ), [ 'va_listing', 'va_auction' ], true )
+        $allowed_post_types = [ 'va_listing' ];
+        if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+            $allowed_post_types[] = 'va_auction';
+        }
+
+        $post_type = in_array( sanitize_key( $_POST['post_type'] ?? '' ), $allowed_post_types, true )
                      ? sanitize_key( $_POST['post_type'] )
                      : 'va_listing';
         $keyword   = sanitize_text_field( wp_unslash( $_POST['keyword'] ?? '' ) );
@@ -345,9 +352,14 @@ class VA_Ajax {
             }
         }
 
-        // Hirdetés + aukció találatok
+        // Hirdetés (+ opcionálisan aukció) találatok
+        $search_post_types = [ 'va_listing' ];
+        if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+            $search_post_types[] = 'va_auction';
+        }
+
         $query = new WP_Query([
-            'post_type'      => [ 'va_listing', 'va_auction' ],
+            'post_type'      => $search_post_types,
             'post_status'    => 'publish',
             'posts_per_page' => 5,
             'no_found_rows'  => true,

@@ -8,6 +8,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class VA_Auctions {
 
     public static function init() {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            $next = wp_next_scheduled( 'va_close_expired_auctions' );
+            if ( $next ) {
+                wp_unschedule_event( $next, 'va_close_expired_auctions' );
+            }
+            return;
+        }
+
         add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue' ] );
         add_action( 'wp_ajax_va_place_bid',             [ __CLASS__, 'ajax_place_bid' ] );
         add_action( 'wp_ajax_nopriv_va_place_bid',      [ __CLASS__, 'ajax_place_bid_nopriv' ] );
@@ -31,6 +39,10 @@ class VA_Auctions {
     }
 
     public static function enqueue() {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            return;
+        }
+
         if ( is_singular( 'va_auction' ) || va_is_page( 'va-aukciok' ) ) {
             wp_enqueue_script( 'va-auction', VA_PLUGIN_URL . 'frontend/js/auction.js', [ 'jquery' ], VA_VERSION, true );
             wp_localize_script( 'va-auction', 'VA_Auction', [
@@ -148,6 +160,10 @@ class VA_Auctions {
 
     /* ── Lejárt aukciók lezárása ───────────────────────── */
     public static function close_expired_auctions() {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            return;
+        }
+
         global $wpdb;
 
         $now = current_time( 'mysql' );

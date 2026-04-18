@@ -60,6 +60,10 @@ class VA_Shortcodes {
     }
 
     public static function render_auction_list( $atts ) {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            return '<p class="va-notice va-notice--info">Az aukció funkció jelenleg ki van kapcsolva.</p>';
+        }
+
         ob_start();
         va_template( 'auction/list' );
         return ob_get_clean();
