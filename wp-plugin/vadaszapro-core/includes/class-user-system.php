@@ -15,12 +15,26 @@ class VA_User_System {
         return get_option( 'va_enable_register', '1' ) === '1';
     }
 
+    private static function get_login_page_url( array $args = [] ): string {
+        $page = get_page_by_path( 'va-bejelentkezes' );
+        $url  = $page ? get_permalink( $page ) : home_url();
+        if ( ! empty( $args ) ) {
+            $url = add_query_arg( $args, $url );
+        }
+        return $url;
+    }
+
     public static function init() {
         add_action( 'init',                [ __CLASS__, 'handle_forms' ] );
         add_action( 'wp_enqueue_scripts',  [ __CLASS__, 'enqueue' ] );
         add_filter( 'login_url',           [ __CLASS__, 'custom_login_url' ], 10, 3 );
         add_filter( 'register_url',        [ __CLASS__, 'custom_register_url' ] );
+        add_filter( 'lostpassword_url',    [ __CLASS__, 'custom_lostpassword_url' ], 10, 2 );
         add_filter( 'logout_redirect',     [ __CLASS__, 'logout_redirect' ], 10, 1 );
+        add_action( 'login_form_lostpassword', [ __CLASS__, 'redirect_wp_lostpassword' ] );
+        add_action( 'login_form_retrievepassword', [ __CLASS__, 'redirect_wp_lostpassword' ] );
+        add_action( 'login_form_rp',       [ __CLASS__, 'redirect_wp_resetpass' ] );
+        add_action( 'login_form_resetpass',[ __CLASS__, 'redirect_wp_resetpass' ] );
     }
 
     /* ── URL átirányítások ─────────────────────────────── */
@@ -38,6 +52,35 @@ class VA_User_System {
         }
         $page = get_page_by_path( 'va-regisztracio' );
         return $page ? get_permalink( $page ) : $url;
+    }
+
+    public static function custom_lostpassword_url( $url, $redirect ) {
+        $args = [ 'action' => 'lostpassword' ];
+        if ( ! empty( $redirect ) ) {
+            $args['redirect_to'] = $redirect;
+        }
+        return self::get_login_page_url( $args );
+    }
+
+    public static function redirect_wp_lostpassword() {
+        wp_safe_redirect( self::get_login_page_url( [ 'action' => 'lostpassword' ] ) );
+        exit;
+    }
+
+    public static function redirect_wp_resetpass() {
+        $key   = isset( $_REQUEST['key'] ) ? sanitize_text_field( wp_unslash( (string) $_REQUEST['key'] ) ) : '';
+        $login = isset( $_REQUEST['login'] ) ? sanitize_user( wp_unslash( (string) $_REQUEST['login'] ) ) : '';
+
+        $args = [ 'action' => 'resetpass' ];
+        if ( $key !== '' ) {
+            $args['key'] = $key;
+        }
+        if ( $login !== '' ) {
+            $args['login'] = $login;
+        }
+
+        wp_safe_redirect( self::get_login_page_url( $args ) );
+        exit;
     }
 
     public static function logout_redirect( $url ) {
@@ -60,9 +103,80 @@ class VA_User_System {
             $action = sanitize_key( $_POST['va_action'] );
             if ( $action === 'register' ) self::process_register();
             if ( $action === 'login'    ) self::process_login();
+            if ( $action === 'lostpassword' ) self::process_lostpassword();
+            if ( $action === 'resetpass'    ) self::process_resetpass();
             if ( $action === 'logout'   ) self::process_logout();
             if ( $action === 'profile'  ) self::process_profile();
         }
+    }
+
+    private static function process_lostpassword() {
+        if ( ! isset( $_POST['va_lostpass_nonce'] ) ||
+             ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_lostpass_nonce'] ) ), 'va_lostpass' ) ) {
+            va_set_flash( 'error', 'Érvénytelen kérés.' );
+            return;
+        }
+
+        $user_login = sanitize_text_field( wp_unslash( $_POST['lost_user_login'] ?? '' ) );
+        if ( $user_login === '' ) {
+            va_set_flash( 'error', 'Add meg a felhasználónevedet vagy e-mail címedet.' );
+            return;
+        }
+
+        $res = retrieve_password( $user_login );
+        if ( is_wp_error( $res ) ) {
+            $msg = $res->get_error_message();
+            va_set_flash( 'error', $msg !== '' ? $msg : 'Nem sikerült jelszó-visszaállító e-mailt küldeni.' );
+            return;
+        }
+
+        va_set_flash( 'success', 'Küldtünk egy e-mailt a jelszó visszaállításához.' );
+        wp_safe_redirect( self::get_login_page_url( [ 'action' => 'lostpassword' ] ) );
+        exit;
+    }
+
+    private static function process_resetpass() {
+        if ( ! isset( $_POST['va_resetpass_nonce'] ) ||
+             ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_resetpass_nonce'] ) ), 'va_resetpass' ) ) {
+            va_set_flash( 'error', 'Érvénytelen kérés.' );
+            return;
+        }
+
+        $key   = sanitize_text_field( wp_unslash( $_POST['rp_key'] ?? '' ) );
+        $login = sanitize_user( wp_unslash( $_POST['rp_login'] ?? '' ) );
+        $pass1 = (string) wp_unslash( $_POST['rp_pass1'] ?? '' );
+        $pass2 = (string) wp_unslash( $_POST['rp_pass2'] ?? '' );
+
+        if ( $key === '' || $login === '' ) {
+            va_set_flash( 'error', 'Hiányzó visszaállítási adatok.' );
+            return;
+        }
+
+        $user = check_password_reset_key( $key, $login );
+        if ( is_wp_error( $user ) ) {
+            va_set_flash( 'error', 'A jelszó-visszaállító link lejárt vagy érvénytelen.' );
+            return;
+        }
+
+        if ( $pass1 === '' || $pass2 === '' ) {
+            va_set_flash( 'error', 'Add meg az új jelszót mindkét mezőben.' );
+            return;
+        }
+
+        if ( $pass1 !== $pass2 ) {
+            va_set_flash( 'error', 'A két új jelszó nem egyezik.' );
+            return;
+        }
+
+        if ( strlen( $pass1 ) < 8 ) {
+            va_set_flash( 'error', 'Az új jelszó legalább 8 karakter legyen.' );
+            return;
+        }
+
+        reset_password( $user, $pass1 );
+        va_set_flash( 'success', 'Jelszó sikeresen módosítva. Most már bejelentkezhetsz.' );
+        wp_safe_redirect( self::get_login_page_url() );
+        exit;
     }
 
     /* ── Regisztráció ──────────────────────────────────── */
