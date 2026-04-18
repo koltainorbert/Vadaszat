@@ -6,6 +6,7 @@ get_header();
 
 $term = get_queried_object();
 $icon = function_exists('va_category_icon') ? va_category_icon( (int) $term->term_id ) : '🎯';
+$categories_video = get_option( 'va_category_video_url', content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ) );
 ?>
 <div class="va-wrap">
 
@@ -37,6 +38,18 @@ $icon = function_exists('va_category_icon') ? va_category_icon( (int) $term->ter
             <div class="va-empty__text">Ebben a kategóriában nincs hirdetés.</div>
         </div>
     <?php endif; ?>
+
+    <div class="vcp-video" style="margin-top:26px;">
+        <video class="vcp-video__media" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="<?php echo esc_url( $categories_video ); ?>" type="video/mp4">
+        </video>
+        <div class="vcp-video__overlay"></div>
+        <div class="vcp-video__content">
+            <span class="vcp-video__eyebrow">Kategória ajánló</span>
+            <h2 class="vcp-video__title"><?php echo esc_html( $term->name ); ?></h2>
+            <p class="vcp-video__lead">A kiválasztott kategóriában böngészel, görgess tovább a friss ajánlatokért.</p>
+        </div>
+    </div>
 
 </div>
 <?php get_footer(); ?>
