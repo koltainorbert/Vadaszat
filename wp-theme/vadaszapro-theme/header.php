@@ -61,9 +61,15 @@
                             + '</span>'
                             + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':r.type==='category'?'Kategória':r.type==='user'?'Felhasználó':'Hirdetés')+'</span>'
                             + '</a>';
-                    }).join('') + '<a class="va-sd__all" href="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>?s=" id="va-sd-all-link">Összes találat →</a>';
-                    // fix: all link gets current query
-                    dropdown.querySelector('#va-sd-all-link').href = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>?s=' + encodeURIComponent(input.value);
+                    }).join('') + '<a class="va-sd__all" href="#" id="va-sd-all-link">Összes találat →</a>';
+                    // "Összes találat" link: ha van kategória találat → annak összes terméke; egyébként kulcsszavas keresés
+                    var catItem = items.find(function(r){ return r.type === 'category'; });
+                    var allLink = dropdown.querySelector('#va-sd-all-link');
+                    if (catItem) {
+                        allLink.href = catItem.url; // ?cat=ID → az adott kategória összes hirdetése
+                    } else {
+                        allLink.href = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>?s=' + encodeURIComponent(input.value);
+                    }
                     dropdown.hidden = false;
                 }
 
