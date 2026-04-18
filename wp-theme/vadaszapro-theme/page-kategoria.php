@@ -43,9 +43,10 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
 
     <!-- ═══ HERO ════════════════════════════════════════════════════════ -->
     <section class="vcp-hero">
-        <div class="vcp-hero__orb vcp-hero__orb--1"></div>
-        <div class="vcp-hero__orb vcp-hero__orb--2"></div>
-        <div class="vcp-hero__orb vcp-hero__orb--3"></div>
+        <video class="vcp-hero__video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="<?php echo esc_url( $categories_video ); ?>" type="video/mp4">
+        </video>
+        <div class="vcp-hero__video-overlay"></div>
         <div class="vcp-hero__inner">
             <div class="vcp-hero__badge">
                 <span class="vcp-hero__badge-dot"></span>
@@ -73,18 +74,6 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
 
     <!-- ═══ GRID ═════════════════════════════════════════════════════════ -->
     <section class="vcp-section">
-        <div class="vcp-video" style="margin-top:0;margin-bottom:30px;">
-            <video class="vcp-video__media" autoplay muted loop playsinline preload="auto" aria-hidden="true">
-                <source src="<?php echo esc_url( $categories_video ); ?>" type="video/mp4">
-            </video>
-            <div class="vcp-video__overlay"></div>
-            <div class="vcp-video__content">
-                <span class="vcp-video__eyebrow">Kategória ajánló</span>
-                <h2 class="vcp-video__title">Vadászat ősszel</h2>
-                <p class="vcp-video__lead">Fedezd fel a kategóriákat, és találd meg gyorsan a hozzád illő felszerelést.</p>
-            </div>
-        </div>
-
         <?php if ( ! empty( $top_terms ) ) : ?>
         <div class="vcp-grid">
             <?php foreach ( $top_terms as $i => $term ) :

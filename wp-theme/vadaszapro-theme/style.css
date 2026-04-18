@@ -1166,6 +1166,24 @@ textarea { min-height: 110px; resize: vertical; }
 .vcp-hero {
   position: relative; padding: 72px 32px 64px;
   text-align: center; overflow: hidden;
+  min-height: 460px;
+  border-radius: 20px;
+}
+.vcp-hero__video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: 0;
+  pointer-events: none;
+}
+.vcp-hero__video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(to bottom, rgba(6,6,6,.38) 0%, rgba(6,6,6,.22) 35%, rgba(6,6,6,.45) 100%);
 }
 .vcp-hero__orb {
   position: absolute; border-radius: 50%;
@@ -1176,7 +1194,7 @@ textarea { min-height: 110px; resize: vertical; }
 .vcp-hero__orb--3 { width: 240px; height: 240px; background: #ff0000; bottom: -90px; right: 8%; animation: orbDrift2 13s ease-in-out infinite reverse; }
 @keyframes orbDrift1 { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.12); } }
 @keyframes orbDrift2 { 0%,100% { transform: scale(1); } 50% { transform: scale(1.1) translateY(-18px); } }
-.vcp-hero__inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; }
+.vcp-hero__inner { position: relative; z-index: 1; max-width: 640px; margin: 0 auto; text-shadow: 0 2px 16px rgba(0,0,0,.55); }
 .vcp-hero__badge {
   display: inline-flex; align-items: center; gap: 8px;
   font-size: .65rem; font-weight: 700; letter-spacing: .22em; text-transform: uppercase; color: #ff0000;
