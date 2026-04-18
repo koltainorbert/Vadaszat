@@ -39,7 +39,9 @@ $show_date     = get_option( 'va_card_meta_show_date', '1' ) === '1';
 
 $watchlist_button_html = '';
 if ( is_user_logged_in() ) {
-    $watchlist_button_html = '<button class="va-card__watchlist' . ( $watching ? ' active' : '' ) . '" data-post-id="' . esc_attr( $post_id ) . '" title="' . esc_attr( $watching ? 'Eltávolítás kedvencekből' : 'Hozzáadás kedvencekhez' ) . '">'
+    $watchlist_nonce = wp_create_nonce( 'va_user_nonce' );
+    $watchlist_ajax_url = admin_url( 'admin-ajax.php' );
+    $watchlist_button_html = '<button class="va-card__watchlist' . ( $watching ? ' active' : '' ) . '" data-post-id="' . esc_attr( $post_id ) . '" data-nonce="' . esc_attr( $watchlist_nonce ) . '" data-ajax-url="' . esc_url( $watchlist_ajax_url ) . '" title="' . esc_attr( $watching ? 'Eltávolítás kedvencekből' : 'Hozzáadás kedvencekhez' ) . '">'
         . '<svg class="va-card__watchlist-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
         . '</button>';
 }
