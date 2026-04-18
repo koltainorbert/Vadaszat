@@ -8,6 +8,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class VA_Settings_Page {
 
+    private static $defaults = [];
+
     public static function init() {
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
         add_action( 'admin_post_va_export_settings', [ __CLASS__, 'handle_export_settings' ] );
@@ -68,6 +70,7 @@ class VA_Settings_Page {
         ];
 
         foreach ( $general as $key => $default ) {
+            self::$defaults[ $key ] = $default;
             register_setting( 'va_general_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
@@ -331,11 +334,13 @@ class VA_Settings_Page {
         }
 
         foreach ( $design as $key => $default ) {
+            self::$defaults[ $key ] = $default;
             register_setting( 'va_design_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
         foreach ( $header_footer as $key => $default ) {
+            self::$defaults[ $key ] = $default;
             register_setting( 'va_header_footer_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
@@ -348,22 +353,26 @@ class VA_Settings_Page {
             'va_tax_category_video_url'   => content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ),
         ];
         foreach ( $video_urls as $key => $default ) {
+            self::$defaults[ $key ] = $default;
             register_setting( 'va_general_settings', $key, [ 'sanitize_callback' => 'esc_url_raw' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
         // Márka ikon URL (header ikon + automata favicon)
         register_setting( 'va_general_settings', 'va_brand_icon_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        self::$defaults['va_brand_icon_url'] = '';
         if ( get_option( 'va_brand_icon_url' ) === false ) {
             update_option( 'va_brand_icon_url', '' );
         }
 
         // Logók (fejléc + hero)
         register_setting( 'va_general_settings', 'va_header_logo_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        self::$defaults['va_header_logo_url'] = '';
         if ( get_option( 'va_header_logo_url' ) === false ) {
             update_option( 'va_header_logo_url', '' );
         }
         register_setting( 'va_general_settings', 'va_hero_logo_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        self::$defaults['va_hero_logo_url'] = '';
         if ( get_option( 'va_hero_logo_url' ) === false ) {
             update_option( 'va_hero_logo_url', '' );
         }
@@ -391,6 +400,7 @@ class VA_Settings_Page {
             'va_free_listings_limit' => 5,
         ];
         foreach ( $listing_opts as $key => $default ) {
+            self::$defaults[ $key ] = $default;
             register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => 'absint' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
@@ -401,9 +411,21 @@ class VA_Settings_Page {
             'va_auction_fee_pct'      => 0,   // % jutalék (jövőre)
         ];
         foreach ( $auction_opts as $key => $default ) {
+            self::$defaults[ $key ] = $default;
             register_setting( 'va_auction_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
+    }
+
+    private static function get_display_option( string $key, $fallback = '' ) {
+        $val = get_option( $key, null );
+        if ( $val === null || $val === false || $val === '' ) {
+            if ( array_key_exists( $key, self::$defaults ) ) {
+                return self::$defaults[ $key ];
+            }
+            return $fallback;
+        }
+        return $val;
     }
 
     /* ══ Általános beállítások oldal ══════════════════════ */
@@ -1586,23 +1608,23 @@ class VA_Settings_Page {
 
     /* ══ Helper mezők ═════════════════════════════════════ */
     private static function field_text( string $key, string $label ): void {
-        $val = esc_attr( get_option( $key, '' ) );
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"text\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text\"></td></tr>";
     }
 
     private static function field_email( string $key, string $label ): void {
-        $val = esc_attr( get_option( $key, '' ) );
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"email\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text\"></td></tr>";
     }
 
     private static function field_url( string $key, string $label ): void {
-        $val = esc_attr( get_option( $key, '' ) );
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"url\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text code";
         echo " placeholder=\"https://.../video.mp4\"></td></tr>";
     }
 
     private static function field_media( string $key, string $label ): void {
-        $val = esc_attr( get_option( $key, '' ) );
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         $preview = $val !== '' ? '<img src="' . $val . '" alt="" class="va-media-preview">' : '';
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
         echo "<div class=\"va-media-field\">";
@@ -1615,17 +1637,17 @@ class VA_Settings_Page {
     }
 
     private static function field_num( string $key, string $label, int $min = 0, int $max = 9999 ): void {
-        $val = esc_attr( get_option( $key, '' ) );
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" class=\"small-text\"></td></tr>";
     }
 
     private static function field_decimal( string $key, string $label, float $min = 0.1, float $max = 5, float $step = 0.01 ): void {
-        $val = esc_attr( get_option( $key, '' ) );
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" step=\"{$step}\" class=\"small-text\"></td></tr>";
     }
 
     private static function field_select( string $key, string $label, array $options ): void {
-        $current = (string) get_option( $key, '' );
+        $current = (string) self::get_display_option( $key, '' );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><select id=\"{$key}\" name=\"{$key}\">";
         foreach ( $options as $value => $text ) {
             echo '<option value="' . esc_attr( $value ) . '" ' . selected( $current, (string) $value, false ) . '>' . esc_html( (string) $text ) . '</option>';
@@ -1634,12 +1656,12 @@ class VA_Settings_Page {
     }
 
     private static function field_color( string $key, string $label ): void {
-        $val = esc_attr( get_option( $key, '' ) );
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"text\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text va-color-input\" data-default-color=\"{$val}\"></td></tr>";
     }
 
     private static function field_toggle( string $key, string $label ): void {
-        $val = get_option( $key, '0' );
+        $val = (string) self::get_display_option( $key, '0' );
         echo "<tr><th>{$label}</th><td><input type=\"hidden\" name=\"{$key}\" value=\"0\"><label class=\"va-toggle\"><input type=\"checkbox\" name=\"{$key}\" value=\"1\"" . checked( $val, '1', false ) . "><span class=\"va-toggle-slider\"></span></label></td></tr>";
     }
 }
