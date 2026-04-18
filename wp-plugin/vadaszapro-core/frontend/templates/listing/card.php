@@ -53,10 +53,9 @@ $watching  = va_user_watches( $post_id );
         <?php endif; ?>
     </a>
 
+    <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__body-link">
     <div class="va-card__body">
-        <h3 class="va-card__title">
-            <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php the_title(); ?></a>
-        </h3>
+        <h3 class="va-card__title"><?php the_title(); ?></h3>
 
         <?php if ( $is_auction ): ?>
             <?php $cur_bid = get_post_meta( $post_id, 'va_current_bid', true ); ?>
@@ -89,4 +88,5 @@ $watching  = va_user_watches( $post_id );
             <span class="va-card__meta-item">🗓 <?php echo esc_html( get_the_date( 'Y.m.d', $post_id ) ); ?></span>
         </div>
     </div>
+    </a>
 </div>
