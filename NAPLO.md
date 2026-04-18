@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 18. – Session #40 (Holdnaptar valosaghubb holdfelszin + kraterek)
+
+### Mit csinaltunk [x]
+- [x] A Holdnaptar canvas rajzolo logika teljesen frissitve valosaghubb felszinre
+- [x] Proceduralis texturagenerator kerult be: tobb retegu zaj, limb darkening, mare foltok
+- [x] Krater modellezes javitva: perem + melyedes (pit) a termeszetesebb felszinert
+- [x] Terminator feny/arnyek atmenet finomitva a fazis fuggvenyeben
+- [x] Ujhold kozeli earthshine visszaverodes finoman megtartva
+- [x] Hibavizsgalat: modosított fajl hibamentes
+- [x] Deploy: `Deploy Theme` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #39 (Minden admin mező érték láthatóság fix)
 
 ### Mit csináltunk [x]

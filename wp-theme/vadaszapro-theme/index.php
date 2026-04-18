@@ -77,110 +77,126 @@ get_header(); ?>
     if(days<0.5)days+=SYN;
     return new Date(now.getTime()+days*dayMs);
   }
-  /* ── Canvas holdrajz — élethű ── */
+  function rndHash(x,y){
+    var s=sin(x*127.1+y*311.7)*43758.5453;
+    return s-Math.floor(s);
+  }
+  function smooth(v){return v*v*(3-2*v);}
+  function n2(x,y){
+    var x0=Math.floor(x),y0=Math.floor(y),x1=x0+1,y1=y0+1;
+    var sx=smooth(x-x0),sy=smooth(y-y0);
+    var n00=rndHash(x0,y0),n10=rndHash(x1,y0),n01=rndHash(x0,y1),n11=rndHash(x1,y1);
+    var nx0=n00+(n10-n00)*sx,nx1=n01+(n11-n01)*sx;
+    return nx0+(nx1-nx0)*sy;
+  }
+  function fbm(x,y){
+    var v=0,a=.55,f=1,i;
+    for(i=0;i<5;i++){v+=a*n2(x*f,y*f);f*=2;a*=.5;}
+    return v;
+  }
+  var texCache={};
+  function moonTexture(size){
+    if(texCache[size])return texCache[size];
+    var t=document.createElement('canvas'),ctx=t.getContext('2d');
+    t.width=size;t.height=size;
+    var d=ctx.createImageData(size,size),p=d.data;
+    var r=size*.5,cx=r,cy=r;
+    var mare=[[-.18,-.1,.34,.27,-.2], [.15,-.21,.2,.16,0], [.22,-.01,.21,.16,.12], [.42,-.24,.1,.09,0], [.08,.3,.18,.13,.08]];
+    var cr=[[-.31,.13,.1],[-.18,-.31,.06],[.3,-.12,.075],[.2,.3,.08],[-.05,.28,.06],[.04,-.02,.045],[-.24,.33,.05],[.39,.05,.05],[-.38,-.02,.055],[.02,.42,.05],[.27,-.35,.045],[-.06,-.23,.04]];
+    var x,y,i,j;
+    for(y=0;y<size;y++){
+      for(x=0;x<size;x++){
+        var dx=(x-cx)/r,dy=(y-cy)/r,rr=dx*dx+dy*dy;
+        var idx=(y*size+x)*4;
+        if(rr>1){p[idx+3]=0;continue;}
+        var limb=1-.38*rr;
+        var base=168+26*limb;
+        var grain=(fbm((dx+1.2)*5.4,(dy+1.1)*5.4)-.5)*28+(fbm((dx+2.6)*16.2,(dy+2.1)*16.2)-.5)*11;
+        var val=base+grain;
+        for(i=0;i<mare.length;i++){
+          var m=mare[i];
+          var rx=(dx-m[0])*cos(m[4])-(dy-m[1])*sin(m[4]);
+          var ry=(dx-m[0])*sin(m[4])+(dy-m[1])*cos(m[4]);
+          var g=Math.exp(-(rx*rx/(2*m[2]*m[2])+ry*ry/(2*m[3]*m[3])));
+          val-=g*30;
+        }
+        for(j=0;j<cr.length;j++){
+          var c=cr[j],cdx=dx-c[0],cdy=dy-c[1],dist=Math.sqrt(cdx*cdx+cdy*cdy),radc=c[2];
+          if(dist<radc*1.55){
+            var rim=Math.exp(-Math.pow((dist-radc)/(radc*.18),2));
+            var pit=Math.exp(-Math.pow(dist/(radc*.72),2));
+            val+=rim*16;
+            val-=pit*13;
+          }
+        }
+        val=Math.max(56,Math.min(240,val));
+        p[idx]=val;p[idx+1]=val;p[idx+2]=val;p[idx+3]=255;
+      }
+    }
+    ctx.putImageData(d,0,0);
+    texCache[size]=t;
+    return t;
+  }
+  /* ── Canvas holdrajz — valósághű felszín ── */
   function draw(cv,phase,frac){
-    var W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=W/2-7,
-        ctx=cv.getContext('2d');
+    var W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=W/2-7,ctx=cv.getContext('2d');
     ctx.clearRect(0,0,W,H);
-    /* telihold ezüst ragyogás */
-    if(frac>0.55){
-      var gw=ctx.createRadialGradient(cx,cy,R*.65,cx,cy,R*2.2);
-      var ga=(frac-.55)/.45*.22;
+
+    if(frac>.55){
+      var gw=ctx.createRadialGradient(cx,cy,R*.62,cx,cy,R*2.18);
+      var ga=(frac-.55)/.45*.2;
       gw.addColorStop(0,'rgba(210,215,190,'+ga+')');
-      gw.addColorStop(.5,'rgba(180,190,160,'+(ga*.4)+')');
+      gw.addColorStop(.6,'rgba(170,180,160,'+(ga*.36)+')');
       gw.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle=gw;ctx.fillRect(0,0,W,H);
     }
-    /* sötét (árnyék) oldal: sötétszürke */
+
     ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);
-    var dg=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
-    dg.addColorStop(0,'#1e1e2c');dg.addColorStop(1,'#08080f');
-    ctx.fillStyle=dg;ctx.fill();
-    /* megvilágított rész */
-    if(frac>0.015&&frac<0.985){
-      ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);ctx.clip();
-      var tx=R*Math.abs(cos(phase*2*PI)),
-          wax=phase<=0.5,gibb=phase>=0.25&&phase<=0.75,tcw=!gibb;
+    var dark=ctx.createRadialGradient(cx-R*.12,cy-R*.18,R*.04,cx,cy,R*1.08);
+    dark.addColorStop(0,'#1c1d27');dark.addColorStop(1,'#07070d');
+    ctx.fillStyle=dark;ctx.fill();
+
+    var tx=R*Math.abs(cos(phase*2*PI)),wax=phase<=0.5,gibb=phase>=0.25&&phase<=0.75,tcw=!gibb;
+    var tex=moonTexture(Math.round(R*2));
+
+    if(frac>0.01){
+      ctx.save();
+      ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);ctx.clip();
       ctx.beginPath();ctx.moveTo(cx,cy-R);
       ctx.arc(cx,cy,R,-PI/2,PI/2,!wax);
-      ctx.ellipse(cx,cy,tx,R,0,PI/2,-PI/2,tcw);
-      ctx.closePath();
-      /* élethű szürke-fehér hold gradient (limb darkening) */
-      var lg=ctx.createRadialGradient(cx-R*.12,cy-R*.18,R*.02,cx+R*.08,cy+R*.1,R*1.08);
-      lg.addColorStop(0,'#f0f0e8');   /* fényes közép */
-      lg.addColorStop(.22,'#dcdcd2');
-      lg.addColorStop(.5,'#b8b8ae');
-      lg.addColorStop(.78,'#888880');  /* limb darkening */
-      lg.addColorStop(1,'#50504a');
-      ctx.fillStyle=lg;ctx.fill();
-      /* Mare — sötét holdtengerek (reális pozíció) */
-      ctx.globalCompositeOperation='multiply';
-      /* Mare Imbrium (bal felső nagy folt) */
-      ctx.beginPath();ctx.ellipse(cx-R*.14,cy-R*.1,R*.3,R*.24,-.25,0,2*PI);
-      ctx.fillStyle='rgba(100,100,92,.55)';ctx.fill();
-      /* Mare Serenitatis */
-      ctx.beginPath();ctx.ellipse(cx+R*.12,cy-R*.2,R*.18,R*.16,0,0,2*PI);
-      ctx.fillStyle='rgba(110,110,100,.5)';ctx.fill();
-      /* Mare Tranquillitatis */
-      ctx.beginPath();ctx.ellipse(cx+R*.22,cy-.02*R,R*.2,R*.16,.15,0,2*PI);
-      ctx.fillStyle='rgba(105,105,95,.48)';ctx.fill();
-      /* Mare Crisium (kis kerek) */
-      ctx.beginPath();ctx.ellipse(cx+R*.42,cy-R*.22,R*.1,R*.09,0,0,2*PI);
-      ctx.fillStyle='rgba(100,100,90,.55)';ctx.fill();
-      /* Mare Nubium / Nectaris (jobb alsó) */
-      ctx.beginPath();ctx.ellipse(cx+R*.08,cy+R*.3,R*.16,R*.12,.1,0,2*PI);
-      ctx.fillStyle='rgba(108,108,98,.45)';ctx.fill();
+      ctx.ellipse(cx,cy,Math.max(1,tx),R,0,PI/2,-PI/2,tcw);
+      ctx.closePath();ctx.clip();
+
+      ctx.drawImage(tex,cx-R,cy-R,R*2,R*2);
+
+      var lightDir=wax?1:-1;
+      var l1=ctx.createLinearGradient(cx-R*lightDir,cy,cx+R*lightDir,cy);
+      l1.addColorStop(0,'rgba(245,246,242,.22)');
+      l1.addColorStop(.42,'rgba(245,246,242,.08)');
+      l1.addColorStop(.7,'rgba(30,30,35,.08)');
+      l1.addColorStop(1,'rgba(0,0,0,.16)');
+      ctx.fillStyle=l1;ctx.fillRect(cx-R,cy-R,R*2,R*2);
+
+      ctx.globalCompositeOperation='overlay';
+      var term=ctx.createLinearGradient(cx+(wax?tx:-tx),cy-R,cx+(wax?tx+R*.24:-tx-R*.24),cy+R);
+      term.addColorStop(0,'rgba(255,255,255,.22)');
+      term.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=term;ctx.fillRect(cx-R,cy-R,R*2,R*2);
       ctx.globalCompositeOperation='source-over';
-      /* kráterek — halvány karikák */
-      ctx.strokeStyle='rgba(60,60,55,.35)';ctx.lineWidth=1.2;
-      [[-.28,.14,.09],[.18,.32,.07],[-.08,.28,.055],[.3,-.12,.065],[-.15,-.32,.05]].forEach(function(c){
-        ctx.beginPath();ctx.arc(cx+R*c[0],cy+R*c[1],R*c[2],0,2*PI);ctx.stroke();
-      });
-      /* terminátor élénkítő highlight */
-      ctx.globalAlpha=.08;
-      ctx.fillStyle='#ffffff';
-      ctx.beginPath();ctx.moveTo(cx,cy-R);
-      ctx.arc(cx,cy,R,-PI/2,PI/2,!wax);
-      ctx.ellipse(cx,cy,tx*.92,R*.98,0,PI/2,-PI/2,tcw);
-      ctx.closePath();ctx.fill();
-      ctx.globalAlpha=1;ctx.restore();
-    }
-    /* telihold: egész kör élethű */
-    if(frac>=0.985){
-      ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);ctx.clip();
-      var flg=ctx.createRadialGradient(cx-R*.1,cy-R*.15,0,cx,cy,R*1.05);
-      flg.addColorStop(0,'#f0f0e8');flg.addColorStop(.4,'#d0d0c4');
-      flg.addColorStop(.78,'#909088');flg.addColorStop(1,'#505048');
-      ctx.fillStyle=flg;ctx.fill();
-      ctx.globalCompositeOperation='multiply';
-      ctx.beginPath();ctx.ellipse(cx-R*.14,cy-R*.1,R*.3,R*.24,-.25,0,2*PI);
-      ctx.fillStyle='rgba(100,100,92,.55)';ctx.fill();
-      ctx.beginPath();ctx.ellipse(cx+R*.12,cy-R*.2,R*.18,R*.16,0,0,2*PI);
-      ctx.fillStyle='rgba(110,110,100,.5)';ctx.fill();
-      ctx.beginPath();ctx.ellipse(cx+R*.22,cy,R*.2,R*.16,.15,0,2*PI);
-      ctx.fillStyle='rgba(105,105,95,.48)';ctx.fill();
-      ctx.beginPath();ctx.ellipse(cx+R*.42,cy-R*.22,R*.1,R*.09,0,0,2*PI);
-      ctx.fillStyle='rgba(100,100,90,.55)';ctx.fill();
-      ctx.globalCompositeOperation='source-over';
-      ctx.strokeStyle='rgba(60,60,55,.3)';ctx.lineWidth=1.2;
-      [[-.28,.14,.09],[.18,.32,.07],[-.08,.28,.055],[.3,-.12,.065]].forEach(function(c){
-        ctx.beginPath();ctx.arc(cx+R*c[0],cy+R*c[1],R*c[2],0,2*PI);ctx.stroke();
-      });
+
       ctx.restore();
     }
-    /* újhold: nagyon sötét + halvány earthshine */
-    if(frac<=0.015){
+
+    if(frac<0.08){
       ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);ctx.clip();
-      var eg=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
-      eg.addColorStop(0,'#181820');eg.addColorStop(1,'#060609');
-      ctx.fillStyle=eg;ctx.fill();
-      ctx.globalAlpha=.06;ctx.fillStyle='#4060a0';
-      ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);ctx.fill();
-      ctx.globalAlpha=1;ctx.restore();
+      ctx.globalAlpha=.095;
+      ctx.drawImage(tex,cx-R,cy-R,R*2,R*2);
+      ctx.globalAlpha=1;
+      ctx.restore();
     }
-    /* ezüst keret */
+
     ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);
-    ctx.strokeStyle='rgba(160,165,145,'+(0.15+frac*.25)+')';
+    ctx.strokeStyle='rgba(180,185,170,'+(0.16+frac*.2)+')';
     ctx.lineWidth=1;ctx.stroke();
   }
   /* ── Fázisnevek magyarul ── */
