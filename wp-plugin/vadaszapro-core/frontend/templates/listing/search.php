@@ -105,21 +105,15 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                     <?php endforeach; ?>
                 </select>
 
-                <div class="va-price-range">
-                    <div class="va-price-spin">
-                        <input type="number" id="va-min-price" class="va-input va-price-input" placeholder="Ártól (Ft)" min="0">
-                        <div class="va-price-spin__btns">
-                            <button type="button" class="va-spin-down" data-target="va-min-price" title="Csökkentés">&minus;</button>
-                            <button type="button" class="va-spin-up" data-target="va-min-price" title="Növelés">+</button>
-                        </div>
+                <div class="va-price-slider-wrap">
+                    <div class="va-price-slider-labels">
+                        <span>&#193;r szűrő</span>
+                        <span class="va-price-slider-display"><span id="va-min-price-display">0</span> – <span id="va-max-price-display">50 000 000</span> Ft</span>
                     </div>
-                    <span class="va-price-sep">–</span>
-                    <div class="va-price-spin">
-                        <input type="number" id="va-max-price" class="va-input va-price-input" placeholder="Árig (Ft)" min="0">
-                        <div class="va-price-spin__btns">
-                            <button type="button" class="va-spin-down" data-target="va-max-price" title="Csökkentés">&minus;</button>
-                            <button type="button" class="va-spin-up" data-target="va-max-price" title="Növelés">+</button>
-                        </div>
+                    <div class="va-price-slider-track">
+                        <input type="range" id="va-min-price" class="va-range" min="0" max="50000000" step="50000" value="0">
+                        <input type="range" id="va-max-price" class="va-range" min="0" max="50000000" step="50000" value="50000000">
+                        <div class="va-range-fill" id="va-range-fill"></div>
                     </div>
                 </div>
 
