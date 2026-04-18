@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #70 (Kartya kedvencek szivecske redesign)
+
+### Mit csinaltunk [x]
+- [x] A kartya kedvencek gomb karakteres `♥` ikonja lecserelve valodi SVG szivre
+- [x] A szivecske fix pirosra allitva minden allapotban
+- [x] Vizualis finomitas: kor alakú gomb, piros keret, enyhe glow, elegans hover animacio
+- [x] Cel: markans, szep, azonnal felismerheto kedvencek ikon
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #69 (Layout Allito grafikus abra blokkok)
 
 ### Mit csinaltunk [x]
