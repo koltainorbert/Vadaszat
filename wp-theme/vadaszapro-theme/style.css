@@ -1003,12 +1003,15 @@ textarea { min-height: 110px; resize: vertical; }
   font-weight: 700;
   letter-spacing: .18em;
   text-transform: uppercase;
-  color: #ff0000;
-  border: 1px solid rgba(255,0,0,.4);
+  color: #fff;
+  border: 1px solid rgba(255,0,0,.55);
   padding: 5px 14px;
   border-radius: var(--r);
   margin-bottom: 22px;
-  background: rgba(255,0,0,.07);
+  background: rgba(6,6,6,.56);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  text-shadow: 0 1px 10px rgba(0,0,0,.75);
 }
 
 .vh__title {
@@ -1018,7 +1021,7 @@ textarea { min-height: 110px; resize: vertical; }
   color: #fff;
   margin: 0 0 18px;
   letter-spacing: -.02em;
-  text-shadow: 0 4px 40px rgba(0,0,0,.7);
+  text-shadow: 0 6px 44px rgba(0,0,0,.85);
 }
 
 .vh__title span {
@@ -1027,10 +1030,11 @@ textarea { min-height: 110px; resize: vertical; }
 
 .vh__sub {
   font-size: clamp(.95rem, 2.2vw, 1.2rem);
-  color: rgba(255,255,255,.72);
+  color: rgba(255,255,255,.9);
   margin: 0 0 38px;
   max-width: 560px;
   line-height: 1.6;
+  text-shadow: 0 2px 18px rgba(0,0,0,.8);
 }
 
 .vh__actions {
