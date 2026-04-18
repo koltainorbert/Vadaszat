@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #63 (Kartya meta teljes admin vezerles)
+
+### Mit csinaltunk [x]
+- [x] A kartya meta megjelenites teljesen adminbol allithato lett
+- [x] Minden meta parameter kulon kapcsolhato: kategoria, megye, telepules/hely, megtekintes, felado, datum
+- [x] Minden parameter kulon sorhoz rendelheto (1-3. sor)
+- [x] Layout parameterek is adminbol allithatok: sorok szama, oszlopkoz, soron beluli sorkoz, sorblokkok kozti tavolsag
+- [x] Alapertelmezett beallitas a kert igeny szerint: csak hely + datum
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #62 (Kartya meta 2 soros elrendezes)
 
 ### Mit csinaltunk [x]

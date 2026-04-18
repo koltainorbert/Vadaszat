@@ -47,6 +47,24 @@ class VA_Settings_Page {
             'va_enable_hunting_calendar_page' => '1',
             'va_show_home_hunting_calendar' => '1',
 
+            // Hirdetes kartya meta layout (lista/fooldal)
+            'va_card_meta_rows'            => '2',
+            'va_card_meta_col_gap'         => '12',
+            'va_card_meta_row_gap'         => '2',
+            'va_card_meta_stack_gap'       => '4',
+            'va_card_meta_show_category'   => '0',
+            'va_card_meta_show_county'     => '0',
+            'va_card_meta_show_location'   => '1',
+            'va_card_meta_show_views'      => '0',
+            'va_card_meta_show_author'     => '0',
+            'va_card_meta_show_date'       => '1',
+            'va_card_meta_row_category'    => '1',
+            'va_card_meta_row_county'      => '1',
+            'va_card_meta_row_location'    => '1',
+            'va_card_meta_row_views'       => '2',
+            'va_card_meta_row_author'      => '2',
+            'va_card_meta_row_date'        => '2',
+
             // Főoldal hero szövegek
             'va_home_hero_badge_text'        => 'Magyarország első vadászati hirdetőoldala',
             'va_home_hero_title_top'         => 'VadászBazár',
@@ -473,6 +491,25 @@ class VA_Settings_Page {
                     <?php self::field_toggle('va_show_weather_widget',       'Időjárás widget megjelenjen (geolokáció + 7 nap)' ); ?>
                     <?php self::field_toggle('va_enable_hunting_calendar_page', 'Vadászati naptár oldal engedélyezve' ); ?>
                     <?php self::field_toggle('va_show_home_hunting_calendar', 'Főoldali vadászati naptár panel megjelenjen' ); ?>
+
+                    <tr><th colspan="2" style="padding-top:18px;"><h2 style="margin:0;">Hirdetés kártya meta layout</h2><p class="description" style="margin:6px 0 0;">Főoldali/listás kártyák alsó meta sorainak teljes vezérlése.</p></th></tr>
+                    <?php self::field_select('va_card_meta_rows', 'Meta sorok száma', [ '1' => '1 sor', '2' => '2 sor', '3' => '3 sor' ] ); ?>
+                    <?php self::field_num(   'va_card_meta_col_gap', 'Meta oszlopköz (px)', 0, 40 ); ?>
+                    <?php self::field_num(   'va_card_meta_row_gap', 'Meta sorköz egy soron belül (px)', 0, 20 ); ?>
+                    <?php self::field_num(   'va_card_meta_stack_gap', 'Meta sorblokkok közti távolság (px)', 0, 20 ); ?>
+
+                    <?php self::field_toggle('va_card_meta_show_category', 'Mutassa: kategória' ); ?>
+                    <?php self::field_select('va_card_meta_row_category', 'Kategória sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
+                    <?php self::field_toggle('va_card_meta_show_county', 'Mutassa: megye' ); ?>
+                    <?php self::field_select('va_card_meta_row_county', 'Megye sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
+                    <?php self::field_toggle('va_card_meta_show_location', 'Mutassa: település/hely' ); ?>
+                    <?php self::field_select('va_card_meta_row_location', 'Település/hely sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
+                    <?php self::field_toggle('va_card_meta_show_views', 'Mutassa: megtekintésszám' ); ?>
+                    <?php self::field_select('va_card_meta_row_views', 'Megtekintésszám sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
+                    <?php self::field_toggle('va_card_meta_show_author', 'Mutassa: feladó neve' ); ?>
+                    <?php self::field_select('va_card_meta_row_author', 'Feladó sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
+                    <?php self::field_toggle('va_card_meta_show_date', 'Mutassa: dátum' ); ?>
+                    <?php self::field_select('va_card_meta_row_date', 'Dátum sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
 
                     <?php self::field_text(  'va_home_hero_badge_text',         'Főoldal hero badge szöveg' ); ?>
                     <?php self::field_text(  'va_home_hero_title_top',          'Főoldal hero cím 1. sor' ); ?>

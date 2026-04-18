@@ -18,6 +18,58 @@ $county    = get_the_terms( $post_id, 'va_county' );
 $watching  = va_user_watches( $post_id );
 $author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
 
+$meta_rows = (int) get_option( 'va_card_meta_rows', '2' );
+if ( $meta_rows < 1 ) {
+    $meta_rows = 1;
+}
+if ( $meta_rows > 3 ) {
+    $meta_rows = 3;
+}
+
+$meta_col_gap = max( 0, min( 40, (int) get_option( 'va_card_meta_col_gap', '12' ) ) );
+$meta_row_gap = max( 0, min( 20, (int) get_option( 'va_card_meta_row_gap', '2' ) ) );
+$meta_stack_gap = max( 0, min( 20, (int) get_option( 'va_card_meta_stack_gap', '4' ) ) );
+
+$show_category = get_option( 'va_card_meta_show_category', '0' ) === '1';
+$show_county   = get_option( 'va_card_meta_show_county', '0' ) === '1';
+$show_location = get_option( 'va_card_meta_show_location', '1' ) === '1';
+$show_views    = get_option( 'va_card_meta_show_views', '0' ) === '1';
+$show_author   = get_option( 'va_card_meta_show_author', '0' ) === '1';
+$show_date     = get_option( 'va_card_meta_show_date', '1' ) === '1';
+
+$row_category = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_category', '1' ) ) );
+$row_county   = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_county', '1' ) ) );
+$row_location = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_location', '1' ) ) );
+$row_views    = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_views', '2' ) ) );
+$row_author   = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_author', '2' ) ) );
+$row_date     = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_date', '2' ) ) );
+
+$meta_items_by_row = [];
+for ( $r = 1; $r <= $meta_rows; $r++ ) {
+    $meta_items_by_row[ $r ] = [];
+}
+
+if ( $show_category && $categories && ! is_wp_error( $categories ) ) {
+    $meta_items_by_row[ $row_category ][] = '🏷 ' . esc_html( $categories[0]->name );
+}
+if ( $show_county && $county && ! is_wp_error( $county ) ) {
+    $meta_items_by_row[ $row_county ][] = '📍 ' . esc_html( $county[0]->name );
+}
+if ( $show_location && $location ) {
+    $meta_items_by_row[ $row_location ][] = esc_html( $location );
+}
+if ( $show_views ) {
+    $meta_items_by_row[ $row_views ][] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>' . esc_html( $views );
+}
+if ( $show_author && $author_name ) {
+    $meta_items_by_row[ $row_author ][] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="va-card__meta-item--author">' . esc_html( $author_name ) . '</span>';
+}
+if ( $show_date ) {
+    $meta_items_by_row[ $row_date ][] = '🗓 ' . esc_html( get_the_date( 'Y.m.d', $post_id ) );
+}
+
+$meta_style = '--va-card-meta-col-gap:' . $meta_col_gap . 'px;--va-card-meta-row-gap:' . $meta_row_gap . 'px;--va-card-meta-stack-gap:' . $meta_stack_gap . 'px;';
+
 $card_image_html = '';
 if ( has_post_thumbnail( $post_id ) ) {
     static $va_card_count = 0;
@@ -97,23 +149,14 @@ if ( has_post_thumbnail( $post_id ) ) {
             <div class="va-card__price"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></div>
         <?php endif; ?>
 
-        <div class="va-card__meta va-card__meta--top">
-            <?php if ( $categories && ! is_wp_error( $categories ) ): ?>
-                <span class="va-card__meta-item">🏷 <?php echo esc_html( $categories[0]->name ); ?></span>
-            <?php endif; ?>
-            <?php if ( $county && ! is_wp_error( $county ) ): ?>
-                <span class="va-card__meta-item">📍 <?php echo esc_html( $county[0]->name ); ?></span>
-            <?php endif; ?>
-            <?php if ( $location ): ?>
-                <span class="va-card__meta-item"><?php echo esc_html( $location ); ?></span>
-            <?php endif; ?>
-        </div>
-
-        <div class="va-card__meta va-card__meta--bottom">
-            <span class="va-card__meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><?php echo esc_html( $views ); ?></span>
-            <span class="va-card__meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="va-card__meta-item--author"><?php echo esc_html( $author_name ); ?></span></span>
-            <span class="va-card__meta-item">🗓 <?php echo esc_html( get_the_date( 'Y.m.d', $post_id ) ); ?></span>
-        </div>
+        <?php for ( $row_i = 1; $row_i <= $meta_rows; $row_i++ ): ?>
+            <?php if ( empty( $meta_items_by_row[ $row_i ] ) ) { continue; } ?>
+            <div class="va-card__meta va-card__meta--row" style="<?php echo esc_attr( $meta_style ); ?>">
+                <?php foreach ( $meta_items_by_row[ $row_i ] as $meta_item_html ): ?>
+                    <span class="va-card__meta-item"><?php echo wp_kses_post( $meta_item_html ); ?></span>
+                <?php endforeach; ?>
+            </div>
+        <?php endfor; ?>
     </div>
     </a>
 </div>
