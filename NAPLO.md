@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 18. – Session #28 (Repo rendrakás + kanonikus források)
+
+### Mit csináltunk [x]
+- [x] A keresőgomb aktív theme-ben fehér nagyító ikont kapott
+- [x] Az egyértelműen nem használt, gyökérszintű duplikált theme/plugin forrásfájlok eltávolítva
+- [x] A kiürült duplikált mappák törölve (`admin`, `frontend`, `includes`, `vadaszapro-theme` a repo gyökerében)
+- [x] A repo hivatalos forrásai rögzítve:
+  - `wp-plugin/vadaszapro-core`
+  - `wp-theme/vadaszapro-theme`
+- [x] `TELEPITES.md` frissítve, hogy később se keveredjen vissza a többforrásos állapot
+
+---
+
 ## 2026. 04. 18. – Session #27 (Kereső belső keret törlés + hover-only külső neon)
 
 ### Mit csináltunk [x]
