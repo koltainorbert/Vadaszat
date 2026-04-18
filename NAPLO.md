@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #6 (Hero badge piros pulzáló pont)
+
+### Mit csináltunk [x]
+- [x] Főoldali hero badge-be visszakerült a piros pulzáló pont
+- [x] `header.php`: `vh__badge` elé `vcp-hero__badge-dot` elem beszúrva
+- [x] `style.css`: `vh__badge` inline-flex + gap, hogy a pont és a szöveg egy sorban jól látszódjon
+- [x] `style.css`: hiányzó `@keyframes dotBlink` definíció hozzáadva
+- [x] Deploy futtatva (`Deploy All`)
+
+---
+
 ## 2026. 04. 18. – Session #5 (Aukció globális kikapcsolás)
 
 ### Mit csináltunk [x]
