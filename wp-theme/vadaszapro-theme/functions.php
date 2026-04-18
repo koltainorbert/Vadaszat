@@ -219,6 +219,121 @@ add_filter( 'get_site_icon_url', function( $url ) {
     return ! empty( $favicons['32'] ) ? esc_url( $favicons['32'] ) : $url;
 }, 10, 1 );
 
+function va_get_preview_width(): int {
+    if ( is_admin() || ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+        return 0;
+    }
+
+    $vp = isset( $_GET['va_vp'] ) ? absint( (string) $_GET['va_vp'] ) : 0;
+    if ( $vp < 280 || $vp > 2560 ) {
+        return 0;
+    }
+    return $vp;
+}
+
+add_filter( 'body_class', function( array $classes ): array {
+    if ( va_get_preview_width() > 0 ) {
+        $classes[] = 'va-preview-active';
+    }
+    return $classes;
+} );
+
+add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
+    if ( is_admin() || ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    $request_uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '/';
+    $base_url = home_url( $request_uri );
+
+    $current_vp = va_get_preview_width();
+
+    $admin_bar->add_node( [
+        'id'    => 'va-breakpoint-preview',
+        'title' => 'VA Breakpoint Preview' . ( $current_vp ? ' (' . $current_vp . 'px)' : '' ),
+        'href'  => '#',
+    ] );
+
+    $presets = [
+        'Desktop 1440' => 1440,
+        'Laptop 1280'  => 1280,
+        'Tablet 1024'  => 1024,
+        'Tablet 820'   => 820,
+        'Mobile 480'   => 480,
+        'Mobile 390'   => 390,
+        'Mobile 375'   => 375,
+        'Mobile 320'   => 320,
+    ];
+
+    foreach ( $presets as $label => $width ) {
+        $url = add_query_arg( 'va_vp', (string) $width, $base_url );
+        $admin_bar->add_node( [
+            'id'     => 'va-breakpoint-preview-' . $width,
+            'parent' => 'va-breakpoint-preview',
+            'title'  => $label . ' px',
+            'href'   => esc_url( $url ),
+        ] );
+    }
+
+    $admin_bar->add_node( [
+        'id'     => 'va-breakpoint-preview-custom',
+        'parent' => 'va-breakpoint-preview',
+        'title'  => 'Egyedi szélesség (px)…',
+        'href'   => '#',
+        'meta'   => [ 'class' => 'va-breakpoint-preview-custom' ],
+    ] );
+
+    $admin_bar->add_node( [
+        'id'     => 'va-breakpoint-preview-off',
+        'parent' => 'va-breakpoint-preview',
+        'title'  => 'Preview kikapcsolása',
+        'href'   => esc_url( remove_query_arg( 'va_vp', $base_url ) ),
+    ] );
+}, 100 );
+
+add_action( 'wp_head', function() {
+    $vp = va_get_preview_width();
+    if ( $vp <= 0 ) {
+        return;
+    }
+
+    echo '<style id="va-breakpoint-preview-style">'
+        . 'body.va-preview-active{background:#0b0b0b;}'
+        . 'body.va-preview-active .va-site-wrap{max-width:' . (int) $vp . 'px;margin:0 auto;box-shadow:0 0 0 1px rgba(255,255,255,.1),0 14px 40px rgba(0,0,0,.6);min-height:100vh;background:rgb(6,6,6);}'
+        . 'body.va-preview-active .va-site-wrap::before{content:"Preview: ' . (int) $vp . 'px";position:fixed;right:10px;bottom:10px;z-index:99999;background:rgba(0,0,0,.85);color:#fff;border:1px solid rgba(255,255,255,.2);padding:6px 10px;border-radius:6px;font-size:12px;font-family:Segoe UI,Arial,sans-serif;}'
+        . '</style>';
+}, 99 );
+
+add_action( 'wp_footer', function() {
+    if ( is_admin() || ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    $vp = va_get_preview_width();
+    $current = $vp > 0 ? $vp : 390;
+    ?>
+    <script>
+    (function(){
+      var custom = document.querySelector('#wp-admin-bar-va-breakpoint-preview-custom a');
+      if(!custom) return;
+      custom.addEventListener('click', function(ev){
+        ev.preventDefault();
+        var base = window.location.href.replace(/([?&])va_vp=\d+/g,'$1').replace(/[?&]$/,'');
+        var val = window.prompt('Adj meg egy preview szélességet px-ben (280-2560):', '<?php echo (int) $current; ?>');
+        if(val===null) return;
+        var n = parseInt(val,10);
+        if(!Number.isFinite(n) || n < 280 || n > 2560){
+          window.alert('Érvénytelen érték. Engedélyezett: 280-2560 px.');
+          return;
+        }
+        var hasQuery = base.indexOf('?') !== -1;
+        window.location.href = base + (hasQuery ? '&' : '?') + 'va_vp=' + n;
+      });
+    })();
+    </script>
+    <?php
+}, 100 );
+
 /* ── Theme setup ──────────────────────────────────── */
 add_action( 'after_setup_theme', function () {
     add_theme_support( 'title-tag' );

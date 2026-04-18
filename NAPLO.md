@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 04. 18. – Session #68 (Mobil-first responzivitas + Breakpoint Preview)
+
+### Mit csinaltunk [x]
+- [x] A Layout Allitoba bekerultek a toréspont vezerlok (desktop→tablet, tablet→mobil, oldalsav rejtese)
+- [x] A dinamikus frontend CSS most ezeket a toréspontokat hasznalja
+- [x] Felső admin savba uj menu: `VA Breakpoint Preview`
+- [x] Preset preview szelessegek: 1440, 1280, 1024, 820, 480, 390, 375, 320 px
+- [x] Bricks-szeru egyedi kezi szelesseg megadasa prompttal (`Egyedi szelesseg (px)…`)
+- [x] Preview modban a teljes oldal a valasztott szelessegre van constrainelve + jobb also jelzes mutatja az aktualis px-et
+- [x] Cel: maximalis mobil-ellenorizhetoseg valos torespontokkal
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #67 (Divi/Porto mintaju Layout Allito)
 
 ### Mit csinaltunk [x]
