@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 04. 18. – Session #4 (kártya egységesítés)
+
+### Mit csináltunk [x]
+- [x] Javítva: a `Hirdetések` oldalon széteső kártya layout
+- [x] Ok azonosítva: archív oldalon nem töltődött be a plugin egységes `va-frontend` CSS, ezért a téma régi `.va-card` szabályai felülírták a kívánt megjelenést
+- [x] `wp-theme/vadaszapro-theme/functions.php` módosítva:
+  - a `va-theme` mellé globálisan betöltjük a plugin `frontend/css/frontend.css` fájlját (`va-frontend` handle)
+  - dependency: `[ 'va-theme' ]`, verzió: `VA_VERSION`
+- [x] Deploy futtatva (`Deploy All`) és hibavizsgálat lefuttatva (`functions.php` hibamentes)
+
+### Eredmény
+- A kártyák megjelenése egységes lett az egész oldalon (kereső, archívum, kategória): arányos kép + rendezett cím/ár/meta blokk.
+
+---
+
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)
 
 ### Mit csináltunk [x]

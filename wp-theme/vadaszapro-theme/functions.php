@@ -80,6 +80,11 @@ add_action( 'widgets_init', function () {
 /* ── Enqueue ──────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
     wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], '3.0.2' );
+
+    // Egységes kártya/stílus az egész oldalon (archívum, kereső, kategória stb.)
+    if ( defined( 'VA_PLUGIN_URL' ) ) {
+        wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [ 'va-theme' ], VA_VERSION );
+    }
 });
 
 /* ── Alapoldalak automatikus létrehozása (egyszer fut) ── */
