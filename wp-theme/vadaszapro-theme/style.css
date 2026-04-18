@@ -113,6 +113,7 @@ hr { border-color: var(--border); }
   height: 42px; box-sizing: border-box;
   background: none;
   outline: none;
+  position: relative;
 }
 .va-header__search-input {
   background: transparent !important; border: none; outline: none;
@@ -130,6 +131,57 @@ hr { border-color: var(--border); }
   border: none; cursor: pointer; border-radius: 50%;
 }
 .va-header__search-btn:hover { background-color: #c90000; }
+
+/* Dropdown */
+.va-search-dropdown {
+  position: absolute;
+  top: calc(100% + 8px); left: 0; right: 0;
+  background: #111;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  overflow: hidden;
+  z-index: 9999;
+  box-shadow: 0 16px 48px rgba(0,0,0,.7);
+  animation: va-sd-in .15s ease;
+}
+@keyframes va-sd-in { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.va-sd__item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  text-decoration: none; color: #fff;
+  transition: background .15s;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.va-sd__item:hover { background: rgba(255,255,255,.06); }
+.va-sd__thumb {
+  width: 44px; height: 44px; object-fit: cover;
+  border-radius: 8px; flex-shrink: 0;
+}
+.va-sd__no-img {
+  width: 44px; height: 44px; border-radius: 8px;
+  background: rgba(255,255,255,.06); flex-shrink: 0;
+}
+.va-sd__info { flex: 1; min-width: 0; }
+.va-sd__title {
+  display: block; font-size: .82rem; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.va-sd__price { display: block; font-size: .75rem; color: #ff0000; margin-top: 2px; }
+.va-sd__badge {
+  font-size: .65rem; font-weight: 700; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 20px; flex-shrink: 0;
+}
+.va-sd__badge--va_listing  { background: rgba(255,255,255,.1); color: rgba(255,255,255,.6); }
+.va-sd__badge--va_auction  { background: rgba(255,160,0,.15);  color: #ffa000; }
+.va-sd__all {
+  display: block; text-align: center;
+  padding: 10px; font-size: .78rem; color: #ff0000;
+  text-decoration: none; font-weight: 600;
+  border-top: 1px solid rgba(255,255,255,.08);
+  transition: background .15s;
+}
+.va-sd__all:hover { background: rgba(255,0,0,.06); }
+
 @media (max-width: 960px) { .va-header__search { display: none; } }
 
 /* ── Logo ── */
