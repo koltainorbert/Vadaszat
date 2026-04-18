@@ -440,6 +440,7 @@
   font-size: 14px;
   white-space: nowrap;
   cursor: pointer;
+  -webkit-user-select: none;
   user-select: none;
   border-left: 3px solid transparent;
   transition: var(--va-transition);

@@ -237,7 +237,7 @@
   });
 
   // ── Dashboard tab navigáció ──────────────────────────────
-  $(document).on('click', '.va-dashboard__nav-item', function(e) {
+  $(document).on('click', '.va-dashboard__nav-item[data-tab]', function(e) {
     e.preventDefault();
     var tab = $(this).data('tab');
     $('.va-dashboard__nav-item').removeClass('active');

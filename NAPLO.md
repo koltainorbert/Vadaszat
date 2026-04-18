@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #75 (Profil dashboard menupont UX fix)
+
+### Mit csinaltunk [x]
+- [x] A profil/dashboard bal menu elemei egysegesen 1 sorosak lettek (`white-space: nowrap`)
+- [x] Minden menupont kez kurzort kapott (`cursor: pointer`), nem csak a kijelentkezes
+- [x] A menupontok ikon + szoveg elrendezese egységesitve (`display:flex`, `align-items:center`, `gap`)
+- [x] Tab kezelo JS szukitve csak a `data-tab` elemekre, igy a kijelentkezes linket mar nem fogja meg a tab script
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #74 (Kartya hover border sarok simitas)
 
 ### Mit csinaltunk [x]
