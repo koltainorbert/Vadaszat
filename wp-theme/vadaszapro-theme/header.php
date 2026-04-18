@@ -41,12 +41,7 @@
             <!-- Kereső -->
             <form class="va-header__search" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get">
                 <input class="va-header__search-input" type="text" name="s" placeholder="keresés…" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
-                <button class="va-header__search-btn" type="submit" aria-label="Keresés">
-                    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="11" cy="11" r="7"/>
-                        <line x1="16.5" y1="16.5" x2="22" y2="22"/>
-                    </svg>
-                </button>
+                <button class="va-header__search-btn" type="submit" aria-label="Keresés"></button>
             </form>
 
             <!-- Jobb oldal -->
