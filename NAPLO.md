@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #41 (Valodi hold skin bekotese)
+
+### Mit csinaltunk [x]
+- [x] A Holdnaptar render motor valodi holdfoto texturat kapott (kulso forras)
+- [x] Kep betoltesre automatikus redraw kerult be, nem kell varni 1 percet
+- [x] Ha a kulso kep nem erheto el, fallback marad a proceduralis textura
+- [x] Hibavizsgalat: modosított fajl hibamentes
+- [x] Deploy: `Deploy Theme` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #40 (Holdnaptar valosaghubb holdfelszin + kraterek)
 
 ### Mit csinaltunk [x]

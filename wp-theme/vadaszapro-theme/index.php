@@ -94,6 +94,12 @@ get_header(); ?>
     for(i=0;i<5;i++){v+=a*n2(x*f,y*f);f*=2;a*=.5;}
     return v;
   }
+  var MOON_PHOTO_URL='https://upload.wikimedia.org/wikipedia/commons/e/e1/FullMoon2010.jpg';
+  var moonPhoto=new Image(),moonPhotoReady=false;
+  moonPhoto.crossOrigin='anonymous';
+  moonPhoto.onload=function(){moonPhotoReady=true;update();};
+  moonPhoto.onerror=function(){moonPhotoReady=false;};
+  moonPhoto.src=MOON_PHOTO_URL;
   var texCache={};
   function moonTexture(size){
     if(texCache[size])return texCache[size];
@@ -137,6 +143,18 @@ get_header(); ?>
     texCache[size]=t;
     return t;
   }
+  function drawMoonSkin(ctx,cx,cy,R){
+    if(moonPhotoReady&&moonPhoto.naturalWidth>0&&moonPhoto.naturalHeight>0){
+      var sw=Math.min(moonPhoto.naturalWidth,moonPhoto.naturalHeight);
+      var sx=(moonPhoto.naturalWidth-sw)/2,sy=(moonPhoto.naturalHeight-sw)/2;
+      ctx.filter='contrast(1.08) brightness(1.02) saturate(.1)';
+      ctx.drawImage(moonPhoto,sx,sy,sw,sw,cx-R,cy-R,R*2,R*2);
+      ctx.filter='none';
+      return;
+    }
+    var tex=moonTexture(Math.round(R*2));
+    ctx.drawImage(tex,cx-R,cy-R,R*2,R*2);
+  }
   /* ── Canvas holdrajz — valósághű felszín ── */
   function draw(cv,phase,frac){
     var W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=W/2-7,ctx=cv.getContext('2d');
@@ -157,7 +175,6 @@ get_header(); ?>
     ctx.fillStyle=dark;ctx.fill();
 
     var tx=R*Math.abs(cos(phase*2*PI)),wax=phase<=0.5,gibb=phase>=0.25&&phase<=0.75,tcw=!gibb;
-    var tex=moonTexture(Math.round(R*2));
 
     if(frac>0.01){
       ctx.save();
@@ -167,7 +184,7 @@ get_header(); ?>
       ctx.ellipse(cx,cy,Math.max(1,tx),R,0,PI/2,-PI/2,tcw);
       ctx.closePath();ctx.clip();
 
-      ctx.drawImage(tex,cx-R,cy-R,R*2,R*2);
+      drawMoonSkin(ctx,cx,cy,R);
 
       var lightDir=wax?1:-1;
       var l1=ctx.createLinearGradient(cx-R*lightDir,cy,cx+R*lightDir,cy);
@@ -190,7 +207,7 @@ get_header(); ?>
     if(frac<0.08){
       ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);ctx.clip();
       ctx.globalAlpha=.095;
-      ctx.drawImage(tex,cx-R,cy-R,R*2,R*2);
+      drawMoonSkin(ctx,cx,cy,R);
       ctx.globalAlpha=1;
       ctx.restore();
     }
