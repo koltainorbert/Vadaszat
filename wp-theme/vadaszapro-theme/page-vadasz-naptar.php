@@ -23,6 +23,21 @@ get_header();
   box-shadow:0 0 40px rgba(0,0,0,.6),inset 0 0 60px rgba(255,0,0,.03);
 }
 .vn-moon-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+.vn-moon-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:end;justify-content:center;margin:0 0 16px;}
+.vn-moon-field{display:flex;flex-direction:column;gap:5px;min-width:120px;}
+.vn-moon-field span{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.42);font-weight:700;}
+.vn-moon-select{
+  height:38px;padding:0 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+  color:#fff;font-size:.84rem;
+}
+.vn-moon-jump{
+  height:38px;padding:0 14px;border-radius:8px;cursor:pointer;
+  border:1px solid rgba(255,0,0,.28);background:rgba(255,0,0,.1);color:#fff;
+  font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+}
+.vn-moon-jump:hover{background:rgba(255,0,0,.2);border-color:#ff0000;}
+.vn-moon-range-note{text-align:center;font-size:.68rem;color:rgba(255,255,255,.42);margin:-2px 0 14px;}
 .vn-moon-nav{
   background:rgba(255,0,0,.1);border:1px solid rgba(255,0,0,.35);
   color:#fff;border-radius:6px;width:36px;height:36px;
@@ -200,6 +215,9 @@ get_header();
 /* ── RESPONSIVE ── */
 @media(max-width:700px){
   .vn-moon-grid{gap:2px;}
+  .vn-moon-tools{gap:8px;}
+  .vn-moon-field{min-width:calc(50% - 4px);}
+  .vn-moon-jump{flex:1 1 calc(50% - 4px);}
   .vn-moon-dicon{font-size:1.1rem;}
   .vn-moon-dnum{font-size:.6rem;}
   .vn-moon-dpct{display:none;}
@@ -258,6 +276,19 @@ get_header();
       </div>
       <button class="vn-moon-nav" id="vn-moon-next">&#9654;</button>
     </div>
+    <div class="vn-moon-tools">
+      <label class="vn-moon-field">
+        <span>Hónap</span>
+        <select class="vn-moon-select" id="vn-moon-month"></select>
+      </label>
+      <label class="vn-moon-field">
+        <span>Év</span>
+        <select class="vn-moon-select" id="vn-moon-year"></select>
+      </label>
+      <button class="vn-moon-jump" id="vn-moon-today" type="button">Mai hónap</button>
+      <button class="vn-moon-jump" id="vn-moon-plus50" type="button">+50 év</button>
+    </div>
+    <div class="vn-moon-range-note">Holdnaptár előnézet: az aktuális évtől 50 évre előre.</div>
     <div class="vn-moon-grid" id="vn-moon-grid"></div>
     <div class="vn-moon-legend">
       <span>&#127761; &Uacute;jhold</span><span>&#127762; N&ouml;vekv&#337; sarl&oacute;</span><span>&#127763; Els&#337; negyed</span><span>&#127764; N&ouml;vekv&#337; domboru</span>
