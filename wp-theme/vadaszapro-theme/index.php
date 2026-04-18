@@ -634,20 +634,20 @@ function updateSunInfo(bp){
 function updateShootCountdown(bp){
   var el=document.getElementById('va-hn-shoot-cd');
   if(!el)return;
+  var wrap=el.closest('.va-hnaptar__sun-item');
 
   var now=new Date();
   var stToday=getSunTimesBp(bp.year,bp.month,bp.day);
   var cutoffToday=new Date(stToday.set.getTime()+3600000); // napnyugta + 1 óra
 
   if(now<=cutoffToday){
+    if(wrap)wrap.style.display='inline-flex';
     el.textContent='Trófeás vad a mai napon lőhető még '+fmtHp(cutoffToday-now);
     return;
   }
 
-  var nd=nextBpDay(bp.year,bp.month,bp.day);
-  var stNext=getSunTimesBp(nd.y,nd.m,nd.d);
-  var cutoffNext=new Date(stNext.set.getTime()+3600000);
-  el.textContent='Trófeás vad a mai napon lőhető még '+fmtHp(cutoffNext-now);
+  // Ha ma már tilalom van, ne jelenjen meg a trófeás visszaszámláló.
+  if(wrap)wrap.style.display='none';
 }
 var _bp=nowBPsimple();
 var TODAY={m:_bp.month,d:_bp.day};
