@@ -2,6 +2,15 @@
 
 ---
 
+## 2026. 04. 18. – Session #47 (Hold peremfeny visszaallitasa egy lepessel)
+
+### Mit csinaltunk [x]
+- [x] Az elozo lepes visszavonva: a finom belso peremfeny visszakerult
+- [x] Csak a legutobbi hold-rajz modositas lett visszaallitva
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #46 (Hold korbefuto gyuru teljes eltavolitasa)
 
 ### Mit csinaltunk [x]
