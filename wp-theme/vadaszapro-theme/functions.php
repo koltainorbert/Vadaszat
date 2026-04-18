@@ -368,6 +368,16 @@ add_action( 'wp_enqueue_scripts', function () {
         $frontend_css_path = defined( 'VA_PLUGIN_DIR' ) ? VA_PLUGIN_DIR . 'frontend/css/frontend.css' : '';
         $frontend_css_ver  = ( $frontend_css_path && file_exists( $frontend_css_path ) ) ? (string) filemtime( $frontend_css_path ) : VA_VERSION;
         wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [ 'va-theme' ], $frontend_css_ver );
+
+        // A kartya interakciokhoz (kedvencek, szuro, pagination) mindenhol elerheto frontend JS.
+        $frontend_js_path = defined( 'VA_PLUGIN_DIR' ) ? VA_PLUGIN_DIR . 'frontend/js/frontend.js' : '';
+        $frontend_js_ver  = ( $frontend_js_path && file_exists( $frontend_js_path ) ) ? (string) filemtime( $frontend_js_path ) : VA_VERSION;
+        wp_enqueue_script( 'va-frontend', VA_PLUGIN_URL . 'frontend/js/frontend.js', [ 'jquery' ], $frontend_js_ver, true );
+        wp_localize_script( 'va-frontend', 'VA_Data', [
+            'ajax_url' => admin_url( 'admin-ajax.php' ),
+            'nonce'    => wp_create_nonce( 'va_user_nonce' ),
+            'post_id'  => is_singular() ? get_the_ID() : 0,
+        ] );
     }
 });
 

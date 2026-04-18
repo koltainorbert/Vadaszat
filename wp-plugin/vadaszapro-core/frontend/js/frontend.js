@@ -8,6 +8,36 @@
 
   document.documentElement.classList.add('va-js');
 
+  function va_toast(message, type) {
+    var kind = type || 'success';
+    var stack = document.querySelector('.va-toast-stack');
+    if (!stack) {
+      stack = document.createElement('div');
+      stack.className = 'va-toast-stack';
+      document.body.appendChild(stack);
+    }
+
+    var toast = document.createElement('div');
+    toast.className = 'va-toast va-toast--' + kind;
+    toast.innerHTML = '<div class="va-toast__title">' + (kind === 'error' ? 'Hiba' : 'Kedvencek') + '</div>'
+      + '<div class="va-toast__msg"></div>';
+    toast.querySelector('.va-toast__msg').textContent = message;
+    stack.appendChild(toast);
+
+    requestAnimationFrame(function() {
+      toast.classList.add('is-visible');
+    });
+
+    setTimeout(function() {
+      toast.classList.remove('is-visible');
+      setTimeout(function() {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 250);
+    }, 5000);
+  }
+
   // ── Megtekintés számláló ─────────────────────────────────
   if (typeof VA_Data !== 'undefined' && VA_Data.post_id) {
     $.post(VA_Data.ajax_url, {
@@ -56,8 +86,14 @@
     var ajaxUrl = $btn.data('ajax-url') || (typeof VA_Data !== 'undefined' ? VA_Data.ajax_url : '');
 
     if (!post_id || !nonce || !ajaxUrl) {
+      va_toast('A kedvencek mentése most nem elérhető.', 'error');
       return;
     }
+
+    if ($btn.data('busy')) {
+      return;
+    }
+    $btn.data('busy', true);
 
     $.post(ajaxUrl, {
       action:  'va_toggle_watchlist',
@@ -67,7 +103,14 @@
       if (res.success) {
         $btn.toggleClass('active', res.data.action === 'added');
         $btn.attr('title', res.data.message);
+        va_toast(res.data.message || 'Kedvencek frissítve.', 'success');
+      } else {
+        va_toast((res.data && res.data.message) ? res.data.message : 'Nem sikerült menteni a kedvencekbe.', 'error');
       }
+    }).fail(function() {
+      va_toast('Hálózati hiba. Próbáld újra.', 'error');
+    }).always(function() {
+      $btn.data('busy', false);
     });
   });
 

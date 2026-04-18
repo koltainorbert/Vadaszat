@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 04. 18. – Session #73 (Kedvencek stabilizalas + 5s push toast)
+
+### Mit csinaltunk [x]
+- [x] A `va-frontend` JS globalisan enqueue-olva a theme-bol, hogy minden kartya nezetben biztosan aktiv legyen
+- [x] Globalis `VA_Data` lokalizacio hozzaadva (ajax_url, nonce, post_id)
+- [x] Kedvencek kattintasnal robosztus hibakezeles bevezetve (missing adat, backend hiba, halozati hiba)
+- [x] Dupla kattintas vedelme (`busy` flag)
+- [x] Uj jobb felso push ertesites design (lekerekitett kartya, glow, elegans be/ki animacio)
+- [x] Toast eletciklus: 5 masodperc
+- [x] Cel: azonnali vizualis visszajelzes + megbizhato kedvencek mentes
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #72 (Kedvencek mentes hibajavitas)
 
 ### Mit csinaltunk [x]
