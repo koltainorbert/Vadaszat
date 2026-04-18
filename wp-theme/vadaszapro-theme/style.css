@@ -1279,6 +1279,19 @@ textarea { min-height: 110px; resize: vertical; }
   line-height: 1.75;
   text-shadow: 0 2px 12px rgba(0,0,0,.45);
 }
+.vcp-video--tax {
+  min-height: 320px;
+}
+.vcp-video--tax .vcp-video__content {
+  min-height: 320px;
+  gap: 8px;
+}
+.vcp-video--tax .vcp-video__title {
+  font-size: clamp(1.9rem,4.2vw,3.1rem);
+}
+.vcp-video--tax .va-archive-header__count {
+  margin-top: 6px;
+}
 @media (max-width: 640px) {
   .vcp-video {
     margin-top: 24px;
