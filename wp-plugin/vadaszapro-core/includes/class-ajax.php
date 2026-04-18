@@ -138,39 +138,10 @@ class VA_Ajax {
             self::handle_images( $post_id, $_FILES['listing_images'], $featured_idx );
         }
 
+        // Ha nem ingyenes: kredit levonás
         if ( ! $is_free_allowed ) {
-            $token = wp_generate_password( 24, false, false );
-            update_post_meta( $post_id, 'va_payment_required', '1' );
-            update_post_meta( $post_id, 'va_payment_status', 'pending' );
-            update_post_meta( $post_id, 'va_payment_amount', $paid_price );
-            update_post_meta( $post_id, 'va_payment_token', $token );
-
-            $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
-            $submit_url = $submit_page ? get_permalink( $submit_page ) : home_url( '/va-hirdetes-feladas/' );
-            $success_url = add_query_arg([
-                'va_payment' => 'success',
-                'token'      => rawurlencode( $token ),
-            ], $submit_url );
-            $cancel_url = add_query_arg([
-                'va_payment' => 'cancel',
-                'token'      => rawurlencode( $token ),
-            ], $submit_url );
-
-            $checkout_url = add_query_arg([
-                'intent'      => 'listing_submission',
-                'listing_id'  => $post_id,
-                'token'       => $token,
-                'amount'      => $paid_price,
-                'success_url' => rawurlencode( $success_url ),
-                'cancel_url'  => rawurlencode( $cancel_url ),
-            ], $payment_url );
-
-            wp_send_json_error([
-                'message'          => 'Az ingyenes hirdetési limit elfogyott. A hirdetés vázlatként mentve. Fizetés után automatikusan aktiváljuk és számlát készítünk.',
-                'payment_required' => true,
-                'amount'           => $paid_price,
-                'payment_url'      => esc_url_raw( $checkout_url ),
-            ]);
+            $credits = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
+            update_user_meta( $user_id, 'va_listing_credits', max( 0, $credits - 1 ) );
         }
 
         $msg = $status === 'publish'
