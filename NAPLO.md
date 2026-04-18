@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #10 (Hero logó pozíció adminból)
+
+### Mit csináltunk [x]
+- [x] Új admin opció: `va_hero_logo_position` (Bal / Közép / Jobb)
+- [x] Beállítás mező hozzáadva az Általános oldalra
+- [x] Header sablon frissítve: a hero logó osztálya opció alapján vált (`vh__logo--left|center|right`)
+- [x] Új CSS igazítás osztályok a hero logóhoz
+- [x] Deploy futtatva (`Deploy All`), hibamentes PHP ellenőrzés
+
+---
+
 ## 2026. 04. 18. – Session #9 (Logó méretezés adminból + favicon torzulás javítás)
 
 ### Mit csináltunk [x]

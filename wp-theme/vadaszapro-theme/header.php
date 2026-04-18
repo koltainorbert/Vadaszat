@@ -20,6 +20,10 @@
     $hero_logo   = get_option( 'va_hero_logo_url', '' );
     $header_logo_h = max( 20, min( 120, absint( get_option( 'va_header_logo_height', 36 ) ) ) );
     $hero_logo_h   = max( 30, min( 260, absint( get_option( 'va_hero_logo_height', 72 ) ) ) );
+    $hero_logo_pos = sanitize_key( (string) get_option( 'va_hero_logo_position', 'left' ) );
+    if ( ! in_array( $hero_logo_pos, [ 'left', 'center', 'right' ], true ) ) {
+        $hero_logo_pos = 'left';
+    }
     if ( $hero_logo === '' ) {
         $hero_logo = $header_logo;
     }
@@ -176,7 +180,7 @@
 
         <div class="vh__content">
             <?php if ( ! empty( $hero_logo ) ): ?>
-                <img src="<?php echo esc_url( $hero_logo ); ?>" class="vh__logo" style="height:<?php echo esc_attr( $hero_logo_h ); ?>px;" alt="<?php echo esc_attr( $brand_name ); ?>" loading="eager" decoding="async">
+                <img src="<?php echo esc_url( $hero_logo ); ?>" class="vh__logo vh__logo--<?php echo esc_attr( $hero_logo_pos ); ?>" style="height:<?php echo esc_attr( $hero_logo_h ); ?>px;" alt="<?php echo esc_attr( $brand_name ); ?>" loading="eager" decoding="async">
             <?php endif; ?>
             <div class="vh__badge"><span class="vcp-hero__badge-dot"></span><?php echo $auctions_enabled ? 'Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala' : 'Magyarorsz&aacute;g els&#337; vad&aacute;szati hirdet&#337;oldala'; ?></div>
             <h2 class="vh__title">

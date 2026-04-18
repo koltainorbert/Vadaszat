@@ -1023,6 +1023,9 @@ textarea { min-height: 110px; resize: vertical; }
   margin: 0 0 16px;
   filter: drop-shadow(0 8px 22px rgba(0,0,0,.55));
 }
+.vh__logo--left { margin-left: 0; margin-right: auto; }
+.vh__logo--center { margin-left: auto; margin-right: auto; }
+.vh__logo--right { margin-left: auto; margin-right: 0; }
 
 .vh__badge {
   display: inline-flex;

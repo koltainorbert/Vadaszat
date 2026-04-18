@@ -23,6 +23,7 @@ class VA_Settings_Page {
             'va_enable_auctions'     => '1',
             'va_header_logo_height'  => 36,
             'va_hero_logo_height'    => 72,
+            'va_hero_logo_position'  => 'left',
             'va_listings_per_page'   => 20,
             'va_auto_publish_listings' => '0',  // 0=jóváhagyás szükséges, 1=azonnal él
             'va_listing_validity_days' => 60,   // hirdetés lejárata (nap) feladáskor
@@ -121,6 +122,7 @@ class VA_Settings_Page {
                     <?php self::field_num(   'va_header_logo_height',   'Fejléc logó magasság (px)', 20, 120 ); ?>
                     <?php self::field_media( 'va_hero_logo_url',        'Hero logó (főoldal)' ); ?>
                     <?php self::field_num(   'va_hero_logo_height',     'Hero logó magasság (px)', 30, 260 ); ?>
+                    <?php self::field_select('va_hero_logo_position',   'Hero logó pozíció', [ 'left' => 'Bal', 'center' => 'Közép', 'right' => 'Jobb' ] ); ?>
                     <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
                     <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
                     <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
@@ -371,6 +373,15 @@ class VA_Settings_Page {
     private static function field_num( string $key, string $label, int $min = 0, int $max = 9999 ): void {
         $val = esc_attr( get_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" class=\"small-text\"></td></tr>";
+    }
+
+    private static function field_select( string $key, string $label, array $options ): void {
+        $current = (string) get_option( $key, '' );
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><select id=\"{$key}\" name=\"{$key}\">";
+        foreach ( $options as $value => $text ) {
+            echo '<option value="' . esc_attr( $value ) . '" ' . selected( $current, (string) $value, false ) . '>' . esc_html( (string) $text ) . '</option>';
+        }
+        echo '</select></td></tr>';
     }
 
     private static function field_toggle( string $key, string $label ): void {
