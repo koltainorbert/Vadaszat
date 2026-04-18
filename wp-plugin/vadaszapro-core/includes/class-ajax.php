@@ -94,6 +94,10 @@ class VA_Ajax {
             }
         }
 
+        // WP beállítástól függ: auto-publish vagy pending review
+        $final_status = get_option( 'va_auto_publish_listings', '0' ) === '1' ? 'publish' : 'pending';
+        $status = $final_status;
+
         $post_id = wp_insert_post([
             'post_title'   => $title,
             'post_content' => $description,
