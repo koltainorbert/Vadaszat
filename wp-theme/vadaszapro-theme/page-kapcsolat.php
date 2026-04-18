@@ -85,6 +85,11 @@ $status = sanitize_text_field( wp_unslash( $_GET['contact_status'] ?? '' ) );
                     </div>
 
                     <div class="va-contact-field">
+                        <label for="va-phone">Telefonszám</label>
+                        <input id="va-phone" name="va_phone" type="tel" inputmode="tel" required>
+                    </div>
+
+                    <div class="va-contact-field">
                         <label for="va-subject">Tárgy</label>
                         <input id="va-subject" name="va_subject" type="text" required>
                     </div>

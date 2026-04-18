@@ -142,10 +142,11 @@ function va_handle_contact_form(): void {
 
     $name    = sanitize_text_field( wp_unslash( $_POST['va_name'] ?? '' ) );
     $email   = sanitize_email( wp_unslash( $_POST['va_email'] ?? '' ) );
+    $phone   = sanitize_text_field( wp_unslash( $_POST['va_phone'] ?? '' ) );
     $subject = sanitize_text_field( wp_unslash( $_POST['va_subject'] ?? '' ) );
     $message = trim( (string) wp_unslash( $_POST['va_message'] ?? '' ) );
 
-    if ( $name === '' || ! is_email( $email ) || $subject === '' || $message === '' ) {
+    if ( $name === '' || ! is_email( $email ) || $phone === '' || $subject === '' || $message === '' ) {
         wp_safe_redirect( add_query_arg( 'contact_status', 'invalid', $redirect ) );
         exit;
     }
@@ -156,6 +157,7 @@ function va_handle_contact_form(): void {
     $mail_body = "Új kapcsolatfelvételi üzenet érkezett a weboldalról.\n\n"
         . "Név: {$name}\n"
         . "E-mail: {$email}\n"
+        . "Telefonszám: {$phone}\n"
         . "Tárgy: {$subject}\n\n"
         . "Üzenet:\n"
         . wp_strip_all_tags( $message ) . "\n";
