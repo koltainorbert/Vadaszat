@@ -163,6 +163,11 @@ class VA_Settings_Page {
             'va_hf_header_blur'                    => 16,
             'va_hf_header_blur_scrolled'           => 20,
             'va_hf_header_shadow_alpha'            => '0.70',
+            'va_hf_header_color_base'              => '#050505',
+            'va_hf_header_color_alt'               => '#140909',
+            'va_hf_header_border_color'            => '#ff2a2a',
+            'va_hf_header_shadow_color'            => 'rgba(0,0,0,.72)',
+            'va_hf_header_glow_color'              => 'rgba(255,0,0,.24)',
 
             // Fejléc kereső
             'va_hf_header_search_max_width'        => 460,
@@ -175,6 +180,7 @@ class VA_Settings_Page {
             'va_hf_header_search_icon_size'        => 16,
             'va_hf_header_search_icon_bg_alpha'    => '0.14',
             'va_hf_header_search_icon_bg_hover_alpha' => '0.22',
+            'va_hf_header_search_glow_color'       => 'rgba(255,0,0,.18)',
             'va_hf_header_search_placeholder'      => 'keresés…',
 
             // Fejléc gombok
@@ -182,6 +188,7 @@ class VA_Settings_Page {
             'va_hf_header_btn_pad_y'               => 8,
             'va_hf_header_btn_pad_x'               => 20,
             'va_hf_header_btn_glow_alpha'          => '0.40',
+            'va_hf_header_btn_glow_color'          => 'rgba(255,0,0,.52)',
             'va_hf_header_user_border_alpha'       => '0.12',
             'va_hf_header_user_bg_alpha'           => '0.06',
             'va_hf_header_mobile_show_search'      => '0',
@@ -201,6 +208,12 @@ class VA_Settings_Page {
             'va_hf_footer_border_alpha'            => '0.07',
             'va_hf_footer_bottom_border_alpha'     => '0.07',
             'va_hf_footer_max_width'               => 1400,
+            'va_hf_footer_color_base'              => '#0a0a0a',
+            'va_hf_footer_color_alt'               => '#150707',
+            'va_hf_footer_border_color'            => '#ff2a2a',
+            'va_hf_footer_shadow_color'            => 'rgba(0,0,0,.36)',
+            'va_hf_footer_glow_color'              => 'rgba(255,0,0,.14)',
+            'va_hf_footer_link_hover_color'        => '#ffffff',
 
             // Lábléc szövegek
             'va_hf_footer_brand_title'             => 'VadászApró',
@@ -564,6 +577,17 @@ class VA_Settings_Page {
                     <?php self::field_decimal( 'va_hf_header_shadow_alpha',    'Fejléc árnyék opacitás (0-1)', 0, 1, 0.01 ); ?>
                 </table>
 
+                <h2>Fejléc: modern színpaletta és árnyékok</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_hf_header_color_base',    'Fejléc alapszín (gradient 1)' ); ?>
+                    <?php self::field_color( 'va_hf_header_color_alt',     'Fejléc másodlagos szín (gradient 2)' ); ?>
+                    <?php self::field_color( 'va_hf_header_border_color',  'Fejléc alsó border szín' ); ?>
+                    <?php self::field_text(  'va_hf_header_shadow_color',  'Fejléc fő árnyék szín (hex/rgba)' ); ?>
+                    <?php self::field_text(  'va_hf_header_glow_color',    'Fejléc neon glow szín (hex/rgba)' ); ?>
+                    <?php self::field_text(  'va_hf_header_search_glow_color', 'Kereső glow szín (hex/rgba)' ); ?>
+                    <?php self::field_text(  'va_hf_header_btn_glow_color',    'CTA gomb glow szín (hex/rgba)' ); ?>
+                </table>
+
                 <h2>Fejléc: kereső részletes vezérlés</h2>
                 <table class="form-table">
                     <?php self::field_num( 'va_hf_header_search_max_width',        'Kereső max szélesség (px)', 220, 760 ); ?>
@@ -617,6 +641,16 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_size_footer_title',      'Lábléc oszlopcím méret (px)', 10, 34 ); ?>
                     <?php self::field_num( 'va_size_footer_link',       'Lábléc link méret (px)', 10, 30 ); ?>
                     <?php self::field_num( 'va_size_footer_bottom',     'Lábléc alsó sor méret (px)', 10, 28 ); ?>
+                </table>
+
+                <h2>Lábléc: modern színpaletta és árnyékok</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_hf_footer_color_base',       'Lábléc alapszín (gradient 1)' ); ?>
+                    <?php self::field_color( 'va_hf_footer_color_alt',        'Lábléc másodlagos szín (gradient 2)' ); ?>
+                    <?php self::field_color( 'va_hf_footer_border_color',     'Lábléc border szín' ); ?>
+                    <?php self::field_text(  'va_hf_footer_shadow_color',     'Lábléc árnyék szín (hex/rgba)' ); ?>
+                    <?php self::field_text(  'va_hf_footer_glow_color',       'Lábléc glow szín (hex/rgba)' ); ?>
+                    <?php self::field_color( 'va_hf_footer_link_hover_color', 'Lábléc link hover szín' ); ?>
                 </table>
 
                 <h2>Lábléc: összes felirat és link címke</h2>
@@ -818,7 +852,9 @@ class VA_Settings_Page {
 
         if ( $msg === 'import_ok' ) {
             $cnt  = absint( $_GET['count'] ?? 0 );
-            $note = 'Import kész. Frissített opciók: ' . $cnt;
+            $tax  = absint( $_GET['tax'] ?? 0 );
+            $pages= absint( $_GET['pages'] ?? 0 );
+            $note = 'Import kész. Frissített opciók: ' . $cnt . ', taxonómiák: ' . $tax . ', oldalak: ' . $pages;
             $cls  = 'notice notice-success';
         } elseif ( $msg === 'reset_ok' ) {
             $cnt  = absint( $_GET['count'] ?? 0 );
@@ -842,21 +878,29 @@ class VA_Settings_Page {
 
             <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
                 <h2>1) Export összes beállítás</h2>
-                <p>JSON fájl letöltése, amit másik oldalon vissza tudsz importálni.</p>
+                <p>JSON fájl letöltése, amit másik oldalon vissza tudsz importálni. Opcionálisan teljes migrációs adatokkal (taxonómia + fix oldalak).</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
                     <input type="hidden" name="action" value="va_export_settings">
                     <?php wp_nonce_field( 'va_export_settings' ); ?>
+                    <p>
+                        <label><input type="checkbox" name="va_export_taxonomies" value="1" checked> Taxonómiák exportálása is (kategória, megye, állapot)</label><br>
+                        <label><input type="checkbox" name="va_export_pages" value="1" checked> Fix oldalak exportálása is (slug + tartalom)</label>
+                    </p>
                     <?php submit_button( 'Összes beállítás exportálása', 'primary', 'submit', false ); ?>
                 </form>
             </div>
 
             <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
                 <h2>2) Import beállítás fájlból</h2>
-                <p>Csak ezen plugin exportjából származó JSON fájlt tölts fel.</p>
+                <p>Csak ezen plugin exportjából származó JSON fájlt tölts fel. Beállíthatod, hogy a taxonómiákat és oldalakat is importálja.</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="va_import_settings">
                     <?php wp_nonce_field( 'va_import_settings' ); ?>
                     <input type="file" name="va_import_file" accept="application/json,.json" required>
+                    <p style="margin-top:10px;">
+                        <label><input type="checkbox" name="va_import_taxonomies" value="1" checked> Taxonómiák importálása is</label><br>
+                        <label><input type="checkbox" name="va_import_pages" value="1" checked> Fix oldalak importálása is</label>
+                    </p>
                     <p style="margin-top:12px;">
                         <?php submit_button( 'Import indítása', 'secondary', 'submit', false ); ?>
                     </p>
@@ -893,6 +937,13 @@ class VA_Settings_Page {
             'options' => self::get_all_va_options(),
         ];
 
+        if ( (string) ( $_POST['va_export_taxonomies'] ?? '' ) === '1' ) {
+            $payload['taxonomies'] = self::get_export_taxonomies();
+        }
+        if ( (string) ( $_POST['va_export_pages'] ?? '' ) === '1' ) {
+            $payload['pages'] = self::get_export_pages();
+        }
+
         $filename = 'vadaszapro-settings-' . gmdate( 'Ymd-His' ) . '.json';
         nocache_headers();
         header( 'Content-Type: application/json; charset=utf-8' );
@@ -928,6 +979,8 @@ class VA_Settings_Page {
         }
 
         $count = 0;
+        $tax_count = 0;
+        $page_count = 0;
         foreach ( $data['options'] as $key => $value ) {
             if ( ! is_string( $key ) || strpos( $key, 'va_' ) !== 0 ) {
                 continue;
@@ -936,7 +989,15 @@ class VA_Settings_Page {
             $count++;
         }
 
-        wp_safe_redirect( add_query_arg( [ 'va_tools_msg' => 'import_ok', 'count' => $count ], $redirect ) );
+        if ( (string) ( $_POST['va_import_taxonomies'] ?? '' ) === '1' && isset( $data['taxonomies'] ) && is_array( $data['taxonomies'] ) ) {
+            $tax_count = self::import_taxonomies( $data['taxonomies'] );
+        }
+
+        if ( (string) ( $_POST['va_import_pages'] ?? '' ) === '1' && isset( $data['pages'] ) && is_array( $data['pages'] ) ) {
+            $page_count = self::import_pages( $data['pages'] );
+        }
+
+        wp_safe_redirect( add_query_arg( [ 'va_tools_msg' => 'import_ok', 'count' => $count, 'tax' => $tax_count, 'pages' => $page_count ], $redirect ) );
         exit;
     }
 
@@ -993,6 +1054,175 @@ class VA_Settings_Page {
 
         ksort( $options );
         return $options;
+    }
+
+    private static function get_export_taxonomies(): array {
+        $out = [];
+        $taxonomies = [ 'va_category', 'va_county', 'va_condition' ];
+        foreach ( $taxonomies as $taxonomy ) {
+            $terms = get_terms([
+                'taxonomy'   => $taxonomy,
+                'hide_empty' => false,
+            ]);
+            if ( is_wp_error( $terms ) ) {
+                continue;
+            }
+
+            $out[ $taxonomy ] = [];
+            foreach ( $terms as $term ) {
+                $parent_slug = '';
+                if ( $term->parent ) {
+                    $parent = get_term( (int) $term->parent, $taxonomy );
+                    if ( $parent && ! is_wp_error( $parent ) ) {
+                        $parent_slug = (string) $parent->slug;
+                    }
+                }
+
+                $out[ $taxonomy ][] = [
+                    'slug'        => (string) $term->slug,
+                    'name'        => (string) $term->name,
+                    'description' => (string) $term->description,
+                    'parent_slug' => $parent_slug,
+                ];
+            }
+        }
+
+        return $out;
+    }
+
+    private static function get_export_pages(): array {
+        $slugs = [
+            'kategoria',
+            'kapcsolat',
+            'va-hirdetes-kereses',
+            'va-hirdetes-feladas',
+            'va-bejelentkezes',
+            'va-regisztracio',
+            'va-fiok',
+            'va-aukciok',
+            'aszf',
+            'adatvedelmi-nyilatkozat',
+            'sugo',
+        ];
+
+        $pages = [];
+        foreach ( $slugs as $slug ) {
+            $page = get_page_by_path( $slug );
+            if ( ! $page ) {
+                continue;
+            }
+            $pages[] = [
+                'slug'    => (string) $page->post_name,
+                'title'   => (string) $page->post_title,
+                'status'  => (string) $page->post_status,
+                'content' => (string) $page->post_content,
+                'excerpt' => (string) $page->post_excerpt,
+            ];
+        }
+
+        return $pages;
+    }
+
+    private static function import_taxonomies( array $tax_data ): int {
+        $processed = 0;
+
+        foreach ( $tax_data as $taxonomy => $terms ) {
+            if ( ! taxonomy_exists( (string) $taxonomy ) || ! is_array( $terms ) ) {
+                continue;
+            }
+
+            // 1. kör: létrehozás/frissítés parent nélkül.
+            foreach ( $terms as $item ) {
+                if ( ! is_array( $item ) ) {
+                    continue;
+                }
+                $slug = sanitize_title( (string) ( $item['slug'] ?? '' ) );
+                $name = sanitize_text_field( (string) ( $item['name'] ?? '' ) );
+                $desc = sanitize_textarea_field( (string) ( $item['description'] ?? '' ) );
+                if ( $slug === '' || $name === '' ) {
+                    continue;
+                }
+
+                $existing = get_term_by( 'slug', $slug, (string) $taxonomy );
+                if ( $existing && ! is_wp_error( $existing ) ) {
+                    wp_update_term( (int) $existing->term_id, (string) $taxonomy, [
+                        'name'        => $name,
+                        'description' => $desc,
+                        'slug'        => $slug,
+                    ] );
+                } else {
+                    wp_insert_term( $name, (string) $taxonomy, [
+                        'description' => $desc,
+                        'slug'        => $slug,
+                    ] );
+                }
+                $processed++;
+            }
+
+            // 2. kör: parent kapcsolatok.
+            foreach ( $terms as $item ) {
+                if ( ! is_array( $item ) ) {
+                    continue;
+                }
+                $slug = sanitize_title( (string) ( $item['slug'] ?? '' ) );
+                $parent_slug = sanitize_title( (string) ( $item['parent_slug'] ?? '' ) );
+                if ( $slug === '' || $parent_slug === '' ) {
+                    continue;
+                }
+
+                $term = get_term_by( 'slug', $slug, (string) $taxonomy );
+                $parent = get_term_by( 'slug', $parent_slug, (string) $taxonomy );
+                if ( ! $term || is_wp_error( $term ) || ! $parent || is_wp_error( $parent ) ) {
+                    continue;
+                }
+
+                wp_update_term( (int) $term->term_id, (string) $taxonomy, [ 'parent' => (int) $parent->term_id ] );
+            }
+        }
+
+        return $processed;
+    }
+
+    private static function import_pages( array $pages ): int {
+        $processed = 0;
+        foreach ( $pages as $row ) {
+            if ( ! is_array( $row ) ) {
+                continue;
+            }
+
+            $slug    = sanitize_title( (string) ( $row['slug'] ?? '' ) );
+            $title   = sanitize_text_field( (string) ( $row['title'] ?? '' ) );
+            $status  = sanitize_key( (string) ( $row['status'] ?? 'publish' ) );
+            $content = wp_kses_post( (string) ( $row['content'] ?? '' ) );
+            $excerpt = sanitize_textarea_field( (string) ( $row['excerpt'] ?? '' ) );
+
+            if ( $slug === '' || $title === '' ) {
+                continue;
+            }
+            if ( ! in_array( $status, [ 'publish', 'draft', 'private', 'pending' ], true ) ) {
+                $status = 'publish';
+            }
+
+            $existing = get_page_by_path( $slug );
+            $postarr = [
+                'post_type'    => 'page',
+                'post_title'   => $title,
+                'post_name'    => $slug,
+                'post_status'  => $status,
+                'post_content' => $content,
+                'post_excerpt' => $excerpt,
+            ];
+
+            if ( $existing ) {
+                $postarr['ID'] = (int) $existing->ID;
+                wp_update_post( $postarr );
+            } else {
+                wp_insert_post( $postarr );
+            }
+            $processed++;
+        }
+
+        return $processed;
     }
 
     /* ══ Helper mezők ═════════════════════════════════════ */
