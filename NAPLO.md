@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #74 (Kartya hover border sarok simitas)
+
+### Mit csinaltunk [x]
+- [x] A termekkartya hover border nem a fo borderen valtozik mar, hanem kulon radius-oroklo overlayen
+- [x] Ez megszunteti a reces/tort sarokhatast hover allapotban
+- [x] Hozzaadva `focus-within` allapot is az egyseges kiemeleshez
+- [x] Finom GPU simitas: `translateZ(0)` + `backface-visibility: hidden`
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #73 (Kedvencek stabilizalas + 5s push toast)
 
 ### Mit csinaltunk [x]
