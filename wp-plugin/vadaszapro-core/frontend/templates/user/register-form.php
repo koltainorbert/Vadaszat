@@ -36,7 +36,24 @@ $register_enabled = get_option( 'va_enable_register', '1' ) === '1';
             <input type="hidden" name="va_action" value="register">
             <input type="hidden" name="reg_account_type" id="va-account-type" value="private">
 
-            <div class="va-register-grid">
+        <div class="va-register-grid">
+            <?php
+            $fb_reg    = 'va_register';
+            $fb_rfields = VA_Form_Builder::get_fields( $fb_reg );
+            usort( $fb_rfields, fn( $a, $b ) => (int)($a['order'] ?? 99) - (int)($b['order'] ?? 99) );
+
+            foreach ( $fb_rfields as $rf ):
+                $rkey   = (string)( $rf['key']         ?? '' );
+                $rlabel = esc_html( (string)( $rf['label']        ?? $rkey ) );
+                $rph    = esc_attr( (string)( $rf['placeholder']  ?? '' ) );
+                $rreq   = ! empty( $rf['required'] );
+                if ( empty( $rf['enabled'] ) ) continue;
+                $rreq_html = $rreq ? ' <span class="required">*</span>' : '';
+                $rreq_attr = $rreq ? ' required' : '';
+                $company_keys = [ 'reg_company_name', 'reg_company_tax', 'reg_company_seat' ];
+            ?>
+
+            <?php if ( $rkey === 'account_type' ): ?>
                 <div class="va-register-field va-register-field--full">
                     <div class="va-account-switch" role="group" aria-label="Fiók típus választó">
                         <span class="va-account-switch__label">Magánszemély</span>
@@ -48,69 +65,66 @@ $register_enabled = get_option( 'va_enable_register', '1' ) === '1';
                     </div>
                 </div>
 
-                <div class="va-form-group va-register-field">
-                    <label>Keresztnév <span class="required">*</span></label>
-                    <input type="text" name="reg_firstname" class="va-input" required data-typing="András|János|Péter">
-                </div>
-                <div class="va-form-group va-register-field">
-                    <label>Vezetéknév</label>
-                    <input type="text" name="reg_lastname" class="va-input" data-typing="Nagy|Kovács|Tóth">
-                </div>
-
-                <div class="va-form-group va-register-field">
-                    <label>Felhasználónév <span class="required">*</span></label>
-                    <input type="text" name="reg_username" class="va-input" required autocomplete="username" data-typing="vadasz1988|golyospuska|trofea_user">
-                </div>
-
-                <div class="va-form-group va-register-field">
-                    <label>E-mail cím <span class="required">*</span></label>
-                    <input type="email" name="reg_email" class="va-input" required autocomplete="email" data-typing="pelda@email.hu|info@cegem.hu">
-                </div>
-
-                <div class="va-form-group va-register-field">
-                    <label>Telefonszám</label>
-                    <input type="tel" name="reg_phone" class="va-input" placeholder="+36 30 000 0000" data-typing="+36 30 123 4567|+36 70 765 4321">
-                </div>
-
+            <?php elseif ( $rkey === 'reg_company_name' ): ?>
+                <?php
+                // Céges blokk: összegyűjti a három company mezőt egy csoportba
+                $company_fields = [];
+                foreach ( $fb_rfields as $crf ) {
+                    if ( in_array( $crf['key'] ?? '', $company_keys, true ) && ! empty( $crf['enabled'] ) ) {
+                        $company_fields[] = $crf;
+                    }
+                }
+                ?>
                 <div class="va-register-company va-register-field va-register-field--full" aria-hidden="true">
                     <div class="va-register-company__grid">
-                        <div class="va-form-group va-register-field">
-                            <label>Cégnév <span class="required">*</span></label>
-                            <input type="text" name="reg_company_name" class="va-input" data-company-field="1" disabled data-typing="Minta Vadász Kft.|Erdővad Bt.">
-                        </div>
-                        <div class="va-form-group va-register-field">
-                            <label>Adószám <span class="required">*</span></label>
-                            <input type="text" name="reg_company_tax" class="va-input" data-company-field="1" disabled data-typing="12345678-2-42|98765432-1-13">
-                        </div>
-                        <div class="va-form-group va-register-field">
-                            <label>Székhely <span class="required">*</span></label>
-                            <input type="text" name="reg_company_seat" class="va-input" data-company-field="1" disabled data-typing="1123 Budapest, Minta utca 10.|6720 Szeged, Fő tér 3.">
-                        </div>
+                        <?php foreach ( $company_fields as $cf ): ?>
+                            <div class="va-form-group va-register-field">
+                                <label><?php echo esc_html( (string)( $cf['label'] ?? '' ) ); ?><?php echo ! empty( $cf['required'] ) ? ' <span class="required">*</span>' : ''; ?></label>
+                                <input type="text" name="<?php echo esc_attr( (string)( $cf['key'] ?? '' ) ); ?>"
+                                    class="va-input" data-company-field="1" disabled
+                                    placeholder="<?php echo esc_attr( (string)( $cf['placeholder'] ?? '' ) ); ?>">
+                            </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
 
-                <div class="va-form-group va-register-field">
-                    <label>Jelszó <span class="required">*</span></label>
-                    <input type="password" name="reg_password" class="va-input" required minlength="8" autocomplete="new-password">
-                    <p class="va-register-help">Min. 8 karakter</p>
-                </div>
+            <?php elseif ( in_array( $rkey, [ 'reg_company_tax', 'reg_company_seat' ], true ) ): ?>
+                <?php // már renderelve a company block-ban, kihagyjuk ?>
 
-                <div class="va-form-group va-register-field">
-                    <label>Jelszó ismét <span class="required">*</span></label>
-                    <input type="password" name="reg_password2" class="va-input" required minlength="8" autocomplete="new-password">
-                </div>
-
+            <?php elseif ( $rkey === 'terms_accept' ): ?>
                 <div class="va-form-group va-register-field va-register-field--full">
                     <label class="va-check-label">
-                        <input type="checkbox" name="terms_accept" required>
-                        Elfogadom az <a href="<?php echo esc_url( home_url('/aszf') ); ?>" style="color:#ff0000;">általános szerződési feltételeket</a>
+                        <input type="checkbox" name="terms_accept"<?php echo $rreq_attr; ?>>
+                        <?php echo esc_html( $rlabel ); ?> – <a href="<?php echo esc_url( home_url('/aszf') ); ?>" style="color:#ff0000;">ÁSZF</a>
                     </label>
                 </div>
+
+            <?php elseif ( in_array( $rf['type'] ?? 'text', [ 'password' ], true ) ): ?>
+                <div class="va-form-group va-register-field">
+                    <label><?php echo $rlabel . $rreq_html; ?></label>
+                    <input type="password" name="<?php echo esc_attr( $rkey ); ?>" class="va-input"<?php echo $rreq_attr; ?> minlength="8"
+                        autocomplete="<?php echo $rkey === 'reg_password' ? 'new-password' : 'new-password'; ?>">
+                    <?php if ( $rkey === 'reg_password' ): ?><p class="va-register-help">Min. 8 karakter</p><?php endif; ?>
+                </div>
+
+            <?php else: ?>
+                <div class="va-form-group va-register-field">
+                    <label><?php echo $rlabel . $rreq_html; ?></label>
+                    <input type="<?php echo esc_attr( (string)( $rf['type'] ?? 'text' ) ); ?>"
+                        name="<?php echo esc_attr( $rkey ); ?>"
+                        class="va-input"<?php echo $rreq_attr; ?>
+                        placeholder="<?php echo $rph; ?>"
+                        <?php if ( $rkey === 'reg_username' ) echo 'autocomplete="username"'; ?>
+                        <?php if ( $rkey === 'reg_email' ) echo 'autocomplete="email"'; ?>>
+                </div>
+            <?php endif; ?>
+
+            <?php endforeach; ?>
 
                 <div class="va-register-field va-register-field--full">
                     <button type="submit" class="va-btn va-btn--primary va-btn--block">Regisztráció</button>
                 </div>
-            </div>
+        </div>
         </form>
 
         <?php if ( $login_enabled ): ?>

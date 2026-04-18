@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 04. 18. – Session #92 (Vizualis Form Builder admin + dinamikus formok)
+
+### Mit csinaltunk [x]
+- [x] Uj admin osztaly: `class-form-builder.php` (VA_Form_Builder)
+- [x] Admin menube uj pont: "🧩 Form szerkesztő"
+- [x] 3 form szerkesztheto grafikusan: Hirdetes feladas, Regisztracio, Bejelentkezes
+- [x] Minden formon mezonkent: felhasznaloi felirat, placeholder, ki/bekapcsolas, kotelezo toggle
+- [x] Sor sorrend drag-and-drop (SortableJS CDN + natív HTML5 fallback)
+- [x] Config WP options-ban tarolva (`va_form_config_*`), alap visszaallitas gomb
+- [x] Submit-form.php teljesen dinamikussá teve: VA_Form_Builder config szerint renderel
+- [x] Register-form.php teljesen dinamikussá teve: VA_Form_Builder config szerint renderel
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #91 (Hirdetes admin: fizetesi szolgaltato + szamlazasi beallitasok)
 
 ### Mit csinaltunk [x]

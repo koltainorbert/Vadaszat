@@ -4,6 +4,87 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* ── Helper: egyes mező HTML kimenete ──────────────── */
+if ( ! function_exists( 'self_render_listing_field' ) ) {
+    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions ): void {
+        switch ( $key ) {
+            case 'title':
+                echo '<input type="text" id="va-title" name="title" class="va-input" maxlength="150"' . $req_attr . ' placeholder="' . $ph . '">';
+                break;
+            case 'category':
+                echo '<select name="category" class="va-select"' . $req_attr . '>';
+                echo '<option value="">– Válasszon –</option>';
+                foreach ( $categories as $cat ) {
+                    $indent = $cat->parent ? '&nbsp;&nbsp;' : '';
+                    echo '<option value="' . esc_attr( $cat->term_id ) . '">' . $indent . esc_html( $cat->name ) . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'county':
+                echo '<select name="county" class="va-select"' . $req_attr . '>';
+                echo '<option value="">– Válasszon –</option>';
+                foreach ( $counties as $county ) {
+                    echo '<option value="' . esc_attr( $county->term_id ) . '">' . esc_html( $county->name ) . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'condition':
+                echo '<select name="condition" class="va-select">';
+                echo '<option value="">– Válasszon –</option>';
+                foreach ( $conditions as $cond ) {
+                    echo '<option value="' . esc_attr( $cond->term_id ) . '">' . esc_html( $cond->name ) . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'location':
+                echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '">';
+                break;
+            case 'brand':
+                echo '<input type="text" name="brand" class="va-input" placeholder="' . $ph . '">';
+                break;
+            case 'model':
+                echo '<input type="text" name="model" class="va-input" placeholder="' . $ph . '">';
+                break;
+            case 'caliber':
+                echo '<input type="text" name="caliber" class="va-input" placeholder="' . $ph . '">';
+                break;
+            case 'year':
+                echo '<input type="number" name="year" class="va-input" min="1800" max="' . date('Y') . '" placeholder="' . $ph . '">';
+                break;
+            case 'license_req':
+                echo '<label class="va-check-label"><input type="checkbox" name="license_req" value="1"> Fegyverengedély szükséges a vásárláshoz</label>';
+                break;
+            case 'price':
+                echo '<input type="number" name="price" class="va-input" min="0" placeholder="' . $ph . '">';
+                break;
+            case 'price_type':
+                echo '<select name="price_type" class="va-select">';
+                echo '<option value="fixed">Fix ár</option>';
+                echo '<option value="negotiable">Alkudható</option>';
+                echo '<option value="free">Ingyenes</option>';
+                echo '<option value="on_request">Érdeklődjön</option>';
+                echo '</select>';
+                break;
+            case 'description':
+                echo '<textarea id="va-desc" name="description" class="va-textarea" rows="6"' . $req_attr . ' placeholder="' . $ph . '"></textarea>';
+                break;
+            case 'images':
+                $max_img = esc_html( get_option( 'va_max_images_per_listing', 10 ) );
+                echo '<input type="file" name="listing_images[]" class="va-input" accept="image/jpeg,image/png,image/webp" multiple>';
+                echo '<p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Az első kép lesz a borítókép. Max. 5 MB / kép. (' . $max_img . ' db)</p>';
+                break;
+            case 'phone':
+                echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . '>';
+                break;
+            case 'email_show':
+                echo '<label class="va-check-label" style="align-self:flex-end;">';
+                echo '<input type="checkbox" name="email_show" value="1" checked>';
+                echo ' E-mail cím megjelenítése a hirdetésben</label>';
+                break;
+        }
+    }
+}
+
 $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false ] );
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
