@@ -1261,15 +1261,16 @@ textarea { min-height: 110px; resize: vertical; }
   align-items: center;
   gap: 8px;
   padding: 7px 16px;
-  border: 1px solid rgba(255,0,0,.25);
+  border: 1px solid rgba(255,255,255,.14);
   border-radius: 999px;
-  color: #ff4040;
-  background: rgba(255,0,0,.08);
+  color: #fff;
+  background: rgba(6,6,6,.34);
   text-transform: uppercase;
   letter-spacing: .18em;
   font-size: .68rem;
   font-weight: 800;
   margin-bottom: 22px;
+  text-shadow: 0 2px 12px rgba(0,0,0,.55);
 }
 .va-contact-page__title {
   font-size: clamp(2.3rem, 5.5vw, 4.6rem);
