@@ -471,6 +471,14 @@ class VA_Ajax {
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
+        // Subscribers don't have upload_files cap; grant it temporarily for the upload
+        $current_user = wp_get_current_user();
+        $granted_cap  = false;
+        if ( $current_user->ID && ! $current_user->has_cap( 'upload_files' ) ) {
+            $current_user->add_cap( 'upload_files' );
+            $granted_cap = true;
+        }
+
         $max_images    = intval( get_option( 'va_max_images_per_listing', 10 ) );
         $allowed_types = [ 'image/jpeg', 'image/png', 'image/webp' ];
         $count         = 0;
