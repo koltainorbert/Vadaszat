@@ -781,7 +781,7 @@ setInterval(updateCDs,1000);
 <!-- HIRDETÉSEK -->
 <div style="margin-bottom:24px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <h2 style="font-size:18px;font-weight:800;">🆕 Legújabb hirdetések</h2>
+        <h2 style="font-size:18px;font-weight:800;"><span style="display:inline-block;padding:1px 5px;margin-right:8px;border-radius:4px;background:#ff0000;color:#fff;font-size:10px;letter-spacing:.08em;vertical-align:2px;">ÚJ</span>Legújabb hirdetések</h2>
         <?php $search = get_page_by_path('va-hirdetes-kereses'); ?>
         <?php if ($search): ?>
             <a href="<?php echo esc_url(get_permalink($search)); ?>" style="color:#ff0000;font-size:13px;text-decoration:none;">Összes →</a>
