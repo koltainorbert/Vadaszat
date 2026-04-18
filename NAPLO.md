@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 04. 18. – Session #85 (Elfelejtett jelszo frontendben marad)
+
+### Mit csinaltunk [x]
+- [x] `wp_lostpassword_url()` atiranyitva a sajat frontend login oldalra (`?action=lostpassword`)
+- [x] A `wp-login.php?action=lostpassword|retrievepassword` keresei automatikusan a frontend oldalra redirectelnek
+- [x] A `wp-login.php?action=rp|resetpass` reset link is frontend oldalra redirectel (`?action=resetpass&key=...&login=...`)
+- [x] Bejelentkezes template bovitve ket uj nezetre:
+- [x] Elfelejtett jelszo (email kuldes)
+- [x] Uj jelszo beallitasa (key/login alapu reset)
+- [x] Backend feldolgozas hozzaadva:
+- [x] `va_action=lostpassword` -> `retrieve_password()`
+- [x] `va_action=resetpass` -> `check_password_reset_key()` + `reset_password()`
+- [x] Eredmeny: az ugyfel nem esik ki a WordPress default login feluletre
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #84 (Toggle esztetikai ujrarendezes: 1 sor, 1 magassag)
 
 ### Mit csinaltunk [x]
