@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #45 (Valos telihold tonus + 50 eves holdnaptar nezet)
+
+### Mit csinaltunk [x]
+- [x] A fooldali hold widget melegebb, valosabb szintonusokat kap telihold kozeleben
+- [x] Teliholdnal a hold kep mar nem csak szurke: mehet elefantcsont, sargas vagy vorosesebb tone-ba
+- [x] A vadasz-naptar oldalon uj honap/ev valaszto kerult be
+- [x] Uj gyorsgombok: Mai honap es +50 ev
+- [x] Az oldal az aktualis evtol 50 evre elore enged navigalni a holdnaptarban
+
+---
+
 ## 2026. 04. 18. – Session #44 (Hold kulso kor eltavolitasa)
 
 ### Mit csinaltunk [x]

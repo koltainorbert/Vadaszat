@@ -743,7 +743,32 @@ updateAllCountdowns();
   const DOW=['\u0048','\u004b','\u0053\u007a\u0065','\u0043\u0073','\u0050','\u0053\u007a\u006f','\u0056'];
   const MONTHS=['\u004a\u0061\u006e\u0075\u00e1r','\u0046\u0065\u0062\u0072\u0075\u00e1r','\u004d\u00e1\u0072\u0063\u0069\u0075\u0073','\u00c1\u0070\u0072\u0069\u006c\u0069\u0073','\u004d\u00e1\u006a\u0075\u0073','\u004a\u00fa\u006e\u0069\u0075\u0073','\u004a\u00fa\u006c\u0069\u0075\u0073','\u0041\u0075\u0067\u0075\u0073\u007a\u0074\u0075\u0073','\u0053\u007a\u0065\u0070\u0074\u0065\u006d\u0062\u0065\u0072','\u004f\u006b\u0074\u00f3\u0062\u0065\u0072','\u004e\u006f\u0076\u0065\u006d\u0062\u0065\u0072','\u0044\u0065\u0063\u0065\u006d\u0062\u0065\u0072'];
   const bp=nowBP();
+  const MIN_YEAR=bp.year;
+  const MAX_YEAR=bp.year+50;
   let viewYear=bp.year,viewMonth=bp.month-1;
+
+  function setupMoonControls(){
+    const monthSelect=document.getElementById('vn-moon-month');
+    const yearSelect=document.getElementById('vn-moon-year');
+    const todayBtn=document.getElementById('vn-moon-today');
+    const plus50Btn=document.getElementById('vn-moon-plus50');
+    if(!monthSelect||!yearSelect)return;
+    monthSelect.innerHTML=MONTHS.map((label,index)=>`<option value="${index}">${label}</option>`).join('');
+    for(let year=MIN_YEAR;year<=MAX_YEAR;year++){
+      const option=document.createElement('option');
+      option.value=String(year);
+      option.textContent=String(year);
+      yearSelect.appendChild(option);
+    }
+    monthSelect.addEventListener('change',()=>{viewMonth=Number(monthSelect.value);render();});
+    yearSelect.addEventListener('change',()=>{viewYear=Number(yearSelect.value);render();});
+    if(todayBtn){
+      todayBtn.addEventListener('click',()=>{viewYear=bp.year;viewMonth=bp.month-1;render();});
+    }
+    if(plus50Btn){
+      plus50Btn.addEventListener('click',()=>{viewYear=MAX_YEAR;viewMonth=bp.month-1;render();});
+    }
+  }
 
   function render(){
     const grid=document.getElementById('vn-moon-grid');
@@ -751,13 +776,19 @@ updateAllCountdowns();
     const curIcon=document.getElementById('vn-moon-cur-icon');
     const curName=document.getElementById('vn-moon-cur-name');
     const curSub=document.getElementById('vn-moon-cur-sub');
+    const monthSelect=document.getElementById('vn-moon-month');
+    const yearSelect=document.getElementById('vn-moon-year');
     if(!grid)return;
     const now=new Date();
     const cf=moonPhase(now);
+    if(viewYear<MIN_YEAR)viewYear=MIN_YEAR;
+    if(viewYear>MAX_YEAR)viewYear=MAX_YEAR;
     curIcon.textContent=phaseIcon(cf);
     curName.innerHTML=phaseName(cf)+' \u2014 '+illumination(cf)+'% megvil\u00e1g\u00edt\u00e1s';
-    curSub.textContent=MONTHS[viewMonth]+' '+viewYear+' holdnapt\u00e1r';
+    curSub.textContent=MONTHS[viewMonth]+' '+viewYear+' holdnapt\u00e1r • 50 évre előre';
     tip.innerHTML='&#127993; Vad\u00e1szati tan\u00e1cs: '+huntTip(cf);
+    if(monthSelect)monthSelect.value=String(viewMonth);
+    if(yearSelect)yearSelect.value=String(viewYear);
     grid.innerHTML='';
     DOW.forEach(d=>{const el=document.createElement('div');el.className='vn-moon-dow';el.textContent=d;grid.appendChild(el);});
     const first=new Date(viewYear,viewMonth,1);
@@ -782,6 +813,7 @@ updateAllCountdowns();
 
   document.getElementById('vn-moon-prev').addEventListener('click',()=>{viewMonth--;if(viewMonth<0){viewMonth=11;viewYear--;}render();});
   document.getElementById('vn-moon-next').addEventListener('click',()=>{viewMonth++;if(viewMonth>11){viewMonth=0;viewYear++;}render();});
+  setupMoonControls();
   render();
 })();
 
