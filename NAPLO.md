@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 18. – Session #67 (Divi/Porto mintaju Layout Allito)
+
+### Mit csinaltunk [x]
+- [x] Uj admin menupont: `Layout Allito`
+- [x] Kulon settings csoport letrehozva: `va_layout_settings`
+- [x] Sok parameteres layout panel bevezetve (preset, kontener, tartalom, oldalsav, grid, kartya, widget, hover/arnyek)
+- [x] Preset modok: Porto / Divi / Custom
+- [x] Frontend dinamkus CSS bekotve a layout opciokra (kontener szelesseg, padding, grid oszlopszam, gap, kartya radius, kep arany, meta meret, oldalsav szelesseg/sticky stb.)
+- [x] Alapelv: nagylepteku, hirdetes-fokuszu testreszabhatósag egy helyen
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #66 (Favicon bal sarok utanjavitas)
 
 ### Mit csinaltunk [x]

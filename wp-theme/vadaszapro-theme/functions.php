@@ -663,6 +663,23 @@ add_action( 'wp_enqueue_scripts', function () {
         'color:' . $content_text . ';' .
         'font-family:' . $font_content . ';' .
     '}' .
+    '.va-container{max-width:' . $layout_page_max_width . 'px;padding:0 ' . $layout_container_pad_x . 'px;}' .
+    '@media (max-width:400px){.va-container{padding:0 ' . $layout_container_pad_m . 'px;}}' .
+    '.va-content-layout{gap:' . $layout_content_gap . 'px;}' .
+    '.va-main-content{padding:' . $layout_main_pad_y . 'px ' . $layout_main_pad_x . 'px;}' .
+    '.home-template .va-main-content,.home .va-main-content,.front-page .va-main-content{padding:' . $layout_main_pad_y . 'px ' . $layout_home_pad_x . 'px;}' .
+    '.va-sidebar.va-sidebar--right{width:' . $layout_sidebar_width . 'px;top:calc(var(--nav) + ' . $layout_sidebar_top . 'px);height:calc(100vh - var(--nav) - ' . $layout_sidebar_top . 'px);display:' . ( $layout_show_sidebar ? 'block' : 'none' ) . ';}' .
+    '.va-grid{grid-template-columns:repeat(' . $layout_cols_desktop . ',minmax(0,1fr));gap:' . $layout_grid_gap . 'px;}' .
+    '@media (max-width:1200px){.va-grid{grid-template-columns:repeat(' . $layout_cols_tablet . ',minmax(0,1fr));}}' .
+    '@media (max-width:560px){.va-grid{grid-template-columns:repeat(' . $layout_cols_mobile . ',minmax(0,1fr));}}' .
+    '.va-card{border-radius:' . $layout_card_radius . 'px;border-color:rgba(255,255,255,' . $layout_card_border_alpha . ');}' .
+    '.va-card:hover{transform:translateY(-' . $layout_card_hover_lift . 'px);box-shadow:0 8px 30px rgba(0,0,0,' . ( $layout_card_shadow_strength / 100 ) . '),0 0 20px rgba(255,0,0,' . ( $layout_card_shadow_red / 100 ) . ');}' .
+    '.va-card__body{padding:' . $layout_card_pad_y . 'px ' . $layout_card_pad_x . 'px;}' .
+    '.va-card__title{font-size:' . $layout_card_title_size . 'px;}' .
+    '.va-card__price{font-size:' . $layout_card_price_size . 'px;}' .
+    '.va-card__meta{font-size:' . $layout_card_meta_size . 'px;}' .
+    '.va-card__img-wrap{aspect-ratio:' . $layout_card_img_ratio . ';}' .
+    '.va-sidebar__widget{border-radius:' . $layout_widget_radius . 'px;padding:' . $layout_widget_padding . 'px;}' .
     '.va-container h1,.va-container h2,.va-container h3,.va-container h4,.va-container h5,.va-container h6,.va-wrap h1,.va-wrap h2,.va-wrap h3,.va-wrap h4,.va-wrap h5,.va-wrap h6{' .
         'color:' . $content_headings . ';' .
     '}' .
