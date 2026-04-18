@@ -48,7 +48,7 @@ class VA_Settings_Page {
             'va_show_home_hunting_calendar' => '1',
 
             // Hirdetes kartya meta layout (lista/fooldal)
-            'va_card_meta_rows'            => '2',
+            'va_card_meta_rows'            => '1',
             'va_card_meta_col_gap'         => '12',
             'va_card_meta_row_gap'         => '2',
             'va_card_meta_stack_gap'       => '4',
@@ -61,9 +61,9 @@ class VA_Settings_Page {
             'va_card_meta_row_category'    => '1',
             'va_card_meta_row_county'      => '1',
             'va_card_meta_row_location'    => '1',
-            'va_card_meta_row_views'       => '2',
-            'va_card_meta_row_author'      => '2',
-            'va_card_meta_row_date'        => '2',
+            'va_card_meta_row_views'       => '1',
+            'va_card_meta_row_author'      => '1',
+            'va_card_meta_row_date'        => '1',
 
             // Főoldal hero szövegek
             'va_home_hero_badge_text'        => 'Magyarország első vadászati hirdetőoldala',
@@ -96,6 +96,23 @@ class VA_Settings_Page {
             self::$defaults[ $key ] = $default;
             register_setting( 'va_general_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        // Migráció: ha a korábbi alap 2 soros hely+dátum konfiguráció él, állítsuk 1 sorra.
+        $is_old_default_card_layout =
+            (string) get_option( 'va_card_meta_rows', '2' ) === '2'
+            && (string) get_option( 'va_card_meta_show_category', '0' ) === '0'
+            && (string) get_option( 'va_card_meta_show_county', '0' ) === '0'
+            && (string) get_option( 'va_card_meta_show_location', '1' ) === '1'
+            && (string) get_option( 'va_card_meta_show_views', '0' ) === '0'
+            && (string) get_option( 'va_card_meta_show_author', '0' ) === '0'
+            && (string) get_option( 'va_card_meta_show_date', '1' ) === '1'
+            && (string) get_option( 'va_card_meta_row_location', '1' ) === '1'
+            && (string) get_option( 'va_card_meta_row_date', '2' ) === '2';
+
+        if ( $is_old_default_card_layout ) {
+            update_option( 'va_card_meta_rows', '1' );
+            update_option( 'va_card_meta_row_date', '1' );
         }
 
         /* Design (betűk + színek) */

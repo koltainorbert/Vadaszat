@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #64 (Kartya meta egy sor alap + migracio)
+
+### Mit csinaltunk [x]
+- [x] A kartya meta alapertelmezett sor-szama 1 sorra allitva
+- [x] A hely + datum alapertelmezett sorhoz rendelese 1. sorra allitva
+- [x] Biztonsagos migracio bevezetve: ha a korabbi alap 2 soros hely+datum konfiguracio van, automatikusan 1 sorra valt
+- [x] Az admin testreszabhatosag teljesen megmaradt
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #63 (Kartya meta teljes admin vezerles)
 
 ### Mit csinaltunk [x]
