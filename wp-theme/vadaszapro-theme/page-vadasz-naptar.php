@@ -8,7 +8,12 @@ get_header();
 
 <style>
 /* ══ VN prefix – vadásznaptár oldal ══════════════════════════════════ */
-.vn-wrap{max-width:1280px;margin:0 auto;padding:24px 16px 60px;}
+.vn-page-header{position:sticky;top:0;z-index:50;background:rgba(6,6,6,.96);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,0,0,.2);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:0;}
+.vn-page-header-title{font-size:.9rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:8px;}
+.vn-page-header-title span{color:#ff0000;}
+.vn-page-clock{font-size:.82rem;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.04em;text-align:right;line-height:1.5;}
+.vn-page-clock .vn-pc-date{font-size:.72rem;color:rgba(255,255,255,.5);font-weight:400;}
+.vn-wrap{max-width:1280px;margin:0 auto;padding:20px 20px 60px;}
 
 /* ── LEGEND ── */
 .vn-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-bottom:20px;}
@@ -21,6 +26,7 @@ get_header();
   border:1px solid rgba(255,0,0,.18);border-radius:10px;
   margin:0 0 24px;padding:20px;
   box-shadow:0 0 40px rgba(0,0,0,.6),inset 0 0 60px rgba(255,0,0,.03);
+  max-height:520px;overflow:hidden;
 }
 .vn-moon-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .vn-moon-nav{
@@ -243,6 +249,15 @@ get_header();
   </div>
 </div>
 
+<!-- ── PAGE HEADER ── -->
+<div class="vn-page-header">
+  <div class="vn-page-header-title">&#127806; Vad&aacute;szati <span>Napt&aacute;r</span> 2026</div>
+  <div class="vn-page-clock">
+    <div id="vn-pc-time">--:--:--</div>
+    <div class="vn-pc-date" id="vn-pc-date">&nbsp;</div>
+  </div>
+</div>
+
 <div class="vn-wrap">
 
   <!-- ── HOLDNAPTÁR ── -->
@@ -307,6 +322,21 @@ function nowBP(){
   parts.weekday=new Intl.DateTimeFormat('hu-HU',{timeZone:'Europe/Budapest',weekday:'long'}).format(d);
   return parts;
 }
+
+// ── FEJLÉC ÓRA ───────────────────────────────────────────────────────
+const MFH_CLOCK=['\u006a\u0061\u006e\u0075\u00e1r','\u0066\u0065\u0062\u0072\u0075\u00e1r','\u006d\u00e1\u0072\u0063\u0069\u0075\u0073','\u00e1\u0070\u0072\u0069\u006c\u0069\u0073','\u006d\u00e1\u006a\u0075\u0073','\u006a\u00fa\u006e\u0069\u0075\u0073','\u006a\u00fa\u006c\u0069\u0075\u0073','\u0061\u0075\u0067\u0075\u0073\u007a\u0074\u0075\u0073','\u0073\u007a\u0065\u0070\u0074\u0065\u006d\u0062\u0065\u0072','\u006f\u006b\u0074\u00f3\u0062\u0065\u0072','\u006e\u006f\u0076\u0065\u006d\u0062\u0065\u0072','\u0064\u0065\u0063\u0065\u006d\u0062\u0065\u0072'];
+const WD_CLOCK=['\u0076\u0061\u0073\u00e1\u0072\u006e\u0061\u0070','\u0068\u00e9\u0074\u0066\u0151','\u006b\u0065\u0064\u0064','\u0073\u007a\u0065\u0072\u0064\u0061','\u0063\u0073\u00fc\u0074\u00f6\u0072\u0074\u00f6\u006b','\u0070\u00e9\u006e\u0074\u0065\u006b','\u0073\u007a\u006f\u006d\u0062\u0061\u0074'];
+(function tickClock(){
+  const n=nowBP();
+  const te=document.getElementById('vn-pc-time');
+  const de=document.getElementById('vn-pc-date');
+  if(te)te.textContent=String(n.hour).padStart(2,'0')+':'+String(n.minute).padStart(2,'0')+':'+String(n.second).padStart(2,'0');
+  if(de){
+    const wd=new Intl.DateTimeFormat('hu-HU',{timeZone:'Europe/Budapest',weekday:'long'}).format(new Date());
+    de.textContent=n.year+'. '+MFH_CLOCK[n.month-1]+' '+n.day+'. \u2013 '+wd;
+  }
+  setTimeout(tickClock,1000);
+})();
 
 // ── HELPERS ─────────────────────────────────────────────────────────
 const YEAR=2026;
