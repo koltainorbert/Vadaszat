@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #57 (Idojaras 7 nap holnaptol indul)
+
+### Mit csinaltunk [x]
+- [x] A 7 napos elorejelzesbol a mai nap kiszurve
+- [x] A lista mindig holnaptol indul es 7 jovobeli napot mutat
+- [x] API keret 8 napra emelve, hogy a mai nap kihagyasa utan is maradjon 7 elem
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #56 (Idojaras: MA jeloles es datum egyeztetes)
 
 ### Mit csinaltunk [x]

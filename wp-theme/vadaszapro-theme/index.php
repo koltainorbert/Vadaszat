@@ -407,8 +407,13 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
     metaEl.textContent='Hőérzet '+Math.round(c.apparent_temperature)+'°C • Pára '+Math.round(c.relative_humidity_2m)+'% • Szél '+Math.round(c.wind_speed_10m)+' km/h ('+wdText(c.wind_direction_10m)+') • Csapadék '+(c.precipitation||0)+' mm/h • Dátum: '+dateHu(d.time[0]);
 
     var html='';
-    for(var i=0;i<d.time.length&&i<7;i++){
-      var prefix=(d.time[i]===todayIso)?'MA':dayHu(d.time[i]);
+    var idx=[];
+    for(var ii=0;ii<d.time.length;ii++){
+      if(d.time[ii]!==todayIso)idx.push(ii);
+    }
+    for(var j=0;j<idx.length&&j<7;j++){
+      var i=idx[j];
+      var prefix=dayHu(d.time[i]);
       html+='<div class="va-weather__day">'
         +'<div class="va-weather__d1">'+prefix+' · '+dateHu(d.time[i])+'</div>'
         +'<div class="va-weather__d2">'+Math.round(d.temperature_2m_min[i])+' / '+Math.round(d.temperature_2m_max[i])+'°C</div>'
