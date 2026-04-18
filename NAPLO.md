@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #52 (Fooldali vadaszati naptar panel kulon kapcsolo)
+
+### Mit csinaltunk [x]
+- [x] Uj admin toggle: `va_show_home_hunting_calendar`
+- [x] A nagy fooldali "Vadaszati idenyek 2026" panel (HTML + CSS + JS) opciohoz kotve
+- [x] Igy kulon kikapcsolhato a panel, mikozben a tobbi tartalom marad
+- [x] Hibavizsgalat: modosított fajlok rendben
+
+---
+
 ## 2026. 04. 18. – Session #51 (Hold/Ideny/Naptar kapcsolhatosag adminbol)
 
 ### Mit csinaltunk [x]

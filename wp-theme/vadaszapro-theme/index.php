@@ -8,6 +8,7 @@ get_header(); ?>
 <?php
 $va_show_season_widget = get_option( 'va_show_hunting_season_widget', '1' ) === '1';
 $va_show_moon_widget   = get_option( 'va_show_moon_widget', '1' ) === '1';
+$va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1' ) === '1';
 ?>
 <div class="va-home-layout">
 
@@ -579,6 +580,7 @@ $va_show_moon_widget   = get_option( 'va_show_moon_widget', '1' ) === '1';
 <main class="va-home-main">
 
 <!-- VADÁSZ NAPTÁR GANTT -->
+<?php if ( $va_show_home_hunting_calendar ): ?>
 <div class="va-hnaptar" id="va-hnaptar-wrap">
 <div class="va-hnaptar__hd">
   <span class="va-hnaptar__title">&#127993; Vad&aacute;szati id&eacute;nyek 2026</span>
@@ -991,6 +993,7 @@ updateCDs();
 setInterval(updateCDs,1000);
 })();
 </script>
+<?php endif; ?>
 
 <!-- HIRDETÉSEK -->
 <div style="margin-bottom:24px;">
