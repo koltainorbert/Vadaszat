@@ -10,7 +10,8 @@ $post_id   = $post->ID;
 $price     = get_post_meta( $post_id, 'va_price', true );
 $price_type= get_post_meta( $post_id, 'va_price_type', true ) ?: 'fixed';
 $location  = get_post_meta( $post_id, 'va_location', true );
-$views     = get_post_meta( $post_id, 'va_views',    true ) ?: 0;
+$views_base = 30 + ( $post_id % 70 );
+$views      = intval( get_post_meta( $post_id, 'va_views', true ) ) + $views_base;
 $featured  = get_post_meta( $post_id, 'va_featured', true ) === '1';
 $is_auction= $post->post_type === 'va_auction';
 $categories= get_the_terms( $post_id, 'va_category' );
@@ -72,7 +73,7 @@ $watching  = va_user_watches( $post_id );
             <?php if ( $location ): ?>
                 <span class="va-card__meta-item"><?php echo esc_html( $location ); ?></span>
             <?php endif; ?>
-            <span class="va-card__meta-item">👁 <?php echo esc_html( $views ); ?></span>
+            <span class="va-card__meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><?php echo esc_html( $views ); ?></span>
             <span class="va-card__meta-item">🗓 <?php echo esc_html( get_the_date( 'Y.m.d', $post_id ) ); ?></span>
         </div>
     </div>
