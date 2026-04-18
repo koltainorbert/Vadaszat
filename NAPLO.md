@@ -2,6 +2,24 @@
 
 ---
 
+## 2026. 04. 18. – Session #7 (Header név + ikon + automata favicon)
+
+### Mit csináltunk [x]
+- [x] Új admin mező: `va_brand_icon_url` (Fejléc ikon URL)
+- [x] Header logó átállítva opció alapra:
+  - név: `va_site_name`
+  - ikon: `va_brand_icon_url`
+  - fallback ikon: 🦌 ha URL üres
+- [x] Automata favicon: a beállított ikon URL-ből kerül ki a `head`-be
+  - `rel="icon"`
+  - `rel="shortcut icon"`
+  - `rel="apple-touch-icon"`
+- [x] `get_site_icon_url` filter: ha WP Site Icon nincs külön beállítva, az admin ikon URL szolgál faviconként
+- [x] Header ikon kép stílus (`.va-logo__img`) hozzáadva
+- [x] Deploy futtatva (`Deploy All`), hibamentes PHP ellenőrzés
+
+---
+
 ## 2026. 04. 18. – Session #6 (Hero badge piros pulzáló pont)
 
 ### Mit csináltunk [x]
