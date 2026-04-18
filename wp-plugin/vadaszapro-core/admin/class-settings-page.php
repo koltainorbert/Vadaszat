@@ -1090,10 +1090,32 @@ class VA_Settings_Page {
     public static function render_users() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
+        if ( isset( $_POST['va_user_role_nonce'], $_POST['va_user_id'], $_POST['va_user_role'] )
+            && wp_verify_nonce( sanitize_text_field( wp_unslash( (string) $_POST['va_user_role_nonce'] ) ), 'va_update_user_role' ) ) {
+
+            $user_id = absint( wp_unslash( (string) $_POST['va_user_id'] ) );
+            $new_role = sanitize_key( wp_unslash( (string) $_POST['va_user_role'] ) );
+
+            $roles = wp_roles()->roles;
+            $allowed_roles = array_diff( array_keys( $roles ), [ 'administrator' ] );
+
+            if ( $user_id > 0 && in_array( $new_role, $allowed_roles, true ) ) {
+                $target_user = get_user_by( 'id', $user_id );
+                if ( $target_user instanceof WP_User ) {
+                    $target_user->set_role( $new_role );
+                    add_settings_error( 'va_users', 'va_users_role_ok', 'Szerepkör sikeresen frissítve.', 'updated' );
+                }
+            } else {
+                add_settings_error( 'va_users', 'va_users_role_err', 'Érvénytelen szerepkör vagy felhasználó.', 'error' );
+            }
+        }
+
         $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
+        $roles = wp_roles()->roles;
+        $allowed_roles = array_diff( array_keys( $roles ), [ 'administrator' ] );
 
         $users = get_users([
-            'role__in'   => [ 'subscriber', 'contributor', 'editor' ],
+            'role__not_in' => [ 'administrator' ],
             'number'     => 50,
             'orderby'    => 'registered',
             'order'      => 'DESC',
@@ -1101,12 +1123,14 @@ class VA_Settings_Page {
         ?>
         <div class="wrap va-admin-wrap">
             <h1>👤 VadászApró – Felhasználók</h1>
+            <?php settings_errors( 'va_users' ); ?>
             <table class="wp-list-table widefat fixed striped va-users-table">
                 <thead>
                     <tr>
                         <th>Felhasználónév</th>
                         <th>Név</th>
                         <th>E-mail</th>
+                        <th>Szerepkör</th>
                         <th>Telefon</th>
                         <th>Regisztráció</th>
                         <th>Hirdetések</th>
@@ -1123,6 +1147,24 @@ class VA_Settings_Page {
                         <td><?php echo esc_html( $user->user_login ); ?></td>
                         <td><?php echo esc_html( $user->display_name ); ?></td>
                         <td><?php echo esc_html( $user->user_email ); ?></td>
+                        <td>
+                            <form method="post" style="display:flex;gap:8px;align-items:center;">
+                                <?php wp_nonce_field( 'va_update_user_role', 'va_user_role_nonce' ); ?>
+                                <input type="hidden" name="va_user_id" value="<?php echo esc_attr( (string) $user->ID ); ?>">
+                                <select name="va_user_role">
+                                    <?php
+                                    $current_role = ! empty( $user->roles ) ? (string) $user->roles[0] : 'subscriber';
+                                    foreach ( $allowed_roles as $role_key ):
+                                        $role_name = isset( $roles[ $role_key ]['name'] ) ? (string) $roles[ $role_key ]['name'] : $role_key;
+                                    ?>
+                                        <option value="<?php echo esc_attr( $role_key ); ?>" <?php selected( $current_role, $role_key ); ?>>
+                                            <?php echo esc_html( $role_name ); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                                <button type="submit" class="button button-small">Mentés</button>
+                            </form>
+                        </td>
                         <td><?php echo esc_html( $phone ?: '–' ); ?></td>
                         <td><?php echo esc_html( date_i18n( 'Y.m.d', strtotime( $user->user_registered ) ) ); ?></td>
                         <td>

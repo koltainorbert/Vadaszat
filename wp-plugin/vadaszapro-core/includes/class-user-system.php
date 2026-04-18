@@ -7,6 +7,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class VA_User_System {
 
+    private static function ensure_roles(): void {
+        if ( ! get_role( 'va_maganszemely' ) ) {
+            add_role( 'va_maganszemely', 'Magánszemély', [ 'read' => true ] );
+        }
+        if ( ! get_role( 'va_ceg' ) ) {
+            add_role( 'va_ceg', 'Cég', [ 'read' => true ] );
+        }
+    }
+
     private static function is_login_enabled(): bool {
         return get_option( 'va_enable_login', '1' ) === '1';
     }
@@ -25,11 +34,15 @@ class VA_User_System {
     }
 
     public static function init() {
+        self::ensure_roles();
+
         add_action( 'init',                [ __CLASS__, 'handle_forms' ] );
         add_action( 'wp_enqueue_scripts',  [ __CLASS__, 'enqueue' ] );
+        add_action( 'admin_init',          [ __CLASS__, 'restrict_wp_admin_for_non_admins' ] );
         add_filter( 'login_url',           [ __CLASS__, 'custom_login_url' ], 10, 3 );
         add_filter( 'register_url',        [ __CLASS__, 'custom_register_url' ] );
         add_filter( 'lostpassword_url',    [ __CLASS__, 'custom_lostpassword_url' ], 10, 2 );
+        add_filter( 'show_admin_bar',      [ __CLASS__, 'filter_admin_bar_visibility' ] );
         add_filter( 'logout_redirect',     [ __CLASS__, 'logout_redirect' ], 10, 1 );
         add_action( 'login_form_lostpassword', [ __CLASS__, 'redirect_wp_lostpassword' ] );
         add_action( 'login_form_retrievepassword', [ __CLASS__, 'redirect_wp_lostpassword' ] );
@@ -85,6 +98,28 @@ class VA_User_System {
 
     public static function logout_redirect( $url ) {
         return home_url();
+    }
+
+    public static function filter_admin_bar_visibility( $show ) {
+        if ( current_user_can( 'manage_options' ) ) {
+            return $show;
+        }
+        return false;
+    }
+
+    public static function restrict_wp_admin_for_non_admins(): void {
+        if ( ! is_user_logged_in() ) {
+            return;
+        }
+        if ( current_user_can( 'manage_options' ) ) {
+            return;
+        }
+        if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+            return;
+        }
+
+        wp_safe_redirect( home_url() );
+        exit;
     }
 
     /* ── Enqueue ───────────────────────────────────────── */
@@ -256,11 +291,16 @@ class VA_User_System {
             return;
         }
 
+        $assigned_role = ( $account_type === 'company' ) ? 'va_ceg' : 'va_maganszemely';
+        if ( ! get_role( $assigned_role ) ) {
+            $assigned_role = 'subscriber';
+        }
+
         wp_update_user([
             'ID'         => $user_id,
             'first_name' => $firstname,
             'last_name'  => $lastname,
-            'role'       => 'subscriber',
+            'role'       => $assigned_role,
         ]);
         update_user_meta( $user_id, 'va_phone', $phone );
         update_user_meta( $user_id, 'va_account_type', $account_type );
