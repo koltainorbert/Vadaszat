@@ -43,6 +43,7 @@ class VA_Settings_Page {
             'va_maintenance_msg'     => 'Az oldal karbantartás alatt van.',
             'va_show_hunting_season_widget' => '1',
             'va_show_moon_widget'          => '1',
+            'va_show_weather_widget'       => '1',
             'va_enable_hunting_calendar_page' => '1',
             'va_show_home_hunting_calendar' => '1',
 
@@ -469,6 +470,7 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_maintenance_msg',       'Karbantartási üzenet' ); ?>
                     <?php self::field_toggle('va_show_hunting_season_widget', 'Vadászati idény widget megjelenjen' ); ?>
                     <?php self::field_toggle('va_show_moon_widget',          'Hold widget megjelenjen' ); ?>
+                    <?php self::field_toggle('va_show_weather_widget',       'Időjárás widget megjelenjen (geolokáció + 7 nap)' ); ?>
                     <?php self::field_toggle('va_enable_hunting_calendar_page', 'Vadászati naptár oldal engedélyezve' ); ?>
                     <?php self::field_toggle('va_show_home_hunting_calendar', 'Főoldali vadászati naptár panel megjelenjen' ); ?>
 
