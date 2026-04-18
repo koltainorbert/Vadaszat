@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #35 (Footer logó adminból)
+
+### Mit csináltunk [x]
+- [x] Új opciók a Fejléc + Lábléc oldalon: lábléc logó URL + lábléc logó magasság
+- [x] A logó média pickerrel választható (`field_media`)
+- [x] A lábléc első oszlopában megjelenik az adminban beállított logó
+- [x] Biztonságos fallback: ha nincs megadva logó, a layout nem törik
+- [x] Új CSS osztály a lábléc logóhoz (`.va-footer__brand-logo`)
+- [x] Hibavizsgálat: módosított fájlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #34 (Footer szétesés vizsgálat + fallback javítás)
 
 ### Mit csináltunk [x]

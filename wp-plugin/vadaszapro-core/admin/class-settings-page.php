@@ -215,6 +215,8 @@ class VA_Settings_Page {
             'va_hf_footer_shadow_color'            => 'rgba(0,0,0,.36)',
             'va_hf_footer_glow_color'              => 'rgba(255,0,0,.14)',
             'va_hf_footer_link_hover_color'        => '#ffffff',
+            'va_hf_footer_logo_url'                => '',
+            'va_hf_footer_logo_height'             => 48,
 
             // Lábléc szövegek
             'va_hf_footer_brand_title'             => 'VadászApró',
@@ -306,6 +308,8 @@ class VA_Settings_Page {
             'va_hf_footer_shadow_color',
             'va_hf_footer_glow_color',
             'va_hf_footer_link_hover_color',
+            'va_hf_footer_logo_url',
+            'va_hf_footer_logo_height',
             'va_hf_footer_brand_title',
             'va_hf_footer_col_categories_title',
             'va_hf_footer_col_account_title',
@@ -754,6 +758,8 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_hf_footer_shadow_color',     'Lábléc árnyék szín (hex/rgba)' ); ?>
                     <?php self::field_text(  'va_hf_footer_glow_color',       'Lábléc glow szín (hex/rgba)' ); ?>
                     <?php self::field_color( 'va_hf_footer_link_hover_color', 'Lábléc link hover szín' ); ?>
+                    <?php self::field_media( 'va_hf_footer_logo_url',         'Lábléc logó (opcionális)' ); ?>
+                    <?php self::field_num(   'va_hf_footer_logo_height',      'Lábléc logó magasság (px)', 20, 180 ); ?>
                 </table>
 
                 <h2>Lábléc: összes felirat és link címke</h2>
