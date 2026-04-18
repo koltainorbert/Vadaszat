@@ -32,6 +32,7 @@ if ( is_admin() ) {
     require_once VA_PLUGIN_DIR . 'admin/class-admin.php';
     require_once VA_PLUGIN_DIR . 'admin/class-settings-page.php';
     require_once VA_PLUGIN_DIR . 'admin/class-listing-columns.php';
+    require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php';
 }
 
 /* ── Boot ────────────────────────────────────────── */
@@ -49,6 +50,7 @@ add_action( 'plugins_loaded', function () {
         VA_Admin::init();
         VA_Settings_Page::init();
         VA_Listing_Columns::init();
+        VA_Form_Builder::init();
     }
 });
 

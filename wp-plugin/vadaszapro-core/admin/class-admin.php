@@ -36,6 +36,7 @@ class VA_Admin {
             add_submenu_page( 'vadaszapro', 'Aukció beállítások', 'Aukciók',      'manage_options', 'vadaszapro-aukcio',      [ VA_Settings_Page::class, 'render_auctions'  ] );
         }
         add_submenu_page( 'vadaszapro', 'Felhasználók',          'Felhasználók',  'manage_options', 'vadaszapro-users',       [ VA_Settings_Page::class, 'render_users'     ] );
+        add_submenu_page( 'vadaszapro', 'Form szerkesztő',       '🧩 Form szerkesztő', 'manage_options', 'va-form-builder',       [ VA_Form_Builder::class, 'render'          ] );
         add_submenu_page( 'vadaszapro', 'Statisztika',           'Statisztika',   'manage_options', 'vadaszapro-stats',       [ VA_Settings_Page::class, 'render_stats'     ] );
     }
 
@@ -46,8 +47,16 @@ class VA_Admin {
         }
 
         // Csak a plugin admin oldalain töltjük be
-        if ( strpos( $hook, 'vadaszapro' ) === false && ! in_array( get_post_type(), $post_types, true ) ) {
+        $is_va_page = strpos( $hook, 'vadaszapro' ) !== false
+            || strpos( $hook, 'va-form-builder' ) !== false
+            || in_array( get_post_type(), $post_types, true );
+        if ( ! $is_va_page ) {
             return;
+        }
+
+        // SortableJS a form szerkesztőhöz
+        if ( strpos( $hook, 'va-form-builder' ) !== false ) {
+            wp_enqueue_script( 'sortablejs', 'https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js', [], '1.15.2', true );
         }
 
         wp_enqueue_media();
