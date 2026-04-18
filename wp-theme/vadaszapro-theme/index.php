@@ -673,13 +673,27 @@ var tl0=document.createElement('div');tl0.className='va-hn-tl';tl0.style.left=TO
 var tlbl=document.createElement('div');tlbl.className='va-hn-tlbl';tlbl.textContent='ma';tlbl.style.left=TODAY_PCT;
 mhm.appendChild(tl0);mhm.appendChild(tlbl);mh.appendChild(mhm);chart.appendChild(mh);
 
+/* Legutoljara megnyilt csoport */
+var _openGrpIdx=-1,_minDaysSinceOpen=9999;
+for(var _gi2=0;_gi2<groups.length;_gi2++){
+  for(var _ai2=0;_ai2<groups[_gi2].animals.length;_ai2++){
+    for(var _si2=0;_si2<groups[_gi2].animals[_ai2].seasons.length;_si2++){
+      var _s2=groups[_gi2].animals[_ai2].seasons[_si2];
+      if(isInSeason([_s2],TODAY.m,TODAY.d)){
+        var _diff2=(doy(TODAY.m,TODAY.d)-doy(_s2[0],_s2[1])+TOTAL)%TOTAL;
+        if(_diff2<_minDaysSinceOpen){_minDaysSinceOpen=_diff2;_openGrpIdx=_gi2;}
+      }
+    }
+  }
+}
+var _grpData=[];
 groups.forEach(function(g){
   var gh=document.createElement('div');gh.className='va-hn-gh';
-  var gl=document.createElement('div');gl.className='va-hn-gl';
+  var gl=document.createElement('div');gl.className='va-hn-gl collapsed';
   gl.innerHTML='<span class="va-hn-arr">\u25be</span>'+g.label;gh.appendChild(gl);
   var gba=document.createElement('div');gba.className='va-hn-gba';gba.appendChild(makeTL());gh.appendChild(gba);
   chart.appendChild(gh);
-  var gbody=document.createElement('div');gbody.className='va-hn-body';
+  var gbody=document.createElement('div');gbody.className='va-hn-body hidden';
   g.animals.forEach(function(a){
     var row=document.createElement('div');row.className='va-hn-row';
     var nd=document.createElement('div');nd.className='va-hn-name';
@@ -697,8 +711,13 @@ groups.forEach(function(g){
     row.appendChild(ba);gbody.appendChild(row);
   });
   chart.appendChild(gbody);
+  _grpData.push({gbody:gbody,gl:gl});
   gh.addEventListener('click',function(){var h=gbody.classList.toggle('hidden');gl.classList.toggle('collapsed',h);});
 });
+if(_openGrpIdx>=0&&_grpData[_openGrpIdx]){
+  _grpData[_openGrpIdx].gbody.classList.remove('hidden');
+  _grpData[_openGrpIdx].gl.classList.remove('collapsed');
+}
 
 function updateCDs(){
   var bp=nowBPsimple();

@@ -269,7 +269,7 @@ get_header();
     <div class="vn-leg"><div class="vn-leg-dot" style="background:#f5d020"></div>Apr&oacute;vad</div>
     <div class="vn-leg"><div class="vn-leg-dot" style="background:#20d4d4"></div>Sz&aacute;rnyasvad</div>
     <div class="vn-leg"><div class="vn-leg-dot" style="background:#ff8c00"></div>V&iacute;zi sz&aacute;rnyasvad</div>
-    <div class="vn-leg"><div class="vn-leg-dot" style="background:#aaa"></div>Ragadoz&oacute;k</div>
+    <div class="vn-leg"><div class="vn-leg-dot" style="background:#ffb300"></div>Ragadoz&oacute;k</div>
     <p style="width:100%;text-align:center;font-size:.72rem;color:rgba(255,255,255,.3);margin:4px 0 0;">Csoportokra kattintva &ouml;ssze/kibonthat&oacute;&nbsp;&middot;&nbsp;<span style="color:#ff0000;font-weight:700">|</span>&nbsp;= mai nap</p>
   </div>
 
@@ -415,7 +415,7 @@ const groups=[
     {name:"Vet\u00e9si l\u00fad",sub:"Anser fabalis",seasons:[[10,1,1,31]]},
     {name:"Ny\u00e1ri l\u00fad",sub:"Anser anser",seasons:[[8,15,1,31]]},
   ]},
-  {label:"RAGADOZ\u00d3K",color:"#b0b0b0",animals:[
+  {label:"RAGADOZ\u00d3K",color:"#ffb300",animals:[
     {name:"V\u00f6r\u00f6sr\u00f3ka",sub:"Vulpes vulpes",seasons:[[1,1,12,31]]},
     {name:"Aranysakal",sub:"Canis aureus",seasons:[[1,1,12,31]]},
     {name:"Borz",sub:"Meles meles",seasons:[[9,1,11,30]]},
@@ -490,7 +490,12 @@ function buildTodayPanel(){
   }
 
   const soonF=soon.filter(x=>!seen.has(x.name));
-  open.sort((a,b)=>a.daysLeft-b.daysLeft);
+  open.sort((a,b)=>{
+    if(a.isNew&&!b.isNew)return -1;if(!a.isNew&&b.isNew)return 1;
+    const aU=a.daysLeft<=7,bU=b.daysLeft<=7;
+    if(aU&&!bU)return -1;if(!aU&&bU)return 1;
+    return a.daysLeft-b.daysLeft;
+  });
   soonF.sort((a,b)=>a.openIn-b.openIn);
 
   const panel=document.getElementById('vn-today-panel');
@@ -522,11 +527,11 @@ function buildTodayPanel(){
       let bc,bt;
       if(a.isNew){bc='vn-b-new';bt='&#127881; Feloldva ma';}
       else if(a.daysLeft===0){bc='vn-b-urgent';bt='&#9888; Ma az utols\u00f3 nap!';}
-      else if(a.daysLeft<=5){bc='vn-b-urgent';bt=`&#9888; M\u00e9g ${a.daysLeft} nap! \u2013 Utols\u00f3 vad\u00e1szati nap: ${a.closing}`;}
-      else if(a.daysLeft<=14){bc='vn-b-warn';bt=`M\u00e9g ${a.daysLeft} nap \u2013 Utols\u00f3 vad\u00e1szati nap: ${a.closing}`;}
-      else{bc='vn-b-ok';bt=`Utols\u00f3 vad\u00e1szati nap: ${a.closing} (${a.daysLeft} nap)`;}
+      else if(a.daysLeft<=7){bc='vn-b-urgent';bt=`&#9888;&#9888; Z\u00c1RUL: m\u00e9g ${a.daysLeft} nap! \u2013 ${a.closing}`;}
+      else if(a.daysLeft<=14){bc='vn-b-warn';bt=`M\u00e9g ${a.daysLeft} nap \u2013 ${a.closing}`;}
+      else{bc='vn-b-ok';bt=`${a.closing} (${a.daysLeft} nap)`;}
       const card=document.createElement('div');
-      card.className='vn-tp-card'+(a.isNew?' vn-tp-card--new':'');
+      card.className='vn-tp-card'+(a.isNew?' vn-tp-card--new':'')+(a.daysLeft<=7&&!a.isNew?' vn-tp-card--closing':'');
       card.style.borderLeftColor=a.color;
       card.innerHTML=`<div class="vn-tp-card-name">${a.name}</div><div class="vn-tp-card-sub">${a.sub}</div><div class="vn-tp-card-range">${a.range}</div><span class="vn-tp-badge ${bc}">${bt}</span><div class="vn-tp-cd"></div>`;
       _cdList.push({el:card.querySelector('.vn-tp-cd'),closeM:a.closeM,closeD:a.closeD});
@@ -601,15 +606,28 @@ const tl=document.createElement('div');tl.className='vn-today-line';tl.style.lef
 const tlbl=document.createElement('div');tlbl.className='vn-today-label';tlbl.textContent='ma';tlbl.style.left=TODAY_PCT;
 mhm.appendChild(tl);mhm.appendChild(tlbl);mh.appendChild(mhm);chart.appendChild(mh);
 
+// Legutoljara megnyilt csoport
+let _openGrpIdx2=-1,_minDaysSince2=9999;
+groups.forEach((g,gi)=>{
+  g.animals.forEach(a=>{
+    a.seasons.forEach(s=>{
+      if(isInSeason([s],TODAY.m,TODAY.d)){
+        const diff=(doy(TODAY.m,TODAY.d)-doy(s[0],s[1])+TOTAL)%TOTAL;
+        if(diff<_minDaysSince2){_minDaysSince2=diff;_openGrpIdx2=gi;}
+      }
+    });
+  });
+});
+const _grpData2=[];
 for(const g of groups){
   const gh=document.createElement('div');gh.className='vn-group-header';
-  const gl=document.createElement('div');gl.className='vn-group-label';
+  const gl=document.createElement('div');gl.className='vn-group-label collapsed';
   gl.innerHTML=`<span class="vn-arrow">\u25be</span>${g.label}`;
   gh.appendChild(gl);
   const gba=document.createElement('div');gba.className='vn-group-bar-area';gba.appendChild(makeTodayLine());
   gh.appendChild(gba);chart.appendChild(gh);
 
-  const gbody=document.createElement('div');gbody.className='vn-group-body';
+  const gbody=document.createElement('div');gbody.className='vn-group-body hidden';
   for(const a of g.animals){
     const row=document.createElement('div');row.className='vn-animal-row';
     const nd=document.createElement('div');nd.className='vn-animal-name';
@@ -627,10 +645,15 @@ for(const g of groups){
     row.appendChild(ba);gbody.appendChild(row);
   }
   chart.appendChild(gbody);
+  _grpData2.push({gbody,gl});
   gh.addEventListener('click',()=>{
     const h=gbody.classList.toggle('hidden');
     gl.classList.toggle('collapsed',h);
   });
+}
+if(_openGrpIdx2>=0&&_grpData2[_openGrpIdx2]){
+  _grpData2[_openGrpIdx2].gbody.classList.remove('hidden');
+  _grpData2[_openGrpIdx2].gl.classList.remove('collapsed');
 }
 updateAllCountdowns();
 
