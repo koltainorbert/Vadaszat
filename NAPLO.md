@@ -2,6 +2,15 @@
 
 ---
 
+## 2026. 04. 18. – Session #50 (Hold widget datum stilus vissza az elozore)
+
+### Mit csinaltunk [x]
+- [x] A datum/idopont megjelenes visszaallitva az elozo egyszeru stilusra
+- [x] Csak a szin maradt allitva: feher (`#ffffff`)
+- [x] Hibavizsgalat: modosított fajl ellenorizve
+
+---
+
 ## 2026. 04. 18. – Session #49 (Hold widget datum lathatosag javitas)
 
 ### Mit csinaltunk [x]
