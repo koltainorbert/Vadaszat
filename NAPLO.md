@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #82 (Account type toggle meret/pozicio finomitas)
+
+### Mit csinaltunk [x]
+- [x] A regisztracios toggle kapcsolo merete csokkentve (kompaktabb switch)
+- [x] A feliratok betumerete csokkentve, aranyosabb a kapcsolohoz
+- [x] A teljes toggle szekcio balra igazitva (nem kozepre)
+- [x] Kompaktabb container padding/gap beallitasok
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #81 (Ceges mezo tisztitas + toggle szimmetria)
 
 ### Mit csinaltunk [x]
