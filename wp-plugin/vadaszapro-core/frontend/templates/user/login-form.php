@@ -12,12 +12,24 @@ if ( is_user_logged_in() ) {
 }
 
 $redirect = sanitize_url( wp_get_referer() ?: home_url() );
+$login_enabled = get_option( 'va_enable_login', '1' ) === '1';
+$register_enabled = get_option( 'va_enable_register', '1' ) === '1';
 ?>
 <div class="va-wrap va-auth-wrap">
     <?php va_display_flash(); ?>
 
     <div class="va-auth-box">
         <h2 class="va-auth-box__title">Bejelentkezés</h2>
+
+        <?php if ( ! $login_enabled ): ?>
+            <div class="va-notice va-notice--warning">A bejelentkezés jelenleg ki van kapcsolva.</div>
+            <?php if ( $register_enabled ): ?>
+                <div class="va-auth-links">
+                    Még nincs fiókod? <a href="<?php echo esc_url( wp_registration_url() ); ?>">Regisztrálj ingyen</a>
+                </div>
+            <?php endif; ?>
+            <?php return; ?>
+        <?php endif; ?>
 
         <form method="post">
             <?php wp_nonce_field( 'va_login', 'va_login_nonce' ); ?>
@@ -45,8 +57,10 @@ $redirect = sanitize_url( wp_get_referer() ?: home_url() );
             <button type="submit" class="va-btn va-btn--primary va-btn--block">Bejelentkezés</button>
         </form>
 
+        <?php if ( $register_enabled ): ?>
         <div class="va-auth-links">
             Még nincs fiókod? <a href="<?php echo esc_url( wp_registration_url() ); ?>">Regisztrálj ingyen</a>
         </div>
+        <?php endif; ?>
     </div>
 </div>

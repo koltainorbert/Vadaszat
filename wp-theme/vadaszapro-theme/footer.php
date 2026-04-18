@@ -57,6 +57,8 @@
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_account_title ); ?></div>
                 <?php
+                $login_enabled = get_option( 'va_enable_login', '1' ) === '1';
+                $register_enabled = get_option( 'va_enable_register', '1' ) === '1';
                 $fp = [
                     'va-bejelentkezes' => 'Bejelentkezés',
                     'va-regisztracio'  => 'Regisztráció',
@@ -64,6 +66,12 @@
                     'va-hirdetes-feladas' => 'Hirdetés feladása',
                 ];
                 foreach ($fp as $slug => $label) {
+                    if ( $slug === 'va-bejelentkezes' && ! $login_enabled ) {
+                        continue;
+                    }
+                    if ( $slug === 'va-regisztracio' && ! $register_enabled ) {
+                        continue;
+                    }
                     $p = get_page_by_path($slug);
                     if ($p) echo '<a href="' . esc_url(get_permalink($p)) . '" class="va-footer__link">' . esc_html($label) . '</a>';
                 }

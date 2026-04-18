@@ -11,12 +11,25 @@ if ( is_user_logged_in() ) {
     wp_safe_redirect( $dashboard ? get_permalink( $dashboard ) : home_url() );
     exit;
 }
+
+$login_enabled = get_option( 'va_enable_login', '1' ) === '1';
+$register_enabled = get_option( 'va_enable_register', '1' ) === '1';
 ?>
 <div class="va-wrap va-auth-wrap va-auth-wrap--register">
     <?php va_display_flash(); ?>
 
     <div class="va-auth-box">
         <h2 class="va-auth-box__title">Regisztráció</h2>
+
+        <?php if ( ! $register_enabled ): ?>
+            <div class="va-notice va-notice--warning">A regisztráció jelenleg ki van kapcsolva.</div>
+            <?php if ( $login_enabled ): ?>
+                <div class="va-auth-links">
+                    Van már fiókod? <a href="<?php echo esc_url( wp_login_url() ); ?>">Bejelentkezés</a>
+                </div>
+            <?php endif; ?>
+            <?php return; ?>
+        <?php endif; ?>
 
         <form method="post" class="va-register-form">
             <?php wp_nonce_field( 'va_register', 'va_register_nonce' ); ?>
@@ -104,8 +117,10 @@ if ( is_user_logged_in() ) {
             </div>
         </form>
 
+        <?php if ( $login_enabled ): ?>
         <div class="va-auth-links">
             Már van fiókod? <a href="<?php echo esc_url( wp_login_url() ); ?>">Bejelentkezés</a>
         </div>
+        <?php endif; ?>
     </div>
 </div>

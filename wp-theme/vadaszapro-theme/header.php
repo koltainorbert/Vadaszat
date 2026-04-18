@@ -44,6 +44,8 @@
     if ( $header_login_text === '' ) {
         $header_login_text = 'Bejelentkezés';
     }
+    $login_enabled = get_option( 'va_enable_login', '1' ) === '1';
+    $register_enabled = get_option( 'va_enable_register', '1' ) === '1';
     if ( $hero_logo === '' ) {
         $hero_logo = $header_logo;
     }
@@ -168,10 +170,10 @@
                     $login_page    = get_page_by_path('va-bejelentkezes');
                     $register_page = get_page_by_path('va-regisztracio');
                 ?>
-                    <?php if ($login_page): ?>
+                    <?php if ( $login_enabled && $login_page ): ?>
                         <a href="<?php echo esc_url( get_permalink($login_page) ); ?>" class="va-header__user-login"><?php echo esc_html( $header_login_text ); ?></a>
                     <?php endif; ?>
-                    <?php if ($register_page): ?>
+                    <?php if ( $register_enabled && $register_page ): ?>
                         <a href="<?php echo esc_url( get_permalink($register_page) ); ?>" class="va-header__submit-btn"><?php echo esc_html( $header_register_text ); ?></a>
                     <?php endif; ?>
                 <?php endif; ?>

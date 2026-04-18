@@ -7,6 +7,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class VA_User_System {
 
+    private static function is_login_enabled(): bool {
+        return get_option( 'va_enable_login', '1' ) === '1';
+    }
+
+    private static function is_register_enabled(): bool {
+        return get_option( 'va_enable_register', '1' ) === '1';
+    }
+
     public static function init() {
         add_action( 'init',                [ __CLASS__, 'handle_forms' ] );
         add_action( 'wp_enqueue_scripts',  [ __CLASS__, 'enqueue' ] );
@@ -17,11 +25,17 @@ class VA_User_System {
 
     /* ── URL átirányítások ─────────────────────────────── */
     public static function custom_login_url( $url, $redirect, $force_reauth ) {
+        if ( ! self::is_login_enabled() ) {
+            return home_url();
+        }
         $page = get_page_by_path( 'va-bejelentkezes' );
         return $page ? get_permalink( $page ) : $url;
     }
 
     public static function custom_register_url( $url ) {
+        if ( ! self::is_register_enabled() ) {
+            return home_url();
+        }
         $page = get_page_by_path( 'va-regisztracio' );
         return $page ? get_permalink( $page ) : $url;
     }
@@ -53,6 +67,11 @@ class VA_User_System {
 
     /* ── Regisztráció ──────────────────────────────────── */
     private static function process_register() {
+        if ( ! self::is_register_enabled() ) {
+            va_set_flash( 'error', 'A regisztráció jelenleg ki van kapcsolva.' );
+            return;
+        }
+
         if ( ! isset( $_POST['va_register_nonce'] ) ||
              ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_register_nonce'] ) ), 'va_register' ) ) {
             va_set_flash( 'error', 'Érvénytelen kérés.' );
@@ -157,6 +176,11 @@ class VA_User_System {
 
     /* ── Bejelentkezés ─────────────────────────────────── */
     private static function process_login() {
+        if ( ! self::is_login_enabled() ) {
+            va_set_flash( 'error', 'A bejelentkezés jelenleg ki van kapcsolva.' );
+            return;
+        }
+
         if ( ! isset( $_POST['va_login_nonce'] ) ||
              ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_login_nonce'] ) ), 'va_login' ) ) {
             va_set_flash( 'error', 'Érvénytelen kérés.' );

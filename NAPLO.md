@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 04. 18. – Session #80 (Login/Regisztracio kulon ki-be kapcsolhato)
+
+### Mit csinaltunk [x]
+- [x] Uj altalanos admin kapcsolok: `va_enable_login`, `va_enable_register`
+- [x] Az `Általános` beallitas oldalon kulon toggle-kent kezelhetok
+- [x] Headerben a Bejelentkezes/Regisztracio gombok csak akkor jelennek meg, ha engedelyezettek
+- [x] Footer `Fiok` oszlopban a megfelelo linkek szinten feltetelesek
+- [x] Login/Register frontend oldalak tiltott allapotban urlap helyett figyelmeztetest mutatnak
+- [x] Backend oldali vedelem: login/register POST feldolgozas tiltva, ha az adott funkcio ki van kapcsolva
+- [x] Aukcio oldali vendeg licit gomb is figyeli a login tiltast (figyelmeztetesre valt)
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #79 (Interaktiv regisztracio + ceg/maganszemely toggle)
 
 ### Mit csinaltunk [x]
