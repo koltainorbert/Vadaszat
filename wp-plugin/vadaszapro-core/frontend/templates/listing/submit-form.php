@@ -69,9 +69,19 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '<textarea id="va-desc" name="description" class="va-textarea" rows="6"' . $req_attr . ' placeholder="' . $ph . '"></textarea>';
                 break;
             case 'images':
-                $max_img = esc_html( get_option( 'va_max_images_per_listing', 10 ) );
-                echo '<input type="file" name="listing_images[]" class="va-input" accept="image/jpeg,image/png,image/webp" multiple>';
-                echo '<p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Az első kép lesz a borítókép. Max. 5 MB / kép. (' . $max_img . ' db)</p>';
+                $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
+                ?>
+                <div class="va-img-picker" id="va-img-picker">
+                    <div class="va-img-drop" id="va-img-drop">
+                        <span style="font-size:32px;">🖼️</span>
+                        <p style="margin:8px 0 4px;font-weight:600;">Húzd ide a képeket, vagy <label for="va-img-file-input" class="va-img-browse-lbl">kattints a tallózáshoz</label></p>
+                        <p style="font-size:12px;color:rgba(255,255,255,.45);">Max. <?php echo esc_html( (string) $max_img ); ?> kép &bull; JPG, PNG, WEBP &bull; 5 MB/kép</p>
+                    </div>
+                    <input type="file" id="va-img-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-max="<?php echo esc_attr( (string) $max_img ); ?>">
+                    <input type="hidden" name="featured_image_index" id="va-featured-index" value="0">
+                    <div class="va-img-grid" id="va-img-grid"></div>
+                </div>
+                <?php
                 break;
             case 'phone':
                 echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . '>';
