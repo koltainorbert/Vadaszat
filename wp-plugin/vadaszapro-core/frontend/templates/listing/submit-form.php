@@ -8,6 +8,24 @@ $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false ] 
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 
+$free_limit = max( 0, absint( get_option( 'va_free_listings_limit', 1 ) ) );
+$paid_price = max( 0, absint( get_option( 'va_listing_price_after_free', 1990 ) ) );
+
+$user_listings_count = 0;
+if ( is_user_logged_in() ) {
+    global $wpdb;
+    $user_listings_count = (int) $wpdb->get_var( $wpdb->prepare(
+        "SELECT COUNT(*) FROM {$wpdb->posts}
+         WHERE post_type = %s
+         AND post_author = %d
+         AND post_status IN ('publish','pending','draft','future','private')",
+        'va_listing',
+        get_current_user_id()
+    ) );
+}
+
+$remaining_free = $free_limit === 0 ? 9999 : max( 0, $free_limit - $user_listings_count );
+
 wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 wp_enqueue_script( 'va-submit',   VA_PLUGIN_URL . 'frontend/js/frontend.js',  [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-submit', 'VA_Data', [
@@ -26,6 +44,18 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         <input type="hidden" name="nonce"  value="<?php echo esc_attr( wp_create_nonce( 'va_submit_listing' ) ); ?>">
 
         <h2 style="font-size:20px;font-weight:800;margin-bottom:22px;">📋 Hirdetés feladása</h2>
+
+        <div class="va-notice va-notice--info" style="margin-bottom:16px;">
+            <?php if ( $free_limit === 0 ): ?>
+                Jelenleg korlátlan számú ingyenes hirdetés adható fel.
+            <?php else: ?>
+                <?php if ( $remaining_free > 0 ): ?>
+                    Még <strong><?php echo esc_html( (string) $remaining_free ); ?> db</strong> ingyenes hirdetésed van. Utána minden új hirdetés díja: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> (bankkártya).
+                <?php else: ?>
+                    Az ingyenes hirdetési limit elfogyott. A következő hirdetés díja: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> (bankkártya).
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
 
         <!-- Alapadatok -->
         <div class="va-form-group">
@@ -186,7 +216,17 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                         setTimeout(function(){ window.location.href = res.data.permalink; }, 2000);
                     }
                 } else {
-                    $('#va-submit-notice').html('<div class="va-notice va-notice--error">' + res.data.message + '</div>');
+                    if (res.data && res.data.payment_required && res.data.payment_url) {
+                        var amount = res.data.amount ? Number(res.data.amount).toLocaleString('hu-HU') + ' Ft' : '';
+                        var html = '<div class="va-notice va-notice--warning">'
+                            + res.data.message
+                            + (amount ? '<br><strong>Fizetendő: ' + amount + '</strong>' : '')
+                            + '<br><a href="' + res.data.payment_url + '" class="va-btn va-btn--primary" style="margin-top:10px;display:inline-flex;">Bankkártyás fizetés</a>'
+                            + '</div>';
+                        $('#va-submit-notice').html(html);
+                    } else {
+                        $('#va-submit-notice').html('<div class="va-notice va-notice--error">' + res.data.message + '</div>');
+                    }
                 }
             },
             error: function(){

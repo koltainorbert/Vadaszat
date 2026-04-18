@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 04. 18. – Session #87 (1 ingyenes hirdetes, utana bankkartyas fizetes)
+
+### Mit csinaltunk [x]
+- [x] Uj hirdetes beallitasok:
+- [x] `va_listing_price_after_free` (ingyenes limit utani hirdetes ara)
+- [x] `va_listing_payment_url` (bankkartyas checkout URL)
+- [x] Hirdetes feladas backend logika bovites:
+- [x] Felhasznalo aktiv/folyamatban levo hirdetesszam ellenorzese
+- [x] Ingyenes limit utan a feladas blokkolasa, fizetesi URL visszaadasa
+- [x] Frontend submit form frissites:
+- [x] Ingyenes maradek / fizetos dij informacios sor
+- [x] Fizetes kotelezo esetben hiba helyett bankkartyas fizetes CTA gomb megjelenitese
+- [x] Celfunkcio: 1 ingyenes hirdetes utan tovabbi feladas csak fizetesi lepessel
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #86 (Nem-admin WP tiltás + szerepkör kezelés)
 
 ### Mit csinaltunk [x]

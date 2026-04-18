@@ -41,6 +41,43 @@ class VA_Ajax {
             wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
         }
 
+        global $wpdb;
+        $user_id = get_current_user_id();
+        $free_limit = max( 0, absint( get_option( 'va_free_listings_limit', 1 ) ) );
+        $paid_price = max( 0, absint( get_option( 'va_listing_price_after_free', 1990 ) ) );
+        $payment_url = trim( (string) get_option( 'va_listing_payment_url', '' ) );
+
+        $existing_count = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->posts}
+             WHERE post_type = %s
+             AND post_author = %d
+             AND post_status IN ('publish','pending','draft','future','private')",
+            'va_listing',
+            $user_id
+        ) );
+
+        $is_free_allowed = ( $free_limit === 0 ) || ( $existing_count < $free_limit );
+        if ( ! $is_free_allowed ) {
+            if ( $payment_url === '' ) {
+                wp_send_json_error([
+                    'message' => 'A további hirdetés fizetős, de a bankkártyás fizetési link még nincs beállítva. Kérjük, lépjen kapcsolatba az üzemeltetővel.',
+                ]);
+            }
+
+            $checkout_url = add_query_arg([
+                'intent'  => 'listing_submission',
+                'user_id' => $user_id,
+                'amount'  => $paid_price,
+            ], $payment_url );
+
+            wp_send_json_error([
+                'message'          => 'Az ingyenes hirdetési limit elfogyott. A következő hirdetés bankkártyás fizetéssel adható fel.',
+                'payment_required' => true,
+                'amount'           => $paid_price,
+                'payment_url'      => esc_url_raw( $checkout_url ),
+            ]);
+        }
+
         $title       = sanitize_text_field( wp_unslash( $_POST['title']       ?? '' ) );
         $description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
         $price       = floatval( $_POST['price'] ?? 0 );
@@ -68,7 +105,7 @@ class VA_Ajax {
             'post_content' => $description,
             'post_status'  => $status,
             'post_type'    => 'va_listing',
-            'post_author'  => get_current_user_id(),
+            'post_author'  => $user_id,
         ], true );
 
         if ( is_wp_error( $post_id ) ) {
