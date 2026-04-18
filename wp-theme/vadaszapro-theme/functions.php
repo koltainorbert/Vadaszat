@@ -55,6 +55,27 @@ add_action( 'wp_head', function () {
     echo '<link rel="dns-prefetch" href="//s.gravatar.com">' . "\n";
 }, 1 );
 
+// Automata favicon a fejléc ikon URL alapján
+add_action( 'wp_head', function () {
+    $icon = trim( (string) get_option( 'va_brand_icon_url', '' ) );
+    if ( $icon === '' ) {
+        return;
+    }
+
+    $icon_url = esc_url( $icon );
+    echo '<link rel="icon" type="image/png" href="' . $icon_url . '">' . "\n";
+    echo '<link rel="shortcut icon" href="' . $icon_url . '">' . "\n";
+    echo '<link rel="apple-touch-icon" href="' . $icon_url . '">' . "\n";
+}, 2 );
+
+add_filter( 'get_site_icon_url', function( $url ) {
+    if ( ! empty( $url ) ) {
+        return $url;
+    }
+    $icon = trim( (string) get_option( 'va_brand_icon_url', '' ) );
+    return $icon !== '' ? esc_url( $icon ) : $url;
+}, 10, 1 );
+
 /* ── Theme setup ──────────────────────────────────── */
 add_action( 'after_setup_theme', function () {
     add_theme_support( 'title-tag' );

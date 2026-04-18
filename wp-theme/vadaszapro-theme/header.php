@@ -10,17 +10,25 @@
 
 <div class="va-site-wrap<?php echo ! is_front_page() ? ' va-site-wrap--inner' : ''; ?>">
     <?php $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true; ?>
+    <?php
+    $brand_name = trim( (string) get_option( 'va_site_name', 'VadászApró' ) );
+    if ( $brand_name === '' ) {
+        $brand_name = 'VadászApró';
+    }
+    $brand_icon = get_option( 'va_brand_icon_url', '' );
+    ?>
 
     <!-- ═══ Header ══════════════════════════════════════ -->
     <header class="va-header">
         <div class="va-header__inner">
             <!-- Logo -->
             <a href="<?php echo esc_url( home_url('/') ); ?>" class="va-logo">
-                <?php if ( has_custom_logo() ):
-                    the_custom_logo();
-                else: ?>
-                    <span class="va-logo__text">Vad&aacute;sz<span>Baz&aacute;r</span></span>
+                <?php if ( ! empty( $brand_icon ) ): ?>
+                    <img src="<?php echo esc_url( $brand_icon ); ?>" class="va-logo__img" alt="<?php echo esc_attr( $brand_name ); ?>" loading="eager" decoding="async">
+                <?php else: ?>
+                    <span class="va-logo__icon">🦌</span>
                 <?php endif; ?>
+                <span class="va-logo__text"><?php echo esc_html( $brand_name ); ?></span>
             </a>
 
             <!-- Navigáció -->

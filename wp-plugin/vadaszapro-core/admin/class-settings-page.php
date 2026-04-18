@@ -47,6 +47,12 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        // Márka ikon URL (header ikon + automata favicon)
+        register_setting( 'va_general_settings', 'va_brand_icon_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        if ( get_option( 'va_brand_icon_url' ) === false ) {
+            update_option( 'va_brand_icon_url', '' );
+        }
+
         /* Reklámzónák */
         foreach ( array_keys( VA_Ad_Zones::ZONES ) as $zone ) {
             register_setting( 'va_ad_settings', 'va_ad_zone_' . $zone, [
@@ -98,6 +104,7 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_site_name',           'Oldal neve' ); ?>
                     <?php self::field_text(  'va_site_description',     'Oldal alcíme / leírás' ); ?>
                     <?php self::field_email( 'va_contact_email',        'Kapcsolati e-mail' ); ?>
+                    <?php self::field_url(   'va_brand_icon_url',       'Fejléc ikon URL (automata favicon)' ); ?>
                     <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
                     <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
                     <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
