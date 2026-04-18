@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #32 (10 db egykattintásos fejléc/lábléc preset)
+
+### Mit csináltunk [x]
+- [x] Fejléc + Lábléc oldalon új preset blokk: 10 db egykattintásos modern paletta
+- [x] Új backend action: `va_apply_hf_preset` nonce + jogosultság ellenőrzéssel
+- [x] Minden preset egyszerre állítja a header/footer gradient, border, shadow, glow és link hover opciókat
+- [x] Preset nevek: Carbon Red, Steel Ember, Night Copper, Midnight Ice, Forest Glass, Obsidian Gold, Graphite Rose, Arctic Mint, Royal Plum, Desert Sand
+- [x] Siker/hiba admin visszajelzés beépítve preset alkalmazás után
+- [x] Hibavizsgálat: módosított fájl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #31 (Full export/import + modern fejléc/lábléc paletta)
 
 ### Mit csináltunk [x]
