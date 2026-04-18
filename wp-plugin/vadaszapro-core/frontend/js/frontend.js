@@ -253,6 +253,95 @@
     $('.va-dashboard__nav-item[data-tab="' + hash + '"]').trigger('click');
   }
 
+  // ── Regisztráció: cég/magánszemély interakció + typing ─────────────────
+  function va_init_register_form() {
+    var $form = $('.va-register-form');
+    if (!$form.length) {
+      return;
+    }
+
+    var $switch = $('#va-account-type-switch');
+    var $hidden = $('#va-account-type');
+    var $companyBox = $('.va-register-company');
+    var $companyFields = $companyBox.find('[data-company-field="1"]');
+
+    function applyAccountType(isCompany) {
+      var type = isCompany ? 'company' : 'private';
+      $hidden.val(type);
+      $companyBox.toggleClass('is-active', isCompany).attr('aria-hidden', isCompany ? 'false' : 'true');
+
+      $companyFields.each(function() {
+        this.disabled = !isCompany;
+        this.required = isCompany;
+      });
+    }
+
+    $switch.on('change', function() {
+      applyAccountType(this.checked);
+    });
+
+    applyAccountType($switch.is(':checked'));
+
+    var typingTimers = [];
+    $form.find('.va-input[data-typing]').each(function(fieldIndex) {
+      var input = this;
+      var phrases = (input.getAttribute('data-typing') || '')
+        .split('|')
+        .map(function(txt) { return txt.trim(); })
+        .filter(function(txt) { return txt.length > 0; });
+
+      if (!phrases.length) {
+        return;
+      }
+
+      var phraseIndex = 0;
+      var charIndex = 0;
+      var deleting = false;
+
+      function tick() {
+        if (document.activeElement === input && input.value !== '') {
+          typingTimers[fieldIndex] = setTimeout(tick, 150);
+          return;
+        }
+
+        var phrase = phrases[phraseIndex];
+        if (!deleting) {
+          charIndex += 1;
+          input.setAttribute('placeholder', phrase.slice(0, charIndex));
+
+          if (charIndex >= phrase.length) {
+            deleting = true;
+            typingTimers[fieldIndex] = setTimeout(tick, 950);
+            return;
+          }
+
+          typingTimers[fieldIndex] = setTimeout(tick, 55);
+          return;
+        }
+
+        charIndex = Math.max(0, charIndex - 1);
+        input.setAttribute('placeholder', phrase.slice(0, charIndex));
+
+        if (charIndex === 0) {
+          deleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          typingTimers[fieldIndex] = setTimeout(tick, 240);
+          return;
+        }
+
+        typingTimers[fieldIndex] = setTimeout(tick, 32);
+      }
+
+      typingTimers[fieldIndex] = setTimeout(tick, 260 + (fieldIndex * 90));
+    });
+
+    $form.on('submit', function() {
+      var $btn = $(this).find('button[type="submit"]');
+      $btn.addClass('is-loading').prop('disabled', true).text('Regisztráció folyamatban...');
+    });
+  }
+  va_init_register_form();
+
   // ── Scroll animáció ──────────────────────────────────────
   function va_init_animate() {
     var observer = new IntersectionObserver(function(entries) {

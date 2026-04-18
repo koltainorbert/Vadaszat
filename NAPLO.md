@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 04. 18. – Session #79 (Interaktiv regisztracio + ceg/maganszemely toggle)
+
+### Mit csinaltunk [x]
+- [x] Regisztracio urlap interaktivva teve: typing placeholder effekt tobb mezone
+- [x] Submit allapot javitas: betoltes jelzes (`Regisztracio folyamatban...`) + loading animacio
+- [x] Uj account type kapcsolo: Maganszemely / Ceg (toggle switch)
+- [x] Ceges adatblokkok dinamikus megjelenitese/elrejtese JS-bol
+- [x] Ceges kotelezo mezok: Cegnev, Adoszam, Szekhely, Szemelynev
+- [x] Backend validacio es mentes bovites a ceges adatokra
+- [x] Uj user meta kulcsok: `va_account_type`, `va_company_name`, `va_company_tax`, `va_company_seat`, `va_contact_name`
+- [x] Biztonsag: ASZF checkbox szerveroldali kotelezo ellenorzese
+- [x] Mobil fallback megtartva (1 oszlop)
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #78 (Regisztracio rovidebb/szelesebb layout)
 
 ### Mit csinaltunk [x]

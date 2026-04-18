@@ -445,6 +445,97 @@
   color: rgba(255,255,255,0.4);
   margin-top: 4px;
 }
+.va-account-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 999px;
+  background: rgba(255,255,255,.03);
+}
+.va-account-switch__label {
+  font-size: 13px;
+  color: rgba(255,255,255,.78);
+  font-weight: 600;
+}
+.va-account-switch__toggle {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  display: inline-block;
+  cursor: pointer;
+}
+.va-account-switch__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.va-account-switch__slider {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgba(255,255,255,.14);
+  border: 1px solid rgba(255,255,255,.2);
+  transition: background .2s ease, border-color .2s ease;
+}
+.va-account-switch__slider::before {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35);
+  transition: transform .2s ease;
+}
+.va-account-switch__input:checked + .va-account-switch__slider {
+  background: rgba(255,0,0,.23);
+  border-color: rgba(255,0,0,.6);
+}
+.va-account-switch__input:checked + .va-account-switch__slider::before {
+  transform: translateX(20px);
+}
+.va-register-company {
+  grid-column: 1 / -1;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: max-height .32s ease, opacity .22s ease, transform .22s ease;
+}
+.va-register-company.is-active {
+  max-height: 360px;
+  opacity: 1;
+  transform: translateY(0);
+}
+.va-register-company__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  padding: 12px 14px 6px;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--va-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+}
+.va-register-form button[type="submit"].is-loading {
+  position: relative;
+  opacity: .95;
+  cursor: progress;
+  pointer-events: none;
+}
+.va-register-form button[type="submit"].is-loading::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 34%;
+  background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,.26), rgba(255,255,255,0));
+  animation: va-register-loading 1s linear infinite;
+}
 @media (max-width: 860px) {
   .va-auth-wrap--register {
     max-width: 560px;
@@ -452,6 +543,10 @@
   .va-register-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+  .va-register-company__grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 }
 
@@ -529,3 +624,4 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
 
 /* ── Animációk ─────────────────────────────────── */
 @keyframes va-pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
+@keyframes va-register-loading { from { transform: translateX(-130%); } to { transform: translateX(380%); } }

@@ -66,10 +66,36 @@ class VA_User_System {
         $firstname = sanitize_text_field( wp_unslash( $_POST['reg_firstname'] ?? '' ) );
         $lastname  = sanitize_text_field( wp_unslash( $_POST['reg_lastname']  ?? '' ) );
         $phone     = sanitize_text_field( wp_unslash( $_POST['reg_phone']     ?? '' ) );
+        $account_type = sanitize_key( wp_unslash( $_POST['reg_account_type'] ?? 'private' ) );
+        $company_name = sanitize_text_field( wp_unslash( $_POST['reg_company_name'] ?? '' ) );
+        $company_tax  = sanitize_text_field( wp_unslash( $_POST['reg_company_tax'] ?? '' ) );
+        $company_seat = sanitize_text_field( wp_unslash( $_POST['reg_company_seat'] ?? '' ) );
+        $contact_name = sanitize_text_field( wp_unslash( $_POST['reg_contact_name'] ?? '' ) );
+
+        if ( ! in_array( $account_type, [ 'private', 'company' ], true ) ) {
+            $account_type = 'private';
+        }
 
         if ( empty( $username ) || empty( $email ) || empty( $pass ) ) {
             va_set_flash( 'error', 'Kérjük töltse ki a kötelező mezőket.' );
             return;
+        }
+
+        if ( empty( $_POST['terms_accept'] ) ) {
+            va_set_flash( 'error', 'Az ÁSZF elfogadása kötelező.' );
+            return;
+        }
+
+        if ( $account_type === 'company' ) {
+            if ( $company_name === '' || $company_tax === '' || $company_seat === '' || $contact_name === '' ) {
+                va_set_flash( 'error', 'Céges regisztrációnál minden cégadat mező kitöltése kötelező.' );
+                return;
+            }
+
+            if ( strlen( preg_replace( '/[^0-9]/', '', $company_tax ) ) < 8 ) {
+                va_set_flash( 'error', 'Kérjük érvényes adószámot adjon meg.' );
+                return;
+            }
         }
 
         if ( $pass !== $pass2 ) {
@@ -105,6 +131,19 @@ class VA_User_System {
             'role'       => 'subscriber',
         ]);
         update_user_meta( $user_id, 'va_phone', $phone );
+        update_user_meta( $user_id, 'va_account_type', $account_type );
+
+        if ( $account_type === 'company' ) {
+            update_user_meta( $user_id, 'va_company_name', $company_name );
+            update_user_meta( $user_id, 'va_company_tax', $company_tax );
+            update_user_meta( $user_id, 'va_company_seat', $company_seat );
+            update_user_meta( $user_id, 'va_contact_name', $contact_name );
+        } else {
+            delete_user_meta( $user_id, 'va_company_name' );
+            delete_user_meta( $user_id, 'va_company_tax' );
+            delete_user_meta( $user_id, 'va_company_seat' );
+            delete_user_meta( $user_id, 'va_contact_name' );
+        }
 
         // Automatikus bejelentkezés regisztráció után
         wp_set_auth_cookie( $user_id );
