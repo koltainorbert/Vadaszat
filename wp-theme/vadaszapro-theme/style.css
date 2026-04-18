@@ -346,13 +346,10 @@ hr { border-color: var(--border); }
 @media (max-width: 1100px) { .va-sidebar.va-sidebar--right { display: none; } }
 @media (max-width: 768px)  { .va-sidebar.va-sidebar--left  { display: none; } .va-main-content { padding: 16px; } }
 
-/* Főoldalon nincs reklám oldalsáv – teljes szélességű tartalom */
+/* Főoldalon nincs BAL reklám oldalsáv – jobb sidebar megmarad */
 .home-template .va-sidebar--left,
 .home .va-sidebar--left,
 .front-page .va-sidebar--left { display: none !important; }
-.home-template .va-sidebar--right,
-.home .va-sidebar--right,
-.front-page .va-sidebar--right { display: none !important; }
 .home-template .va-main-content,
 .home .va-main-content,
 .front-page .va-main-content { padding: 20px 28px; }
