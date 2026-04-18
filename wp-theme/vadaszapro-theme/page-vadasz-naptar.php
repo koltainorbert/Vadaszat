@@ -464,7 +464,8 @@ function buildTodayPanel(){
         if(ms<=me){
           const s=doy(ms,ds),e=doy(me,de);
           if(todayDoy>=s&&todayDoy<=e){
-            open.push({name:a.name,sub:a.sub||'',color:g.color,daysLeft:e-todayDoy,isNew:todayDoy===s,range:`${MF[ms-1]} ${ds}. \u2013 ${MF[me-1]} ${de}.`,closing:`${MF[me-1]} ${de}.`,closeM:me,closeD:de});
+            const neverCloses=(nextSeasonChange(a.seasons,tm,td)===null);
+            open.push({name:a.name,sub:a.sub||'',color:g.color,daysLeft:neverCloses?9999:e-todayDoy,isNew:todayDoy===s,neverCloses:neverCloses,range:`${MF[ms-1]} ${ds}. \u2013 ${MF[me-1]} ${de}.`,closing:`${MF[me-1]} ${de}.`,closeM:me,closeD:de});
             seen.add(a.name);found=true;break;
           }
           if(!found&&s>todayDoy&&s-todayDoy<=14){
@@ -529,15 +530,16 @@ function buildTodayPanel(){
     for(const a of open){
       let bc,bt;
       if(a.isNew){bc='vn-b-new';bt='&#127881; Feloldva ma';}
+      else if(a.neverCloses){bc='vn-b-ok';bt='Egész évben vadászható';}
       else if(a.daysLeft===0){bc='vn-b-urgent';bt='&#9888; Ma az utols\u00f3 nap!';}
       else if(a.daysLeft<=7){bc='vn-b-urgent';bt=`&#9888;&#9888; Z\u00c1RUL: m\u00e9g ${a.daysLeft} nap! \u2013 ${a.closing}`;}
       else if(a.daysLeft<=14){bc='vn-b-warn';bt=`M\u00e9g ${a.daysLeft} nap \u2013 ${a.closing}`;}
       else{bc='vn-b-ok';bt=`${a.closing} (${a.daysLeft} nap)`;}
       const card=document.createElement('div');
-      card.className='vn-tp-card'+(a.isNew?' vn-tp-card--new':'')+(a.daysLeft<=7&&!a.isNew?' vn-tp-card--closing':'');
+      card.className='vn-tp-card'+(a.isNew?' vn-tp-card--new':'')+(a.daysLeft<=7&&!a.isNew&&!a.neverCloses?' vn-tp-card--closing':'');
       card.style.borderLeftColor=a.color;
       card.innerHTML=`<div class="vn-tp-card-name">${a.name}</div><div class="vn-tp-card-sub">${a.sub}</div><div class="vn-tp-card-range">${a.range}</div><span class="vn-tp-badge ${bc}">${bt}</span><div class="vn-tp-cd"></div>`;
-      _cdList.push({el:card.querySelector('.vn-tp-cd'),closeM:a.closeM,closeD:a.closeD});
+      if(!a.neverCloses)_cdList.push({el:card.querySelector('.vn-tp-cd'),closeM:a.closeM,closeD:a.closeD});
       grid.appendChild(card);
     }
     panel.appendChild(grid);
