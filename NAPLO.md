@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #34 (Footer szétesés vizsgálat + fallback javítás)
+
+### Mit csináltunk [x]
+- [x] Footer vizsgálat lefuttatva (markup + dinamikus CSS + hibavizsgálat)
+- [x] Azonosított kockázat: üresre mentett opciók esetén a lábléc feliratok eltűnhetnek
+- [x] `footer.php` megerősítve: minden opció-vezérelt footer címke/szöveg kötelező fallbacket kap
+- [x] Így a lábléc feliratok nem tudnak üresen maradni hibás mentés után sem
+- [x] Hibavizsgálat: `footer.php` hibamentes
+- [x] Deploy: `Deploy Theme` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #33 (Hero vs Header mentési konfliktus javítás)
 
 ### Mit csináltunk [x]

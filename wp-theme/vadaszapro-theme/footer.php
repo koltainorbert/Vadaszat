@@ -12,16 +12,27 @@
     <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('footer_top'); ?>
 
     <?php
-    $f_brand_title    = get_option( 'va_hf_footer_brand_title', 'VadászApró' );
-    $f_cat_title      = get_option( 'va_hf_footer_col_categories_title', 'Kategóriák' );
-    $f_account_title  = get_option( 'va_hf_footer_col_account_title', 'Fiók' );
-    $f_legal_title    = get_option( 'va_hf_footer_col_legal_title', 'Jogi információk' );
-    $f_link_aszf      = get_option( 'va_hf_footer_link_aszf', 'ÁSZF' );
-    $f_link_privacy   = get_option( 'va_hf_footer_link_privacy', 'Adatvédelmi nyilatkozat' );
-    $f_link_contact   = get_option( 'va_hf_footer_link_contact', 'Kapcsolat' );
-    $f_link_help      = get_option( 'va_hf_footer_link_help', 'Súgó' );
-    $f_copy_text      = get_option( 'va_hf_footer_copy_text', 'VadászApró – Minden jog fenntartva.' );
-    $f_privacy_bottom = get_option( 'va_hf_footer_privacy_text', 'Adatvédelem' );
+    $f_brand_title    = trim( (string) get_option( 'va_hf_footer_brand_title', 'VadászApró' ) );
+    $f_cat_title      = trim( (string) get_option( 'va_hf_footer_col_categories_title', 'Kategóriák' ) );
+    $f_account_title  = trim( (string) get_option( 'va_hf_footer_col_account_title', 'Fiók' ) );
+    $f_legal_title    = trim( (string) get_option( 'va_hf_footer_col_legal_title', 'Jogi információk' ) );
+    $f_link_aszf      = trim( (string) get_option( 'va_hf_footer_link_aszf', 'ÁSZF' ) );
+    $f_link_privacy   = trim( (string) get_option( 'va_hf_footer_link_privacy', 'Adatvédelmi nyilatkozat' ) );
+    $f_link_contact   = trim( (string) get_option( 'va_hf_footer_link_contact', 'Kapcsolat' ) );
+    $f_link_help      = trim( (string) get_option( 'va_hf_footer_link_help', 'Súgó' ) );
+    $f_copy_text      = trim( (string) get_option( 'va_hf_footer_copy_text', 'VadászApró – Minden jog fenntartva.' ) );
+    $f_privacy_bottom = trim( (string) get_option( 'va_hf_footer_privacy_text', 'Adatvédelem' ) );
+
+    if ( $f_brand_title === '' )    $f_brand_title = 'VadászApró';
+    if ( $f_cat_title === '' )      $f_cat_title = 'Kategóriák';
+    if ( $f_account_title === '' )  $f_account_title = 'Fiók';
+    if ( $f_legal_title === '' )    $f_legal_title = 'Jogi információk';
+    if ( $f_link_aszf === '' )      $f_link_aszf = 'ÁSZF';
+    if ( $f_link_privacy === '' )   $f_link_privacy = 'Adatvédelmi nyilatkozat';
+    if ( $f_link_contact === '' )   $f_link_contact = 'Kapcsolat';
+    if ( $f_link_help === '' )      $f_link_help = 'Súgó';
+    if ( $f_copy_text === '' )      $f_copy_text = 'VadászApró – Minden jog fenntartva.';
+    if ( $f_privacy_bottom === '' ) $f_privacy_bottom = 'Adatvédelem';
     ?>
 
     <!-- ═══ Footer ═══════════════════════════════════════ -->
