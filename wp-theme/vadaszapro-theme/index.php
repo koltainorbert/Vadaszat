@@ -506,6 +506,7 @@ get_header(); ?>
 .va-hnaptar__sun-ico{width:14px;height:14px;display:inline-block;vertical-align:middle;}
 .va-hnaptar__sun-ico--rise{color:#ffb347;}
 .va-hnaptar__sun-ico--set{color:#ff6a3d;}
+.va-hnaptar__sun-item--trophy{color:rgba(255,255,255,.88);}
 @media (max-width: 760px){.va-hnaptar__sun{order:2;width:100%;}}
 .va-hnaptar__legend{display:flex;flex-wrap:wrap;gap:5px 14px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
 .va-hn-leg{display:flex;align-items:center;gap:5px;font-size:.65rem;color:rgba(255,255,255,.6);}
@@ -567,6 +568,7 @@ var MN=["Jan","Feb","M\u00e1r","\u00c1pr","M\u00e1j","J\u00fan","J\u00fal","Aug"
 var MF=["Janu\u00e1r","Febru\u00e1r","M\u00e1rcius","\u00c1prilis","M\u00e1jus","J\u00fanius","J\u00falius","Augusztus","Szeptember","Okt\u00f3ber","November","December"];
 var TOTAL=365;
 var PI=Math.PI,sin=Math.sin,cos=Math.cos,asin=Math.asin,acos=Math.acos,rad=PI/180,e=rad*23.4397;
+var TROPHY_SPECIES='Gímszarvas bika, Dámszarvas bak, Őzbak, Muflon kos, Vaddisznó kan';
 function doy(m,d){var i=0;for(var x=1;x<m;x++)i+=MD[x-1];return i+d-1;}
 function nowBPsimple(){var d=new Date(),parts={};new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(d).forEach(function(p){if(p.type!=='literal')parts[p.type]=+p.value;});return parts;}
 function sunDeclination(L){return asin(sin(e)*sin(L));}
@@ -629,7 +631,7 @@ function updateSunInfo(bp){
   var st=getSunTimesBp(bp.year,bp.month,bp.day);
   sunEl.innerHTML='<span class="va-hnaptar__sun-item">'+sunriseIcon()+'Napkelte '+fmtBpHm(st.rise)+'</span>'
     +'<span class="va-hnaptar__sun-item">'+sunsetIcon()+'Napnyugta '+fmtBpHm(st.set)+'</span>'
-    +'<span class="va-hnaptar__sun-item">'+shootIcon()+'<span id="va-hn-shoot-cd">&ndash;</span></span>';
+    +'<span class="va-hnaptar__sun-item va-hnaptar__sun-item--trophy">'+shootIcon()+'<span id="va-hn-shoot-cd">'+TROPHY_SPECIES+'</span></span>';
 }
 function updateShootCountdown(bp){
   var el=document.getElementById('va-hn-shoot-cd');
@@ -642,7 +644,7 @@ function updateShootCountdown(bp){
 
   if(now<=cutoffToday){
     if(wrap)wrap.style.display='inline-flex';
-    el.textContent='Trófeás vad a mai napon lőhető még '+fmtHp(cutoffToday-now);
+    el.textContent=TROPHY_SPECIES+' — a mai napon lőhető még '+fmtHp(cutoffToday-now);
     return;
   }
 
