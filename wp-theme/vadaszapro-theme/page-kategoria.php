@@ -5,7 +5,7 @@
  */
 get_header();
 
-$categories_video = content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' );
+$categories_video = get_option( 'va_category_video_url', content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ) );
 
 /* ── Fotó tár — Unsplash valódi képek ─────────────────────────────────── */
 function va_cat_icon( string $name ): string {

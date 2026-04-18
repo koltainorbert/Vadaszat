@@ -50,6 +50,13 @@
 - [x] Gépelős placeholder effekt a Kapcsolat oldali mezőkben
 - [x] A typewriter placeholder nem ír bele a valódi input értékbe, csak a placeholdert animálja
 
+### Videók adminból
+- [x] Főoldal hero videó URL admin beállításból vezérelhető
+- [x] Kapcsolat oldal videó URL admin beállításból vezérelhető
+- [x] Kategóriák alatti videó URL admin beállításból vezérelhető
+- [x] Új mezők: Általános beállítások oldalon (`va_home_hero_video_url`, `va_contact_hero_video_url`, `va_category_video_url`)
+- [x] Sablonok átvezetve opció alapú URL-re fallbackkel
+
 ---
 
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)

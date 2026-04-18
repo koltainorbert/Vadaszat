@@ -5,7 +5,7 @@
 get_header();
 
 $status = sanitize_text_field( wp_unslash( $_GET['contact_status'] ?? '' ) );
-$contact_video = content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' );
+$contact_video = get_option( 'va_contact_hero_video_url', content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
 ?>
 
 <section class="va-contact-page">
