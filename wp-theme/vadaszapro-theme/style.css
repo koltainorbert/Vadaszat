@@ -1911,6 +1911,86 @@ textarea { min-height: 110px; resize: vertical; }
   color: rgba(180,185,160,.9); font-weight: 700; text-align: right;
 }
 
+/* ── Időjárás widget ─────────────────────────────────────────────── */
+.va-weather {
+  background: rgba(10,14,20,.9);
+  border: 1px solid rgba(120,170,220,.2);
+  border-radius: 18px;
+  padding: 14px 12px 12px;
+  margin-top: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,.45), inset 0 1px 0 rgba(180,220,255,.08);
+}
+.va-weather__hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.va-weather__title {
+  font-size: .72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: #d9ecff;
+}
+.va-weather__loc {
+  font-size: .6rem;
+  color: rgba(255,255,255,.7);
+  text-align: right;
+}
+.va-weather__now {
+  font-size: .92rem;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.va-weather__now strong {
+  color: #dff3ff;
+  font-size: 1.08rem;
+}
+.va-weather__meta {
+  font-size: .62rem;
+  line-height: 1.45;
+  color: rgba(215,235,255,.78);
+  margin-bottom: 8px;
+}
+.va-weather__days {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+.va-weather__day {
+  border: 1px solid rgba(170,210,255,.12);
+  background: rgba(255,255,255,.03);
+  border-radius: 10px;
+  padding: 7px 8px;
+}
+.va-weather__d1 {
+  font-size: .62rem;
+  font-weight: 800;
+  color: #cfeaff;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.va-weather__d2 {
+  font-size: .76rem;
+  font-weight: 700;
+  color: #fff;
+}
+.va-weather__d3 {
+  font-size: .62rem;
+  color: rgba(255,255,255,.82);
+}
+.va-weather__d4 {
+  font-size: .56rem;
+  color: rgba(210,232,255,.76);
+}
+.va-weather__note {
+  margin-top: 8px;
+  font-size: .54rem;
+  color: rgba(180,210,235,.62);
+}
+
 /* ── Vadászati idény sidebar widget ────────────────────────────── */
 .va-season {
   background: rgba(10,14,10,.92);

@@ -8,6 +8,7 @@ get_header(); ?>
 <?php
 $va_show_season_widget = get_option( 'va_show_hunting_season_widget', '1' ) === '1';
 $va_show_moon_widget   = get_option( 'va_show_moon_widget', '1' ) === '1';
+$va_show_weather_widget = get_option( 'va_show_weather_widget', '1' ) === '1';
 $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1' ) === '1';
 ?>
 <div class="va-home-layout">
@@ -52,6 +53,19 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
   </div>
 </section>
   <?php endif; ?>
+
+<?php if ( $va_show_weather_widget ): ?>
+<section class="va-weather" id="va-weather">
+  <div class="va-weather__hd">
+    <span class="va-weather__title">⛅ Időjárás</span>
+    <span class="va-weather__loc" id="vwLoc">Helyzet…</span>
+  </div>
+  <div class="va-weather__now" id="vwNow">Adatok betöltése…</div>
+  <div class="va-weather__meta" id="vwMeta">–</div>
+  <div class="va-weather__days" id="vwDays"></div>
+  <div class="va-weather__note" id="vwNote">Forrás: Open-Meteo (DWD/ECMWF/NCEP modellek).</div>
+</section>
+<?php endif; ?>
 
 </aside>
 
@@ -311,6 +325,97 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
     update();
     setInterval(update,60000);
   });
+})();
+</script>
+<?php endif; ?>
+
+<?php if ( $va_show_weather_widget ): ?>
+<script>
+(function(){
+  var root=document.getElementById('va-weather');
+  if(!root)return;
+  var locEl=document.getElementById('vwLoc');
+  var nowEl=document.getElementById('vwNow');
+  var metaEl=document.getElementById('vwMeta');
+  var daysEl=document.getElementById('vwDays');
+
+  function wcText(code){
+    var map={
+      0:'Tiszta',1:'Derült',2:'Gyengén felhős',3:'Borult',
+      45:'Köd',48:'Zúzmarás köd',51:'Gyenge szitálás',53:'Szitálás',55:'Erős szitálás',
+      61:'Gyenge eső',63:'Eső',65:'Erős eső',66:'Fagyott eső',67:'Erős fagyott eső',
+      71:'Gyenge havazás',73:'Havazás',75:'Erős havazás',77:'Hószemcsék',
+      80:'Zápor',81:'Erős zápor',82:'Heves zápor',85:'Hózápor',86:'Erős hózápor',
+      95:'Zivatar',96:'Zivatar jéggel',99:'Heves zivatar jéggel'
+    };
+    return map[code]||'Ismeretlen';
+  }
+  function wdText(deg){
+    var dirs=['É','ÉK','K','DK','D','DNY','NY','ÉNY'];
+    if(typeof deg!=='number')return '–';
+    return dirs[Math.round(deg/45)%8];
+  }
+  function dayHu(iso){
+    var d=new Date(iso+'T12:00:00');
+    return new Intl.DateTimeFormat('hu-HU',{weekday:'short'}).format(d);
+  }
+  function fmtLoc(raw){
+    if(!raw)return 'Ismeretlen hely';
+    return raw;
+  }
+  function render(data,label){
+    if(!data||!data.current||!data.daily){
+      nowEl.textContent='Nincs időjárás adat';
+      return;
+    }
+    var c=data.current;
+    locEl.textContent=fmtLoc(label);
+    nowEl.innerHTML='<strong>'+Math.round(c.temperature_2m)+'°C</strong> • '+wcText(c.weather_code);
+    metaEl.textContent='Hőérzet '+Math.round(c.apparent_temperature)+'°C • Pára '+Math.round(c.relative_humidity_2m)+'% • Szél '+Math.round(c.wind_speed_10m)+' km/h ('+wdText(c.wind_direction_10m)+') • Csapadék '+(c.precipitation||0)+' mm/h';
+
+    var d=data.daily;
+    var html='';
+    for(var i=0;i<d.time.length&&i<7;i++){
+      html+='<div class="va-weather__day">'
+        +'<div class="va-weather__d1">'+dayHu(d.time[i])+'</div>'
+        +'<div class="va-weather__d2">'+Math.round(d.temperature_2m_min[i])+' / '+Math.round(d.temperature_2m_max[i])+'°C</div>'
+        +'<div class="va-weather__d3">'+wcText(d.weather_code[i])+'</div>'
+        +'<div class="va-weather__d4">Csap. '+Math.round(d.precipitation_probability_max[i]||0)+'% · '+(d.precipitation_sum[i]||0).toFixed(1)+' mm · Szél '+Math.round(d.wind_speed_10m_max[i]||0)+' km/h</div>'
+        +'</div>';
+    }
+    daysEl.innerHTML=html;
+  }
+  function weather(lat,lon,label){
+    var url='https://api.open-meteo.com/v1/forecast?latitude='+encodeURIComponent(lat)
+      +'&longitude='+encodeURIComponent(lon)
+      +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m'
+      +'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max'
+      +'&forecast_days=7&timezone=auto&wind_speed_unit=kmh';
+    fetch(url).then(function(r){return r.json();}).then(function(json){render(json,label);}).catch(function(){
+      nowEl.textContent='Időjárás nem elérhető';
+    });
+  }
+  function ipFallback(){
+    fetch('https://ipapi.co/json/').then(function(r){return r.json();}).then(function(json){
+      if(json&&json.latitude&&json.longitude){
+        var lbl=(json.city?json.city+', ':'')+(json.region||json.country_name||'IP helyzet');
+        weather(json.latitude,json.longitude,lbl+' (IP)');
+      }else{
+        nowEl.textContent='Helyadat nem elérhető';
+      }
+    }).catch(function(){
+      nowEl.textContent='Helyadat nem elérhető';
+    });
+  }
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(pos){
+      weather(pos.coords.latitude,pos.coords.longitude,'Aktuális hely');
+    },function(){
+      ipFallback();
+    },{enableHighAccuracy:true,timeout:7000,maximumAge:900000});
+  }else{
+    ipFallback();
+  }
 })();
 </script>
 <?php endif; ?>

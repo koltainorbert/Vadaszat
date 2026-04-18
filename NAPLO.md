@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #53 (Geolokalizalt idojaras widget a Hold ala)
+
+### Mit csinaltunk [x]
+- [x] Uj idojaras widget kerult a Hold widget ala a fooldali sidebarban
+- [x] Geolokalizacio: eloszor browser helymeghatarozas, fallback IP alapu helyzet
+- [x] Aktualis adatok: homerseklet, hoerzet, para, szel, csapadek, allapot
+- [x] Elorejelzes: 7 nap (min/max, csapadek valoszinuseg, csapadek osszeg, max szel)
+- [x] Uj admin toggle: `va_show_weather_widget` (kulon ki/be kapcsolhato)
+- [x] Hibavizsgalat: modosított fajlok rendben
+
+---
+
 ## 2026. 04. 18. – Session #52 (Fooldali vadaszati naptar panel kulon kapcsolo)
 
 ### Mit csinaltunk [x]
