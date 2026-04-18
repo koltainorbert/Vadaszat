@@ -123,7 +123,7 @@ hr { border-color: var(--border); }
   color: #fff; font-size: .84rem;
   flex: 1; min-width: 0; padding: 0;
 }
-.va-header__search-input::placeholder { color: rgba(255,255,255,.3); }
+.va-header__search-input::placeholder { color: rgba(255,255,255,.3); font-style: italic; }
 .va-header__search-btn {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
