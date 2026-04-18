@@ -138,9 +138,6 @@
         $hero_video = get_option('va_hero_video_url') ?: content_url('uploads/2026/04/521380_Gun_Woman_1920x1080.mp4');
         $submit_page = get_page_by_path('va-hirdetes-feladas');
         $search_page = get_page_by_path('va-hirdetes-kereses');
-        $listing_count = wp_count_posts('va_listing')->publish;
-        $auction_count = wp_count_posts('va_auction')->publish;
-        $user_count = count_users()['total_users'];
     ?>
     <div class="vh">
         <?php if ( $hero_video ): ?>
@@ -170,22 +167,6 @@
                 <a href="<?php echo esc_url( $search_page ? get_permalink($search_page) : home_url('/hirdetes') ); ?>" class="vh__btn vh__btn--ghost">
                     Hirdet&eacute;sek b&ouml;ng&eacute;sz&eacute;se &rarr;
                 </a>
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="vh__stats">
-            <div class="vh__stat">
-                <span class="vh__stat-num"><?php echo esc_html( number_format_i18n($listing_count) ); ?>&#43;</span>
-                <span class="vh__stat-label">aktív hirdetés</span>
-            </div>
-            <div class="vh__stat">
-                <span class="vh__stat-num"><?php echo esc_html( number_format_i18n($auction_count) ); ?></span>
-                <span class="vh__stat-label">aukció</span>
-            </div>
-            <div class="vh__stat">
-                <span class="vh__stat-num"><?php echo esc_html( number_format_i18n($user_count) ); ?></span>
-                <span class="vh__stat-label">regisztrált vadász</span>
             </div>
         </div>
 
