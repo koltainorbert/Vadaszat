@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #88 (Admin mentes push notifikacio)
+
+### Mit csinaltunk [x]
+- [x] Uj admin push toast dizajn bevezetve (jobb felso stack, lekerekitett kartya, animacio, glow)
+- [x] Menteskor azonnali informacios toast: `Mentes folyamatban...`
+- [x] Ujratoltes utan a WP notice uzenetek push toastban is megjelennek (siker/hiba)
+- [x] Fallback: `settings-updated=true` esetben automatikus siker toast
+- [x] Cel: barmely admin mentes utan azonnali, latvanyos visszajelzes mint a kedvenceknel
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #87 (1 ingyenes hirdetes, utana bankkartyas fizetes)
 
 ### Mit csinaltunk [x]
