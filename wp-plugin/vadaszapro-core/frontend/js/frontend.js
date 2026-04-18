@@ -49,12 +49,19 @@
   // ── Watchlist toggle ─────────────────────────────────────
   $(document).on('click', '.va-card__watchlist', function(e) {
     e.preventDefault();
+    e.stopPropagation();
     var $btn    = $(this);
     var post_id = $btn.data('post-id');
+    var nonce   = $btn.data('nonce') || (typeof VA_Data !== 'undefined' ? VA_Data.nonce : '');
+    var ajaxUrl = $btn.data('ajax-url') || (typeof VA_Data !== 'undefined' ? VA_Data.ajax_url : '');
 
-    $.post(VA_Data.ajax_url, {
+    if (!post_id || !nonce || !ajaxUrl) {
+      return;
+    }
+
+    $.post(ajaxUrl, {
       action:  'va_toggle_watchlist',
-      nonce:   VA_Data.nonce,
+      nonce:   nonce,
       post_id: post_id
     }, function(res) {
       if (res.success) {

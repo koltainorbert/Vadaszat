@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #72 (Kedvencek mentes hibajavitas)
+
+### Mit csinaltunk [x]
+- [x] A kedvencek gomb mukodese fuggetlenitve a globalis `VA_Data` objektumtol
+- [x] A gomb most sajat `data-nonce` es `data-ajax-url` adatokat kap
+- [x] A frontend JS watchlist handler ezeket hasznalja, fallbackkel
+- [x] `stopPropagation()` hozzaadva, hogy ne zavarja kartya-link interakcio
+- [x] Cel: kattintasra biztos kedvencekbe mentes + profilban megjelenes
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #71 (Kedvencek sziv az ar melle helyezve)
 
 ### Mit csinaltunk [x]
