@@ -39,10 +39,55 @@
             </nav>
 
             <!-- Kereső -->
-            <form class="va-header__search" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get">
-                <input class="va-header__search-input" type="text" name="s" placeholder="keresés…" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
+            <form class="va-header__search" id="va-live-search-form" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get" autocomplete="off">
+                <input class="va-header__search-input" id="va-live-search-input" type="text" name="s" placeholder="keresés…" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
                 <button class="va-header__search-btn" type="submit" aria-label="Keresés"></button>
+                <div class="va-search-dropdown" id="va-search-dropdown" hidden></div>
             </form>
+            <script>
+            (function(){
+                var ajaxUrl = '<?php echo esc_url( admin_url('admin-ajax.php') ); ?>';
+                var input   = document.getElementById('va-live-search-input');
+                var dropdown= document.getElementById('va-search-dropdown');
+                var timer;
+
+                function render(items) {
+                    if (!items.length) { dropdown.hidden = true; return; }
+                    dropdown.innerHTML = items.map(function(r){
+                        return '<a class="va-sd__item" href="'+r.url+'">'
+                            + (r.thumb ? '<img class="va-sd__thumb" src="'+r.thumb+'" alt="" loading="lazy">' : '<span class="va-sd__no-img"></span>')
+                            + '<span class="va-sd__info"><span class="va-sd__title">'+r.title+'</span>'
+                            + (r.price ? '<span class="va-sd__price">'+r.price+'</span>' : '')
+                            + '</span>'
+                            + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':'Hirdetés')+'</span>'
+                            + '</a>';
+                    }).join('') + '<a class="va-sd__all" href="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>?s=" id="va-sd-all-link">Összes találat →</a>';
+                    // fix: all link gets current query
+                    dropdown.querySelector('#va-sd-all-link').href = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>?s=' + encodeURIComponent(input.value);
+                    dropdown.hidden = false;
+                }
+
+                input.addEventListener('input', function(){
+                    clearTimeout(timer);
+                    var q = this.value.trim();
+                    if (q.length < 2) { dropdown.hidden = true; return; }
+                    timer = setTimeout(function(){
+                        var fd = new FormData();
+                        fd.append('action', 'va_live_search');
+                        fd.append('q', q);
+                        fetch(ajaxUrl, { method:'POST', body:fd })
+                            .then(function(r){ return r.json(); })
+                            .then(function(d){ if(d.success) render(d.data); });
+                    }, 220);
+                });
+
+                document.addEventListener('click', function(e){
+                    if (!document.getElementById('va-live-search-form').contains(e.target)) {
+                        dropdown.hidden = true;
+                    }
+                });
+            })();
+            </script>
 
             <!-- Jobb oldal -->
             <div class="va-header__right">

@@ -21,6 +21,10 @@ class VA_Ajax {
         // Szűrő AJAX
         add_action( 'wp_ajax_va_filter_listings',        [ __CLASS__, 'filter_listings' ] );
         add_action( 'wp_ajax_nopriv_va_filter_listings', [ __CLASS__, 'filter_listings' ] );
+
+        // Élő keresés
+        add_action( 'wp_ajax_va_live_search',        [ __CLASS__, 'live_search' ] );
+        add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
     }
 
     /* ── Hirdetés feladás ──────────────────────────────── */
@@ -262,5 +266,39 @@ class VA_Ajax {
             'max_pages'   => $query->max_num_pages,
             'current_page'=> $paged,
         ]);
+    }
+
+    /* ── Élő keresés (header dropdown) ─────────────────── */
+    public static function live_search() {
+        $q = sanitize_text_field( wp_unslash( $_POST['q'] ?? '' ) );
+        if ( strlen( $q ) < 2 ) {
+            wp_send_json_success( [] );
+        }
+
+        $query = new WP_Query([
+            'post_type'      => [ 'va_listing', 'va_auction' ],
+            'post_status'    => 'publish',
+            'posts_per_page' => 6,
+            'no_found_rows'  => true,
+            's'              => $q,
+        ]);
+
+        $results = [];
+        foreach ( $query->posts as $post ) {
+            $price     = get_post_meta( $post->ID, 'va_price', true );
+            $thumb_id  = get_post_thumbnail_id( $post->ID );
+            $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'thumbnail' ) : '';
+            $results[] = [
+                'id'    => $post->ID,
+                'title' => get_the_title( $post ),
+                'url'   => get_permalink( $post ),
+                'price' => $price ? number_format( (float) $price, 0, ',', ' ' ) . ' Ft' : '',
+                'thumb' => $thumb_url,
+                'type'  => $post->post_type,
+            ];
+        }
+
+        wp_reset_postdata();
+        wp_send_json_success( $results );
     }
 }
