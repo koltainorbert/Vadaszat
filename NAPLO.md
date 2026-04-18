@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #24 (Automatikus cache-bust CSS módosításokhoz)
+
+### Mit csináltunk [x]
+- [x] A theme `style.css` verziója most már `filemtime()` alapján töltődik
+- [x] A plugin `frontend.css` is automatikus cache-bust verziózást kapott
+- [x] Cél: a CSS módosítások biztosan azonnal megjelenjenek, ne ragadjon bent régi stílus
+- [x] Hibavizsgálat: `functions.php` hibamentes
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #23 (Keresősáv dinamikus felülírás javítás)
 
 ### Mit csináltunk [x]

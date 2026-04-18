@@ -180,11 +180,16 @@ add_action( 'widgets_init', function () {
 
 /* ── Enqueue ──────────────────────────────────────── */
 add_action( 'wp_enqueue_scripts', function () {
-    wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], '3.0.2' );
+    $theme_style_path = get_stylesheet_directory() . '/style.css';
+    $theme_style_ver  = file_exists( $theme_style_path ) ? (string) filemtime( $theme_style_path ) : '3.0.2';
+
+    wp_enqueue_style( 'va-theme', get_stylesheet_uri(), [], $theme_style_ver );
 
     // Egységes kártya/stílus az egész oldalon (archívum, kereső, kategória stb.)
     if ( defined( 'VA_PLUGIN_URL' ) ) {
-        wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [ 'va-theme' ], VA_VERSION );
+        $frontend_css_path = defined( 'VA_PLUGIN_DIR' ) ? VA_PLUGIN_DIR . 'frontend/css/frontend.css' : '';
+        $frontend_css_ver  = ( $frontend_css_path && file_exists( $frontend_css_path ) ) ? (string) filemtime( $frontend_css_path ) : VA_VERSION;
+        wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [ 'va-theme' ], $frontend_css_ver );
     }
 });
 
