@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #93 (Form Builder: fekete szöveg CSS + egyedi mező hozzáadás/törlés)
+
+### Mit csinaltunk [x]
+- [x] `class-form-builder.php` teljes CSS újraírva WP admin fehér háttérre (minden szöveg fekete, látható)
+- [x] Toggle gombok natív CSS-sel (adminban is látható zöld/piros)
+- [x] Mező törlés: custom_* kulcsú sorokon 🗑 gomb → JS confirm + DOM remove
+- [x] Egyedi mező hozzáadása panel: label, placeholder, típus választó, + Hozzáad gomb (Enter is)
+- [x] handle_save() bővítve: custom_ mezők is mentődnek, típus validáció, üres label skip
+- [x] Deploy Plugin OK ✅
+
+---
+
 ## 2026. 04. 18. – Session #92 (Vizualis Form Builder admin + dinamikus formok)
 
 ### Mit csinaltunk [x]
