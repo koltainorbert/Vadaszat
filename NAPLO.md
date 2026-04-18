@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 18. – Session #30 (Admin Export/Import + Alaphelyzet)
+
+### Mit csináltunk [x]
+- [x] Új admin almenü: `Export / Import` a VadászApró menü alatt
+- [x] Export funkció: teljes `va_*` opciókészlet JSON fájlba mentése
+- [x] Import funkció: JSON visszatöltés, összes `va_*` opció frissítése
+- [x] Alaphelyzet funkció: összes `va_*` beállítás törlése (kivéve védett kulcsok), majd defaultok újraépítése
+- [x] Biztonság: jogosultság-ellenőrzés + nonce minden műveletnél
+- [x] Admin visszajelzés: siker/hiba üzenetek import és reset után
+- [x] Hibavizsgálat: módosított admin fájlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #29 (Külön Fejléc + Lábléc admin menü, teljes paraméterezés)
 
 ### Mit csináltunk [x]

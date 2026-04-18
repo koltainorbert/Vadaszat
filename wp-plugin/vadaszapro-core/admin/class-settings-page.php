@@ -10,6 +10,9 @@ class VA_Settings_Page {
 
     public static function init() {
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
+        add_action( 'admin_post_va_export_settings', [ __CLASS__, 'handle_export_settings' ] );
+        add_action( 'admin_post_va_import_settings', [ __CLASS__, 'handle_import_settings' ] );
+        add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
@@ -803,6 +806,193 @@ class VA_Settings_Page {
             </table>
         </div>
         <?php
+    }
+
+    /* ══ Export / Import / Reset ═════════════════════════ */
+    public static function render_tools() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $msg  = isset( $_GET['va_tools_msg'] ) ? sanitize_key( (string) $_GET['va_tools_msg'] ) : '';
+        $note = '';
+        $cls  = 'notice notice-info';
+
+        if ( $msg === 'import_ok' ) {
+            $cnt  = absint( $_GET['count'] ?? 0 );
+            $note = 'Import kész. Frissített opciók: ' . $cnt;
+            $cls  = 'notice notice-success';
+        } elseif ( $msg === 'reset_ok' ) {
+            $cnt  = absint( $_GET['count'] ?? 0 );
+            $note = 'Alaphelyzet visszaállítva. Újra felvett alap opciók: ' . $cnt;
+            $cls  = 'notice notice-success';
+        } elseif ( $msg === 'import_invalid' ) {
+            $note = 'Hibás import fájl. Kérlek ellenőrizd a JSON tartalmát.';
+            $cls  = 'notice notice-error';
+        } elseif ( $msg === 'import_empty' ) {
+            $note = 'Nem érkezett import fájl.';
+            $cls  = 'notice notice-error';
+        }
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>📦 VadászApró – Export / Import / Reset</h1>
+            <p class="description">A teljes <code>va_*</code> beállításkészlet exportálható és importálható (általános, design, fejléc/lábléc, reklámzónák, hirdetés/aukció opciók).</p>
+
+            <?php if ( $note !== '' ): ?>
+                <div class="<?php echo esc_attr( $cls ); ?>"><p><?php echo esc_html( $note ); ?></p></div>
+            <?php endif; ?>
+
+            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
+                <h2>1) Export összes beállítás</h2>
+                <p>JSON fájl letöltése, amit másik oldalon vissza tudsz importálni.</p>
+                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+                    <input type="hidden" name="action" value="va_export_settings">
+                    <?php wp_nonce_field( 'va_export_settings' ); ?>
+                    <?php submit_button( 'Összes beállítás exportálása', 'primary', 'submit', false ); ?>
+                </form>
+            </div>
+
+            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
+                <h2>2) Import beállítás fájlból</h2>
+                <p>Csak ezen plugin exportjából származó JSON fájlt tölts fel.</p>
+                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="va_import_settings">
+                    <?php wp_nonce_field( 'va_import_settings' ); ?>
+                    <input type="file" name="va_import_file" accept="application/json,.json" required>
+                    <p style="margin-top:12px;">
+                        <?php submit_button( 'Import indítása', 'secondary', 'submit', false ); ?>
+                    </p>
+                </form>
+            </div>
+
+            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;border-left:4px solid #d63638;">
+                <h2>3) Visszaállítás alaphelyzetbe</h2>
+                <p>Ez törli a jelenlegi <code>va_*</code> beállításokat, majd visszaállítja az alapértékeket.</p>
+                <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('Biztosan alaphelyzetbe állítod az összes beállítást?');">
+                    <input type="hidden" name="action" value="va_reset_settings">
+                    <?php wp_nonce_field( 'va_reset_settings' ); ?>
+                    <input type="hidden" name="va_reset_confirm" value="1">
+                    <?php submit_button( 'Összes beállítás alaphelyzetbe', 'delete', 'submit', false ); ?>
+                </form>
+            </div>
+        </div>
+        <?php
+    }
+
+    public static function handle_export_settings() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Nincs jogosultság.' );
+        }
+        check_admin_referer( 'va_export_settings' );
+
+        $payload = [
+            'meta' => [
+                'schema'      => 'vadaszapro-settings-v1',
+                'exported_at' => current_time( 'mysql' ),
+                'site_url'    => home_url( '/' ),
+                'va_version'  => defined( 'VA_VERSION' ) ? VA_VERSION : 'unknown',
+            ],
+            'options' => self::get_all_va_options(),
+        ];
+
+        $filename = 'vadaszapro-settings-' . gmdate( 'Ymd-His' ) . '.json';
+        nocache_headers();
+        header( 'Content-Type: application/json; charset=utf-8' );
+        header( 'Content-Disposition: attachment; filename=' . $filename );
+        echo wp_json_encode( $payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
+        exit;
+    }
+
+    public static function handle_import_settings() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Nincs jogosultság.' );
+        }
+        check_admin_referer( 'va_import_settings' );
+
+        $redirect = admin_url( 'admin.php?page=vadaszapro-tools' );
+
+        if ( empty( $_FILES['va_import_file']['tmp_name'] ) ) {
+            wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_empty', $redirect ) );
+            exit;
+        }
+
+        $tmp_name = (string) $_FILES['va_import_file']['tmp_name'];
+        $content  = file_get_contents( $tmp_name );
+        if ( $content === false || trim( $content ) === '' ) {
+            wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
+            exit;
+        }
+
+        $data = json_decode( $content, true );
+        if ( ! is_array( $data ) || ! isset( $data['options'] ) || ! is_array( $data['options'] ) ) {
+            wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
+            exit;
+        }
+
+        $count = 0;
+        foreach ( $data['options'] as $key => $value ) {
+            if ( ! is_string( $key ) || strpos( $key, 'va_' ) !== 0 ) {
+                continue;
+            }
+            update_option( $key, $value );
+            $count++;
+        }
+
+        wp_safe_redirect( add_query_arg( [ 'va_tools_msg' => 'import_ok', 'count' => $count ], $redirect ) );
+        exit;
+    }
+
+    public static function handle_reset_settings() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Nincs jogosultság.' );
+        }
+        check_admin_referer( 'va_reset_settings' );
+
+        if ( (string) ( $_POST['va_reset_confirm'] ?? '' ) !== '1' ) {
+            wp_die( 'Hiányzó megerősítés.' );
+        }
+
+        $keep_keys = [
+            'va_pages_created_v4',
+        ];
+
+        $all = self::get_all_va_options();
+        foreach ( array_keys( $all ) as $key ) {
+            if ( in_array( $key, $keep_keys, true ) ) {
+                continue;
+            }
+            delete_option( $key );
+        }
+
+        // Alap opciók visszaépítése.
+        self::register_settings();
+
+        $all_after = self::get_all_va_options();
+        wp_safe_redirect( add_query_arg( [ 'va_tools_msg' => 'reset_ok', 'count' => count( $all_after ) ], admin_url( 'admin.php?page=vadaszapro-tools' ) ) );
+        exit;
+    }
+
+    private static function get_all_va_options(): array {
+        global $wpdb;
+
+        $like = $wpdb->esc_like( 'va_' ) . '%';
+        $rows = $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE %s",
+                $like
+            ),
+            ARRAY_A
+        );
+
+        $options = [];
+        foreach ( (array) $rows as $row ) {
+            $name = (string) ( $row['option_name'] ?? '' );
+            if ( $name === '' ) {
+                continue;
+            }
+            $options[ $name ] = maybe_unserialize( $row['option_value'] ?? '' );
+        }
+
+        ksort( $options );
+        return $options;
     }
 
     /* ══ Helper mezők ═════════════════════════════════════ */
