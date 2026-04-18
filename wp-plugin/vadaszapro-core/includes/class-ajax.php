@@ -255,23 +255,83 @@ class VA_Ajax {
                 return $invoice_no;
             }
 
-            $filename = sanitize_file_name( strtolower( $invoice_no ) . '.txt' );
+            $filename = sanitize_file_name( strtolower( $invoice_no ) . '.pdf' );
             $path = trailingslashit( $dir ) . $filename;
             $url  = trailingslashit( $upload['baseurl'] ) . 'va-invoices/' . $filename;
 
-            $content = "Vadaszapro - Szamla\n"
-                . "Szamlaszam: {$invoice_no}\n"
-                . "Datum: " . current_time( 'Y-m-d H:i:s' ) . "\n"
-                . "Hirdetes ID: {$post_id}\n"
-                . "Hirdetes cim: " . ( $post ? $post->post_title : '' ) . "\n"
-                . "Tetel: Hirdetes feladas dij\n"
-                . "Osszeg: " . number_format( $amount, 0, ',', ' ' ) . " Ft\n";
+            $lines = [
+                'Vadaszapro - Szamla',
+                'Szamlaszam: ' . $invoice_no,
+                'Datum: ' . current_time( 'Y-m-d H:i:s' ),
+                'Hirdetes ID: ' . $post_id,
+                'Hirdetes cim: ' . ( $post ? $post->post_title : '' ),
+                'Tetel: Hirdetes feladas dij',
+                'Osszeg: ' . number_format( $amount, 0, ',', ' ' ) . ' Ft',
+            ];
 
-            file_put_contents( $path, $content );
+            $pdf = self::build_simple_invoice_pdf( $lines );
+            if ( $pdf !== '' ) {
+                file_put_contents( $path, $pdf );
+            }
             update_post_meta( $post_id, 'va_invoice_url', esc_url_raw( $url ) );
         }
 
         return $invoice_no;
+    }
+
+    private static function build_simple_invoice_pdf( array $lines ): string {
+        $safe_lines = [];
+        foreach ( $lines as $line ) {
+            $line = sanitize_text_field( (string) $line );
+            $line = remove_accents( $line );
+            $safe_lines[] = self::escape_pdf_text( $line );
+        }
+
+        $stream = "BT\n/F1 16 Tf\n50 790 Td\n(" . ( $safe_lines[0] ?? 'Szamla' ) . ") Tj\n";
+        $stream .= "/F1 11 Tf\n0 -28 Td\n";
+
+        for ( $i = 1; $i < count( $safe_lines ); $i++ ) {
+            $stream .= "(" . $safe_lines[ $i ] . ") Tj\n0 -18 Td\n";
+        }
+        $stream .= "ET";
+
+        $len = strlen( $stream );
+
+        $objects = [];
+        $objects[] = "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
+        $objects[] = "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
+        $objects[] = "3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>\nendobj\n";
+        $objects[] = "4 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\n";
+        $objects[] = "5 0 obj\n<< /Length {$len} >>\nstream\n{$stream}\nendstream\nendobj\n";
+
+        $pdf = "%PDF-1.4\n";
+        $offsets = [ 0 ];
+
+        foreach ( $objects as $obj ) {
+            $offsets[] = strlen( $pdf );
+            $pdf .= $obj;
+        }
+
+        $xref_pos = strlen( $pdf );
+        $count = count( $offsets );
+        $pdf .= "xref\n0 {$count}\n";
+        $pdf .= "0000000000 65535 f \n";
+
+        for ( $i = 1; $i < $count; $i++ ) {
+            $pdf .= sprintf( "%010d 00000 n \n", $offsets[ $i ] );
+        }
+
+        $pdf .= "trailer\n<< /Size {$count} /Root 1 0 R >>\n";
+        $pdf .= "startxref\n{$xref_pos}\n%%EOF";
+
+        return $pdf;
+    }
+
+    private static function escape_pdf_text( string $text ): string {
+        $text = str_replace( "\\", "\\\\", $text );
+        $text = str_replace( "(", "\\(", $text );
+        $text = str_replace( ")", "\\)", $text );
+        return $text;
     }
 
     private static function redirect_submit_page(): void {

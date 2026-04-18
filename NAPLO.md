@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #90 (PDF szamla szolgaltato nelkul)
+
+### Mit csinaltunk [x]
+- [x] A sikeres fizetes utani szamla TXT helyett mostantol PDF fajlba generalodik
+- [x] Kulso library nelkul, belso minimal PDF builder kerult be (`Helvetica`, egy oldalas szamla layout)
+- [x] Biztonsag: szovegek tisztitasa + ekezetek ASCII-ra konvertalasa PDF kompatibilitas miatt
+- [x] A PDF fajl tovabbra is `uploads/va-invoices/` mappaba kerul, URL mentessel (`va_invoice_url`)
+- [x] Celfunkcio: szolgaltato nelkul is valos, letoltheto PDF szamla keszuljon fizetesi siker callbacknel
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #89 (Fizetesi fallback + fizetes utani aktivalas + szamla)
 
 ### Mit csinaltunk [x]
