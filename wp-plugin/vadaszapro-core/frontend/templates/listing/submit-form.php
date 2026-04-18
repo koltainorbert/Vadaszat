@@ -57,129 +57,100 @@ wp_localize_script( 'va-submit', 'VA_Data', [
             <?php endif; ?>
         </div>
 
-        <!-- Alapadatok -->
-        <div class="va-form-group">
-            <label for="va-title">Hirdetés címe <span class="required">*</span></label>
-            <input type="text" id="va-title" name="title" class="va-input" maxlength="150" required placeholder="pl. Beretta A400 sörétes puska">
-        </div>
+        <?php
+        // Dinamikus form mezők VA_Form_Builder config alapján
+        $fb_form    = 'va_listing_submit';
+        $fb_fields  = VA_Form_Builder::get_fields( $fb_form );
+        usort( $fb_fields, fn( $a, $b ) => (int)( $a['order'] ?? 99 ) - (int)( $b['order'] ?? 99 ) );
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Kategória <span class="required">*</span></label>
-                <select name="category" class="va-select" required>
-                    <option value="">– Válasszon –</option>
-                    <?php foreach ( $categories as $cat ): ?>
-                        <option value="<?php echo esc_attr( $cat->term_id ); ?>"><?php echo esc_html( str_repeat( '&nbsp;&nbsp;', $cat->parent ? 1 : 0 ) . $cat->name ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="va-form-group">
-                <label>Megye <span class="required">*</span></label>
-                <select name="county" class="va-select" required>
-                    <option value="">– Válasszon –</option>
-                    <?php foreach ( $counties as $county ): ?>
-                        <option value="<?php echo esc_attr( $county->term_id ); ?>"><?php echo esc_html( $county->name ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
+        // Csoportok: szekciókat nyit ha szükséges
+        $section_groups = [
+            'brand'       => 'Termék részletek',
+            'price'       => 'Ár',
+            'phone'       => 'Kapcsolat',
+        ];
+        $opened_sections = [];
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Állapot</label>
-                <select name="condition" class="va-select">
-                    <option value="">– Válasszon –</option>
-                    <?php foreach ( $conditions as $cond ): ?>
-                        <option value="<?php echo esc_attr( $cond->term_id ); ?>"><?php echo esc_html( $cond->name ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="va-form-group">
-                <label>Helyszín (város)</label>
-                <input type="text" name="location" class="va-input" placeholder="pl. Budapest, Győr...">
-            </div>
-        </div>
+        // Párba rakandó mezők (2-oszlopos sor)
+        $pair_groups = [
+            ['category', 'county'],
+            ['condition','location'],
+            ['brand',    'model'],
+            ['caliber',  'year'],
+            ['price',    'price_type'],
+            ['phone',    'email_show'],
+        ];
+        $pair_map = [];
+        foreach ( $pair_groups as $pair ) {
+            $pair_map[ $pair[0] ] = $pair[1];
+            $pair_map[ $pair[1] ] = $pair[0]; // partner
+        }
+        $rendered_keys = [];
 
-        <!-- Termék részletek -->
-        <h3 style="font-size:15px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;font-size:12px;letter-spacing:1px;">Termék részletek</h3>
+        foreach ( $fb_fields as $field ):
+            $fkey = (string)( $field['key'] ?? '' );
+            if ( in_array( $fkey, $rendered_keys, true ) ) continue;
+            if ( empty( $field['enabled'] ) ) {
+                $rendered_keys[] = $fkey;
+                continue;
+            }
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Márka / Gyártó</label>
-                <input type="text" name="brand" class="va-input" placeholder="pl. Beretta, Sauer...">
-            </div>
-            <div class="va-form-group">
-                <label>Modell / Típus</label>
-                <input type="text" name="model" class="va-input" placeholder="pl. A400 Xcel">
-            </div>
-        </div>
+            $label = esc_html( (string)( $field['label'] ?? $fkey ) );
+            $ph    = esc_attr( (string)( $field['placeholder'] ?? '' ) );
+            $req   = ! empty( $field['required'] );
+            $req_html = $req ? ' <span class="required">*</span>' : '';
+            $req_attr = $req ? ' required' : '';
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Kaliber</label>
-                <input type="text" name="caliber" class="va-input" placeholder="pl. 12/70, .308 Win">
-            </div>
-            <div class="va-form-group">
-                <label>Gyártási év</label>
-                <input type="number" name="year" class="va-input" min="1800" max="<?php echo date('Y'); ?>" placeholder="pl. 2018">
-            </div>
-        </div>
+            // Szekció fejléc
+            if ( isset( $section_groups[ $fkey ] ) && ! isset( $opened_sections[ $fkey ] ) ) {
+                $opened_sections[ $fkey ] = true;
+                echo '<h3 style="font-size:12px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;">'
+                    . esc_html( $section_groups[ $fkey ] ) . '</h3>';
+            }
 
-        <div class="va-form-group">
-            <label class="va-check-label">
-                <input type="checkbox" name="license_req" value="1">
-                Fegyverengedély szükséges a vásárláshoz
-            </label>
-        </div>
+            // Pár-sor logika
+            $partner_key = $pair_map[ $fkey ] ?? null;
+            $partner_field = null;
+            if ( $partner_key ) {
+                foreach ( $fb_fields as $pf ) {
+                    if ( ( $pf['key'] ?? '' ) === $partner_key && ! empty( $pf['enabled'] ) ) {
+                        $partner_field = $pf;
+                        break;
+                    }
+                }
+            }
 
-        <!-- Ár -->
-        <h3 style="font-size:15px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;font-size:12px;letter-spacing:1px;">Ár</h3>
-
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Ár (Ft)</label>
-                <input type="number" name="price" class="va-input" min="0" placeholder="0">
-            </div>
-            <div class="va-form-group">
-                <label>Árazás típusa</label>
-                <select name="price_type" class="va-select">
-                    <option value="fixed">Fix ár</option>
-                    <option value="negotiable">Alkudható</option>
-                    <option value="free">Ingyenes</option>
-                    <option value="on_request">Érdeklődjön</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Leírás -->
-        <div class="va-form-group">
-            <label for="va-desc">Leírás <span class="required">*</span></label>
-            <textarea id="va-desc" name="description" class="va-textarea" rows="6" required placeholder="Részletes leírás a tárgyról, állapotáról, esetleges hibákról..."></textarea>
-        </div>
-
-        <!-- Képek -->
-        <div class="va-form-group">
-            <label>Képek (max. <?php echo esc_html( get_option('va_max_images_per_listing', 10) ); ?> db, jpg/png/webp)</label>
-            <input type="file" name="listing_images[]" class="va-input" accept="image/jpeg,image/png,image/webp" multiple>
-            <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Az első kép lesz a borítókép. Max. 5 MB / kép.</p>
-        </div>
-
-        <!-- Kapcsolat -->
-        <h3 style="font-size:15px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;font-size:12px;letter-spacing:1px;">Kapcsolat</h3>
-
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Telefonszám<?php echo get_option('va_require_phone','1') === '1' ? ' <span class="required">*</span>' : ''; ?></label>
-                <input type="tel" name="phone" class="va-input" placeholder="+36 30 000 0000"
-                    <?php echo get_option('va_require_phone','1') === '1' ? 'required' : ''; ?>>
-            </div>
-            <div class="va-form-group" style="align-self:flex-end;">
-                <label class="va-check-label">
-                    <input type="checkbox" name="email_show" value="1" checked>
-                    E-mail cím megjelenítése a hirdetésben
-                </label>
-            </div>
-        </div>
+            if ( $partner_field && ! in_array( $partner_key, $rendered_keys, true ) ):
+                // 2 oszlopos sor
+                $rendered_keys[] = $fkey;
+                $rendered_keys[] = $partner_key;
+                $p2_label   = esc_html( (string)( $partner_field['label'] ?? $partner_key ) );
+                $p2_ph      = esc_attr( (string)( $partner_field['placeholder'] ?? '' ) );
+                $p2_req     = ! empty( $partner_field['required'] );
+                $p2_req_html = $p2_req ? ' <span class="required">*</span>' : '';
+                $p2_req_attr = $p2_req ? ' required' : '';
+                echo '<div class="va-form-row">';
+                // Mező 1
+                echo '<div class="va-form-group">';
+                echo "<label>{$label}{$req_html}</label>";
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions );
+                echo '</div>';
+                // Mező 2
+                echo '<div class="va-form-group">';
+                echo "<label>{$p2_label}{$p2_req_html}</label>";
+                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions );
+                echo '</div>';
+                echo '</div>';
+            else:
+                $rendered_keys[] = $fkey;
+                // Teljes soros mező
+                echo '<div class="va-form-group">';
+                echo "<label>{$label}{$req_html}</label>";
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions );
+                echo '</div>';
+            endif;
+        endforeach;
+        ?>
 
         <button type="submit" class="va-btn va-btn--primary va-btn--block" id="va-submit-btn">
             📤 Hirdetés feladása
