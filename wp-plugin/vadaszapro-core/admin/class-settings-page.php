@@ -21,6 +21,8 @@ class VA_Settings_Page {
             'va_site_description'    => 'Magyarország vadászati apróhirdetési oldala',
             'va_contact_email'       => get_option('admin_email'),
             'va_enable_auctions'     => '1',
+            'va_header_logo_height'  => 36,
+            'va_hero_logo_height'    => 72,
             'va_listings_per_page'   => 20,
             'va_auto_publish_listings' => '0',  // 0=jóváhagyás szükséges, 1=azonnal él
             'va_listing_validity_days' => 60,   // hirdetés lejárata (nap) feladáskor
@@ -116,7 +118,9 @@ class VA_Settings_Page {
                     <?php self::field_email( 'va_contact_email',        'Kapcsolati e-mail' ); ?>
                     <?php self::field_media( 'va_brand_icon_url',       'Ikon (automata favicon, ajánlott: négyzetes PNG)' ); ?>
                     <?php self::field_media( 'va_header_logo_url',      'Fejléc logó' ); ?>
+                    <?php self::field_num(   'va_header_logo_height',   'Fejléc logó magasság (px)', 20, 120 ); ?>
                     <?php self::field_media( 'va_hero_logo_url',        'Hero logó (főoldal)' ); ?>
+                    <?php self::field_num(   'va_hero_logo_height',     'Hero logó magasság (px)', 30, 260 ); ?>
                     <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
                     <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
                     <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
