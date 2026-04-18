@@ -188,8 +188,12 @@ class VA_Ajax {
     }
 
     /* ── Hirdetések szűrő AJAX ─────────────────────────── */
+    /* Skálázható megoldás: wp_va_listing_meta indexelt custom táblát használ
+     * meta_query / EAV helyett – 3M hirdetésnél is gyors marad.           */
     public static function filter_listings() {
-        $paged     = intval( $_POST['paged']     ?? 1 );
+        global $wpdb;
+
+        $paged     = max( 1, intval( $_POST['paged']     ?? 1 ) );
         $category  = intval( $_POST['category']  ?? 0 );
         $county    = intval( $_POST['county']    ?? 0 );
         $condition = intval( $_POST['condition'] ?? 0 );
@@ -197,74 +201,89 @@ class VA_Ajax {
         $max_price = floatval( $_POST['max_price'] ?? 0 );
         $keyword   = sanitize_text_field( wp_unslash( $_POST['keyword'] ?? '' ) );
         $sort      = sanitize_key( $_POST['sort'] ?? 'date' );
-        $post_type = sanitize_key( $_POST['post_type'] ?? 'va_listing' );
+        $post_type = in_array( sanitize_key( $_POST['post_type'] ?? '' ), [ 'va_listing', 'va_auction' ], true )
+                     ? sanitize_key( $_POST['post_type'] )
+                     : 'va_listing';
 
-        $args = [
-            'post_type'      => in_array( $post_type, [ 'va_listing', 'va_auction' ], true ) ? $post_type : 'va_listing',
-            'post_status'    => 'publish',
-            'posts_per_page' => intval( get_option( 'va_listings_per_page', 20 ) ),
-            'paged'          => $paged,
-            's'              => $keyword,
-        ];
+        $per_page = intval( get_option( 'va_listings_per_page', 20 ) );
+        $offset   = ( $paged - 1 ) * $per_page;
 
-        // Taxonómia szűrők
-        $tax_query = [];
-        if ( $category ) $tax_query[] = [ 'taxonomy' => 'va_category',  'field' => 'term_id', 'terms' => $category ];
-        if ( $county   ) $tax_query[] = [ 'taxonomy' => 'va_county',    'field' => 'term_id', 'terms' => $county   ];
-        if ( $condition) $tax_query[] = [ 'taxonomy' => 'va_condition', 'field' => 'term_id', 'terms' => $condition ];
-        if ( $tax_query ) {
-            $args['tax_query'] = array_merge( [ 'relation' => 'AND' ], $tax_query );
+        $lm    = $wpdb->prefix . 'va_listing_meta';
+        $posts = $wpdb->posts;
+
+        // ── WHERE feltételek összerakása ──────────────────
+        $where  = [ "p.post_type = %s", "p.post_status = 'publish'" ];
+        $params = [ $post_type ];
+
+        if ( $category  ) { $where[] = 'lm.category_id  = %d'; $params[] = $category;  }
+        if ( $county    ) { $where[] = 'lm.county_id    = %d'; $params[] = $county;    }
+        if ( $condition ) { $where[] = 'lm.condition_id = %d'; $params[] = $condition; }
+        if ( $min_price > 0 ) { $where[] = 'lm.price >= %f'; $params[] = $min_price; }
+        if ( $max_price > 0 ) { $where[] = 'lm.price <= %f'; $params[] = $max_price; }
+
+        if ( $keyword !== '' ) {
+            $like     = '%' . $wpdb->esc_like( $keyword ) . '%';
+            $where[]  = 'p.post_title LIKE %s';
+            $params[] = $like;
         }
 
-        // Ár szűrő
-        $meta_query = [];
-        if ( $min_price > 0 ) {
-            $meta_query[] = [ 'key' => 'va_price', 'value' => $min_price, 'compare' => '>=', 'type' => 'NUMERIC' ];
-        }
-        if ( $max_price > 0 ) {
-            $meta_query[] = [ 'key' => 'va_price', 'value' => $max_price, 'compare' => '<=', 'type' => 'NUMERIC' ];
-        }
-        if ( $meta_query ) {
-            $args['meta_query'] = array_merge( [ 'relation' => 'AND' ], $meta_query );
-        }
+        $where_sql = 'WHERE ' . implode( ' AND ', $where );
 
-        // Rendezés
-        switch ( $sort ) {
-            case 'price_asc':
-                $args['meta_key'] = 'va_price'; $args['orderby'] = 'meta_value_num'; $args['order'] = 'ASC'; break;
-            case 'price_desc':
-                $args['meta_key'] = 'va_price'; $args['orderby'] = 'meta_value_num'; $args['order'] = 'DESC'; break;
-            case 'views':
-                $args['meta_key'] = 'va_views'; $args['orderby'] = 'meta_value_num'; $args['order'] = 'DESC'; break;
-            default:
-                $args['orderby'] = 'date'; $args['order'] = 'DESC';
-        }
+        // ── Rendezés ─────────────────────────────────────
+        $order_sql = match ( $sort ) {
+            'price_asc'  => 'lm.featured DESC, lm.price ASC,  p.post_date DESC',
+            'price_desc' => 'lm.featured DESC, lm.price DESC, p.post_date DESC',
+            'views'      => 'lm.featured DESC, lm.views DESC, p.post_date DESC',
+            default      => 'lm.featured DESC, p.post_date DESC',
+        };
 
-        // Kiemelt hirdetések először
-        $args['meta_query'][] = [
-            'relation' => 'OR',
-            [ 'key' => 'va_featured', 'value' => '1', 'compare' => '=' ],
-            [ 'key' => 'va_featured', 'compare' => 'NOT EXISTS' ],
-        ];
+        // ── Összesített szám (lapozáshoz) ─────────────────
+        $count_sql = $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$posts} p
+             LEFT JOIN {$lm} lm ON lm.post_id = p.ID
+             {$where_sql}",
+            ...$params
+        );
+        $total = (int) $wpdb->get_var( $count_sql );
 
-        $query = new WP_Query( $args );
+        // ── ID lista – csak az aktuális lap ──────────────
+        $id_sql = $wpdb->prepare(
+            "SELECT p.ID FROM {$posts} p
+             LEFT JOIN {$lm} lm ON lm.post_id = p.ID
+             {$where_sql}
+             ORDER BY {$order_sql}
+             LIMIT %d OFFSET %d",
+            ...array_merge( $params, [ $per_page, $offset ] )
+        );
+        $ids = $wpdb->get_col( $id_sql );
+
+        // ── WP_Query az ID listára – csak rendereléshez ──
         ob_start();
-        if ( $query->have_posts() ) {
+        if ( ! empty( $ids ) ) {
+            $query = new WP_Query([
+                'post_type'           => $post_type,
+                'post_status'         => 'publish',
+                'post__in'            => array_map( 'intval', $ids ),
+                'orderby'             => 'post__in',
+                'posts_per_page'      => $per_page,
+                'no_found_rows'       => true,   // nem kell count – már megvan
+                'ignore_sticky_posts' => true,
+            ]);
             while ( $query->have_posts() ) {
                 $query->the_post();
                 va_template( 'listing/card', [ 'post' => get_post() ] );
             }
+            wp_reset_postdata();
         } else {
             echo '<p class="va-no-results">Nincs találat a keresési feltételekre.</p>';
         }
-        wp_reset_postdata();
         $html = ob_get_clean();
 
         wp_send_json_success([
-            'html'        => $html,
-            'total'       => $query->found_posts,
-            'max_pages'   => $query->max_num_pages,
-            'current_page'=> $paged,
+            'html'         => $html,
+            'total'        => $total,
+            'max_pages'    => $per_page > 0 ? (int) ceil( $total / $per_page ) : 1,
+            'current_page' => $paged,
         ]);
     }
 
