@@ -112,6 +112,44 @@ get_header(); ?>
   moonPhoto.onerror=function(){moonPhotoReady=false;};
   moonPhoto.src=MOON_PHOTO_URL;
   var sim={mode:'real',phase:0};
+  function budapestHour(date){
+    return Number(new Intl.DateTimeFormat('en-GB',{
+      timeZone:'Europe/Budapest',hour:'2-digit',hour12:false
+    }).format(date));
+  }
+  function moonTone(date,frac){
+    var hour=budapestHour(date||new Date());
+    var tone={
+      filter:'contrast(1.08) brightness(1.03) saturate(1.1)',
+      overlay:'rgba(245,242,232,.05)',
+      glowCore:'rgba(210,215,190,ALPHA)',
+      rim:'rgba(255,250,238,'+(0.32+frac*.34)+')',
+      rimGlow:'rgba(255,245,225,'+(0.16+frac*.14)+')'
+    };
+    if(frac>.97){
+      if((hour>=5&&hour<6)||(hour>=20&&hour<21)){
+        tone.filter='contrast(1.14) brightness(1.02) saturate(1.55) sepia(.32)';
+        tone.overlay='rgba(255,110,78,.22)';
+        tone.glowCore='rgba(255,116,70,ALPHA)';
+        tone.rim='rgba(255,185,155,'+(0.4+frac*.28)+')';
+        tone.rimGlow='rgba(255,120,85,'+(0.18+frac*.16)+')';
+      }else if((hour>=6&&hour<8)||(hour>=18&&hour<20)){
+        tone.filter='contrast(1.12) brightness(1.04) saturate(1.42) sepia(.18)';
+        tone.overlay='rgba(255,208,120,.18)';
+        tone.glowCore='rgba(255,214,120,ALPHA)';
+        tone.rim='rgba(255,232,180,'+(0.38+frac*.26)+')';
+        tone.rimGlow='rgba(255,210,135,'+(0.16+frac*.14)+')';
+      }else{
+        tone.filter='contrast(1.1) brightness(1.04) saturate(1.22)';
+        tone.overlay='rgba(255,244,200,.1)';
+        tone.glowCore='rgba(255,238,185,ALPHA)';
+      }
+    }else if(frac>.55){
+      tone.filter='contrast(1.09) brightness(1.03) saturate(1.16)';
+      tone.overlay='rgba(245,236,208,.06)';
+    }
+    return tone;
+  }
   var texCache={};
   function moonTexture(size){
     if(texCache[size])return texCache[size];
@@ -155,11 +193,11 @@ get_header(); ?>
     texCache[size]=t;
     return t;
   }
-  function drawMoonSkin(ctx,cx,cy,R){
+  function drawMoonSkin(ctx,cx,cy,R,tone){
     if(moonPhotoReady&&moonPhoto.naturalWidth>0&&moonPhoto.naturalHeight>0){
       var sw=Math.min(moonPhoto.naturalWidth,moonPhoto.naturalHeight);
       var sx=(moonPhoto.naturalWidth-sw)/2,sy=(moonPhoto.naturalHeight-sw)/2;
-      ctx.filter='contrast(1.08) brightness(1.02) saturate(.1)';
+      ctx.filter=(tone&&tone.filter)?tone.filter:'contrast(1.08) brightness(1.02) saturate(1)';
       ctx.drawImage(moonPhoto,sx,sy,sw,sw,cx-R,cy-R,R*2,R*2);
       ctx.filter='none';
       return;
@@ -168,14 +206,15 @@ get_header(); ?>
     ctx.drawImage(tex,cx-R,cy-R,R*2,R*2);
   }
   /* ── Canvas holdrajz — valósághű felszín ── */
-  function draw(cv,phase,frac){
+  function draw(cv,phase,frac,now){
     var W=cv.width,H=cv.height,cx=W/2,cy=H/2,R=W/2-7,ctx=cv.getContext('2d');
+    var tone=moonTone(now,frac);
     ctx.clearRect(0,0,W,H);
 
     if(frac>.55){
       var gw=ctx.createRadialGradient(cx,cy,R*.62,cx,cy,R*2.18);
       var ga=(frac-.55)/.45*.2;
-      gw.addColorStop(0,'rgba(210,215,190,'+ga+')');
+      gw.addColorStop(0,tone.glowCore.replace('ALPHA',ga));
       gw.addColorStop(.6,'rgba(170,180,160,'+(ga*.36)+')');
       gw.addColorStop(1,'rgba(0,0,0,0)');
       ctx.fillStyle=gw;ctx.fillRect(0,0,W,H);
@@ -196,7 +235,10 @@ get_header(); ?>
       ctx.ellipse(cx,cy,Math.max(1,tx),R,0,PI/2,-PI/2,tcw);
       ctx.closePath();ctx.clip();
 
-      drawMoonSkin(ctx,cx,cy,R);
+      drawMoonSkin(ctx,cx,cy,R,tone);
+
+      ctx.fillStyle=tone.overlay;
+      ctx.fillRect(cx-R,cy-R,R*2,R*2);
 
       var lightDir=wax?1:-1;
       var l1=ctx.createLinearGradient(cx-R*lightDir,cy,cx+R*lightDir,cy);
@@ -214,9 +256,9 @@ get_header(); ?>
       ctx.globalCompositeOperation='source-over';
 
       ctx.beginPath();ctx.arc(cx,cy,R-1.1,0,2*PI);
-      ctx.strokeStyle='rgba(255,250,238,'+(0.32+frac*.34)+')';
+      ctx.strokeStyle=tone.rim;
       ctx.lineWidth=1.8;
-      ctx.shadowColor='rgba(255,245,225,'+(0.16+frac*.14)+')';
+      ctx.shadowColor=tone.rimGlow;
       ctx.shadowBlur=8;
       ctx.stroke();
       ctx.shadowBlur=0;
@@ -227,7 +269,7 @@ get_header(); ?>
     if(frac<0.08){
       ctx.save();ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);ctx.clip();
       ctx.globalAlpha=.095;
-      drawMoonSkin(ctx,cx,cy,R);
+      drawMoonSkin(ctx,cx,cy,R,tone);
       ctx.globalAlpha=1;
       ctx.restore();
     }
@@ -301,7 +343,7 @@ get_header(); ?>
     var now=new Date(),il=getMoonState(now),ph=il.phase,fr=il.frac;
     var cv=document.getElementById('mCanvas');if(!cv)return;
     var range=document.getElementById('mPhaseRange');
-    draw(cv,ph,fr);
+    draw(cv,ph,fr,now);
     document.getElementById('mPhase').textContent=phName(ph);
     document.getElementById('mAge').textContent=(ph*SYN).toFixed(1)+' napos hold';
     document.getElementById('mIllum').textContent=Math.round(fr*100)+'%';
