@@ -3,24 +3,6 @@
             <!-- Jobb oldalsáv -->
             <aside class="va-sidebar va-sidebar--right">
                 <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('sidebar_right'); ?>
-
-                <!-- Gyors linkek widget -->
-                <div class="va-sidebar__widget">
-                    <div class="va-sidebar__widget-title">Gyors elérés</div>
-                    <?php
-                    $quick_links = [
-                        'va-hirdetes-feladas' => '📤 Hirdetés feladása',
-                        'va-aukciok'          => '🔨 Aukciók',
-                        'va-fiok'             => '👤 Fiókom',
-                    ];
-                    foreach ($quick_links as $slug => $label) {
-                        $page = get_page_by_path($slug);
-                        if ($page) {
-                            echo '<a href="' . esc_url(get_permalink($page)) . '" style="display:block;padding:8px 0;color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.05);">' . esc_html($label) . '</a>';
-                        }
-                    }
-                    ?>
-                </div>
             </aside>
 
         </div><!-- .va-content-layout -->
