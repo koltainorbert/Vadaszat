@@ -519,6 +519,11 @@ class VA_Ajax {
             // Galéria sorrend mentése post meta-ba
             update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $attachment_ids ) );
         }
+
+        // Revoke temporarily granted cap
+        if ( $granted_cap ) {
+            $current_user->remove_cap( 'upload_files' );
+        }
     }
 
     /* ── Watchlist (kedvencek) ─────────────────────────── */
