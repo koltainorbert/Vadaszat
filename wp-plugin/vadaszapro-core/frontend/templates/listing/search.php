@@ -81,7 +81,7 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                 <input type="text" id="va-kw" class="va-input" placeholder="Kulcsszó..." value="<?php echo esc_attr( $url_s ); ?>">
 
                 <select id="va-cat" class="va-select">
-                    <option value="">– Kategória –</option>
+                    <option value="">– Kategóriák –</option>
                     <?php foreach ( $categories as $cat ): ?>
                         <option value="<?php echo esc_attr( $cat->term_id ); ?>"><?php echo esc_html( $cat->name ); ?></option>
                         <?php $children = get_terms( [ 'taxonomy' => 'va_category', 'parent' => $cat->term_id, 'hide_empty' => false ] );
@@ -108,11 +108,11 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                 <div class="va-price-slider-wrap">
                     <div class="va-price-slider-labels">
                         <span>&#193;r szűrő</span>
-                        <span class="va-price-slider-display"><span id="va-min-price-display">0</span> – <span id="va-max-price-display">50 000 000</span> Ft</span>
+                        <span class="va-price-slider-display"><span id="va-min-price-display">0</span> – <span id="va-max-price-display">5 000 000</span> Ft</span>
                     </div>
                     <div class="va-price-slider-track">
-                        <input type="range" id="va-min-price" class="va-range" min="0" max="50000000" step="50000" value="0">
-                        <input type="range" id="va-max-price" class="va-range" min="0" max="50000000" step="50000" value="50000000">
+                        <input type="range" id="va-min-price" class="va-range" min="0" max="5000000" step="500" value="0">
+                        <input type="range" id="va-max-price" class="va-range" min="0" max="5000000" step="500" value="5000000">
                         <div class="va-range-fill" id="va-range-fill"></div>
                     </div>
                 </div>
