@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #33 (Hero vs Header mentési konfliktus javítás)
+
+### Mit csináltunk [x]
+- [x] Az ok azonosítva: hero/design és fejléc/lábléc mezők ugyanabban a settings groupban voltak
+- [x] Külön settings group létrehozva a fejléc/lábléc oldalhoz: `va_header_footer_settings`
+- [x] A fejléc/lábléc opciók átemelve dedikált regisztrációba, így mentéskor nem nullázza a másik oldal mezőit
+- [x] A Design oldalról kikerültek a fejléc/lábléc mezők, hogy ne legyen keveredés
+- [x] A Fejléc + Lábléc oldal saját `settings_fields` blokkot kapott
+- [x] Hibavizsgálat: módosított fájl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #32 (10 db egykattintásos fejléc/lábléc preset)
 
 ### Mit csináltunk [x]

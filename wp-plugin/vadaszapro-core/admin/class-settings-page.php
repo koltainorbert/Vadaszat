@@ -566,27 +566,12 @@ class VA_Settings_Page {
                     <?php self::field_color( 'va_color_global_accent', 'Globális accent szín' ); ?>
                 </table>
 
-                <h2>Fejléc színek</h2>
-                <table class="form-table">
-                    <?php self::field_text(  'va_color_header_bg',     'Fejléc háttér (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_header_text',   'Fejléc szöveg' ); ?>
-                    <?php self::field_color( 'va_color_header_accent', 'Fejléc accent' ); ?>
-                </table>
-
                 <h2>Tartalom színek</h2>
                 <table class="form-table">
                     <?php self::field_color( 'va_color_content_bg',       'Tartalom háttér' ); ?>
                     <?php self::field_color( 'va_color_content_text',     'Tartalom szöveg' ); ?>
                     <?php self::field_color( 'va_color_content_headings', 'Tartalom címsorok' ); ?>
                     <?php self::field_color( 'va_color_content_links',    'Tartalom linkek' ); ?>
-                </table>
-
-                <h2>Lábléc színek</h2>
-                <table class="form-table">
-                    <?php self::field_color( 'va_color_footer_bg',       'Lábléc háttér' ); ?>
-                    <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsorok' ); ?>
-                    <?php self::field_color( 'va_color_footer_links',    'Lábléc linkek' ); ?>
                 </table>
 
                 <h2>Hero szöveg méretek (összes oldal)</h2>
@@ -624,30 +609,9 @@ class VA_Settings_Page {
                     <?php self::field_decimal( 'va_lh_contact_hero_lead',  'Kapcsolat hero alcím sorköz', 0.8, 2.8, 0.01 ); ?>
                 </table>
 
-                <h2>Fejléc elemek méretei és típusai</h2>
-                <table class="form-table">
-                    <?php self::field_num(    'va_size_header_brand',   'Brand név méret (px)', 10, 44 ); ?>
-                    <?php self::field_num(    'va_size_header_nav',     'Navigáció méret (px)', 10, 34 ); ?>
-                    <?php self::field_num(    'va_size_header_search',  'Keresőmező szövegméret (px)', 10, 30 ); ?>
-                    <?php self::field_num(    'va_size_header_btn',     'Fejléc gomb szövegméret (px)', 10, 30 ); ?>
-                    <?php self::field_select( 'va_weight_header_brand', 'Brand név súly/típus', $weights ); ?>
-                    <?php self::field_select( 'va_weight_header_nav',   'Navigáció súly/típus', $weights ); ?>
-                </table>
-
-                <h2>Lábléc elemek méretei és típusai</h2>
-                <table class="form-table">
-                    <?php self::field_num(    'va_size_footer_title',   'Lábléc oszlopcím méret (px)', 10, 34 ); ?>
-                    <?php self::field_num(    'va_size_footer_link',    'Lábléc link méret (px)', 10, 30 ); ?>
-                    <?php self::field_num(    'va_size_footer_bottom',  'Lábléc alsó sor méret (px)', 10, 28 ); ?>
-                    <?php self::field_select( 'va_weight_footer_title', 'Lábléc címsor súly/típus', $weights ); ?>
-                    <?php self::field_select( 'va_weight_footer_link',  'Lábléc link súly/típus', $weights ); ?>
-                </table>
-
                 <h2>Mobil skála finomhangolás</h2>
                 <table class="form-table">
                     <?php self::field_num( 'va_mobile_factor_hero',   'Hero mobil szorzó (%)', 70, 120 ); ?>
-                    <?php self::field_num( 'va_mobile_factor_header', 'Fejléc mobil szorzó (%)', 70, 120 ); ?>
-                    <?php self::field_num( 'va_mobile_factor_footer', 'Lábléc mobil szorzó (%)', 70, 120 ); ?>
                 </table>
 
                 <?php submit_button( 'Design mentése' ); ?>
