@@ -39,7 +39,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
 
     <div id="va-submit-notice"></div>
 
-    <form id="va-submit-form" enctype="multipart/form-data">
+    <form id="va-submit-form" method="post" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" enctype="multipart/form-data">
         <input type="hidden" name="action" value="va_submit_listing">
         <input type="hidden" name="nonce"  value="<?php echo esc_attr( wp_create_nonce( 'va_submit_listing' ) ); ?>">
 
