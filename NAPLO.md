@@ -32,6 +32,15 @@
 - [x] Új bejegyzés státusz: `draft` (`(Másolat)` utótaggal)
 - [x] Sikeres duplikálás után automatikus átirányítás az új piszkozat szerkesztőjére
 
+### Kapcsolat oldal
+- [x] Új egyedi kapcsolati oldal sablon: `page-kapcsolat.php`
+- [x] Kizárólag e-mailes kapcsolatfelvétel támogatás
+- [x] Backend küldés `wp_mail()`-lel, WP Mail SMTP kompatibilisen
+- [x] Védelem: nonce + honeypot mező + szerveroldali validáció
+- [x] Automatikus `kapcsolat` oldal létrehozás hozzáadva a theme oldal-generáláshoz
+- [x] Header menü link a `/kapcsolat` oldalra megerősítve
+- [x] Deploy: `Deploy All` kész
+
 ---
 
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)

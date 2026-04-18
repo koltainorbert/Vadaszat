@@ -89,7 +89,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
 /* ── Alapoldalak automatikus létrehozása (egyszer fut) ── */
 add_action( 'wp_loaded', function () {
-    if ( get_option( 'va_pages_created_v3' ) ) return;
+    if ( get_option( 'va_pages_created_v4' ) ) return;
     $pages = [
         'kategoria'           => 'Kategóriák',
         'kapcsolat'           => 'Kapcsolat',
@@ -111,7 +111,7 @@ add_action( 'wp_loaded', function () {
             ] );
         }
     }
-    update_option( 'va_pages_created_v3', '1' );
+    update_option( 'va_pages_created_v4', '1' );
 } );
 
 /* ── Kapcsolat űrlap – email küldés wp_mail + SMTP ───────── */
