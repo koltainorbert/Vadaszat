@@ -578,6 +578,86 @@
   }
 }
 
+/* ── Hirdetés képkezelő (sorrend + főkép) ───────────── */
+.va-img-picker { margin-top: 6px; }
+.va-img-drop {
+  border: 2px dashed rgba(255,255,255,.2);
+  border-radius: var(--va-radius);
+  background: rgba(255,255,255,.03);
+  padding: 18px;
+  text-align: center;
+  transition: border-color .2s ease, background .2s ease;
+}
+.va-img-drop--hover { border-color: #ff0000; background: rgba(255,0,0,.08); }
+.va-img-browse-lbl { color: #ff4040; cursor: pointer; text-decoration: underline; }
+
+.va-img-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+}
+.va-img-card {
+  position: relative;
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #111;
+  cursor: move;
+}
+.va-img-card--featured {
+  border-color: #ff0000;
+  box-shadow: 0 0 0 2px rgba(255,0,0,.25);
+}
+.va-img-card__thumb {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+}
+.va-img-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.05));
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 6px;
+}
+.va-img-card__num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0,0,0,.5);
+  border-radius: 999px;
+  padding: 2px 7px;
+}
+.va-img-feat-btn,
+.va-img-del-btn {
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+}
+.va-img-feat-btn { background: rgba(0,0,0,.55); color: #ffd44d; }
+.va-img-del-btn { background: rgba(255,0,0,.9); color: #fff; }
+.va-img-card__label {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 10px;
+  font-weight: 700;
+  background: #ff0000;
+  color: #fff;
+  border-radius: 999px;
+  padding: 3px 8px;
+}
+
 /* ── Dashboard ─────────────────────────────────── */
 .va-dashboard { display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
 @media (max-width: 768px) { .va-dashboard { grid-template-columns: 1fr; } }
