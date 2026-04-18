@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #25 (Kereső nagyító láthatóság + piros belső kiemelés törlése)
+
+### Mit csináltunk [x]
+- [x] A keresőmező belső piros kiemelése eltávolítva
+- [x] A jobb oldali ikon fekete nagyítóra állítva
+- [x] A nagyító jobb láthatóságot kapott világos kör háttérrel
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #24 (Automatikus cache-bust CSS módosításokhoz)
 
 ### Mit csináltunk [x]
