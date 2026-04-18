@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 04. 18. – Session #11 (Minden hero szöveg adminból szerkeszthető)
+
+### Mit csináltunk [x]
+- [x] Teljes hero szöveg-admin bevezetés az összes használt hero blokkra:
+  - Főoldali hero (`header.php`)
+  - Kategória főoldal hero (`page-kategoria.php`)
+  - Alkategória hero (`taxonomy-va_category.php`)
+  - Kapcsolat hero (`page-kapcsolat.php`)
+- [x] Új opciók a `VA_Settings_Page` Általános fülön:
+  - badge, cím(ek), alcím, gombszövegek, stat feliratok, találatszám utótag
+- [x] Sablonok átvezetve `get_option(...)` használatra fallback alapértékekkel
+- [x] Hibavizsgálat: módosított PHP fájlok hibamentesek
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #10 (Hero logó pozíció adminból)
 
 ### Mit csináltunk [x]
