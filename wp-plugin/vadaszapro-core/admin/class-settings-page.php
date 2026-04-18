@@ -114,7 +114,7 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_site_name',           'Oldal neve' ); ?>
                     <?php self::field_text(  'va_site_description',     'Oldal alcíme / leírás' ); ?>
                     <?php self::field_email( 'va_contact_email',        'Kapcsolati e-mail' ); ?>
-                    <?php self::field_media( 'va_brand_icon_url',       'Ikon (automata favicon)' ); ?>
+                    <?php self::field_media( 'va_brand_icon_url',       'Ikon (automata favicon, ajánlott: négyzetes PNG)' ); ?>
                     <?php self::field_media( 'va_header_logo_url',      'Fejléc logó' ); ?>
                     <?php self::field_media( 'va_hero_logo_url',        'Hero logó (főoldal)' ); ?>
                     <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>

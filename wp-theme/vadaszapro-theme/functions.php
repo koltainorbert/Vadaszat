@@ -63,7 +63,7 @@ add_action( 'wp_head', function () {
     }
 
     $icon_url = esc_url( $icon );
-    echo '<link rel="icon" type="image/png" href="' . $icon_url . '">' . "\n";
+    echo '<link rel="icon" href="' . $icon_url . '">' . "\n";
     echo '<link rel="shortcut icon" href="' . $icon_url . '">' . "\n";
     echo '<link rel="apple-touch-icon" href="' . $icon_url . '">' . "\n";
 }, 2 );

@@ -2,6 +2,28 @@
 
 ---
 
+## 2026. 04. 18. – Session #8 (Médiatáras logó/ikon + favicon torzulás javítás)
+
+### Mit csináltunk [x]
+- [x] Adminban új, médiatárból tallózható képes mezők:
+  - `Ikon (automata favicon)`
+  - `Fejléc logó`
+  - `Hero logó (főoldal)`
+- [x] Új admin JS: WordPress Media Library picker (`Tallózás` / `Törlés` + preview)
+- [x] `class-admin.php`: `wp_enqueue_media()` bekötve
+- [x] Header logó kirajzolás logika:
+  - elsődleges: `va_header_logo_url`
+  - fallback: `va_brand_icon_url`
+  - végső fallback: 🦌 ikon
+- [x] Hero logó hely hozzáadva a főoldali hero blokkba (`va_hero_logo_url`, fallback: fejléc logó)
+- [x] Logó torzulás javítás:
+  - `object-fit: contain`
+  - külön osztályok: `.va-logo__img--header` és `.va-logo__img--icon`
+- [x] Favicon link output javítva: nem erőltetett `type=image/png`, így SVG/WEBP esetén sem torz jellegű fallback
+- [x] Deploy futtatva (`Deploy All`)
+
+---
+
 ## 2026. 04. 18. – Session #7 (Header név + ikon + automata favicon)
 
 ### Mit csináltunk [x]
