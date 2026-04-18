@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 04. 18. – Session #19 (Hero sorköz magasság állítás)
+
+### Mit csináltunk [x]
+- [x] Design oldalon új hero sorköz (line-height) mezők:
+  - főoldal cím + alcím
+  - kategória cím + alcím
+  - alkategória cím + leírás
+  - kapcsolat cím + alcím
+- [x] Frontenden dinamikus CSS-be bekötve (`line-height` felülírás)
+- [x] Új helper a theme-ben: `va_design_float_option()`
+- [x] Hibavizsgálat: módosított fájlok hibamentesek
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #18 (Dinamikus header scroll progress csík)
 
 ### Mit csináltunk [x]

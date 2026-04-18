@@ -253,6 +253,18 @@ function va_design_int_option( string $key, int $default, int $min, int $max ): 
     return $val;
 }
 
+function va_design_float_option( string $key, float $default, float $min, float $max ): float {
+    $raw = str_replace( ',', '.', (string) get_option( $key, (string) $default ) );
+    $val = (float) $raw;
+    if ( $val < $min ) {
+        return $min;
+    }
+    if ( $val > $max ) {
+        return $max;
+    }
+    return $val;
+}
+
 function va_design_weight_option( string $key, string $default ): string {
     $val = preg_replace( '/[^0-9]/', '', (string) get_option( $key, $default ) );
     if ( ! in_array( $val, [ '300', '400', '500', '600', '700', '800', '900' ], true ) ) {
@@ -344,6 +356,15 @@ add_action( 'wp_enqueue_scripts', function () {
     $contact_hero_title  = va_design_int_option( 'va_size_contact_hero_title', 62, 20, 120 );
     $contact_hero_lead   = va_design_int_option( 'va_size_contact_hero_lead', 16, 10, 40 );
 
+    $lh_home_hero_title    = va_design_float_option( 'va_lh_home_hero_title', 1.05, 0.8, 2.4 );
+    $lh_home_hero_sub      = va_design_float_option( 'va_lh_home_hero_sub', 1.60, 0.8, 2.8 );
+    $lh_kat_hero_title     = va_design_float_option( 'va_lh_kat_hero_title', 1.06, 0.8, 2.4 );
+    $lh_kat_hero_sub       = va_design_float_option( 'va_lh_kat_hero_sub', 1.70, 0.8, 2.8 );
+    $lh_tax_hero_title     = va_design_float_option( 'va_lh_tax_hero_title', 1.05, 0.8, 2.4 );
+    $lh_tax_hero_lead      = va_design_float_option( 'va_lh_tax_hero_lead', 1.75, 0.8, 2.8 );
+    $lh_contact_hero_title = va_design_float_option( 'va_lh_contact_hero_title', 1.02, 0.8, 2.4 );
+    $lh_contact_hero_lead  = va_design_float_option( 'va_lh_contact_hero_lead', 1.80, 0.8, 2.8 );
+
     $header_brand_size   = va_design_int_option( 'va_size_header_brand', 18, 10, 44 );
     $header_nav_size     = va_design_int_option( 'va_size_header_nav', 14, 10, 34 );
     $header_search_size  = va_design_int_option( 'va_size_header_search', 14, 10, 30 );
@@ -426,24 +447,24 @@ add_action( 'wp_enqueue_scripts', function () {
 
     // Hero méretek – összes oldal
     '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;}' .
-    '.vh__title{font-size:' . $home_hero_title_css . ' !important;}' .
-    '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;}' .
+    '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;}' .
+    '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;}' .
     '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
 
     '.vcp-hero__badge{font-size:' . $kat_hero_badge_css . ' !important;}' .
-    '.vcp-hero__title{font-size:' . $kat_hero_title_css . ' !important;}' .
-    '.vcp-hero__sub{font-size:' . $kat_hero_sub_css . ' !important;}' .
+    '.vcp-hero__title{font-size:' . $kat_hero_title_css . ' !important;line-height:' . $lh_kat_hero_title . ' !important;}' .
+    '.vcp-hero__sub{font-size:' . $kat_hero_sub_css . ' !important;line-height:' . $lh_kat_hero_sub . ' !important;}' .
     '.vcp-hero__stat-n{font-size:' . $kat_hero_stat_num_css . ' !important;}' .
     '.vcp-hero__stat-l{font-size:' . $kat_hero_stat_lbl_css . ' !important;}' .
 
     '.vcp-video__eyebrow{font-size:' . $tax_hero_badge_css . ' !important;}' .
-    '.vcp-video__title{font-size:' . $tax_hero_title_css . ' !important;}' .
-    '.vcp-video__lead{font-size:' . $tax_hero_lead_css . ' !important;}' .
+    '.vcp-video__title{font-size:' . $tax_hero_title_css . ' !important;line-height:' . $lh_tax_hero_title . ' !important;}' .
+    '.vcp-video__lead{font-size:' . $tax_hero_lead_css . ' !important;line-height:' . $lh_tax_hero_lead . ' !important;}' .
     '.va-archive-header__count{font-size:' . $tax_hero_count_css . ' !important;}' .
 
     '.va-contact-page__eyebrow{font-size:' . $contact_hero_badge_css . ' !important;}' .
-    '.va-contact-page__title{font-size:' . $contact_hero_title_css . ' !important;}' .
-    '.va-contact-page__lead{font-size:' . $contact_hero_lead_css . ' !important;}' .
+    '.va-contact-page__title{font-size:' . $contact_hero_title_css . ' !important;line-height:' . $lh_contact_hero_title . ' !important;}' .
+    '.va-contact-page__lead{font-size:' . $contact_hero_lead_css . ' !important;line-height:' . $lh_contact_hero_lead . ' !important;}' .
 
     // Fejléc elemek méretek/típusok
     '.va-logo__text{font-size:' . $header_brand_css . ' !important;font-weight:' . $header_brand_weight . ' !important;}' .
