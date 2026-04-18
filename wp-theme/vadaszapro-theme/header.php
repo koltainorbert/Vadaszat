@@ -218,11 +218,6 @@
     <main class="va-container">
         <div class="va-content-layout">
 
-            <!-- Bal oldalsáv -->
-            <aside class="va-sidebar va-sidebar--left">
-                <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('sidebar_left'); ?>
-            </aside>
-
             <!-- Fő tartalom (ide jön a content) -->
             <div class="va-main-content">
                 <?php if ( is_singular() ) va_breadcrumb(); ?>

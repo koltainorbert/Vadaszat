@@ -406,15 +406,8 @@ hr { border-color: var(--border); }
   min-height: calc(100vh - var(--nav) - 48px);
 }
 
-/* Bal oldalsáv */
-.va-sidebar.va-sidebar--left {
-  width: 220px; flex-shrink: 0;
-  padding: 20px 16px;
-  border-right: 1px solid var(--border);
-  position: sticky; top: calc(var(--nav) + 48px);
-  height: calc(100vh - var(--nav) - 48px);
-  overflow-y: auto;
-}
+/* Bal oldalsáv – nincs használva, letiltva */
+.va-sidebar.va-sidebar--left { display: none !important; }
 
 /* Jobb oldalsáv */
 .va-sidebar.va-sidebar--right {
@@ -430,24 +423,20 @@ hr { border-color: var(--border); }
 .va-main-content { flex: 1; padding: 20px 24px; min-width: 0; }
 
 @media (max-width: 1100px) { .va-sidebar.va-sidebar--right { display: none; } }
-@media (max-width: 768px)  { .va-sidebar.va-sidebar--left  { display: none; } .va-main-content { padding: 16px; } }
+@media (max-width: 768px)  { .va-main-content { padding: 16px; } }
 
-/* Főoldalon nincs BAL reklám oldalsáv – jobb sidebar megmarad */
-.home-template .va-sidebar--left,
-.home .va-sidebar--left,
-.front-page .va-sidebar--left { display: none !important; }
+/* Minden hirdetéslistán 4 oszlopos grid */
+.va-grid {
+  grid-template-columns: repeat(4, 1fr);
+}
+@media (max-width: 1200px) { .va-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 860px)  { .va-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px)  { .va-grid { grid-template-columns: 1fr; } }
+
+/* Főoldalon sincs BAL sáv */
 .home-template .va-main-content,
 .home .va-main-content,
 .front-page .va-main-content { padding: 20px 28px; }
-
-/* Főoldal: termékek 4 oszlopban */
-.va-home-main .va-grid {
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-}
-@media (max-width: 1200px) { .va-home-main .va-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 900px)  { .va-home-main .va-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 560px)  { .va-home-main .va-grid { grid-template-columns: 1fr; } }
 
 /* ──────────────────────────────────────────────────────────
    SIDEBAR WIDGET
