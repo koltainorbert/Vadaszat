@@ -24,6 +24,10 @@
     if ( ! in_array( $hero_logo_pos, [ 'left', 'center', 'right' ], true ) ) {
         $hero_logo_pos = 'left';
     }
+    $home_hero_align = sanitize_key( (string) get_option( 'va_home_hero_align', 'left' ) );
+    if ( ! in_array( $home_hero_align, [ 'left', 'center', 'right' ], true ) ) {
+        $home_hero_align = 'left';
+    }
     if ( $hero_logo === '' ) {
         $hero_logo = $header_logo;
     }
@@ -184,7 +188,7 @@
 
         <div class="vh__overlay"></div>
 
-        <div class="vh__content">
+        <div class="vh__content vh__content--<?php echo esc_attr( $home_hero_align ); ?>">
             <?php if ( ! empty( $hero_logo ) ): ?>
                 <img src="<?php echo esc_url( $hero_logo ); ?>" class="vh__logo vh__logo--<?php echo esc_attr( $hero_logo_pos ); ?>" style="height:<?php echo esc_attr( $hero_logo_h ); ?>px;" alt="<?php echo esc_attr( $brand_name ); ?>" loading="eager" decoding="async">
             <?php endif; ?>

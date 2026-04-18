@@ -24,6 +24,10 @@ class VA_Settings_Page {
             'va_header_logo_height'  => 36,
             'va_hero_logo_height'    => 72,
             'va_hero_logo_position'  => 'left',
+            'va_home_hero_align'     => 'left',
+            'va_kategoria_hero_align'=> 'center',
+            'va_tax_hero_align'      => 'center',
+            'va_contact_hero_align'  => 'center',
             'va_listings_per_page'   => 20,
             'va_auto_publish_listings' => '0',  // 0=jóváhagyás szükséges, 1=azonnal él
             'va_listing_validity_days' => 60,   // hirdetés lejárata (nap) feladáskor
@@ -149,10 +153,14 @@ class VA_Settings_Page {
                     <?php self::field_media( 'va_hero_logo_url',        'Hero logó (főoldal)' ); ?>
                     <?php self::field_num(   'va_hero_logo_height',     'Hero logó magasság (px)', 30, 260 ); ?>
                     <?php self::field_select('va_hero_logo_position',   'Hero logó pozíció', [ 'left' => 'Bal', 'center' => 'Közép', 'right' => 'Jobb' ] ); ?>
+                    <?php self::field_select('va_home_hero_align',      'Főoldal hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
                     <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
                     <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
                     <?php self::field_url(   'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
+                    <?php self::field_select('va_kategoria_hero_align', 'Kategória hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
+                    <?php self::field_select('va_tax_hero_align',       'Alkategória hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
+                    <?php self::field_select('va_contact_hero_align',   'Kapcsolat hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_toggle('va_enable_auctions',       'Aukció funkció engedélyezése' ); ?>
                     <?php self::field_num(   'va_listings_per_page',    'Hirdetés / oldal', 5, 100 ); ?>
                     <?php self::field_num(   'va_listing_validity_days','Hirdetés érvényessége (nap)', 1, 365 ); ?>

@@ -13,6 +13,10 @@ $categories_video = get_option(
 $tax_badge        = get_option( 'va_tax_hero_badge_text', 'Kategória ajánló' );
 $tax_fallback     = get_option( 'va_tax_hero_fallback_lead', 'A kiválasztott kategóriában böngészel, görgess tovább a friss ajánlatokért.' );
 $tax_count_suffix = get_option( 'va_tax_hero_count_suffix', 'hirdetés' );
+$tax_hero_align   = sanitize_key( (string) get_option( 'va_tax_hero_align', 'center' ) );
+if ( ! in_array( $tax_hero_align, [ 'left', 'center', 'right' ], true ) ) {
+    $tax_hero_align = 'center';
+}
 ?>
 <div class="va-wrap">
     <div class="vcp-video vcp-video--tax" style="margin-top:0;margin-bottom:24px;">
@@ -20,7 +24,7 @@ $tax_count_suffix = get_option( 'va_tax_hero_count_suffix', 'hirdetés' );
             <source src="<?php echo esc_url( $categories_video ); ?>" type="video/mp4">
         </video>
         <div class="vcp-video__overlay"></div>
-        <div class="vcp-video__content">
+        <div class="vcp-video__content vcp-video__content--<?php echo esc_attr( $tax_hero_align ); ?>">
             <span class="vcp-video__eyebrow"><span class="vcp-hero__badge-dot"></span><?php echo esc_html( $tax_badge ); ?></span>
             <h1 class="vcp-video__title"><?php echo wp_kses_post( $icon ) . ' ' . esc_html( $term->name ); ?></h1>
             <?php if ( $term->description ): ?>

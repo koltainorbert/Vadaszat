@@ -12,6 +12,10 @@ $k_hero_title2 = get_option( 'va_kategoria_hero_title_bottom', 'Kategóriát' );
 $k_hero_sub    = get_option( 'va_kategoria_hero_sub_text', 'Golyós puskáktól a trófea-alapzatokig – minden vadász felszerelésnél egy helyen' );
 $k_hero_stat1  = get_option( 'va_kategoria_hero_stat1_label', 'Főkategória' );
 $k_hero_stat2  = get_option( 'va_kategoria_hero_stat2_label', 'Aktív hirdetés' );
+$k_hero_align  = sanitize_key( (string) get_option( 'va_kategoria_hero_align', 'center' ) );
+if ( ! in_array( $k_hero_align, [ 'left', 'center', 'right' ], true ) ) {
+    $k_hero_align = 'center';
+}
 
 /* ── Fotó tár — Unsplash valódi képek ─────────────────────────────────── */
 function va_cat_icon( string $name ): string {
@@ -53,7 +57,7 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
             <source src="<?php echo esc_url( $categories_video ); ?>" type="video/mp4">
         </video>
         <div class="vcp-hero__video-overlay"></div>
-        <div class="vcp-hero__inner">
+        <div class="vcp-hero__inner vcp-hero__inner--<?php echo esc_attr( $k_hero_align ); ?>">
             <div class="vcp-hero__badge">
                 <span class="vcp-hero__badge-dot"></span>
                 <?php echo esc_html( $k_hero_badge ); ?>

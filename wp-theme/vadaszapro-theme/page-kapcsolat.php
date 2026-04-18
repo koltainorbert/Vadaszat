@@ -9,6 +9,10 @@ $contact_video = get_option( 'va_contact_hero_video_url', content_url( 'uploads/
 $contact_badge = get_option( 'va_contact_hero_badge_text', 'Kapcsolat' );
 $contact_title = get_option( 'va_contact_hero_title_text', 'Írj nekünk e-mailt' );
 $contact_lead  = get_option( 'va_contact_hero_lead_text', 'A kapcsolatfelvétel kizárólag e-mailben történik. Az itt elküldött üzenetek WordPress oldalon keresztül, a WP Mail SMTP bővítményen át jutnak el hozzánk.' );
+$contact_hero_align = sanitize_key( (string) get_option( 'va_contact_hero_align', 'center' ) );
+if ( ! in_array( $contact_hero_align, [ 'left', 'center', 'right' ], true ) ) {
+    $contact_hero_align = 'center';
+}
 ?>
 
 <section class="va-contact-page">
@@ -20,7 +24,7 @@ $contact_lead  = get_option( 'va_contact_hero_lead_text', 'A kapcsolatfelvétel 
         <div class="va-contact-page__hero-glow va-contact-page__hero-glow--1"></div>
         <div class="va-contact-page__hero-glow va-contact-page__hero-glow--2"></div>
 
-        <div class="va-contact-page__hero-inner">
+        <div class="va-contact-page__hero-inner va-contact-page__hero-inner--<?php echo esc_attr( $contact_hero_align ); ?>">
             <div class="va-contact-page__eyebrow"><span class="vcp-hero__badge-dot"></span><?php echo esc_html( $contact_badge ); ?></div>
             <h1 class="va-contact-page__title"><?php echo esc_html( $contact_title ); ?></h1>
             <p class="va-contact-page__lead">

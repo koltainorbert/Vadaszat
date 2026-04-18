@@ -2,6 +2,26 @@
 
 ---
 
+## 2026. 04. 18. – Session #12 (Hero elemek igazítása adminból)
+
+### Mit csináltunk [x]
+- [x] Hero elemek igazíthatósága (bal/közép/jobb) adminból bevezetve mind a 4 aktív hero blokkra:
+  - Főoldal hero
+  - Kategória főoldal hero
+  - Alkategória hero
+  - Kapcsolat hero
+- [x] Új beállítások az Általános oldalon:
+  - `va_home_hero_align`
+  - `va_kategoria_hero_align`
+  - `va_tax_hero_align`
+  - `va_contact_hero_align`
+- [x] Sablonok osztály-alapú igazításra átvezetve
+- [x] CSS: bal/közép/jobb variánsok + gombok/lead pozicionálása igazításhoz kötve
+- [x] Ellenőrzés: PHP fájlok hibamentesek
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #11 (Minden hero szöveg adminból szerkeszthető)
 
 ### Mit csináltunk [x]
