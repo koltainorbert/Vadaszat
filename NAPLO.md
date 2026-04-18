@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 04. 18. – Session #29 (Külön Fejléc + Lábléc admin menü, teljes paraméterezés)
+
+### Mit csináltunk [x]
+- [x] Új admin almenü: `Fejléc + Lábléc` a VadászApró menü alatt
+- [x] Új, részletes fejléc opciók: magasság, belső spacing, üveg-hatás opacitás/blur, shadow
+- [x] Új, részletes kereső opciók: szélesség, magasság, radius, border/bg alpha, ikonméret, ikon háttér
+- [x] Új fejléc gomb opciók: radius, padding, glow, user gomb border/bg alpha
+- [x] Új mobil kapcsolók: kereső és piros CTA gomb mobil láthatóság
+- [x] Új fejléc szöveg opciók: kereső placeholder, login/register/submit feliratok
+- [x] Új lábléc layout opciók: padding, grid gap, min oszlopszélesség, border alpha, max width
+- [x] Új lábléc szöveg opciók: oszlopcímek, jogi link feliratok, copyright sor
+- [x] Frontend bekötés kész: `functions.php` dinamikus CSS now kezeli az új fejléc/lábléc mezőket
+- [x] `header.php` és `footer.php` opció-vezérelt szövegezést kapott
+- [x] Hibavizsgálat: módosított fájlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #28 (Repo rendrakás + kanonikus források)
 
 ### Mit csináltunk [x]

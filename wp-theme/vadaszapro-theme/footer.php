@@ -11,22 +11,35 @@
     <!-- ═══ Footer reklám ════════════════════════════════ -->
     <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('footer_top'); ?>
 
+    <?php
+    $f_brand_title    = get_option( 'va_hf_footer_brand_title', 'VadászApró' );
+    $f_cat_title      = get_option( 'va_hf_footer_col_categories_title', 'Kategóriák' );
+    $f_account_title  = get_option( 'va_hf_footer_col_account_title', 'Fiók' );
+    $f_legal_title    = get_option( 'va_hf_footer_col_legal_title', 'Jogi információk' );
+    $f_link_aszf      = get_option( 'va_hf_footer_link_aszf', 'ÁSZF' );
+    $f_link_privacy   = get_option( 'va_hf_footer_link_privacy', 'Adatvédelmi nyilatkozat' );
+    $f_link_contact   = get_option( 'va_hf_footer_link_contact', 'Kapcsolat' );
+    $f_link_help      = get_option( 'va_hf_footer_link_help', 'Súgó' );
+    $f_copy_text      = get_option( 'va_hf_footer_copy_text', 'VadászApró – Minden jog fenntartva.' );
+    $f_privacy_bottom = get_option( 'va_hf_footer_privacy_text', 'Adatvédelem' );
+    ?>
+
     <!-- ═══ Footer ═══════════════════════════════════════ -->
     <footer class="va-footer">
         <div class="va-footer__grid">
             <div>
-                <div class="va-footer__col-title">VadászApró</div>
+                <div class="va-footer__col-title"><?php echo esc_html( $f_brand_title ); ?></div>
                 <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;"><?php echo esc_html(get_option('va_site_description', 'Magyarország vadászati apróhirdetési oldala')); ?></p>
             </div>
             <div>
-                <div class="va-footer__col-title">Kategóriák</div>
+                <div class="va-footer__col-title"><?php echo esc_html( $f_cat_title ); ?></div>
                 <?php $cats = get_terms(['taxonomy' => 'va_category', 'parent' => 0, 'hide_empty' => false, 'number' => 6]);
                 foreach ($cats as $cat): ?>
                     <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="va-footer__link"><?php echo esc_html($cat->name); ?></a>
                 <?php endforeach; ?>
             </div>
             <div>
-                <div class="va-footer__col-title">Fiók</div>
+                <div class="va-footer__col-title"><?php echo esc_html( $f_account_title ); ?></div>
                 <?php
                 $fp = [
                     'va-bejelentkezes' => 'Bejelentkezés',
@@ -41,16 +54,16 @@
                 ?>
             </div>
             <div>
-                <div class="va-footer__col-title">Jogi információk</div>
-                <a href="<?php echo esc_url(home_url('/aszf')); ?>"          class="va-footer__link">ÁSZF</a>
-                <a href="<?php echo esc_url(home_url('/adatvedelmi-nyilatkozat')); ?>" class="va-footer__link">Adatvédelmi nyilatkozat</a>
-                <a href="<?php echo esc_url(home_url('/kapcsolat')); ?>"     class="va-footer__link">Kapcsolat</a>
-                <a href="<?php echo esc_url(home_url('/sugo')); ?>"          class="va-footer__link">Súgó</a>
+                <div class="va-footer__col-title"><?php echo esc_html( $f_legal_title ); ?></div>
+                <a href="<?php echo esc_url(home_url('/aszf')); ?>"          class="va-footer__link"><?php echo esc_html( $f_link_aszf ); ?></a>
+                <a href="<?php echo esc_url(home_url('/adatvedelmi-nyilatkozat')); ?>" class="va-footer__link"><?php echo esc_html( $f_link_privacy ); ?></a>
+                <a href="<?php echo esc_url(home_url('/kapcsolat')); ?>"     class="va-footer__link"><?php echo esc_html( $f_link_contact ); ?></a>
+                <a href="<?php echo esc_url(home_url('/sugo')); ?>"          class="va-footer__link"><?php echo esc_html( $f_link_help ); ?></a>
             </div>
         </div>
         <div class="va-footer__bottom">
-            &copy; <?php echo date('Y'); ?> VadászApró – Minden jog fenntartva. |
-            <a href="<?php echo esc_url(home_url('/adatvedelmi-nyilatkozat')); ?>">Adatvédelem</a>
+            &copy; <?php echo date('Y'); ?> <?php echo esc_html( $f_copy_text ); ?> |
+            <a href="<?php echo esc_url(home_url('/adatvedelmi-nyilatkozat')); ?>"><?php echo esc_html( $f_privacy_bottom ); ?></a>
         </div>
     </footer>
 
