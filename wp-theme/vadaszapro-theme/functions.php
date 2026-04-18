@@ -261,6 +261,11 @@ function va_design_weight_option( string $key, string $default ): string {
     return $val;
 }
 
+function va_design_fluid_px( int $desktop_px, float $mobile_ratio, string $vw ): string {
+    $mobile_px = max( 8, (int) round( $desktop_px * $mobile_ratio ) );
+    return 'clamp(' . $mobile_px . 'px, ' . $vw . ', ' . $desktop_px . 'px)';
+}
+
 add_action( 'wp_enqueue_scripts', function () {
     $font_keys = [
         'va_font_global',
@@ -341,6 +346,36 @@ add_action( 'wp_enqueue_scripts', function () {
     $footer_title_weight = va_design_weight_option( 'va_weight_footer_title', '700' );
     $footer_link_weight  = va_design_weight_option( 'va_weight_footer_link', '500' );
 
+    // Fluid, reszponzív méretkimenet
+    $home_hero_badge_css    = va_design_fluid_px( $home_hero_badge, 0.90, '1.4vw' );
+    $home_hero_title_css    = va_design_fluid_px( $home_hero_title, 0.58, '7.6vw' );
+    $home_hero_sub_css      = va_design_fluid_px( $home_hero_sub, 0.82, '2.8vw' );
+    $home_hero_btn_css      = va_design_fluid_px( $home_hero_btn, 0.86, '2.2vw' );
+
+    $kat_hero_badge_css     = va_design_fluid_px( $kat_hero_badge, 0.90, '1.3vw' );
+    $kat_hero_title_css     = va_design_fluid_px( $kat_hero_title, 0.58, '6.8vw' );
+    $kat_hero_sub_css       = va_design_fluid_px( $kat_hero_sub, 0.84, '2.2vw' );
+    $kat_hero_stat_num_css  = va_design_fluid_px( $kat_hero_stat_num, 0.84, '2.8vw' );
+    $kat_hero_stat_lbl_css  = va_design_fluid_px( $kat_hero_stat_label, 0.90, '1.5vw' );
+
+    $tax_hero_badge_css     = va_design_fluid_px( $tax_hero_badge, 0.90, '1.3vw' );
+    $tax_hero_title_css     = va_design_fluid_px( $tax_hero_title, 0.62, '6.0vw' );
+    $tax_hero_lead_css      = va_design_fluid_px( $tax_hero_lead, 0.84, '2.3vw' );
+    $tax_hero_count_css     = va_design_fluid_px( $tax_hero_count, 0.88, '2.0vw' );
+
+    $contact_hero_badge_css = va_design_fluid_px( $contact_hero_badge, 0.90, '1.3vw' );
+    $contact_hero_title_css = va_design_fluid_px( $contact_hero_title, 0.60, '7.0vw' );
+    $contact_hero_lead_css  = va_design_fluid_px( $contact_hero_lead, 0.84, '2.3vw' );
+
+    $header_brand_css       = va_design_fluid_px( $header_brand_size, 0.90, '2.4vw' );
+    $header_nav_css         = va_design_fluid_px( $header_nav_size, 0.90, '2.0vw' );
+    $header_search_css      = va_design_fluid_px( $header_search_size, 0.90, '1.9vw' );
+    $header_btn_css         = va_design_fluid_px( $header_btn_size, 0.90, '1.9vw' );
+
+    $footer_title_css       = va_design_fluid_px( $footer_title_size, 0.92, '1.9vw' );
+    $footer_link_css        = va_design_fluid_px( $footer_link_size, 0.92, '1.8vw' );
+    $footer_bottom_css      = va_design_fluid_px( $footer_bottom_size, 0.92, '1.7vw' );
+
     $css = ':root{' .
         '--a:' . $global_accent . ';' .
         '--a2:' . $global_accent . ';' .
@@ -375,36 +410,36 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' .
 
     // Hero méretek – összes oldal
-    '.vh__badge{font-size:' . $home_hero_badge . 'px !important;}' .
-    '.vh__title{font-size:' . $home_hero_title . 'px !important;}' .
-    '.vh__sub{font-size:' . $home_hero_sub . 'px !important;}' .
-    '.vh__btn{font-size:' . $home_hero_btn . 'px !important;}' .
+    '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;}' .
+    '.vh__title{font-size:' . $home_hero_title_css . ' !important;}' .
+    '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;}' .
+    '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
 
-    '.vcp-hero__badge{font-size:' . $kat_hero_badge . 'px !important;}' .
-    '.vcp-hero__title{font-size:' . $kat_hero_title . 'px !important;}' .
-    '.vcp-hero__sub{font-size:' . $kat_hero_sub . 'px !important;}' .
-    '.vcp-hero__stat-n{font-size:' . $kat_hero_stat_num . 'px !important;}' .
-    '.vcp-hero__stat-l{font-size:' . $kat_hero_stat_label . 'px !important;}' .
+    '.vcp-hero__badge{font-size:' . $kat_hero_badge_css . ' !important;}' .
+    '.vcp-hero__title{font-size:' . $kat_hero_title_css . ' !important;}' .
+    '.vcp-hero__sub{font-size:' . $kat_hero_sub_css . ' !important;}' .
+    '.vcp-hero__stat-n{font-size:' . $kat_hero_stat_num_css . ' !important;}' .
+    '.vcp-hero__stat-l{font-size:' . $kat_hero_stat_lbl_css . ' !important;}' .
 
-    '.vcp-video__eyebrow{font-size:' . $tax_hero_badge . 'px !important;}' .
-    '.vcp-video__title{font-size:' . $tax_hero_title . 'px !important;}' .
-    '.vcp-video__lead{font-size:' . $tax_hero_lead . 'px !important;}' .
-    '.va-archive-header__count{font-size:' . $tax_hero_count . 'px !important;}' .
+    '.vcp-video__eyebrow{font-size:' . $tax_hero_badge_css . ' !important;}' .
+    '.vcp-video__title{font-size:' . $tax_hero_title_css . ' !important;}' .
+    '.vcp-video__lead{font-size:' . $tax_hero_lead_css . ' !important;}' .
+    '.va-archive-header__count{font-size:' . $tax_hero_count_css . ' !important;}' .
 
-    '.va-contact-page__eyebrow{font-size:' . $contact_hero_badge . 'px !important;}' .
-    '.va-contact-page__title{font-size:' . $contact_hero_title . 'px !important;}' .
-    '.va-contact-page__lead{font-size:' . $contact_hero_lead . 'px !important;}' .
+    '.va-contact-page__eyebrow{font-size:' . $contact_hero_badge_css . ' !important;}' .
+    '.va-contact-page__title{font-size:' . $contact_hero_title_css . ' !important;}' .
+    '.va-contact-page__lead{font-size:' . $contact_hero_lead_css . ' !important;}' .
 
     // Fejléc elemek méretek/típusok
-    '.va-logo__text{font-size:' . $header_brand_size . 'px !important;font-weight:' . $header_brand_weight . ' !important;}' .
-    '.va-nav__item{font-size:' . $header_nav_size . 'px !important;font-weight:' . $header_nav_weight . ' !important;}' .
-    '.va-header__search-input{font-size:' . $header_search_size . 'px !important;}' .
-    '.va-header__submit-btn,.va-header__user,.va-header__user-login{font-size:' . $header_btn_size . 'px !important;}' .
+    '.va-logo__text{font-size:' . $header_brand_css . ' !important;font-weight:' . $header_brand_weight . ' !important;}' .
+    '.va-nav__item{font-size:' . $header_nav_css . ' !important;font-weight:' . $header_nav_weight . ' !important;}' .
+    '.va-header__search-input{font-size:' . $header_search_css . ' !important;}' .
+    '.va-header__submit-btn,.va-header__user,.va-header__user-login{font-size:' . $header_btn_css . ' !important;}' .
 
     // Lábléc elemek méretek/típusok
-    '.va-footer__col-title{font-size:' . $footer_title_size . 'px !important;font-weight:' . $footer_title_weight . ' !important;}' .
-    '.va-footer__link{font-size:' . $footer_link_size . 'px !important;font-weight:' . $footer_link_weight . ' !important;}' .
-    '.va-footer__bottom{font-size:' . $footer_bottom_size . 'px !important;}' ;
+    '.va-footer__col-title{font-size:' . $footer_title_css . ' !important;font-weight:' . $footer_title_weight . ' !important;}' .
+    '.va-footer__link{font-size:' . $footer_link_css . ' !important;font-weight:' . $footer_link_weight . ' !important;}' .
+    '.va-footer__bottom{font-size:' . $footer_bottom_css . ' !important;}' ;
 
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );

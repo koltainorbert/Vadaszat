@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #15 (Reszponzív fluid méretezés a Design vezérléshez)
+
+### Mit csináltunk [x]
+- [x] A Design oldalon állítható méretek kimenete fix px helyett fluid `clamp()` alapú lett
+- [x] Hero / fejléc / lábléc szövegméretek mobilra és tabletre automatikusan arányosodnak
+- [x] Új helper került be a theme-be: `va_design_fluid_px()`
+- [x] Validáció: `functions.php` hibamentes
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #14 (Összes hero + fejléc + lábléc méret/típus vezérlés)
 
 ### Mit csináltunk [x]
