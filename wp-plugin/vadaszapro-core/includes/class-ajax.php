@@ -12,6 +12,10 @@ class VA_Ajax {
         add_action( 'wp_ajax_va_submit_listing',  [ __CLASS__, 'submit_listing' ] );
         add_action( 'template_redirect', [ __CLASS__, 'handle_listing_payment_callback' ] );
 
+        // Kredit csomag vásárlás
+        add_action( 'wp_ajax_va_buy_credits',        [ __CLASS__, 'buy_credits' ] );
+        add_action( 'template_redirect',             [ __CLASS__, 'handle_credit_payment_callback' ] );
+
         // Watchlist
         add_action( 'wp_ajax_va_toggle_watchlist', [ __CLASS__, 'toggle_watchlist' ] );
 
@@ -78,15 +82,16 @@ class VA_Ajax {
 
         $is_free_allowed = ( $free_limit === 0 ) || ( $existing_count < $free_limit );
 
-        // WP beállítástól függ: auto-publish vagy pending review
-        $final_status = get_option( 'va_auto_publish_listings', '0' ) === '1' ? 'publish' : 'pending';
-
-        $status = $is_free_allowed ? $final_status : 'draft';
-
-        if ( ! $is_free_allowed && $payment_url === '' ) {
-            wp_send_json_error([
-                'message' => 'A további hirdetés fizetős, de a bankkártyás fizetési link még nincs beállítva. Kérjük, lépjen kapcsolatba az üzemeltetővel.',
-            ]);
+        // Ha nincs szabad hirdetése: ellenőriz kreditet
+        if ( ! $is_free_allowed ) {
+            $credits = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
+            if ( $credits < 1 ) {
+                wp_send_json_error([
+                    'message'       => 'Az ingyenes hirdetési keretед elfogyott. Vásárolj hirdetési csomagot a folytatáshoz.',
+                    'need_credits'  => true,
+                    'paid_price'    => $paid_price,
+                ]);
+            }
         }
 
         $post_id = wp_insert_post([
