@@ -18,7 +18,7 @@ $contact_video = get_option( 'va_contact_hero_video_url', content_url( 'uploads/
         <div class="va-contact-page__hero-glow va-contact-page__hero-glow--2"></div>
 
         <div class="va-contact-page__hero-inner">
-            <div class="va-contact-page__eyebrow">Kapcsolat</div>
+            <div class="va-contact-page__eyebrow"><span class="vcp-hero__badge-dot"></span>Kapcsolat</div>
             <h1 class="va-contact-page__title">Írj nekünk e-mailt</h1>
             <p class="va-contact-page__lead">
                 A kapcsolatfelvétel kizárólag e-mailben történik. Az itt elküldött üzenetek WordPress oldalon keresztül,

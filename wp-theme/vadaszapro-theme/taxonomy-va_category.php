@@ -15,7 +15,7 @@ $categories_video = get_option( 'va_category_video_url', content_url( 'uploads/2
         </video>
         <div class="vcp-video__overlay"></div>
         <div class="vcp-video__content">
-            <span class="vcp-video__eyebrow">Kategória ajánló</span>
+            <span class="vcp-video__eyebrow"><span class="vcp-hero__badge-dot"></span>Kategória ajánló</span>
             <h1 class="vcp-video__title"><?php echo wp_kses_post( $icon ) . ' ' . esc_html( $term->name ); ?></h1>
             <?php if ( $term->description ): ?>
                 <p class="vcp-video__lead"><?php echo esc_html($term->description); ?></p>
