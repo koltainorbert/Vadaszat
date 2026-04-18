@@ -18,7 +18,7 @@ $phone       = get_post_meta( $post_id, 'va_phone',       true );
 $location    = get_post_meta( $post_id, 'va_location',    true );
 $license_req = get_post_meta( $post_id, 'va_license_req', true );
 $email_show  = get_post_meta( $post_id, 'va_email_show',  true );
-$views       = intval( get_post_meta( $post_id, 'va_views', true ) );
+$views       = va_display_views( $post_id );
 $expires     = get_post_meta( $post_id, 'va_expires',     true );
 $featured    = get_post_meta( $post_id, 'va_featured',    true ) === '1';
 $categories  = get_the_terms( $post_id, 'va_category' );

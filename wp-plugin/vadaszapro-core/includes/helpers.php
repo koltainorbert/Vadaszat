@@ -5,6 +5,12 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* ── Megtekintés szám (determinisztikus alap + valós) ─── */
+function va_display_views( int $post_id ): int {
+    $base = 30 + ( $post_id % 70 );
+    return intval( get_post_meta( $post_id, 'va_views', true ) ) + $base;
+}
+
 /* ── Template betöltő ─────────────────────────────────── */
 function va_template( string $name, array $data = [] ): void {
     $file = VA_PLUGIN_DIR . 'frontend/templates/' . $name . '.php';
