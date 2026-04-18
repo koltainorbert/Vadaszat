@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #21 (Lebegő vissza-a-tetjére gomb körkörös indikátorral)
+
+### Mit csináltunk [x]
+- [x] A felső header progress sáv teljesen eltávolítva
+- [x] Helyette lebegő gomb került az oldal aljára
+- [x] Körkörös piros indikátor fut körbe görgetés alapján
+- [x] Középen animált piros felfelé mutató nyíl került be
+- [x] Kattintásra sima visszagörgetés az oldal tetejére
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #20 (Header felső/alsó tér növelése logóhoz)
 
 ### Mit csináltunk [x]
