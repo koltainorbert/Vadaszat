@@ -1210,6 +1210,7 @@ textarea { min-height: 110px; resize: vertical; }
   padding: 80px 32px 42px;
   text-align: center;
   min-height: 360px;
+  border-radius: 20px;
 }
 .va-contact-page__video {
   position: absolute;
@@ -1220,12 +1221,13 @@ textarea { min-height: 110px; resize: vertical; }
   object-position: center center;
   z-index: 0;
   pointer-events: none;
+  border-radius: 20px;
 }
 .va-contact-page__video-overlay {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: linear-gradient(to bottom, rgba(6,6,6,.76) 0%, rgba(6,6,6,.48) 34%, rgba(6,6,6,.78) 100%);
+  background: transparent;
 }
 .va-contact-page__hero-glow {
   position: absolute;
