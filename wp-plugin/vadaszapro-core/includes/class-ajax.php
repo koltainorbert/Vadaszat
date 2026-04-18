@@ -240,13 +240,32 @@ class VA_Ajax {
     }
 
     private static function generate_invoice( int $post_id ): string {
-        $invoice_no = 'VA-' . date( 'Ymd' ) . '-' . str_pad( (string) $post_id, 6, '0', STR_PAD_LEFT );
+        $prefix_raw = (string) get_option( 'va_invoice_prefix', 'VA' );
+        $prefix = strtoupper( preg_replace( '/[^A-Z0-9\-]/', '', remove_accents( $prefix_raw ) ) );
+        if ( $prefix === '' ) {
+            $prefix = 'VA';
+        }
+
+        $next = max( 1, absint( get_option( 'va_invoice_next_number', 1 ) ) );
+        update_option( 'va_invoice_next_number', $next + 1 );
+
+        $invoice_no = $prefix . '-' . date( 'Y' ) . '-' . str_pad( (string) $next, 6, '0', STR_PAD_LEFT );
         $amount = (int) get_post_meta( $post_id, 'va_payment_amount', true );
         $post = get_post( $post_id );
+
+        $billing_company = (string) get_option( 'va_billing_company_name', 'Vadaszapro Kft.' );
+        $billing_address = (string) get_option( 'va_billing_company_address', 'Magyarorszag' );
+        $billing_tax     = (string) get_option( 'va_billing_tax_number', '' );
+        $billing_email   = (string) get_option( 'va_billing_email', (string) get_option( 'admin_email', '' ) );
+        $billing_phone   = (string) get_option( 'va_billing_phone', '' );
+        $footer_note     = (string) get_option( 'va_invoice_footer_note', 'Koszonjuk a vasarlast!' );
 
         update_post_meta( $post_id, 'va_invoice_no', $invoice_no );
         update_post_meta( $post_id, 'va_invoice_amount', $amount );
         update_post_meta( $post_id, 'va_invoice_generated_at', current_time( 'mysql' ) );
+        update_post_meta( $post_id, 'va_invoice_company_name', $billing_company );
+        update_post_meta( $post_id, 'va_invoice_company_address', $billing_address );
+        update_post_meta( $post_id, 'va_invoice_tax_number', $billing_tax );
 
         $upload = wp_upload_dir();
         if ( empty( $upload['error'] ) ) {
@@ -263,10 +282,16 @@ class VA_Ajax {
                 'Vadaszapro - Szamla',
                 'Szamlaszam: ' . $invoice_no,
                 'Datum: ' . current_time( 'Y-m-d H:i:s' ),
+                'Kiallito: ' . $billing_company,
+                'Cim: ' . $billing_address,
+                'Adoszam: ' . $billing_tax,
+                'Email: ' . $billing_email,
+                'Telefon: ' . $billing_phone,
                 'Hirdetes ID: ' . $post_id,
                 'Hirdetes cim: ' . ( $post ? $post->post_title : '' ),
                 'Tetel: Hirdetes feladas dij',
                 'Osszeg: ' . number_format( $amount, 0, ',', ' ' ) . ' Ft',
+                'Megjegyzes: ' . $footer_note,
             ];
 
             $pdf = self::build_simple_invoice_pdf( $lines );

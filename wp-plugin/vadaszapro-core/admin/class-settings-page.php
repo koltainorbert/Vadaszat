@@ -505,6 +505,51 @@ class VA_Settings_Page {
             update_option( 'va_listing_payment_url', '' );
         }
 
+        $listing_payment = [
+            'va_payment_provider'        => 'none',
+            'va_payment_mode'            => 'test',
+            'va_payment_public_key'      => '',
+            'va_payment_secret_key'      => '',
+            'va_payment_webhook_secret'  => '',
+            'va_payment_success_url'     => '',
+            'va_payment_cancel_url'      => '',
+        ];
+        foreach ( $listing_payment as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            $sanitize = in_array( $key, [ 'va_payment_success_url', 'va_payment_cancel_url' ], true )
+                ? 'esc_url_raw'
+                : 'sanitize_text_field';
+            register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => $sanitize ] );
+            if ( get_option( $key ) === false ) {
+                update_option( $key, $default );
+            }
+        }
+
+        $billing = [
+            'va_billing_company_name'    => 'Vadaszapro Kft.',
+            'va_billing_company_address' => 'Magyarorszag',
+            'va_billing_tax_number'      => '',
+            'va_billing_email'           => (string) get_option( 'admin_email', '' ),
+            'va_billing_phone'           => '',
+            'va_invoice_prefix'          => 'VA',
+            'va_invoice_next_number'     => 1,
+            'va_invoice_footer_note'     => 'Koszonjuk a vasarlast!',
+        ];
+        foreach ( $billing as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            if ( $key === 'va_billing_email' ) {
+                register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => 'sanitize_email' ] );
+            } elseif ( $key === 'va_invoice_next_number' ) {
+                register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => 'absint' ] );
+            } else {
+                register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            }
+
+            if ( get_option( $key ) === false ) {
+                update_option( $key, $default );
+            }
+        }
+
         /* Aukciók */
         $auction_opts = [
             'va_default_min_bid_step' => 500,
@@ -1057,18 +1102,74 @@ class VA_Settings_Page {
     /* ══ Hirdetés beállítások ═════════════════════════════ */
     public static function render_listings() {
         if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
+        $submit_url = $submit_page ? get_permalink( $submit_page ) : home_url( '/va-hirdetes-feladas/' );
+        $callback_example = add_query_arg(
+            [
+                'va_payment' => 'success',
+                'token'      => '{TOKEN}',
+            ],
+            $submit_url
+        );
+
+        $cancel_example = add_query_arg(
+            [
+                'va_payment' => 'cancel',
+                'token'      => '{TOKEN}',
+            ],
+            $submit_url
+        );
         ?>
         <div class="wrap va-admin-wrap">
             <h1>📋 VadászApró – Hirdetés beállítások</h1>
             <?php settings_errors( 'va_listing_settings' ); ?>
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_listing_settings' ); ?>
+                <h2>Alap díjazás</h2>
                 <table class="form-table">
                     <?php self::field_num( 'va_featured_price', 'Kiemelt hirdetés ára (Ft)', 0, 99999 ); ?>
                     <?php self::field_num( 'va_featured_days',  'Kiemelt hirdetés időtartama (nap)', 1, 365 ); ?>
                     <?php self::field_num( 'va_free_listings_limit', 'Ingyenes hirdetések száma felhasználónként (0=korlátlan)', 0, 999 ); ?>
                     <?php self::field_num( 'va_listing_price_after_free', 'További hirdetés ára (Ft)', 0, 999999 ); ?>
                     <?php self::field_url( 'va_listing_payment_url', 'Bankkártyás fizetési URL (Stripe/Barion/OTP Simple checkout link)' ); ?>
+                </table>
+
+                <h2>Fizetési beállítások (szolgáltatóhoz)</h2>
+                <table class="form-table">
+                    <?php self::field_select( 'va_payment_provider', 'Fizetési szolgáltató', [
+                        'none'      => 'Nincs még szolgáltató',
+                        'barion'    => 'Barion',
+                        'stripe'    => 'Stripe',
+                        'simplepay' => 'OTP SimplePay',
+                        'custom'    => 'Egyedi szolgáltató',
+                    ] ); ?>
+                    <?php self::field_select( 'va_payment_mode', 'Fizetési mód', [ 'test' => 'Teszt', 'live' => 'Éles' ] ); ?>
+                    <?php self::field_text( 'va_payment_public_key', 'Publikus kulcs / Merchant ID' ); ?>
+                    <?php self::field_text( 'va_payment_secret_key', 'Titkos kulcs (API Secret)' ); ?>
+                    <?php self::field_text( 'va_payment_webhook_secret', 'Webhook aláírás kulcs' ); ?>
+                    <?php self::field_url( 'va_payment_success_url', 'Sikeres fizetés URL (opcionális, üresen automatikus)' ); ?>
+                    <?php self::field_url( 'va_payment_cancel_url', 'Megszakított fizetés URL (opcionális, üresen automatikus)' ); ?>
+                    <tr>
+                        <th>Automatikus callback minta</th>
+                        <td><input type="text" readonly class="regular-text code" value="<?php echo esc_attr( $callback_example ); ?>"></td>
+                    </tr>
+                    <tr>
+                        <th>Automatikus cancel minta</th>
+                        <td><input type="text" readonly class="regular-text code" value="<?php echo esc_attr( $cancel_example ); ?>"></td>
+                    </tr>
+                </table>
+
+                <h2>Számlázási beállítások</h2>
+                <table class="form-table">
+                    <?php self::field_text( 'va_billing_company_name', 'Számlakiállító neve' ); ?>
+                    <?php self::field_text( 'va_billing_company_address', 'Számlakiállító címe' ); ?>
+                    <?php self::field_text( 'va_billing_tax_number', 'Adószám' ); ?>
+                    <?php self::field_email( 'va_billing_email', 'Számlázási e-mail' ); ?>
+                    <?php self::field_text( 'va_billing_phone', 'Számlázási telefonszám' ); ?>
+                    <?php self::field_text( 'va_invoice_prefix', 'Számlaszám előtag (pl. VA)' ); ?>
+                    <?php self::field_num( 'va_invoice_next_number', 'Következő számlasorszám', 1, 99999999 ); ?>
+                    <?php self::field_text( 'va_invoice_footer_note', 'Számla lábléc megjegyzés' ); ?>
                 </table>
                 <?php submit_button( 'Mentés' ); ?>
             </form>
