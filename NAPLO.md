@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #62 (Kartya meta 2 soros elrendezes)
+
+### Mit csinaltunk [x]
+- [x] A kartya meta blokk 3 sorrol 2 sorra atalakitva
+- [x] 1. sor: kategoria + megye + telepules
+- [x] 2. sor: megtekintes + felado + datum
+- [x] Cel: tomorebb, egysegesebb sorstruktura
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #61 (Meta elemek egymas melle igazitas)
 
 ### Mit csinaltunk [x]

@@ -159,7 +159,6 @@
 .va-card__meta-author { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 2; }
 .va-card__meta-date { flex-shrink: 0; white-space: nowrap; margin-left: auto; }
 .va-card__meta--top,
-.va-card__meta--middle,
 .va-card__meta--bottom {
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -168,11 +167,9 @@
 }
 .va-card__meta + .va-card__meta { margin-top: 3px; }
 .va-card__meta--top .va-card__meta-item,
-.va-card__meta--middle .va-card__meta-item,
 .va-card__meta--bottom .va-card__meta-item {
   min-width: 0;
 }
-.va-card__meta--middle .va-card__meta-item:first-child,
 .va-card__meta--bottom .va-card__meta-item:first-child {
   overflow: hidden;
   text-overflow: ellipsis;
