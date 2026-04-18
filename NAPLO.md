@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #43 (Hold peremfeny + ideiglenes fazis szimulacio)
+
+### Mit csinaltunk [x]
+- [x] A megvilagitott holdperem visszakapta a jobban lathato fenyes szegelyt
+- [x] Ideiglenes szimulacio vezerlok bekerultek: Valos / Telik / Fogy + kezicsuszka
+- [x] A szimulacios mod sajat allapotszoveget kap, hogy egyertelmu legyen a demo nezet
+- [x] Hibavizsgalat: modosított JS/PHP fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #42 (Hold szazalek sav lathatosag javitas)
 
 ### Mit csinaltunk [x]

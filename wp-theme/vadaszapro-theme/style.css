@@ -1888,6 +1888,49 @@ textarea { min-height: 110px; resize: vertical; }
   box-shadow: 0 0 12px rgba(240,240,220,.28);
   transition: width .45s ease;
 }
+.va-moon__sim {
+  width: min(188px, 92%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.va-moon__sim-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.va-moon__sim-btn {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.82);
+  border-radius: 999px;
+  padding: 6px 8px;
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.va-moon__sim-btn.is-active {
+  background: rgba(255,255,255,.12);
+  border-color: rgba(255,255,255,.26);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(255,255,255,.08);
+}
+.va-moon__sim-range {
+  width: 100%;
+  accent-color: #d7d8cb;
+}
+.va-moon__sim-note {
+  font-size: .61rem;
+  line-height: 1.45;
+  color: rgba(220,225,210,.72);
+  text-align: center;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
 .va-moon__info {
   width: 100%; display: flex; flex-direction: column; gap: 5px;
   padding-top: 4px;
