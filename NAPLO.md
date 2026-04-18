@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #78 (Regisztracio rovidebb/szelesebb layout)
+
+### Mit csinaltunk [x]
+- [x] Regisztracios oldal szelesitese kulon wrapperrel (`va-auth-wrap--register`)
+- [x] Desktopon 2 oszlopos regisztracios grid bevezetve, hogy kevesebb gorgetes kelljen
+- [x] Checkbox + submit teljes szelessegben maradt (egyertelmu UX)
+- [x] Mobil fallback: 1 oszlop 860px alatt
+- [x] Inline seged szoveg stilus kiszervezve CSS osztalyba (`va-register-help`)
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #77 (Kedvenceim menu sziv piros)
 
 ### Mit csinaltunk [x]

@@ -425,6 +425,36 @@
 .va-auth-links { margin-top: 18px; font-size: 13px; color: var(--va-muted); text-align: center; }
 .va-auth-links a { color: var(--va-accent); }
 
+/* Regisztracio: szelesebb, rovidebb (kevesebb gorgetes) */
+.va-auth-wrap--register {
+  max-width: 920px;
+}
+.va-register-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+.va-register-field {
+  margin-bottom: 0;
+}
+.va-register-field--full {
+  grid-column: 1 / -1;
+}
+.va-register-help {
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+}
+@media (max-width: 860px) {
+  .va-auth-wrap--register {
+    max-width: 560px;
+  }
+  .va-register-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
+
 /* ── Dashboard ─────────────────────────────────── */
 .va-dashboard { display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
 @media (max-width: 768px) { .va-dashboard { grid-template-columns: 1fr; } }
