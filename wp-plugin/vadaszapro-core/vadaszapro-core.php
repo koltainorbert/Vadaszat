@@ -12,7 +12,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 define( 'VA_VERSION',        '1.0.0' );
-define( 'VA_REWRITE_VER',   '1.0.2' );   // Növeld meg ha CPT/tax slug változik!
+define( 'VA_REWRITE_VER',   '1.0.3' );   // Növeld meg ha CPT/tax slug változik!
 define( 'VA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'VA_TEXT_DOMAIN', 'vadaszapro' );
@@ -63,6 +63,25 @@ add_action( 'init', function () {
         update_option( 'va_rewrite_ver', VA_REWRITE_VER );
     }
 }, 999 );
+
+/* ── Vadász Naptár – virtuális oldal (WP admin nélkül) ──────────────
+ * A /vadasz-naptar/ URL betölti a theme page-vadasz-naptar.php-t
+ * automatikusan, adatbázis bejegyzés nélkül.
+──────────────────────────────────────────────────────────────────── */
+add_action( 'init', function () {
+    add_rewrite_rule( '^vadasz-naptar/?$', 'index.php?va_virtual_page=vadasz-naptar', 'top' );
+} );
+add_filter( 'query_vars', function ( $vars ) {
+    $vars[] = 'va_virtual_page';
+    return $vars;
+} );
+add_filter( 'template_include', function ( $template ) {
+    if ( get_query_var( 'va_virtual_page' ) !== 'vadasz-naptar' ) {
+        return $template;
+    }
+    $t = locate_template( 'page-vadasz-naptar.php' );
+    return $t ?: $template;
+} );
 
 /* ── Activation / Deactivation ───────────────────── */
 register_activation_hook( __FILE__,   'va_activate'   );
