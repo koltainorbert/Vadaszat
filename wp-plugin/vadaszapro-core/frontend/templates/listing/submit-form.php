@@ -255,14 +255,125 @@ wp_localize_script( 'va-submit', 'VA_Data', [
     </form>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
 <script>
 (function($){
+    /* ══ Képkezelő ═══════════════════════════════════════ */
+    let _files = [];   // { file: File, id: string }[]
+    let _maxImg = 10;
+    let _featured = 0; // index a _files tömbben
+
+    const $picker  = $('#va-img-picker');
+    const $drop    = $('#va-img-drop');
+    const $grid    = $('#va-img-grid');
+    const $input   = $('#va-img-file-input');
+    const $featIdx = $('#va-featured-index');
+
+    _maxImg = parseInt( $input.data('max') || 10 );
+
+    /* ── Fájl hozzáadása ─────────────────────────────── */
+    function addFiles(newFiles) {
+        for (let f of newFiles) {
+            if (_files.length >= _maxImg) break;
+            if (!['image/jpeg','image/png','image/webp'].includes(f.type)) continue;
+            if (f.size > 5 * 1024 * 1024) { alert(f.name + ' – túl nagy (max 5 MB)!'); continue; }
+            _files.push({ file: f, id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2) });
+        }
+        renderGrid();
+    }
+
+    /* ── Grid renderelése ────────────────────────────── */
+    function renderGrid() {
+        $grid.empty();
+        if (_files.length === 0) { $grid.hide(); return; }
+        $grid.show();
+
+        // Biztosítjuk hogy _featured valid
+        if (_featured >= _files.length) _featured = 0;
+        $featIdx.val(_featured);
+
+        _files.forEach((item, idx) => {
+            const url = URL.createObjectURL(item.file);
+            const isFeat = idx === _featured;
+            const $card = $(`
+                <div class="va-img-card${isFeat ? ' va-img-card--featured' : ''}" data-id="${item.id}">
+                    <img src="${url}" class="va-img-card__thumb" draggable="false" alt="">
+                    <div class="va-img-card__overlay">
+                        <button type="button" class="va-img-feat-btn" title="Főkép beállítása">
+                            ${isFeat ? '⭐' : '☆'}
+                        </button>
+                        <span class="va-img-card__num">${idx + 1}</span>
+                        <button type="button" class="va-img-del-btn" title="Törlés">✕</button>
+                    </div>
+                    ${isFeat ? '<div class="va-img-card__label">Főkép</div>' : ''}
+                </div>
+            `);
+
+            // Törlés
+            $card.find('.va-img-del-btn').on('click', function(){
+                _files.splice(idx, 1);
+                if (_featured >= _files.length) _featured = 0;
+                renderGrid();
+            });
+
+            // Főkép
+            $card.find('.va-img-feat-btn').on('click', function(){
+                _featured = idx;
+                renderGrid();
+            });
+
+            $grid.append($card);
+        });
+
+        // Sortable (SortableJS CDN-ből, fallback natív)
+        const listEl = $grid[0];
+        if (typeof Sortable !== 'undefined') {
+            if (!listEl._sortable) {
+                listEl._sortable = Sortable.create(listEl, {
+                    animation: 150,
+                    onEnd: function(evt) {
+                        const moved = _files.splice(evt.oldIndex, 1)[0];
+                        _files.splice(evt.newIndex, 0, moved);
+                        // featured index követése
+                        if (_featured === evt.oldIndex) {
+                            _featured = evt.newIndex;
+                        } else if (_featured > evt.oldIndex && _featured <= evt.newIndex) {
+                            _featured--;
+                        } else if (_featured < evt.oldIndex && _featured >= evt.newIndex) {
+                            _featured++;
+                        }
+                        renderGrid();
+                    }
+                });
+            }
+        }
+    }
+
+    /* ── Drag & drop a drop zone-ra ──────────────────── */
+    $drop.on('dragover', function(e){ e.preventDefault(); $(this).addClass('va-img-drop--hover'); });
+    $drop.on('dragleave', function(){ $(this).removeClass('va-img-drop--hover'); });
+    $drop.on('drop', function(e){
+        e.preventDefault();
+        $(this).removeClass('va-img-drop--hover');
+        addFiles(e.originalEvent.dataTransfer.files);
+    });
+
+    /* ── Fájl input ──────────────────────────────────── */
+    $input.on('change', function(){ addFiles(this.files); this.value = ''; });
+
+    /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
         e.preventDefault();
         var $btn = $('#va-submit-btn');
         $btn.prop('disabled', true).text('Feltöltés...');
 
         var formData = new FormData(this);
+
+        // Képek hozzáadása a correct sorrendben
+        _files.forEach(function(item){
+            formData.append('listing_images[]', item.file, item.file.name);
+        });
+        formData.set('featured_image_index', _featured);
 
         $.ajax({
             url:         VA_Data.ajax_url,

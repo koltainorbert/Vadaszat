@@ -125,7 +125,8 @@ class VA_Ajax {
 
         // Képfeltöltés kezelése
         if ( ! empty( $_FILES['listing_images'] ) ) {
-            self::handle_images( $post_id, $_FILES['listing_images'] );
+            $featured_idx = isset( $_POST['featured_image_index'] ) ? absint( (string) $_POST['featured_image_index'] ) : 0;
+            self::handle_images( $post_id, $_FILES['listing_images'], $featured_idx );
         }
 
         if ( ! $is_free_allowed ) {
@@ -367,15 +368,15 @@ class VA_Ajax {
     }
 
     /* ── Képfeltöltés ──────────────────────────────────── */
-    private static function handle_images( $post_id, $files ) {
+    private static function handle_images( $post_id, $files, int $featured_idx = 0 ) {
         require_once ABSPATH . 'wp-admin/includes/image.php';
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
-        $max_images   = intval( get_option( 'va_max_images_per_listing', 10 ) );
+        $max_images    = intval( get_option( 'va_max_images_per_listing', 10 ) );
         $allowed_types = [ 'image/jpeg', 'image/png', 'image/webp' ];
-        $first         = true;
         $count         = 0;
+        $attachment_ids = [];
 
         // Normalizálás (több fájl esetén)
         $file_count = is_array( $files['name'] ) ? count( $files['name'] ) : 1;
@@ -400,12 +401,17 @@ class VA_Ajax {
             $attachment_id = media_handle_upload( 'va_upload', $post_id );
 
             if ( ! is_wp_error( $attachment_id ) ) {
-                if ( $first ) {
-                    set_post_thumbnail( $post_id, $attachment_id );
-                    $first = false;
-                }
+                $attachment_ids[] = $attachment_id;
                 $count++;
             }
+        }
+
+        // Főkép beállítása a kiválasztott index alapján (vagy az első ha invalid)
+        if ( ! empty( $attachment_ids ) ) {
+            $feat = isset( $attachment_ids[ $featured_idx ] ) ? $attachment_ids[ $featured_idx ] : $attachment_ids[0];
+            set_post_thumbnail( $post_id, $feat );
+            // Galéria sorrend mentése post meta-ba
+            update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $attachment_ids ) );
         }
     }
 
