@@ -12,9 +12,13 @@ class VA_Taxonomy {
     }
 
     public static function register_all() {
+        $object_types = [ 'va_listing' ];
+        if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+            $object_types[] = 'va_auction';
+        }
 
         /* Kategória */
-        register_taxonomy( 'va_category', [ 'va_listing', 'va_auction' ], [
+        register_taxonomy( 'va_category', $object_types, [
             'labels'        => [
                 'name'          => 'Kategóriák',
                 'singular_name' => 'Kategória',
@@ -27,7 +31,7 @@ class VA_Taxonomy {
         ]);
 
         /* Megye */
-        register_taxonomy( 'va_county', [ 'va_listing', 'va_auction' ], [
+        register_taxonomy( 'va_county', $object_types, [
             'labels'        => [
                 'name'          => 'Megyék',
                 'singular_name' => 'Megye',
@@ -40,7 +44,7 @@ class VA_Taxonomy {
         ]);
 
         /* Állapot */
-        register_taxonomy( 'va_condition', [ 'va_listing', 'va_auction' ], [
+        register_taxonomy( 'va_condition', $object_types, [
             'labels'        => [
                 'name'          => 'Állapot',
                 'singular_name' => 'Állapot',

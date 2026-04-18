@@ -20,6 +20,7 @@ class VA_Settings_Page {
             'va_site_name'           => 'VadászApró',
             'va_site_description'    => 'Magyarország vadászati apróhirdetési oldala',
             'va_contact_email'       => get_option('admin_email'),
+            'va_enable_auctions'     => '1',
             'va_listings_per_page'   => 20,
             'va_auto_publish_listings' => '0',  // 0=jóváhagyás szükséges, 1=azonnal él
             'va_listing_validity_days' => 60,   // hirdetés lejárata (nap) feladáskor
@@ -101,6 +102,7 @@ class VA_Settings_Page {
                     <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
                     <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
                     <?php self::field_url(   'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
+                    <?php self::field_toggle('va_enable_auctions',       'Aukció funkció engedélyezése' ); ?>
                     <?php self::field_num(   'va_listings_per_page',    'Hirdetés / oldal', 5, 100 ); ?>
                     <?php self::field_num(   'va_listing_validity_days','Hirdetés érvényessége (nap)', 1, 365 ); ?>
                     <?php self::field_num(   'va_max_images_per_listing','Max. képek száma hirdetésenként', 1, 20 ); ?>
@@ -323,6 +325,6 @@ class VA_Settings_Page {
 
     private static function field_toggle( string $key, string $label ): void {
         $val = get_option( $key, '0' );
-        echo "<tr><th>{$label}</th><td><label class=\"va-toggle\"><input type=\"checkbox\" name=\"{$key}\" value=\"1\"" . checked( $val, '1', false ) . "><span class=\"va-toggle-slider\"></span></label></td></tr>";
+        echo "<tr><th>{$label}</th><td><input type=\"hidden\" name=\"{$key}\" value=\"0\"><label class=\"va-toggle\"><input type=\"checkbox\" name=\"{$key}\" value=\"1\"" . checked( $val, '1', false ) . "><span class=\"va-toggle-slider\"></span></label></td></tr>";
     }
 }

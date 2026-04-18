@@ -13,6 +13,8 @@ class VA_Admin {
     }
 
     public static function register_menus() {
+        $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
+
         add_menu_page(
             'VadászApró',
             'VadászApró',
@@ -26,14 +28,21 @@ class VA_Admin {
         add_submenu_page( 'vadaszapro', 'Általános beállítások', 'Általános',     'manage_options', 'vadaszapro',             [ VA_Settings_Page::class, 'render_general'  ] );
         add_submenu_page( 'vadaszapro', 'Reklámzónák',           'Reklámzónák',   'manage_options', 'vadaszapro-reklam',      [ VA_Settings_Page::class, 'render_ad_zones'  ] );
         add_submenu_page( 'vadaszapro', 'Hirdetés beállítások',  'Hirdetések',    'manage_options', 'vadaszapro-hirdetes',    [ VA_Settings_Page::class, 'render_listings'  ] );
-        add_submenu_page( 'vadaszapro', 'Aukció beállítások',    'Aukciók',       'manage_options', 'vadaszapro-aukcio',      [ VA_Settings_Page::class, 'render_auctions'  ] );
+        if ( $auctions_enabled ) {
+            add_submenu_page( 'vadaszapro', 'Aukció beállítások', 'Aukciók',      'manage_options', 'vadaszapro-aukcio',      [ VA_Settings_Page::class, 'render_auctions'  ] );
+        }
         add_submenu_page( 'vadaszapro', 'Felhasználók',          'Felhasználók',  'manage_options', 'vadaszapro-users',       [ VA_Settings_Page::class, 'render_users'     ] );
         add_submenu_page( 'vadaszapro', 'Statisztika',           'Statisztika',   'manage_options', 'vadaszapro-stats',       [ VA_Settings_Page::class, 'render_stats'     ] );
     }
 
     public static function enqueue( $hook ) {
+        $post_types = [ 'va_listing' ];
+        if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+            $post_types[] = 'va_auction';
+        }
+
         // Csak a plugin admin oldalain töltjük be
-        if ( strpos( $hook, 'vadaszapro' ) === false && ! in_array( get_post_type(), [ 'va_listing', 'va_auction' ], true ) ) {
+        if ( strpos( $hook, 'vadaszapro' ) === false && ! in_array( get_post_type(), $post_types, true ) ) {
             return;
         }
 
