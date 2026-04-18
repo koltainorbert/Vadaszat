@@ -1120,8 +1120,8 @@ textarea { min-height: 110px; resize: vertical; }
 .va-header__search-input:active {
   outline: none !important;
   border: 0 !important;
-  box-shadow: none !important;
   -webkit-box-shadow: none !important;
+  box-shadow: none !important;
   background-image: none !important;
 }
 .va-header__search {

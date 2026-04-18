@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #27 (Kereső belső keret törlés + hover-only külső neon)
+
+### Mit csináltunk [x]
+- [x] A kereső belső input-kontúr/fókuszkeret teljesen nullázva lett
+- [x] A külső pontozott piros keret megszüntetve alapállapotban
+- [x] Helyette csak hover/focus alatt jelenik meg finom külső neon piros kiemelés
+- [x] A fix rásegítő override bekerült mindhárom theme `style.css` példányba
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #26 (Kereső végső override + duplikált theme szinkron)
 
 ### Mit csináltunk [x]

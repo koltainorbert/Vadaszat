@@ -136,8 +136,8 @@ hr { border-color: var(--border); }
   -moz-appearance: none;
   appearance: none;
   border-radius: 0 !important;
-  box-shadow: none !important;
   -webkit-box-shadow: none !important;
+  box-shadow: none !important;
   background-image: none !important;
 }
 .va-header__search-input:focus,
@@ -147,8 +147,8 @@ hr { border-color: var(--border); }
   background: transparent !important;
   border: 0 !important;
   outline: 0 !important;
-  box-shadow: none !important;
   -webkit-box-shadow: none !important;
+  box-shadow: none !important;
   border-radius: 0 !important;
   background-image: none !important;
 }
