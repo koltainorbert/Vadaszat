@@ -135,7 +135,7 @@
 
     <!-- ═══ VIDEO HERO (csak főoldalon) ════════════════════ -->
     <?php if ( is_front_page() ):
-        $hero_video = get_option('va_hero_video_url') ?: content_url('uploads/2026/04/0_Offroad_4x4_1920x1080.mp4');
+        $hero_video = content_url('uploads/2026/04/0_Offroad_4x4_1920x1080.mp4');
         $submit_page = get_page_by_path('va-hirdetes-feladas');
         $search_page = get_page_by_path('va-hirdetes-kereses');
     ?>

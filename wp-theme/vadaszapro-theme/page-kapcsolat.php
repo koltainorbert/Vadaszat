@@ -5,10 +5,15 @@
 get_header();
 
 $status = sanitize_text_field( wp_unslash( $_GET['contact_status'] ?? '' ) );
+$contact_video = content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' );
 ?>
 
 <section class="va-contact-page">
     <div class="va-contact-page__hero">
+        <video class="va-contact-page__video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="<?php echo esc_url( $contact_video ); ?>" type="video/mp4">
+        </video>
+        <div class="va-contact-page__video-overlay"></div>
         <div class="va-contact-page__hero-glow va-contact-page__hero-glow--1"></div>
         <div class="va-contact-page__hero-glow va-contact-page__hero-glow--2"></div>
 
