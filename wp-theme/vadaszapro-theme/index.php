@@ -484,7 +484,10 @@ get_header(); ?>
 <div class="va-hnaptar__hd">
   <span class="va-hnaptar__title">&#127993; Vad&aacute;szati id&eacute;nyek 2026</span>
   <span class="va-hnaptar__clock" id="va-hn-clock">&ndash;</span>
-  <span class="va-hnaptar__sub">Csoportra kattintva &ouml;sszecsukhat&oacute; &middot; <span style="color:#ff0000;font-weight:700;">|</span> = ma</span>
+  <span class="va-hnaptar__sub">
+    <span class="va-hnaptar__sun" id="va-hn-sun">&ndash;</span>
+    <span>Csoportra kattintva &ouml;sszecsukhat&oacute; &middot; <span style="color:#ff0000;font-weight:700;">|</span> = ma</span>
+  </span>
 </div>
 <div class="va-hnaptar__legend" id="va-hn-legend"></div>
 <div class="va-hnaptar__scroll">
@@ -497,7 +500,13 @@ get_header(); ?>
 .va-hnaptar__hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:12px 20px 10px;border-bottom:1px solid rgba(255,0,0,.12);}
 .va-hnaptar__title{font-size:.88rem;font-weight:800;letter-spacing:.06em;color:#fff;}
 .va-hnaptar__clock{font-size:.72rem;font-weight:700;color:rgba(255,180,0,.85);letter-spacing:.06em;font-variant-numeric:tabular-nums;white-space:nowrap;}
-.va-hnaptar__sub{font-size:.68rem;color:rgba(255,255,255,.35);}
+.va-hnaptar__sub{font-size:.68rem;color:rgba(255,255,255,.35);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.va-hnaptar__sun{display:inline-flex;align-items:center;gap:8px;font-size:.66rem;color:rgba(255,255,255,.72);font-variant-numeric:tabular-nums;}
+.va-hnaptar__sun-item{display:inline-flex;align-items:center;gap:4px;}
+.va-hnaptar__sun-ico{width:14px;height:14px;display:inline-block;vertical-align:middle;}
+.va-hnaptar__sun-ico--rise{color:#ffb347;}
+.va-hnaptar__sun-ico--set{color:#ff6a3d;}
+@media (max-width: 760px){.va-hnaptar__sun{order:2;width:100%;}}
 .va-hnaptar__legend{display:flex;flex-wrap:wrap;gap:5px 14px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
 .va-hn-leg{display:flex;align-items:center;gap:5px;font-size:.65rem;color:rgba(255,255,255,.6);}
 .va-hn-leg-dot{width:13px;height:8px;border-radius:2px;flex-shrink:0;}
@@ -559,6 +568,54 @@ var MF=["Janu\u00e1r","Febru\u00e1r","M\u00e1rcius","\u00c1prilis","M\u00e1jus",
 var TOTAL=365;
 function doy(m,d){var i=0;for(var x=1;x<m;x++)i+=MD[x-1];return i+d-1;}
 function nowBPsimple(){var d=new Date(),parts={};new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(d).forEach(function(p){if(p.type!=='literal')parts[p.type]=+p.value;});return parts;}
+function toJulian(date){return date.valueOf()/86400000-.5+2440588;}
+function fromJulian(j){return new Date((j+0.5-2440588)*86400000);}
+function toDays(date){return toJulian(date)-2451545;}
+function solarMeanAnomaly(d){return rad*(357.5291+0.98560028*d);}
+function eclipticLongitude(M){var C=rad*(1.9148*sin(M)+0.02*sin(2*M)+0.0003*sin(3*M)),P=rad*102.9372;return M+C+P+PI;}
+function julianCycle(d,lw){return Math.round(d-0.0009-lw/(2*PI));}
+function approxTransit(Ht,lw,n){return 0.0009+(Ht+lw)/(2*PI)+n;}
+function solarTransitJ(ds,M,L){return 2451545+ds+0.0053*sin(M)-0.0069*sin(2*L);}
+function hourAngle(h,phi,dec){return acos((sin(h)-sin(phi)*sin(dec))/(cos(phi)*cos(dec)));}
+function tzOffsetMinutes(date,tz){
+  var p={};
+  new Intl.DateTimeFormat('en-US',{timeZone:tz,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(date).forEach(function(x){if(x.type!=='literal')p[x.type]=+x.value;});
+  var asUtc=Date.UTC(p.year,p.month-1,p.day,p.hour,p.minute,p.second);
+  return (asUtc-date.getTime())/60000;
+}
+function getSunTimesBp(year,month,day){
+  var lat=47.4979,lng=19.0402,lw=rad*-lng,phi=rad*lat;
+  var localNoonUtcGuess=new Date(Date.UTC(year,month-1,day,12,0,0));
+  var off=tzOffsetMinutes(localNoonUtcGuess,'Europe/Budapest');
+  var localNoonUtc=new Date(localNoonUtcGuess.getTime()-off*60000);
+  var d=toDays(localNoonUtc),n=julianCycle(d,lw),ds=approxTransit(0,lw,n);
+  var M=solarMeanAnomaly(ds),L=eclipticLongitude(M),dec=dec(L,0);
+  var Jnoon=solarTransitJ(ds,M,L);
+  var h0=-0.833*rad,w=hourAngle(h0,phi,dec);
+  var Jset=solarTransitJ(approxTransit(w,lw,n),M,L);
+  var Jrise=Jnoon-(Jset-Jnoon);
+  return {rise:fromJulian(Jrise),set:fromJulian(Jset)};
+}
+function fmtBpHm(date){
+  return new Intl.DateTimeFormat('hu-HU',{timeZone:'Europe/Budapest',hour:'2-digit',minute:'2-digit',hour12:false}).format(date);
+}
+function sunriseIcon(){
+  return '<svg class="va-hnaptar__sun-ico va-hnaptar__sun-ico--rise" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17h16"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 4v5"/><path d="m9.5 7.5 2.5-2.5 2.5 2.5"/></svg>';
+}
+function sunsetIcon(){
+  return '<svg class="va-hnaptar__sun-ico va-hnaptar__sun-ico--set" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17h16"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 9v5"/><path d="m9.5 11.5 2.5 2.5 2.5-2.5"/></svg>';
+}
+var _sunKey='';
+function updateSunInfo(bp){
+  var sunEl=document.getElementById('va-hn-sun');
+  if(!sunEl)return;
+  var key=bp.year+'-'+bp.month+'-'+bp.day;
+  if(key===_sunKey)return;
+  _sunKey=key;
+  var st=getSunTimesBp(bp.year,bp.month,bp.day);
+  sunEl.innerHTML='<span class="va-hnaptar__sun-item">'+sunriseIcon()+'Napkelte '+fmtBpHm(st.rise)+'</span>'
+    +'<span class="va-hnaptar__sun-item">'+sunsetIcon()+'Napnyugta '+fmtBpHm(st.set)+'</span>';
+}
 var _bp=nowBPsimple();
 var TODAY={m:_bp.month,d:_bp.day};
 var TODAY_PCT=(doy(TODAY.m,TODAY.d)/TOTAL*100).toFixed(4)+'%';
@@ -744,6 +801,7 @@ if(_grpData.length>0&&grpDaysSinceOpen(groups[0])<9999){
 
 function updateCDs(){
   var bp=nowBPsimple();
+  updateSunInfo(bp);
   /* Élő óra a Gantt fejlécben */
   var clk=document.getElementById('va-hn-clock');
   if(clk){
