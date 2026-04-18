@@ -20,10 +20,21 @@
 /* ── Globális reset (a téma alá) ──────────────────── */
 .va-wrap, .va-wrap * { box-sizing: border-box; }
 .va-wrap {
-  color: var(--va-text);
+  /* változók újradefiniálva a scope-ban is, ha :root nem érvényesül */
+  --va-bg:        rgb(6,6,6);
+  --va-surface:   rgb(14,14,14);
+  --va-card:      rgb(20,20,20);
+  --va-border:    rgba(255,255,255,0.08);
+  --va-accent:    #ff0000;
+  --va-accent-dk: #cc0000;
+  --va-text:      #fff;
+  --va-muted:     rgba(255,255,255,0.55);
+  --va-radius:    6px;
+  --va-transition:0.22s ease;
+  color: #fff;
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: var(--va-bg);
-  border-radius: var(--va-radius);
+  background: #060606;
+  border-radius: 6px;
   padding: 2px 0;
 }
 
@@ -98,17 +109,17 @@
 
 /* ── Form elemek ──────────────────────────────────── */
 .va-form-group { margin-bottom: 18px; }
-.va-form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--va-muted); font-weight: 500; }
-.va-form-group label .required { color: var(--va-accent); margin-left: 2px; }
+.va-form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,.65); font-weight: 500; }
+.va-form-group label .required { color: #ff0000; margin-left: 2px; }
 .va-input, .va-select, .va-textarea {
-  width: 100%; padding: 10px 38px 10px 14px; border-radius: var(--va-radius);
-  background: var(--va-surface); border: 1px solid var(--va-border);
+  width: 100%; padding: 10px 38px 10px 14px; border-radius: var(--va-radius, 6px);
+  background: #0e0e0e; border: 1px solid rgba(255,255,255,.12);
   color: #fff; font-size: 14px;
-  transition: border-color var(--va-transition);
+  transition: border-color .22s ease;
 }
 .va-select option { background: #1a1a1a; color: #fff; }
 .va-input:focus, .va-select:focus, .va-textarea:focus {
-  outline: none; border-color: var(--va-accent);
+  outline: none; border-color: #ff0000;
 }
 .va-textarea { resize: vertical; min-height: 100px; }
 .va-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -120,7 +131,7 @@
 
 /* ── Kártya (hirdetés lista elem) ────────────────── */
 .va-card {
-  background: var(--va-card); border: 1px solid var(--va-border);
+  background: #141414; border: 1px solid rgba(255,255,255,.08);
   border-radius: var(--va-radius); overflow: hidden;
   transition: transform var(--va-transition);
   position: relative; display: flex; flex-direction: column;
@@ -331,14 +342,14 @@
 
 /* ── Felhasználó rács ─────────────────────────────── */
 .va-user-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
-.va-user-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 14px; background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); text-decoration: none; color: #fff; transition: border-color .2s, box-shadow .2s; }
+.va-user-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 14px; background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); text-decoration: none; color: #fff; transition: border-color .2s, box-shadow .2s; }
 .va-user-card:hover { border-color: #ff0000; box-shadow: 0 0 16px rgba(255,0,0,.25); }
 .va-user-card__avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,.15); }
 .va-user-card__name { font-size: 14px; font-weight: 600; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .va-user-card__meta { font-size: 12px; color: rgba(255,255,255,.45); }
 
 /* ── Szűrő sáv ────────────────────────────────────── */
-.va-filter-bar { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px; margin-bottom: 24px; }
+.va-filter-bar { background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); padding: 20px; margin-bottom: 24px; }
 .va-filter-bar__title { font-size: 13px; font-weight: 700; color: var(--va-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
 .va-filter-bar__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 .va-filter-bar__actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
@@ -396,7 +407,7 @@
 .va-listing-detail__thumb:hover, .va-listing-detail__thumb.active { border-color: var(--va-accent); }
 .va-listing-detail__title { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
 .va-listing-detail__price { font-size: 28px; font-weight: 900; color: var(--va-accent); margin-bottom: 18px; }
-.va-listing-detail__params { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 18px; margin-bottom: 20px; }
+.va-listing-detail__params { background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); padding: 18px; margin-bottom: 20px; }
 .va-listing-detail__params-title { font-size: 13px; font-weight: 700; color: var(--va-muted); text-transform: uppercase; margin-bottom: 12px; }
 .va-param-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .va-param-item { display: flex; flex-direction: column; }
@@ -405,7 +416,7 @@
 .va-listing-detail__desc { line-height: 1.7; color: rgba(255,255,255,0.85); }
 
 /* ── Aukció box ─────────────────────────────────── */
-.va-auction-box { background: var(--va-card); border: 2px solid var(--va-accent); border-radius: var(--va-radius); padding: 22px; margin-bottom: 24px; }
+.va-auction-box { background: #141414; border: 2px solid #ff0000; border-radius: var(--va-radius); padding: 22px; margin-bottom: 24px; }
 .va-auction-box__title { font-size: 13px; font-weight: 700; color: var(--va-muted); text-transform: uppercase; margin-bottom: 14px; }
 .va-auction-box__current { font-size: 32px; font-weight: 900; color: var(--va-accent); margin-bottom: 6px; }
 .va-auction-box__bid-count { font-size: 13px; color: var(--va-muted); margin-bottom: 16px; }
@@ -419,14 +430,14 @@
 .va-bid-row__user { color: var(--va-muted); }
 
 /* ── Kontakt box ────────────────────────────────── */
-.va-contact-box { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px; }
+.va-contact-box { background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); padding: 20px; }
 .va-contact-box__phone { font-size: 22px; font-weight: 800; color: var(--va-text); margin: 10px 0; }
 .va-contact-box__show-btn { background: none; border: 1px solid var(--va-border); color: var(--va-muted); padding: 8px 16px; border-radius: var(--va-radius); cursor: pointer; font-size: 13px; transition: var(--va-transition); }
 .va-contact-box__show-btn:hover { border-color: var(--va-accent); color: var(--va-text); }
 
 /* ── Felhasználói form-ok ────────────────────────── */
 .va-auth-wrap { max-width: 440px; margin: 0 auto; }
-.va-auth-box { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 32px; }
+.va-auth-box { background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); padding: 32px; }
 .va-auth-box__title { font-size: 22px; font-weight: 800; margin-bottom: 22px; }
 .va-auth-links { margin-top: 18px; font-size: 13px; color: var(--va-muted); text-align: center; }
 .va-auth-links a { color: var(--va-accent); }
