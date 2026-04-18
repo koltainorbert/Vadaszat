@@ -24,6 +24,14 @@
   - `frontend.js`: `document.documentElement.classList.add('va-js')`
 - [x] Deploy: `Deploy All` kész
 
+### Admin funkció bővítés
+- [x] Adminból duplikálható hirdetések (`va_listing`) támogatás
+- [x] Lista művelet: `Duplikálás` link a hirdetés sorában
+- [x] Biztonság: jogosultság + nonce ellenőrzés
+- [x] Duplikálás tartalma: cím/tartalom/kivonat + taxonómiák + post meta (lock mezők kihagyva)
+- [x] Új bejegyzés státusz: `draft` (`(Másolat)` utótaggal)
+- [x] Sikeres duplikálás után automatikus átirányítás az új piszkozat szerkesztőjére
+
 ---
 
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)
