@@ -568,7 +568,12 @@ var MN=["Jan","Feb","M\u00e1r","\u00c1pr","M\u00e1j","J\u00fan","J\u00fal","Aug"
 var MF=["Janu\u00e1r","Febru\u00e1r","M\u00e1rcius","\u00c1prilis","M\u00e1jus","J\u00fanius","J\u00falius","Augusztus","Szeptember","Okt\u00f3ber","November","December"];
 var TOTAL=365;
 var PI=Math.PI,sin=Math.sin,cos=Math.cos,asin=Math.asin,acos=Math.acos,rad=PI/180,e=rad*23.4397;
-var TROPHY_SPECIES='Gímbika, Dámbika, Őzbak, Muflon kos';
+var TROPHY_SPECIES=[
+  {name:'Gímszarvas – bika',label:'Gímbika'},
+  {name:'Dámszarvas – bak',label:'Dámbika'},
+  {name:'Őzbak',label:'Őzbak'},
+  {name:'Muflon – kos',label:'Muflon kos'}
+];
 function doy(m,d){var i=0;for(var x=1;x<m;x++)i+=MD[x-1];return i+d-1;}
 function nowBPsimple(){var d=new Date(),parts={};new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(d).forEach(function(p){if(p.type!=='literal')parts[p.type]=+p.value;});return parts;}
 function sunDeclination(L){return asin(sin(e)*sin(L));}
@@ -618,6 +623,21 @@ function sunsetIcon(){
 function shootIcon(){
   return '<svg class="va-hnaptar__sun-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg>';
 }
+function getOpenTrophySpecies(bp){
+  var open=[];
+  for(var gi=0;gi<groups.length;gi++){
+    for(var ai=0;ai<groups[gi].animals.length;ai++){
+      var animal=groups[gi].animals[ai];
+      for(var ti=0;ti<TROPHY_SPECIES.length;ti++){
+        var trophy=TROPHY_SPECIES[ti];
+        if(animal.name===trophy.name&&isInSeason(animal.seasons,bp.month,bp.day)){
+          open.push(trophy.label);
+        }
+      }
+    }
+  }
+  return open;
+}
 function isLeap(y){return(y%4===0&&y%100!==0)||y%400===0;}
 function daysInMonth(y,m){if(m===2)return isLeap(y)?29:28;return [31,0,31,30,31,30,31,31,30,31,30,31][m-1]||31;}
 function nextBpDay(y,m,d){d++;if(d>daysInMonth(y,m)){d=1;m++;if(m>12){m=1;y++;}}return{y:y,m:m,d:d};}
@@ -631,20 +651,21 @@ function updateSunInfo(bp){
   var st=getSunTimesBp(bp.year,bp.month,bp.day);
   sunEl.innerHTML='<span class="va-hnaptar__sun-item">'+sunriseIcon()+'Napkelte '+fmtBpHm(st.rise)+'</span>'
     +'<span class="va-hnaptar__sun-item">'+sunsetIcon()+'Napnyugta '+fmtBpHm(st.set)+'</span>'
-    +'<span class="va-hnaptar__sun-item va-hnaptar__sun-item--trophy">'+shootIcon()+'<span id="va-hn-shoot-cd">'+TROPHY_SPECIES+'</span></span>';
+    +'<span class="va-hnaptar__sun-item va-hnaptar__sun-item--trophy">'+shootIcon()+'<span id="va-hn-shoot-cd">&ndash;</span></span>';
 }
 function updateShootCountdown(bp){
   var el=document.getElementById('va-hn-shoot-cd');
   if(!el)return;
   var wrap=el.closest('.va-hnaptar__sun-item');
+  var openSpecies=getOpenTrophySpecies(bp);
 
   var now=new Date();
   var stToday=getSunTimesBp(bp.year,bp.month,bp.day);
   var cutoffToday=new Date(stToday.set.getTime()+3600000); // napnyugta + 1 óra
 
-  if(now<=cutoffToday){
+  if(now<=cutoffToday&&openSpecies.length>0){
     if(wrap)wrap.style.display='inline-flex';
-    el.textContent=TROPHY_SPECIES+' — a mai napon lőhető még '+fmtHp(cutoffToday-now);
+    el.textContent=openSpecies.join(', ')+' — a mai napon lőhető még '+fmtHp(cutoffToday-now);
     return;
   }
 
