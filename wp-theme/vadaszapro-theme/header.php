@@ -198,7 +198,7 @@
     <?php endif; ?>
 
     <!-- Kategória gyorsmenü (csak főoldalon + archívumban) -->
-    <?php if ( is_front_page() || is_post_type_archive(['va_listing','va_auction']) || is_tax(['va_category','va_county']) ): ?>
+    <?php if ( is_post_type_archive(['va_listing','va_auction']) || is_tax(['va_category','va_county']) ): ?>
     <div class="va-cat-bar">
         <div class="va-cat-bar__inner">
             <?php $top_cats = get_terms(['taxonomy' => 'va_category', 'parent' => 0, 'hide_empty' => false, 'number' => 10]);
