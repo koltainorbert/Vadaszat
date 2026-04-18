@@ -255,14 +255,6 @@ get_header(); ?>
       ctx.fillStyle=term;ctx.fillRect(cx-R,cy-R,R*2,R*2);
       ctx.globalCompositeOperation='source-over';
 
-      ctx.beginPath();ctx.arc(cx,cy,R-1.1,0,2*PI);
-      ctx.strokeStyle=tone.rim;
-      ctx.lineWidth=1.8;
-      ctx.shadowColor=tone.rimGlow;
-      ctx.shadowBlur=8;
-      ctx.stroke();
-      ctx.shadowBlur=0;
-
       ctx.restore();
     }
 

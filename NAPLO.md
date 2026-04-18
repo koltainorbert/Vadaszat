@@ -2,6 +2,15 @@
 
 ---
 
+## 2026. 04. 18. – Session #46 (Hold korbefuto gyuru teljes eltavolitasa)
+
+### Mit csinaltunk [x]
+- [x] A holdon maradt korbefuto belso peremfeny gyuru eltavolitva
+- [x] Igy a hold korul mar nem fut teljes koros fenyes stroke
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #45 (Valos telihold tonus + 50 eves holdnaptar nezet)
 
 ### Mit csinaltunk [x]
