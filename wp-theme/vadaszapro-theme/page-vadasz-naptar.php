@@ -115,8 +115,12 @@ get_header();
   font-size:.72rem;font-weight:700;color:#ff0000;letter-spacing:.1em;text-transform:uppercase;
   border-right:1px solid rgba(255,0,0,.18);display:flex;align-items:center;gap:7px;
 }
-.vn-arrow{font-size:.6rem;transition:transform .2s;display:inline-block}
+.vn-arrow{font-size:.95rem;font-weight:900;line-height:1;transition:transform .2s;display:inline-block}
 .vn-group-label.collapsed .vn-arrow{transform:rotate(-90deg)}
+.vn-gl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#ff3030;box-shadow:0 0 5px rgba(255,48,48,.4);}
+.vn-group-label.has-open{color:#00e060;}
+.vn-group-label.has-open .vn-gl-dot{background:#00e060;box-shadow:0 0 7px #00e060;animation:vn-blink .9s ease-in-out infinite;}
+.vn-gh-status{position:absolute;top:50%;right:14px;transform:translateY(-50%);font-size:.64rem;font-weight:700;letter-spacing:.03em;pointer-events:none;}
 .vn-group-bar-area{flex:1;position:relative;height:34px}
 
 .vn-animal-row{display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);transition:background .12s;min-height:38px;}
@@ -430,6 +434,7 @@ const groups=[
 
 // ── COUNTDOWNS ──────────────────────────────────────────────────────
 const _acdList=[];
+const _ghList=[];
 function updateAllCountdowns(){
   const bp=nowBP();
   for(const {el,seasons} of _acdList){
@@ -444,6 +449,13 @@ function updateAllCountdowns(){
       txt.textContent=fmtMs(ms);
       lbl.textContent=on?' \u203a tilalom':' \u203a ny\u00edt\u00e1s';
     }else{txt.textContent='\u2013';lbl.textContent='';}
+  }
+  for(const {gl,gst,animals} of _ghList){
+    const cnt=animals.filter(a=>isInSeason(a.seasons,bp.month,bp.day)).length;
+    const has=cnt>0;
+    if(has){gl.classList.add('has-open');}else{gl.classList.remove('has-open');}
+    gst.style.color=has?'#00e060':'rgba(255,48,48,.6)';
+    gst.textContent=has?cnt+' faj vad\u00e1szhat\u00f3':'tilalom';
   }
 }
 setInterval(updateAllCountdowns,1000);
@@ -611,26 +623,35 @@ const tl=document.createElement('div');tl.className='vn-today-line';tl.style.lef
 const tlbl=document.createElement('div');tlbl.className='vn-today-label';tlbl.textContent='ma';tlbl.style.left=TODAY_PCT;
 mhm.appendChild(tl);mhm.appendChild(tlbl);mh.appendChild(mhm);chart.appendChild(mh);
 
-// Legutoljara megnyilt csoport
-let _openGrpIdx2=-1,_minDaysSince2=9999;
-groups.forEach((g,gi)=>{
-  g.animals.forEach(a=>{
-    a.seasons.forEach(s=>{
+// Csoportok rendezése: legutolsóbb megnyílt idény elöl
+function grpDaysSinceOpen2(g){
+  let best=9999;
+  for(const a of g.animals){
+    for(const s of a.seasons){
       if(isInSeason([s],TODAY.m,TODAY.d)){
-        const diff=(doy(TODAY.m,TODAY.d)-doy(s[0],s[1])+TOTAL)%TOTAL;
-        if(diff<_minDaysSince2){_minDaysSince2=diff;_openGrpIdx2=gi;}
+        const d=(doy(TODAY.m,TODAY.d)-doy(s[0],s[1])+TOTAL)%TOTAL;
+        if(d<best)best=d;
       }
-    });
-  });
-});
+    }
+  }
+  return best;
+}
+groups.sort((a,b)=>grpDaysSinceOpen2(a)-grpDaysSinceOpen2(b));
+
 const _grpData2=[];
 for(const g of groups){
+  const openCnt=g.animals.filter(a=>isInSeason(a.seasons,TODAY.m,TODAY.d)).length;
+  const hasOpen=openCnt>0;
+
   const gh=document.createElement('div');gh.className='vn-group-header';
-  const gl=document.createElement('div');gl.className='vn-group-label collapsed';
-  gl.innerHTML=`<span class="vn-arrow">\u25be</span>${g.label}`;
+  const gl=document.createElement('div');gl.className='vn-group-label collapsed'+(hasOpen?' has-open':'');
+  gl.innerHTML=`<span class="vn-gl-dot"></span><span class="vn-arrow">\u25bc</span>${g.label}`;
   gh.appendChild(gl);
   const gba=document.createElement('div');gba.className='vn-group-bar-area';gba.appendChild(makeTodayLine());
-  gh.appendChild(gba);chart.appendChild(gh);
+  const gst=document.createElement('span');gst.className='vn-gh-status';
+  gst.style.color=hasOpen?'#00e060':'rgba(255,48,48,.6)';
+  gst.textContent=hasOpen?openCnt+' faj vad\u00e1szhat\u00f3':'tilalom';
+  gba.appendChild(gst);gh.appendChild(gba);chart.appendChild(gh);
 
   const gbody=document.createElement('div');gbody.className='vn-group-body hidden';
   for(const a of g.animals){
@@ -651,14 +672,16 @@ for(const g of groups){
   }
   chart.appendChild(gbody);
   _grpData2.push({gbody,gl});
+  _ghList.push({gl,gst,animals:g.animals});
   gh.addEventListener('click',()=>{
     const h=gbody.classList.toggle('hidden');
     gl.classList.toggle('collapsed',h);
   });
 }
-if(_openGrpIdx2>=0&&_grpData2[_openGrpIdx2]){
-  _grpData2[_openGrpIdx2].gbody.classList.remove('hidden');
-  _grpData2[_openGrpIdx2].gl.classList.remove('collapsed');
+/* Első csoport (legutolsóbb megnyílt) automatikusan kinyílik */
+if(_grpData2.length>0&&grpDaysSinceOpen2(groups[0])<9999){
+  _grpData2[0].gbody.classList.remove('hidden');
+  _grpData2[0].gl.classList.remove('collapsed');
 }
 updateAllCountdowns();
 

@@ -678,26 +678,40 @@ var tl0=document.createElement('div');tl0.className='va-hn-tl';tl0.style.left=TO
 var tlbl=document.createElement('div');tlbl.className='va-hn-tlbl';tlbl.textContent='ma';tlbl.style.left=TODAY_PCT;
 mhm.appendChild(tl0);mhm.appendChild(tlbl);mh.appendChild(mhm);chart.appendChild(mh);
 
-/* Legutoljara megnyilt csoport */
-var _openGrpIdx=-1,_minDaysSinceOpen=9999;
-for(var _gi2=0;_gi2<groups.length;_gi2++){
-  for(var _ai2=0;_ai2<groups[_gi2].animals.length;_ai2++){
-    for(var _si2=0;_si2<groups[_gi2].animals[_ai2].seasons.length;_si2++){
-      var _s2=groups[_gi2].animals[_ai2].seasons[_si2];
-      if(isInSeason([_s2],TODAY.m,TODAY.d)){
-        var _diff2=(doy(TODAY.m,TODAY.d)-doy(_s2[0],_s2[1])+TOTAL)%TOTAL;
-        if(_diff2<_minDaysSinceOpen){_minDaysSinceOpen=_diff2;_openGrpIdx=_gi2;}
+/* Csoportok rendez\u00e9se: legutols\u00f3bb megny\u00edlt id\u00e9ny el\u00f6l */
+function grpDaysSinceOpen(g){
+  var best=9999;
+  for(var i=0;i<g.animals.length;i++){
+    var a=g.animals[i];
+    for(var j=0;j<a.seasons.length;j++){
+      var s=a.seasons[j];
+      if(isInSeason([s],TODAY.m,TODAY.d)){
+        var d=(doy(TODAY.m,TODAY.d)-doy(s[0],s[1])+TOTAL)%TOTAL;
+        if(d<best)best=d;
       }
     }
   }
+  return best;
 }
+groups.sort(function(a,b){return grpDaysSinceOpen(a)-grpDaysSinceOpen(b);});
+
 var _grpData=[];
+var _ghList=[];
 groups.forEach(function(g){
+  var openCnt=0;
+  for(var _oi=0;_oi<g.animals.length;_oi++){if(isInSeason(g.animals[_oi].seasons,TODAY.m,TODAY.d))openCnt++;}
+  var hasOpen=openCnt>0;
+
   var gh=document.createElement('div');gh.className='va-hn-gh';
-  var gl=document.createElement('div');gl.className='va-hn-gl collapsed';
-  gl.innerHTML='<span class="va-hn-arr">\u25be</span>'+g.label;gh.appendChild(gl);
-  var gba=document.createElement('div');gba.className='va-hn-gba';gba.appendChild(makeTL());gh.appendChild(gba);
+  var gl=document.createElement('div');gl.className='va-hn-gl collapsed'+(hasOpen?' has-open':'');
+  gl.innerHTML='<span class="va-hn-gl-dot"></span><span class="va-hn-arr">\u25bc</span>'+g.label;gh.appendChild(gl);
+  var gba=document.createElement('div');gba.className='va-hn-gba';gba.appendChild(makeTL());
+  var gst=document.createElement('span');gst.className='va-hn-gh-status';
+  gst.style.color=hasOpen?'#00e060':'rgba(255,48,48,.6)';
+  gst.textContent=hasOpen?openCnt+' faj vad\u00e1szhat\u00f3':'tilalom';
+  gba.appendChild(gst);gh.appendChild(gba);
   chart.appendChild(gh);
+
   var gbody=document.createElement('div');gbody.className='va-hn-body hidden';
   g.animals.forEach(function(a){
     var row=document.createElement('div');row.className='va-hn-row';
@@ -717,11 +731,13 @@ groups.forEach(function(g){
   });
   chart.appendChild(gbody);
   _grpData.push({gbody:gbody,gl:gl});
+  _ghList.push({gl:gl,gst:gst,animals:g.animals});
   gh.addEventListener('click',function(){var h=gbody.classList.toggle('hidden');gl.classList.toggle('collapsed',h);});
 });
-if(_openGrpIdx>=0&&_grpData[_openGrpIdx]){
-  _grpData[_openGrpIdx].gbody.classList.remove('hidden');
-  _grpData[_openGrpIdx].gl.classList.remove('collapsed');
+/* Els\u0151 csoport (legutols\u00f3bb megny\u00edlt) automatikusan kiny\u00edlik */
+if(_grpData.length>0&&grpDaysSinceOpen(groups[0])<9999){
+  _grpData[0].gbody.classList.remove('hidden');
+  _grpData[0].gl.classList.remove('collapsed');
 }
 
 function updateCDs(){
@@ -735,6 +751,14 @@ function updateCDs(){
     c.el.className='va-hn-acd '+(on?'on':'off');
     if(nxt){txt.textContent=fmtMs(msTillBPDate(nxt.m,nxt.d));lbl.textContent=on?' \u203a tilalom':' \u203a ny\u00edt\u00e1s';}
     else{txt.textContent='\u2013';lbl.textContent='';}
+  });
+  _ghList.forEach(function(c){
+    var cnt=0;
+    for(var i=0;i<c.animals.length;i++){if(isInSeason(c.animals[i].seasons,bp.month,bp.day))cnt++;}
+    var has=cnt>0;
+    if(has){c.gl.classList.add('has-open');}else{c.gl.classList.remove('has-open');}
+    c.gst.style.color=has?'#00e060':'rgba(255,48,48,.6)';
+    c.gst.textContent=has?cnt+' faj vad\u00e1szhat\u00f3':'tilalom';
   });
 }
 updateCDs();
