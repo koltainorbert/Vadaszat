@@ -16,6 +16,7 @@ class VA_Shortcodes {
             'va_listing_search'  => 'render_search',
             'va_auction_list'    => 'render_auction_list',
             'va_ad_zone'         => 'render_ad_zone',
+            'va_buy_credits'     => 'render_buy_credits',
         ];
 
         foreach ( $codes as $tag => $method ) {
