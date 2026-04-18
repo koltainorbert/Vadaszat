@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #61 (Meta elemek egymas melle igazitas)
+
+### Mit csinaltunk [x]
+- [x] Kartya meta sorok igazitasanak modositasa balra zart elrendezesre
+- [x] A `space-between` eltavolitva, hogy ne legyenek indokolatlanul nagy kozok
+- [x] Soron beluli elemek kozti tavolsag fixalt (column-gap/row-gap)
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #60 (Kartya meta sorkoz tomorites)
 
 ### Mit csinaltunk [x]

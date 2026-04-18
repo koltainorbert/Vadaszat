@@ -161,8 +161,10 @@
 .va-card__meta--top,
 .va-card__meta--middle,
 .va-card__meta--bottom {
-  justify-content: space-between;
-  flex-wrap: nowrap;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  column-gap: 12px;
+  row-gap: 2px;
 }
 .va-card__meta + .va-card__meta { margin-top: 3px; }
 .va-card__meta--top .va-card__meta-item,
