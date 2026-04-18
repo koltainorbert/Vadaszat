@@ -462,6 +462,7 @@
   color: rgba(255,255,255,.78);
   font-weight: 600;
   white-space: nowrap;
+  line-height: 1.1;
 }
 .va-account-switch__label:first-of-type {
   text-align: right;
@@ -471,8 +472,8 @@
 }
 .va-account-switch__toggle {
   position: relative;
-  width: 38px;
-  height: 22px;
+  width: 1.9em;
+  height: 0.9em;
   display: inline-block;
   cursor: pointer;
 }
@@ -492,10 +493,10 @@
 .va-account-switch__slider::before {
   content: '';
   position: absolute;
-  left: 3px;
-  top: 3px;
-  width: 14px;
-  height: 14px;
+  left: 0.1em;
+  top: 0.1em;
+  width: 0.68em;
+  height: 0.68em;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,.35);
@@ -506,7 +507,7 @@
   border-color: rgba(255,0,0,.6);
 }
 .va-account-switch__input:checked + .va-account-switch__slider::before {
-  transform: translateX(16px);
+  transform: translateX(0.98em);
 }
 .va-register-company {
   grid-column: 1 / -1;

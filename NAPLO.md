@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #83 (Toggle magassag a szoveg ala)
+
+### Mit csinaltunk [x]
+- [x] A regisztracios account-type kapcsolo merete em-alapu skalarol mukodik a labelszoveghez kotve
+- [x] A kapcsolo magassaga csokkentve, hogy vizualisan biztosan ne legyen magasabb a feliratnal
+- [x] A kapcsolo gomb pozicioja/atmenete ujramertezve az uj kompakt magassaghoz
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #82 (Account type toggle meret/pozicio finomitas)
 
 ### Mit csinaltunk [x]
