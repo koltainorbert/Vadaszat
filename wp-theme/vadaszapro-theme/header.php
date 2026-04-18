@@ -164,9 +164,6 @@
                 </button>
             </div>
         </div>
-        <div class="va-header__progress" aria-hidden="true">
-            <span class="va-header__progress-bar" id="va-scroll-progress-bar"></span>
-        </div>
     </header>
 
     <!-- ═══ VIDEO HERO (csak főoldalon) ════════════════════ -->
