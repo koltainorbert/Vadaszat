@@ -423,7 +423,7 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
       +'&longitude='+encodeURIComponent(lon)
       +'&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m,wind_direction_10m'
       +'&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max'
-      +'&forecast_days=7&timezone=auto&wind_speed_unit=kmh';
+      +'&forecast_days=8&timezone=auto&wind_speed_unit=kmh';
     fetch(url).then(function(r){return r.json();}).then(function(json){render(json,label);}).catch(function(){
       nowEl.textContent='Időjárás nem elérhető';
     });
