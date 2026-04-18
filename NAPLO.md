@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 04. 18. – Session #91 (Hirdetes admin: fizetesi szolgaltato + szamlazasi beallitasok)
+
+### Mit csinaltunk [x]
+- [x] A Hirdetes beallitasok oldal 3 blokkra bontva: Alap dijazas, Fizetesi beallitasok, Szamlazasi beallitasok
+- [x] Uj fizetesi mezok: szolgaltato valaszto (none/barion/stripe/simplepay/custom), test/live mod, public key, secret key, webhook secret
+- [x] Uj URL mezok: sikeres/megszakitott fizetes URL (opcionalis feluliras)
+- [x] Admin segedmezok: automatikus success/cancel callback URL minta megjelenitese
+- [x] Uj szamlazasi mezok: kiallito nev/cim/adoszam/email/telefon, szamla prefix, kovetkezo sorszam, szamla labjegyzet
+- [x] PDF szamla generator atkotve az uj szamlazasi mezokre (prefix + folyamatos sorszam + kiallito adatok)
+- [x] Szamlasorszam auto inkrementalasa `va_invoice_next_number` alapjan
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #90 (PDF szamla szolgaltato nelkul)
 
 ### Mit csinaltunk [x]
