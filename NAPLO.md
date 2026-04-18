@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #36 (Visszanullázódó mentés végleges ok + javítás)
+
+### Mit csináltunk [x]
+- [x] Azonosítva: a `render_design()` és `render_header_footer()` mentési groupja fel volt cserélve
+- [x] Javítva: Design oldal újra `va_design_settings` csoportot ment
+- [x] Javítva: Fejléc + Lábléc oldal újra `va_header_footer_settings` csoportot ment
+- [x] A fejléc/lábléc alapszín mezők visszakerültek a Fejléc + Lábléc oldalra
+- [x] Következmény: a hero méret mezők mentéskor már nem nullázódnak vissza
+- [x] Hibavizsgálat: módosított fájl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #35 (Footer logó adminból)
 
 ### Mit csináltunk [x]

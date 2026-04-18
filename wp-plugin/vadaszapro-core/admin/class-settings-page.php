@@ -538,20 +538,9 @@ class VA_Settings_Page {
         <div class="wrap va-admin-wrap">
             <h1>🎨 VadászApró – Design (globális + fejtől lábig)</h1>
             <p class="description">Külön oldalon kezelhető a teljes tipográfia és színvilág: globális, fejléc, tartalom és lábléc szinten.</p>
-            <?php settings_errors( 'va_header_footer_settings' ); ?>
+            <?php settings_errors( 'va_design_settings' ); ?>
             <form method="post" action="options.php">
-                <?php settings_fields( 'va_header_footer_settings' ); ?>
-
-                <h2>Fejléc/Lábléc: alapszínek (tipográfia + linkek)</h2>
-                <table class="form-table">
-                    <?php self::field_text(  'va_color_header_bg',     'Fejléc háttér (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_header_text',   'Fejléc szöveg szín' ); ?>
-                    <?php self::field_color( 'va_color_header_accent', 'Fejléc accent szín' ); ?>
-                    <?php self::field_color( 'va_color_footer_bg',       'Lábléc háttér alapszín' ); ?>
-                    <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg szín (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsor szín' ); ?>
-                    <?php self::field_color( 'va_color_footer_links',    'Lábléc link alapszín' ); ?>
-                </table>
+                <?php settings_fields( 'va_design_settings' ); ?>
 
                 <h2>Betűtípusok</h2>
                 <table class="form-table">
@@ -649,7 +638,7 @@ class VA_Settings_Page {
             <?php elseif ( $preset_msg === 'invalid' ): ?>
                 <div class="notice notice-error"><p>Ismeretlen preset kulcs.</p></div>
             <?php endif; ?>
-            <?php settings_errors( 'va_design_settings' ); ?>
+            <?php settings_errors( 'va_header_footer_settings' ); ?>
 
             <h2>🎛️ Egy kattintásos modern presetek</h2>
             <p class="description">10 előre összehangolt fejléc + lábléc paletta, árnyék és glow beállítással.</p>
@@ -667,7 +656,18 @@ class VA_Settings_Page {
             </div>
 
             <form method="post" action="options.php">
-                <?php settings_fields( 'va_design_settings' ); ?>
+                <?php settings_fields( 'va_header_footer_settings' ); ?>
+
+                <h2>Fejléc/Lábléc: alapszínek (tipográfia + linkek)</h2>
+                <table class="form-table">
+                    <?php self::field_text(  'va_color_header_bg',     'Fejléc háttér (hex vagy rgba)' ); ?>
+                    <?php self::field_color( 'va_color_header_text',   'Fejléc szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_header_accent', 'Fejléc accent szín' ); ?>
+                    <?php self::field_color( 'va_color_footer_bg',       'Lábléc háttér alapszín' ); ?>
+                    <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg szín (hex vagy rgba)' ); ?>
+                    <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsor szín' ); ?>
+                    <?php self::field_color( 'va_color_footer_links',    'Lábléc link alapszín' ); ?>
+                </table>
 
                 <h2>Fejléc: alap layout és üveg-hatás</h2>
                 <table class="form-table">
