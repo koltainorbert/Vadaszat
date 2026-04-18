@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #26 (Kereső végső override + duplikált theme szinkron)
+
+### Mit csináltunk [x]
+- [x] A kereső végső override stílusa ráírva a duplikált theme `style.css` fájlok végére is
+- [x] A wp-theme példány is pontozott neon külső keretre lett állítva
+- [x] Az input saját fókusz-border/outline/box-shadow teljesen nullázva lett
+- [x] Cél: sehol ne maradjon belső piros kijelölés, csak a külső keret maradjon hangsúlyos
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #25 (Kereső nagyító láthatóság + piros belső kiemelés törlése)
 
 ### Mit csináltunk [x]
