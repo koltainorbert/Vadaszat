@@ -45,6 +45,11 @@
 - [x] Főoldali header hero videó fallback URL cserélve új offroad videóra
 - [x] Új videó: `/wp-content/uploads/2026/04/0_Offroad_4x4_1920x1080.mp4`
 
+### Kapcsolat űrlap UX
+- [x] Telefonszám mező hozzáadva a kapcsolati űrlaphoz
+- [x] Gépelős placeholder effekt a Kapcsolat oldali mezőkben
+- [x] A typewriter placeholder nem ír bele a valódi input értékbe, csak a placeholdert animálja
+
 ---
 
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)
