@@ -41,7 +41,8 @@ if ( has_post_thumbnail() ) {
     $attachment_ids = array_unique( array_merge( [ $thumb_id ], $attachment_ids ) );
 }
 
-wp_localize_script( 'va-main', 'VA_Data', [
+wp_enqueue_script( 'va-frontend', VA_PLUGIN_URL . 'frontend/js/frontend.js', [ 'jquery' ], VA_VERSION, true );
+wp_localize_script( 'va-frontend', 'VA_Data', [
     'ajax_url' => admin_url('admin-ajax.php'),
     'nonce'    => wp_create_nonce('va_user_nonce'),
     'post_id'  => $post_id,
