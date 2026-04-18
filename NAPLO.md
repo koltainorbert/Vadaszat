@@ -2,6 +2,28 @@
 
 ---
 
+## 2026. 04. 18. – Session #5 (Aukció globális kikapcsolás)
+
+### Mit csináltunk [x]
+- [x] Új globális kapcsoló: `va_enable_auctions` (adminban: **Aukció funkció engedélyezése**)
+- [x] Kikapcsolás esetén az aukció CPT nem regisztrálódik (`va_auction`)
+- [x] Taxonómiák csak `va_listing` post type-ra kötődnek, ha az aukció tiltott
+- [x] Aukciós cron + AJAX licit rendszer tiltása kikapcsolt állapotban
+- [x] Aukció oldalak tiltása: `va-aukciok`, `post_type=va_auction`, archive/single -> átirányítás a hirdetés oldalra
+- [x] Frontendből eltüntetve az aukció menüpont és főoldali „Futó aukciók” blokk
+- [x] Live search és listázó AJAX csak hirdetésekre keres, ha aukció ki van kapcsolva
+- [x] Dashboardból eltüntetve a `Licitjeim` tab
+- [x] Admin menüből eltüntetve az `Aukciók` beállítás almenü kikapcsolt módban
+- [x] Admin statisztikák/felhasználó lista aukciós számai feltételessé téve
+- [x] Toggle mezők javítása: hidden `0` érték hozzáadva, így OFF állapot biztosan menthető
+- [x] Deploy futtatva (`Deploy All`), szintaxis hibák ellenőrizve (hibamentes)
+
+### Eredmény
+- Egyetlen admin kapcsolóval az aukció funkció teljes frontend/admin jelenléte kikapcsolható.
+- A „csak apróhirdetés” üzemmód külön opciós oldalként tisztán használható.
+
+---
+
 ## 2026. 04. 18. – Session #4 (kártya egységesítés)
 
 ### Mit csináltunk [x]
