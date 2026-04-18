@@ -172,7 +172,7 @@ hr { border-color: var(--border); }
   padding: 3px 7px; border-radius: 20px; flex-shrink: 0;
 }
 .va-sd__badge--va_listing  { background: rgba(255,0,0,.18);    color: #ff4040; }
-.va-sd__badge--va_auction  { background: rgba(255,160,0,.15);  color: #ffa000; }
+.va-sd__badge--va_auction  { background: rgba(255,140,0,.25);  color: #ff8c00; }
 .va-sd__badge--category    { background: rgba(0,200,100,.18);  color: #00e070; }
 .va-sd__badge--user        { background: rgba(80,140,255,.18); color: #6fa0ff; }
 .va-sd__all {

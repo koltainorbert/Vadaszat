@@ -13,6 +13,7 @@ $url_s           = sanitize_text_field( wp_unslash( $_GET['s']           ?? '' )
 $url_cat         = intval( $_GET['cat']         ?? 0 );
 $url_author_id   = intval( $_GET['author_id']   ?? 0 );
 $url_user_search = ! empty( $_GET['user_search'] );
+$url_post_type   = in_array( $_GET['post_type'] ?? '', [ 'va_listing', 'va_auction' ], true ) ? $_GET['post_type'] : 'va_listing';
 
 // ── Felhasználó-kereső mód ────────────────────────────────────
 if ( $url_user_search ) {
@@ -63,6 +64,7 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     'initial_s'        => $url_s,
     'initial_cat'      => $url_cat,
     'initial_author_id'=> $url_author_id,
+    'initial_post_type'=> $url_post_type,
 ]);
 wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 ?>
@@ -72,7 +74,7 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
     <!-- Szűrő sáv -->
     <div class="va-filter-bar">
         <div class="va-filter-bar__title">🔍 Hirdetések keresése</div>
-        <form id="va-filter-form" data-post-type="va_listing">
+        <form id="va-filter-form" data-post-type="<?php echo esc_attr( $url_post_type ); ?>">
             <div class="va-filter-bar__grid">
                 <input type="text" id="va-kw" class="va-input" placeholder="Kulcsszó..." value="<?php echo esc_attr( $url_s ); ?>">
 

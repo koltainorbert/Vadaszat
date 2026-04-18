@@ -62,13 +62,16 @@
                             + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':r.type==='category'?'Kategória':r.type==='user'?'Felhasználó':'Hirdetés')+'</span>'
                             + '</a>';
                     }).join('') + '<a class="va-sd__all" href="#" id="va-sd-all-link">Összes találat →</a>';
-                    // "Összes találat" link prioritás: kategória → user → kulcsszó
-                    var catItem  = items.find(function(r){ return r.type === 'category'; });
-                    var userItem = items.find(function(r){ return r.type === 'user'; });
-                    var allLink  = dropdown.querySelector('#va-sd-all-link');
-                    var baseUrl  = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>';
+                    // "Összes találat" link prioritás: kategória → aukció → user → kulcsszó
+                    var catItem     = items.find(function(r){ return r.type === 'category'; });
+                    var auctionItem = items.find(function(r){ return r.type === 'va_auction'; });
+                    var userItem    = items.find(function(r){ return r.type === 'user'; });
+                    var allLink     = dropdown.querySelector('#va-sd-all-link');
+                    var baseUrl     = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>';
                     if (catItem) {
                         allLink.href = catItem.url; // ?cat=ID → kategória összes hirdetése
+                    } else if (auctionItem) {
+                        allLink.href = baseUrl + '?post_type=va_auction&s=' + encodeURIComponent(input.value); // aukciók listája
                     } else if (userItem) {
                         allLink.href = baseUrl + '?user_search=1&s=' + encodeURIComponent(input.value); // összes felhasználó
                     } else {

@@ -166,6 +166,7 @@
       if (VA_Data.initial_s)          { $('#va-kw').val(VA_Data.initial_s); }
       if (VA_Data.initial_cat)        { $('#va-cat').val(VA_Data.initial_cat); }
       if (VA_Data.initial_author_id)  { $('#va-filter-form').data('author-id', VA_Data.initial_author_id); }
+      if (VA_Data.initial_post_type)  { $('#va-filter-form').data('post-type', VA_Data.initial_post_type); }
     }
     va_load_listings(1);
   }
