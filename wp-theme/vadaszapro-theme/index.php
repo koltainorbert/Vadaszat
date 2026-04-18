@@ -395,11 +395,11 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
       return;
     }
     var c=data.current;
+    var d=data.daily;
     locEl.textContent=fmtLoc(label);
     nowEl.innerHTML='<strong>'+Math.round(c.temperature_2m)+'°C</strong> • '+wcText(c.weather_code)+' <span class="va-weather__stamp">('+dateTimeHu(new Date())+')</span>';
     metaEl.textContent='Hőérzet '+Math.round(c.apparent_temperature)+'°C • Pára '+Math.round(c.relative_humidity_2m)+'% • Szél '+Math.round(c.wind_speed_10m)+' km/h ('+wdText(c.wind_direction_10m)+') • Csapadék '+(c.precipitation||0)+' mm/h • Dátum: '+dateHu(d.time[0]);
 
-    var d=data.daily;
     var html='';
     for(var i=0;i<d.time.length&&i<7;i++){
       html+='<div class="va-weather__day">'
