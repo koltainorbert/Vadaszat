@@ -491,11 +491,18 @@ class VA_Settings_Page {
             'va_featured_price'      => 2990,
             'va_featured_days'       => 30,
             'va_free_listings_limit' => 5,
+            'va_listing_price_after_free' => 1990,
         ];
         foreach ( $listing_opts as $key => $default ) {
             self::$defaults[ $key ] = $default;
             register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => 'absint' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        self::$defaults['va_listing_payment_url'] = '';
+        register_setting( 'va_listing_settings', 'va_listing_payment_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        if ( get_option( 'va_listing_payment_url' ) === false ) {
+            update_option( 'va_listing_payment_url', '' );
         }
 
         /* Aukciók */
@@ -1060,6 +1067,8 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_featured_price', 'Kiemelt hirdetés ára (Ft)', 0, 99999 ); ?>
                     <?php self::field_num( 'va_featured_days',  'Kiemelt hirdetés időtartama (nap)', 1, 365 ); ?>
                     <?php self::field_num( 'va_free_listings_limit', 'Ingyenes hirdetések száma felhasználónként (0=korlátlan)', 0, 999 ); ?>
+                    <?php self::field_num( 'va_listing_price_after_free', 'További hirdetés ára (Ft)', 0, 999999 ); ?>
+                    <?php self::field_url( 'va_listing_payment_url', 'Bankkártyás fizetési URL (Stripe/Barion/OTP Simple checkout link)' ); ?>
                 </table>
                 <?php submit_button( 'Mentés' ); ?>
             </form>
