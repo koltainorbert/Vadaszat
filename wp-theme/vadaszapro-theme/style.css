@@ -517,9 +517,9 @@ hr { border-color: var(--border); }
 /* ──────────────────────────────────────────────────────────
    HIRDETÉS RÁCS (GRID)
 ────────────────────────────────────────────────────────── */
+/* grid-template-columns a FŐOLDAL ELRENDEZÉS szekcióban van definiálva (4 oszlop + responsive) */
 .va-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 14px; margin-bottom: 28px;
 }
 
@@ -601,11 +601,9 @@ hr { border-color: var(--border); }
 @keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 @media (max-width: 600px) {
-  .va-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .va-card__img, .card-img { height: 140px; }
 }
 @media (max-width: 380px) {
-  .va-grid { grid-template-columns: 1fr; }
 }
 
 /* ──────────────────────────────────────────────────────────

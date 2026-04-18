@@ -86,9 +86,13 @@
 .va-card__watchlist:hover, .va-card__watchlist.active { color: var(--va-accent); }
 
 /* ── Kártyarács ───────────────────────────────────── */
-.va-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+.va-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+@media (max-width: 1200px) { .va-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 860px)  { .va-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; } }
+@media (max-width: 480px)  { .va-grid { grid-template-columns: 1fr; gap: 12px; } }
 .va-grid--list .va-card { display: grid; grid-template-columns: 180px 1fr; }
 .va-grid--list .va-card__thumb, .va-grid--list .va-card__thumb-placeholder { height: 100%; min-height: 140px; }
+@media (max-width: 600px) { .va-grid--list .va-card { grid-template-columns: 1fr; } }
 
 /* ── Felhasználó rács ─────────────────────────────── */
 .va-user-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
@@ -101,8 +105,10 @@
 /* ── Szűrő sáv ────────────────────────────────────── */
 .va-filter-bar { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px; margin-bottom: 24px; }
 .va-filter-bar__title { font-size: 13px; font-weight: 700; color: var(--va-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
-.va-filter-bar__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
-.va-filter-bar__actions { margin-top: 14px; display: flex; gap: 10px; }
+.va-filter-bar__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.va-filter-bar__actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+@media (max-width: 600px) { .va-filter-bar { padding: 14px; } .va-filter-bar__grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 380px) { .va-filter-bar__grid { grid-template-columns: 1fr; } }
 .va-price-range { display: flex; align-items: center; gap: 8px; }
 .va-price-range .va-input { flex: 1; }
 
