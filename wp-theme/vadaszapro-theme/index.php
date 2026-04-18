@@ -568,7 +568,7 @@ var MN=["Jan","Feb","M\u00e1r","\u00c1pr","M\u00e1j","J\u00fan","J\u00fal","Aug"
 var MF=["Janu\u00e1r","Febru\u00e1r","M\u00e1rcius","\u00c1prilis","M\u00e1jus","J\u00fanius","J\u00falius","Augusztus","Szeptember","Okt\u00f3ber","November","December"];
 var TOTAL=365;
 var PI=Math.PI,sin=Math.sin,cos=Math.cos,asin=Math.asin,acos=Math.acos,rad=PI/180,e=rad*23.4397;
-var TROPHY_SPECIES='Gímszarvas bika, Dámszarvas bak, Őzbak, Muflon kos, Vaddisznó kan';
+var TROPHY_SPECIES='Gímbika, Dámbika, Őzbak, Muflon kos';
 function doy(m,d){var i=0;for(var x=1;x<m;x++)i+=MD[x-1];return i+d-1;}
 function nowBPsimple(){var d=new Date(),parts={};new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(d).forEach(function(p){if(p.type!=='literal')parts[p.type]=+p.value;});return parts;}
 function sunDeclination(L){return asin(sin(e)*sin(L));}
