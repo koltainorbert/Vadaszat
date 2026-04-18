@@ -228,8 +228,111 @@ class VA_Settings_Page {
             'va_hf_footer_copy_text'               => 'VadászApró – Minden jog fenntartva.',
             'va_hf_footer_privacy_text'            => 'Adatvédelem',
         ];
+
+        $header_footer_keys = [
+            'va_color_header_bg',
+            'va_color_header_text',
+            'va_color_header_accent',
+            'va_color_footer_bg',
+            'va_color_footer_text',
+            'va_color_footer_headings',
+            'va_color_footer_links',
+            'va_size_header_brand',
+            'va_size_header_nav',
+            'va_size_header_search',
+            'va_size_header_btn',
+            'va_weight_header_brand',
+            'va_weight_header_nav',
+            'va_size_footer_title',
+            'va_size_footer_link',
+            'va_size_footer_bottom',
+            'va_weight_footer_title',
+            'va_weight_footer_link',
+            'va_mobile_factor_header',
+            'va_mobile_factor_footer',
+            'va_hf_header_height',
+            'va_hf_header_max_width',
+            'va_hf_header_padding_x',
+            'va_hf_header_padding_top',
+            'va_hf_header_padding_bottom',
+            'va_hf_header_gap',
+            'va_hf_header_bg_opacity',
+            'va_hf_header_bg_opacity_scrolled',
+            'va_hf_header_blur',
+            'va_hf_header_blur_scrolled',
+            'va_hf_header_shadow_alpha',
+            'va_hf_header_color_base',
+            'va_hf_header_color_alt',
+            'va_hf_header_border_color',
+            'va_hf_header_shadow_color',
+            'va_hf_header_glow_color',
+            'va_hf_header_search_max_width',
+            'va_hf_header_search_height',
+            'va_hf_header_search_radius',
+            'va_hf_header_search_border_alpha',
+            'va_hf_header_search_bg_alpha',
+            'va_hf_header_search_hover_border_alpha',
+            'va_hf_header_search_focus_border_alpha',
+            'va_hf_header_search_icon_size',
+            'va_hf_header_search_icon_bg_alpha',
+            'va_hf_header_search_icon_bg_hover_alpha',
+            'va_hf_header_search_glow_color',
+            'va_hf_header_search_placeholder',
+            'va_hf_header_btn_radius',
+            'va_hf_header_btn_pad_y',
+            'va_hf_header_btn_pad_x',
+            'va_hf_header_btn_glow_alpha',
+            'va_hf_header_btn_glow_color',
+            'va_hf_header_user_border_alpha',
+            'va_hf_header_user_bg_alpha',
+            'va_hf_header_mobile_show_search',
+            'va_hf_header_mobile_show_submit',
+            'va_hf_header_submit_text',
+            'va_hf_header_register_text',
+            'va_hf_header_login_text',
+            'va_hf_footer_top_padding',
+            'va_hf_footer_bottom_padding',
+            'va_hf_footer_grid_gap',
+            'va_hf_footer_col_min_width',
+            'va_hf_footer_title_gap',
+            'va_hf_footer_link_pad_y',
+            'va_hf_footer_bottom_top_padding',
+            'va_hf_footer_border_alpha',
+            'va_hf_footer_bottom_border_alpha',
+            'va_hf_footer_max_width',
+            'va_hf_footer_color_base',
+            'va_hf_footer_color_alt',
+            'va_hf_footer_border_color',
+            'va_hf_footer_shadow_color',
+            'va_hf_footer_glow_color',
+            'va_hf_footer_link_hover_color',
+            'va_hf_footer_brand_title',
+            'va_hf_footer_col_categories_title',
+            'va_hf_footer_col_account_title',
+            'va_hf_footer_col_legal_title',
+            'va_hf_footer_link_aszf',
+            'va_hf_footer_link_privacy',
+            'va_hf_footer_link_contact',
+            'va_hf_footer_link_help',
+            'va_hf_footer_copy_text',
+            'va_hf_footer_privacy_text',
+        ];
+
+        $header_footer = [];
+        foreach ( $header_footer_keys as $hf_key ) {
+            if ( array_key_exists( $hf_key, $design ) ) {
+                $header_footer[ $hf_key ] = $design[ $hf_key ];
+                unset( $design[ $hf_key ] );
+            }
+        }
+
         foreach ( $design as $key => $default ) {
             register_setting( 'va_design_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        foreach ( $header_footer as $key => $default ) {
+            register_setting( 'va_header_footer_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
@@ -431,9 +534,20 @@ class VA_Settings_Page {
         <div class="wrap va-admin-wrap">
             <h1>🎨 VadászApró – Design (globális + fejtől lábig)</h1>
             <p class="description">Külön oldalon kezelhető a teljes tipográfia és színvilág: globális, fejléc, tartalom és lábléc szinten.</p>
-            <?php settings_errors( 'va_design_settings' ); ?>
+            <?php settings_errors( 'va_header_footer_settings' ); ?>
             <form method="post" action="options.php">
-                <?php settings_fields( 'va_design_settings' ); ?>
+                <?php settings_fields( 'va_header_footer_settings' ); ?>
+
+                <h2>Fejléc/Lábléc: alapszínek (tipográfia + linkek)</h2>
+                <table class="form-table">
+                    <?php self::field_text(  'va_color_header_bg',     'Fejléc háttér (hex vagy rgba)' ); ?>
+                    <?php self::field_color( 'va_color_header_text',   'Fejléc szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_header_accent', 'Fejléc accent szín' ); ?>
+                    <?php self::field_color( 'va_color_footer_bg',       'Lábléc háttér alapszín' ); ?>
+                    <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg szín (hex vagy rgba)' ); ?>
+                    <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsor szín' ); ?>
+                    <?php self::field_color( 'va_color_footer_links',    'Lábléc link alapszín' ); ?>
+                </table>
 
                 <h2>Betűtípusok</h2>
                 <table class="form-table">
