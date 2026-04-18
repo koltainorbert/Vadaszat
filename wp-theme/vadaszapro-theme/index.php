@@ -832,12 +832,21 @@ if ($auctions->have_posts()): ?>
 </div><!-- va-home-layout -->
 
 <?php else: ?>
-    <!-- Archívum / single / page tartalom -->
-    <?php if ( have_posts() ): while ( have_posts() ): the_post(); ?>
-        <div class="va-wrap">
-            <?php the_content(); ?>
-        </div>
-    <?php endwhile; endif; ?>
+  <!-- Archívum / single / page tartalom -->
+  <?php
+  $req_uri = wp_unslash( $_SERVER['REQUEST_URI'] ?? '' );
+  $is_search_page_url = strpos( $req_uri, '/va-hirdetes-kereses' ) !== false;
+  ?>
+
+  <?php if ( is_page( 'va-hirdetes-kereses' ) || $is_search_page_url ): ?>
+    <div class="va-wrap">
+      <?php echo do_shortcode( '[va_listing_search]' ); ?>
+    </div>
+  <?php elseif ( have_posts() ): while ( have_posts() ): the_post(); ?>
+    <div class="va-wrap">
+      <?php the_content(); ?>
+    </div>
+  <?php endwhile; endif; ?>
 <?php endif; ?>
 
 <?php get_footer(); ?>
