@@ -5,6 +5,8 @@
  */
 get_header();
 
+$categories_video = content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' );
+
 /* ── Fotó tár — Unsplash valódi képek ─────────────────────────────────── */
 function va_cat_icon( string $name ): string {
     $photos = [
@@ -139,6 +141,18 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
             <div class="va-empty__text">A kategóriák hamarosan betöltődnek.</div>
         </div>
         <?php endif; ?>
+
+        <div class="vcp-video">
+            <video class="vcp-video__media" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+                <source src="<?php echo esc_url( $categories_video ); ?>" type="video/mp4">
+            </video>
+            <div class="vcp-video__overlay"></div>
+            <div class="vcp-video__content">
+                <span class="vcp-video__eyebrow">Kategória ajánló</span>
+                <h2 class="vcp-video__title">Vadászat ősszel</h2>
+                <p class="vcp-video__lead">Fedezd fel a kategóriákat, és találd meg gyorsan a hozzád illő felszerelést.</p>
+            </div>
+        </div>
     </section>
 
 </div>
