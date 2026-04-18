@@ -275,15 +275,37 @@ class VA_Ajax {
             wp_send_json_success( [] );
         }
 
+        $results = [];
+
+        // Kategória találatok
+        $cats = get_terms([
+            'taxonomy'   => 'va_category',
+            'hide_empty' => false,
+            'search'     => $q,
+            'number'     => 3,
+        ]);
+        if ( ! is_wp_error( $cats ) ) {
+            foreach ( $cats as $cat ) {
+                $results[] = [
+                    'id'    => $cat->term_id,
+                    'title' => $cat->name,
+                    'url'   => get_term_link( $cat ),
+                    'price' => $cat->count . ' hirdetés',
+                    'thumb' => '',
+                    'type'  => 'category',
+                ];
+            }
+        }
+
+        // Hirdetés + aukció találatok
         $query = new WP_Query([
             'post_type'      => [ 'va_listing', 'va_auction' ],
             'post_status'    => 'publish',
-            'posts_per_page' => 6,
+            'posts_per_page' => 5,
             'no_found_rows'  => true,
             's'              => $q,
         ]);
 
-        $results = [];
         foreach ( $query->posts as $post ) {
             $price     = get_post_meta( $post->ID, 'va_price', true );
             $thumb_id  = get_post_thumbnail_id( $post->ID );
