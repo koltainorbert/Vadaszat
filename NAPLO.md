@@ -2,6 +2,15 @@
 
 ---
 
+## 2026. 04. 18. – Session #77 (Kedvenceim menu sziv piros)
+
+### Mit csinaltunk [x]
+- [x] A dashboard `Kedvenceim` menupont sziv ikonja fix piros lett
+- [x] Hover es aktiv allapotban is piros marad
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #76 (Dashboard menu teljes egyvonalas igazitas)
 
 ### Mit csinaltunk [x]

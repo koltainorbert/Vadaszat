@@ -472,6 +472,13 @@
 .va-dashboard__nav-item--logout:hover {
   color: #ff0000;
 }
+.va-dashboard__nav-item[data-tab="watchlist"] .va-dashboard__nav-ico {
+  color: #ff2a2a;
+}
+.va-dashboard__nav-item[data-tab="watchlist"]:hover .va-dashboard__nav-ico,
+.va-dashboard__nav-item[data-tab="watchlist"].active .va-dashboard__nav-ico {
+  color: #ff0000;
+}
 .va-dashboard__content { min-width: 0; }
 .va-dashboard__section { display: none; }
 .va-dashboard__section.active { display: block; }
