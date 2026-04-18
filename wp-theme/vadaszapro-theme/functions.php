@@ -293,37 +293,37 @@ add_action( 'wp_enqueue_scripts', function () {
     $footer_links    = va_design_css_color( (string) get_option( 'va_color_footer_links', '#ff4444' ), '#ff4444' );
 
     $css = ':root{' .
-        '--a:' . esc_attr( $global_accent ) . ';' .
-        '--a2:' . esc_attr( $global_accent ) . ';' .
-        '--a3:' . esc_attr( $global_accent ) . ';' .
-        '--t:' . esc_attr( $global_text ) . ';' .
-        '--t2:' . esc_attr( $global_muted ) . ';' .
+        '--a:' . $global_accent . ';' .
+        '--a2:' . $global_accent . ';' .
+        '--a3:' . $global_accent . ';' .
+        '--t:' . $global_text . ';' .
+        '--t2:' . $global_muted . ';' .
     '}' .
     'body{' .
-        'font-family:' . esc_attr( $font_global ) . ';' .
-        'background:' . esc_attr( $global_bg ) . ';' .
-        'color:' . esc_attr( $global_text ) . ';' .
+        'font-family:' . $font_global . ';' .
+        'background:' . $global_bg . ';' .
+        'color:' . $global_text . ';' .
     '}' .
-    'h1,h2,h3,h4,h5,h6{font-family:' . esc_attr( $font_headings ) . ';}' .
+    'h1,h2,h3,h4,h5,h6{font-family:' . $font_headings . ';}' .
     '.va-header,.va-header *{' .
-        'font-family:' . esc_attr( $font_header ) . ';' .
-        'color:' . esc_attr( $header_text ) . ';' .
+        'font-family:' . $font_header . ';' .
+        'color:' . $header_text . ';' .
     '}' .
-    '.va-header{background:' . esc_attr( $header_bg ) . ';border-bottom-color:' . esc_attr( $header_accent ) . ';}' .
-    '.va-nav__item--accent,.va-header__submit-btn,.va-header__search-btn{background-color:' . esc_attr( $header_accent ) . ';border-color:' . esc_attr( $header_accent ) . ';}' .
+    '.va-header{background:' . $header_bg . ';border-bottom-color:' . $header_accent . ';}' .
+    '.va-nav__item--accent,.va-header__submit-btn,.va-header__search-btn{background-color:' . $header_accent . ';border-color:' . $header_accent . ';}' .
     '.va-container,.va-content-layout,.va-main-content,.va-wrap,.va-cat-page,.va-contact-page{' .
-        'background-color:' . esc_attr( $content_bg ) . ';' .
-        'color:' . esc_attr( $content_text ) . ';' .
-        'font-family:' . esc_attr( $font_content ) . ';' .
+        'background-color:' . $content_bg . ';' .
+        'color:' . $content_text . ';' .
+        'font-family:' . $font_content . ';' .
     '}' .
     '.va-container h1,.va-container h2,.va-container h3,.va-container h4,.va-container h5,.va-container h6,.va-wrap h1,.va-wrap h2,.va-wrap h3,.va-wrap h4,.va-wrap h5,.va-wrap h6{' .
-        'color:' . esc_attr( $content_headings ) . ';' .
+        'color:' . $content_headings . ';' .
     '}' .
-    '.va-container a,.va-wrap a,.va-contact-page a,.va-cat-page a{color:' . esc_attr( $content_links ) . ';}' .
-    '.va-footer,.va-footer *{font-family:' . esc_attr( $font_footer ) . ';}' .
-    '.va-footer{background:' . esc_attr( $footer_bg ) . ';color:' . esc_attr( $footer_text ) . ';}' .
-    '.va-footer__col-title{color:' . esc_attr( $footer_headings ) . ';}' .
-    '.va-footer__link,.va-footer__bottom a{color:' . esc_attr( $footer_links ) . ';}' ;
+    '.va-container a,.va-wrap a,.va-contact-page a,.va-cat-page a{color:' . $content_links . ';}' .
+    '.va-footer,.va-footer *{font-family:' . $font_footer . ';}' .
+    '.va-footer{background:' . $footer_bg . ';color:' . $footer_text . ';}' .
+    '.va-footer__col-title{color:' . $footer_headings . ';}' .
+    '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' ;
 
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );

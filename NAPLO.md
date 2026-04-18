@@ -2,6 +2,31 @@
 
 ---
 
+## 2026. 04. 18. – Session #13 (Kiterjedt betűtípus + színrendszer külön Design oldalon)
+
+### Mit csináltunk [x]
+- [x] Új admin aloldal: `Design` (külön menüpont az Általánostól)
+- [x] Kiterjedt betűtípus választó bevezetése (20 opció, Google Fonts támogatással)
+  - Globális alap betűtípus
+  - Címsorok betűtípusa
+  - Fejléc/Navigáció betűtípusa
+  - Tartalmi szöveg betűtípusa
+  - Lábléc betűtípusa
+- [x] Színrendszer bevezetése 4 szinten:
+  - Globális
+  - Fejléc
+  - Tartalom
+  - Lábléc
+- [x] Admin oldalon WP Color Picker bekötve a színmezőkhöz
+- [x] Frontenden dinamikus CSS kimenet:
+  - globális változók (`--a`, `--t`, `--t2`)
+  - célzott felülírások header/content/footer részekre
+- [x] Kiválasztott betűk automatikus betöltése Google Fonts-ról (`display=swap`)
+- [x] Hibavizsgálat: módosított fájlok hibamentesek
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #12 (Hero elemek igazítása adminból)
 
 ### Mit csináltunk [x]
