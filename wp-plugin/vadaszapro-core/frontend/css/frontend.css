@@ -149,6 +149,22 @@
 .va-card__meta-item--author { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
 .va-card__meta-author { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex-shrink: 2; }
 .va-card__meta-date { flex-shrink: 0; white-space: nowrap; margin-left: auto; }
+.va-card__meta--top,
+.va-card__meta--middle,
+.va-card__meta--bottom {
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+.va-card__meta--top .va-card__meta-item,
+.va-card__meta--middle .va-card__meta-item,
+.va-card__meta--bottom .va-card__meta-item {
+  min-width: 0;
+}
+.va-card__meta--middle .va-card__meta-item:first-child,
+.va-card__meta--bottom .va-card__meta-item:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .va-card__badge { position: absolute; top: 10px; left: 10px; background: var(--va-accent); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 3px; }
 .va-card__badge--featured { background: #ffaa00; color: #000; }
 .va-card__watchlist { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); border: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--va-muted); transition: color var(--va-transition); }

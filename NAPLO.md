@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #59 (Kartya meta sorstruktura fix)
+
+### Mit csinaltunk [x]
+- [x] A listing kartya meta adatai fix 3 sorra bontva
+- [x] Felso sor: kategoria + megye
+- [x] Kozepso sor: telepules + megtekintes
+- [x] Also sor: felado + datum
+- [x] Cel: nyitolapi kartya-elrendezes igazitas a kért 2. referencia kephez
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #58 (Nyitolap kartyakep fallback javitas)
 
 ### Mit csinaltunk [x]
