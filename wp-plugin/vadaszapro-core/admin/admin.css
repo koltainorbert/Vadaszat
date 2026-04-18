@@ -26,3 +26,17 @@
 
 /* Felhasználók tábla */
 .va-users-table th, .va-users-table td { vertical-align: middle; }
+
+/* Média picker mezők */
+.va-media-field { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.va-media-field .va-media-input { min-width: 360px; }
+.va-media-preview-wrap { margin-top: 10px; }
+.va-media-preview {
+   width: 72px;
+   height: 72px;
+   object-fit: contain;
+   background: #111;
+   border: 1px solid #333;
+   border-radius: 8px;
+   padding: 4px;
+}

@@ -203,13 +203,19 @@ hr { border-color: var(--border); }
   box-shadow: 0 0 20px rgba(255,0,0,.5);
 }
 .va-logo__img {
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.va-logo__img--icon {
   width: 36px;
   height: 36px;
-  object-fit: cover;
   border-radius: 10px;
-  flex-shrink: 0;
   border: 1px solid rgba(255,255,255,.24);
   box-shadow: 0 0 18px rgba(255,0,0,.28);
+}
+.va-logo__img--header {
+  max-width: 220px;
+  height: 36px;
 }
 .va-logo__text {
   font-size: 1rem; font-weight: 900; letter-spacing: .08em;
@@ -1006,6 +1012,16 @@ textarea { min-height: 110px; resize: vertical; }
   align-self: center;
 }
 
+.vh__logo {
+  display: block;
+  width: auto;
+  height: clamp(42px, 7vw, 78px);
+  max-width: min(420px, 78vw);
+  object-fit: contain;
+  margin: 0 0 16px;
+  filter: drop-shadow(0 8px 22px rgba(0,0,0,.55));
+}
+
 .vh__badge {
   display: inline-flex;
   align-items: center;
@@ -1162,6 +1178,7 @@ textarea { min-height: 110px; resize: vertical; }
 /* Responsive */
 @media (max-width: 640px) {
   .vh__content { padding: 0 22px; }
+  .vh__logo { height: clamp(36px, 10vw, 56px); margin-bottom: 12px; }
   .vh__stats    { left: 22px; right: 22px; gap: 24px; bottom: 30px; }
   .vh__scroll   { display: none; }
   .vh__btn      { padding: 13px 22px; font-size: .88rem; }
