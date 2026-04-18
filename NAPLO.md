@@ -2,6 +2,15 @@
 
 ---
 
+## 2026. 04. 18. – Session #17 (Főoldali hero logó feljebb igazítás)
+
+### Mit csináltunk [x]
+- [x] A főoldali hero logó 15px-el feljebb került (`transform: translateY(-15px)`)
+- [x] Deploy: `Deploy All` lefutott
+- [x] Ellenőrzés: új hiba nem keletkezett, csak korábbról ismert CSS kompatibilitási warningok maradtak
+
+---
+
 ## 2026. 04. 18. – Session #16 (Admin mobil szorzó vezérlés)
 
 ### Mit csináltunk [x]
