@@ -28,6 +28,22 @@
     if ( ! in_array( $home_hero_align, [ 'left', 'center', 'right' ], true ) ) {
         $home_hero_align = 'left';
     }
+    $header_search_placeholder = trim( (string) get_option( 'va_hf_header_search_placeholder', 'keresés…' ) );
+    if ( $header_search_placeholder === '' ) {
+        $header_search_placeholder = 'keresés…';
+    }
+    $header_submit_text = trim( (string) get_option( 'va_hf_header_submit_text', '+ Hirdetés feladása' ) );
+    if ( $header_submit_text === '' ) {
+        $header_submit_text = '+ Hirdetés feladása';
+    }
+    $header_register_text = trim( (string) get_option( 'va_hf_header_register_text', 'Regisztráció' ) );
+    if ( $header_register_text === '' ) {
+        $header_register_text = 'Regisztráció';
+    }
+    $header_login_text = trim( (string) get_option( 'va_hf_header_login_text', 'Bejelentkezés' ) );
+    if ( $header_login_text === '' ) {
+        $header_login_text = 'Bejelentkezés';
+    }
     if ( $hero_logo === '' ) {
         $hero_logo = $header_logo;
     }
@@ -72,7 +88,7 @@
 
             <!-- Kereső -->
             <form class="va-header__search" id="va-live-search-form" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get" autocomplete="off">
-                <input class="va-header__search-input" id="va-live-search-input" type="text" name="s" placeholder="keresés…" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
+                <input class="va-header__search-input" id="va-live-search-input" type="text" name="s" placeholder="<?php echo esc_attr( $header_search_placeholder ); ?>" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
                 <button class="va-header__search-btn" type="submit" aria-label="Keresés"></button>
                 <div class="va-search-dropdown" id="va-search-dropdown" hidden></div>
             </form>
@@ -143,7 +159,7 @@
                     $submit_page = get_page_by_path('va-hirdetes-feladas');
                 ?>
                     <?php if ( $submit_page ): ?>
-                        <a href="<?php echo esc_url( get_permalink($submit_page) ); ?>" class="va-header__submit-btn">+ Hirdetés feladása</a>
+                        <a href="<?php echo esc_url( get_permalink($submit_page) ); ?>" class="va-header__submit-btn"><?php echo esc_html( $header_submit_text ); ?></a>
                     <?php endif; ?>
                     <a href="<?php echo esc_url( $dashboard ? get_permalink($dashboard) : home_url() ); ?>" class="va-header__user">
                         👤 <?php echo esc_html( $user->display_name ); ?>
@@ -153,10 +169,10 @@
                     $register_page = get_page_by_path('va-regisztracio');
                 ?>
                     <?php if ($login_page): ?>
-                        <a href="<?php echo esc_url( get_permalink($login_page) ); ?>" class="va-header__user-login">Bejelentkezés</a>
+                        <a href="<?php echo esc_url( get_permalink($login_page) ); ?>" class="va-header__user-login"><?php echo esc_html( $header_login_text ); ?></a>
                     <?php endif; ?>
                     <?php if ($register_page): ?>
-                        <a href="<?php echo esc_url( get_permalink($register_page) ); ?>" class="va-header__submit-btn">Regisztráció</a>
+                        <a href="<?php echo esc_url( get_permalink($register_page) ); ?>" class="va-header__submit-btn"><?php echo esc_html( $header_register_text ); ?></a>
                     <?php endif; ?>
                 <?php endif; ?>
                 <button class="va-hamburger" id="va-hamburger" aria-label="Men&uuml;">

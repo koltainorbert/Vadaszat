@@ -147,6 +147,69 @@ class VA_Settings_Page {
             'va_mobile_factor_hero'        => 100,
             'va_mobile_factor_header'      => 100,
             'va_mobile_factor_footer'      => 100,
+
+            // Fejléc layout/kinézet (külön menühöz)
+            'va_hf_header_height'                  => 66,
+            'va_hf_header_max_width'               => 1480,
+            'va_hf_header_padding_x'               => 32,
+            'va_hf_header_padding_top'             => 6,
+            'va_hf_header_padding_bottom'          => 10,
+            'va_hf_header_gap'                     => 0,
+            'va_hf_header_bg_opacity'              => '0.82',
+            'va_hf_header_bg_opacity_scrolled'     => '0.88',
+            'va_hf_header_blur'                    => 16,
+            'va_hf_header_blur_scrolled'           => 20,
+            'va_hf_header_shadow_alpha'            => '0.70',
+
+            // Fejléc kereső
+            'va_hf_header_search_max_width'        => 460,
+            'va_hf_header_search_height'           => 42,
+            'va_hf_header_search_radius'           => 30,
+            'va_hf_header_search_border_alpha'     => '0.14',
+            'va_hf_header_search_bg_alpha'         => '0.02',
+            'va_hf_header_search_hover_border_alpha' => '0.38',
+            'va_hf_header_search_focus_border_alpha' => '0.52',
+            'va_hf_header_search_icon_size'        => 16,
+            'va_hf_header_search_icon_bg_alpha'    => '0.14',
+            'va_hf_header_search_icon_bg_hover_alpha' => '0.22',
+            'va_hf_header_search_placeholder'      => 'keresés…',
+
+            // Fejléc gombok
+            'va_hf_header_btn_radius'              => 999,
+            'va_hf_header_btn_pad_y'               => 8,
+            'va_hf_header_btn_pad_x'               => 20,
+            'va_hf_header_btn_glow_alpha'          => '0.40',
+            'va_hf_header_user_border_alpha'       => '0.12',
+            'va_hf_header_user_bg_alpha'           => '0.06',
+            'va_hf_header_mobile_show_search'      => '0',
+            'va_hf_header_mobile_show_submit'      => '0',
+            'va_hf_header_submit_text'             => '+ Hirdetés feladása',
+            'va_hf_header_register_text'           => 'Regisztráció',
+            'va_hf_header_login_text'              => 'Bejelentkezés',
+
+            // Lábléc layout/kinézet
+            'va_hf_footer_top_padding'             => 48,
+            'va_hf_footer_bottom_padding'          => 24,
+            'va_hf_footer_grid_gap'                => 32,
+            'va_hf_footer_col_min_width'           => 160,
+            'va_hf_footer_title_gap'               => 12,
+            'va_hf_footer_link_pad_y'              => 4,
+            'va_hf_footer_bottom_top_padding'      => 20,
+            'va_hf_footer_border_alpha'            => '0.07',
+            'va_hf_footer_bottom_border_alpha'     => '0.07',
+            'va_hf_footer_max_width'               => 1400,
+
+            // Lábléc szövegek
+            'va_hf_footer_brand_title'             => 'VadászApró',
+            'va_hf_footer_col_categories_title'    => 'Kategóriák',
+            'va_hf_footer_col_account_title'       => 'Fiók',
+            'va_hf_footer_col_legal_title'         => 'Jogi információk',
+            'va_hf_footer_link_aszf'               => 'ÁSZF',
+            'va_hf_footer_link_privacy'            => 'Adatvédelmi nyilatkozat',
+            'va_hf_footer_link_contact'            => 'Kapcsolat',
+            'va_hf_footer_link_help'               => 'Súgó',
+            'va_hf_footer_copy_text'               => 'VadászApró – Minden jog fenntartva.',
+            'va_hf_footer_privacy_text'            => 'Adatvédelem',
         ];
         foreach ( $design as $key => $default ) {
             register_setting( 'va_design_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
@@ -457,6 +520,117 @@ class VA_Settings_Page {
                 </table>
 
                 <?php submit_button( 'Design mentése' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /* ══ Fejléc + Lábléc oldal (maximális paraméterezés) ════════ */
+    public static function render_header_footer() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $weights = [
+            '300' => '300 – Light',
+            '400' => '400 – Normal',
+            '500' => '500 – Medium',
+            '600' => '600 – SemiBold',
+            '700' => '700 – Bold',
+            '800' => '800 – ExtraBold',
+            '900' => '900 – Black',
+        ];
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🧩 VadászApró – Fejléc + Lábléc (100% kontroll)</h1>
+            <p class="description">Külön menüből finomhangolhatod a fejléc és a lábléc layoutját, szövegeit, méreteit, mobil viselkedését és vizuális részleteit.</p>
+            <?php settings_errors( 'va_design_settings' ); ?>
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_design_settings' ); ?>
+
+                <h2>Fejléc: alap layout és üveg-hatás</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_hf_header_height',              'Fejléc magasság (px)', 50, 120 ); ?>
+                    <?php self::field_num( 'va_hf_header_max_width',           'Fejléc belső max szélesség (px)', 960, 2200 ); ?>
+                    <?php self::field_num( 'va_hf_header_padding_x',           'Fejléc belső vízszintes padding (px)', 0, 80 ); ?>
+                    <?php self::field_num( 'va_hf_header_padding_top',         'Fejléc belső felső padding (px)', 0, 30 ); ?>
+                    <?php self::field_num( 'va_hf_header_padding_bottom',      'Fejléc belső alsó padding (px)', 0, 30 ); ?>
+                    <?php self::field_num( 'va_hf_header_gap',                 'Fejléc elemek közti gap (px)', 0, 40 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_bg_opacity',      'Fejléc háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_bg_opacity_scrolled', 'Fejléc háttér opacitás scroll után (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_num( 'va_hf_header_blur',                'Fejléc blur (px)', 0, 40 ); ?>
+                    <?php self::field_num( 'va_hf_header_blur_scrolled',       'Fejléc blur scroll után (px)', 0, 44 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_shadow_alpha',    'Fejléc árnyék opacitás (0-1)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <h2>Fejléc: kereső részletes vezérlés</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_hf_header_search_max_width',        'Kereső max szélesség (px)', 220, 760 ); ?>
+                    <?php self::field_num( 'va_hf_header_search_height',           'Kereső magasság (px)', 30, 64 ); ?>
+                    <?php self::field_num( 'va_hf_header_search_radius',           'Kereső lekerekítés (px)', 8, 999 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_search_border_alpha', 'Kereső keret opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_search_bg_alpha',     'Kereső háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_search_hover_border_alpha', 'Kereső keret opacitás hover (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_search_focus_border_alpha', 'Kereső keret opacitás fókusz (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_num( 'va_hf_header_search_icon_size',        'Nagyító ikon méret (px)', 10, 28 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_search_icon_bg_alpha', 'Nagyító gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_search_icon_bg_hover_alpha', 'Nagyító gomb háttér opacitás hover (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_text( 'va_hf_header_search_placeholder',      'Kereső placeholder szöveg' ); ?>
+                </table>
+
+                <h2>Fejléc: gombok, feliratok és mobil viselkedés</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_hf_header_btn_radius',          'Header gombok lekerekítés (px)', 8, 999 ); ?>
+                    <?php self::field_num( 'va_hf_header_btn_pad_y',           'Header gombok függőleges padding (px)', 4, 20 ); ?>
+                    <?php self::field_num( 'va_hf_header_btn_pad_x',           'Header gombok vízszintes padding (px)', 8, 40 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Piros gomb glow opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Felhasználó gomb keret opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_header_user_bg_alpha',   'Felhasználó gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső megjelenjen mobilon is' ); ?>
+                    <?php self::field_toggle( 'va_hf_header_mobile_show_submit', 'Piros CTA gomb megjelenjen mobilon is' ); ?>
+                    <?php self::field_text( 'va_hf_header_submit_text',        'CTA gomb szöveg (bejelentkezve)' ); ?>
+                    <?php self::field_text( 'va_hf_header_register_text',      'CTA gomb szöveg (vendég)' ); ?>
+                    <?php self::field_text( 'va_hf_header_login_text',         'Belépés gomb szöveg (vendég)' ); ?>
+                    <?php self::field_select( 'va_weight_header_brand', 'Brand név súly/típus', $weights ); ?>
+                    <?php self::field_select( 'va_weight_header_nav',   'Navigáció súly/típus', $weights ); ?>
+                    <?php self::field_num( 'va_size_header_brand',      'Brand név méret (px)', 10, 44 ); ?>
+                    <?php self::field_num( 'va_size_header_nav',        'Navigáció méret (px)', 10, 34 ); ?>
+                    <?php self::field_num( 'va_size_header_search',     'Kereső szövegméret (px)', 10, 30 ); ?>
+                    <?php self::field_num( 'va_size_header_btn',        'Fejléc gomb szövegméret (px)', 10, 30 ); ?>
+                </table>
+
+                <h2>Lábléc: layout, spacing, tipográfia</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_hf_footer_top_padding',        'Lábléc felső padding (px)', 12, 120 ); ?>
+                    <?php self::field_num( 'va_hf_footer_bottom_padding',     'Lábléc alsó padding (px)', 8, 80 ); ?>
+                    <?php self::field_num( 'va_hf_footer_grid_gap',           'Lábléc oszlop gap (px)', 8, 80 ); ?>
+                    <?php self::field_num( 'va_hf_footer_col_min_width',      'Lábléc oszlop minimum szélesség (px)', 120, 420 ); ?>
+                    <?php self::field_num( 'va_hf_footer_title_gap',          'Lábléc oszlopcím alsó margó (px)', 4, 36 ); ?>
+                    <?php self::field_num( 'va_hf_footer_link_pad_y',         'Lábléc link függőleges térköz (px)', 0, 20 ); ?>
+                    <?php self::field_num( 'va_hf_footer_bottom_top_padding', 'Lábléc alsó sor felső padding (px)', 6, 40 ); ?>
+                    <?php self::field_decimal( 'va_hf_footer_border_alpha',   'Lábléc felső keret opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hf_footer_bottom_border_alpha', 'Lábléc alsó sor keret opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_num( 'va_hf_footer_max_width',          'Lábléc tartalom max szélesség (px)', 800, 2200 ); ?>
+                    <?php self::field_select( 'va_weight_footer_title', 'Lábléc címsor súly/típus', $weights ); ?>
+                    <?php self::field_select( 'va_weight_footer_link',  'Lábléc link súly/típus', $weights ); ?>
+                    <?php self::field_num( 'va_size_footer_title',      'Lábléc oszlopcím méret (px)', 10, 34 ); ?>
+                    <?php self::field_num( 'va_size_footer_link',       'Lábléc link méret (px)', 10, 30 ); ?>
+                    <?php self::field_num( 'va_size_footer_bottom',     'Lábléc alsó sor méret (px)', 10, 28 ); ?>
+                </table>
+
+                <h2>Lábléc: összes felirat és link címke</h2>
+                <table class="form-table">
+                    <?php self::field_text( 'va_hf_footer_brand_title',          'Brand oszlop cím' ); ?>
+                    <?php self::field_text( 'va_hf_footer_col_categories_title', 'Kategóriák oszlop cím' ); ?>
+                    <?php self::field_text( 'va_hf_footer_col_account_title',    'Fiók oszlop cím' ); ?>
+                    <?php self::field_text( 'va_hf_footer_col_legal_title',      'Jogi oszlop cím' ); ?>
+                    <?php self::field_text( 'va_hf_footer_link_aszf',            'ÁSZF link felirat' ); ?>
+                    <?php self::field_text( 'va_hf_footer_link_privacy',         'Adatvédelem link felirat (jogi oszlop)' ); ?>
+                    <?php self::field_text( 'va_hf_footer_link_contact',         'Kapcsolat link felirat' ); ?>
+                    <?php self::field_text( 'va_hf_footer_link_help',            'Súgó link felirat' ); ?>
+                    <?php self::field_text( 'va_hf_footer_copy_text',            'Copyright szöveg (év után)' ); ?>
+                    <?php self::field_text( 'va_hf_footer_privacy_text',         'Alsó sor adatvédelem link felirat' ); ?>
+                </table>
+
+                <?php submit_button( 'Fejléc + Lábléc mentése' ); ?>
             </form>
         </div>
         <?php
