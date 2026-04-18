@@ -733,3 +733,132 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
 /* ── Animációk ─────────────────────────────────── */
 @keyframes va-pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }
 @keyframes va-register-loading { from { transform: translateX(-130%); } to { transform: translateX(380%); } }
+
+/* ── Kredit csomag vásárló (va_buy_credits shortcode) ── */
+.va-credits-hero {
+  text-align: center;
+  padding: 28px 0 18px;
+}
+.va-credits-title {
+  font-size: 26px;
+  font-weight: 900;
+  margin: 0 0 6px;
+}
+.va-credits-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,.55);
+  margin: 0 0 10px;
+}
+.va-credits-count {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  background: rgba(255,0,0,.12);
+  border: 1px solid rgba(255,0,0,.35);
+  color: #ff4040;
+  border-radius: 999px;
+  padding: 4px 14px;
+}
+
+.va-pkg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 18px 0;
+}
+.va-pkg-card {
+  position: relative;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--va-radius);
+  padding: 22px 18px 18px;
+  text-align: center;
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+  cursor: default;
+}
+.va-pkg-card:hover {
+  border-color: rgba(255,0,0,.5);
+  box-shadow: 0 0 18px rgba(255,0,0,.15);
+  transform: translateY(-2px);
+}
+.va-pkg-card--popular {
+  border-color: #ff0000;
+  box-shadow: 0 0 22px rgba(255,0,0,.25);
+}
+.va-pkg-popular-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #ff4040;
+  margin-bottom: 8px;
+}
+.va-pkg-badge {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ff0000;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 3px 12px;
+  white-space: nowrap;
+}
+.va-pkg-qty {
+  font-size: 36px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.va-pkg-price {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--va-accent);
+  margin-bottom: 2px;
+}
+.va-pkg-unit {
+  font-size: 12px;
+  color: rgba(255,255,255,.45);
+  margin-bottom: 14px;
+}
+.va-pkg-card .va-btn {
+  width: 100%;
+  justify-content: center;
+}
+
+/* Egyedi mennyiség */
+.va-pkg-custom {
+  background: #141414;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--va-radius);
+  padding: 20px;
+  margin-top: 6px;
+}
+.va-pkg-custom-title {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.va-pkg-custom-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.va-pkg-custom-row .va-input {
+  max-width: 100px;
+}
+.va-pkg-custom-total {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--va-accent);
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .va-pkg-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .va-credits-title { font-size: 20px; }
+}
