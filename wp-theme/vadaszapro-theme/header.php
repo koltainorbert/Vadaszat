@@ -59,7 +59,7 @@
                             + '<span class="va-sd__info"><span class="va-sd__title">'+r.title+'</span>'
                             + (r.price ? '<span class="va-sd__price">'+r.price+'</span>' : '')
                             + '</span>'
-                            + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':'Hirdetés')+'</span>'
+                            + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':r.type==='category'?'Kategória':r.type==='user'?'Felhasználó':'Hirdetés')+'</span>'
                             + '</a>';
                     }).join('') + '<a class="va-sd__all" href="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>?s=" id="va-sd-all-link">Összes találat →</a>';
                     // fix: all link gets current query

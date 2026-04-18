@@ -321,6 +321,27 @@ class VA_Ajax {
         }
 
         wp_reset_postdata();
+
+        // Felhasználó találatok
+        $users = get_users([
+            'search'         => '*' . $q . '*',
+            'search_columns' => [ 'user_login', 'display_name' ],
+            'number'         => 3,
+            'fields'         => [ 'ID', 'display_name', 'user_login' ],
+        ]);
+        foreach ( $users as $u ) {
+            $author_page = get_author_posts_url( $u->ID );
+            $avatar      = get_avatar_url( $u->ID, [ 'size' => 80 ] );
+            $results[] = [
+                'id'    => $u->ID,
+                'title' => $u->display_name,
+                'url'   => $author_page,
+                'price' => '@' . $u->user_login,
+                'thumb' => $avatar,
+                'type'  => 'user',
+            ];
+        }
+
         wp_send_json_success( $results );
     }
 }
