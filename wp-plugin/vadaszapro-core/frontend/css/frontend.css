@@ -325,8 +325,9 @@
 .va-ad-zone { text-align: center; overflow: hidden; }
 
 /* ── Scroll animáció ────────────────────────────── */
-.va-animate { opacity: 0; transform: translateY(24px); transition: opacity 0.5s ease, transform 0.5s ease; }
-.va-animate.visible { opacity: 1; transform: none; }
+.va-animate { opacity: 1; transform: none; transition: opacity 0.5s ease, transform 0.5s ease; }
+html.va-js .va-animate { opacity: 0; transform: translateY(24px); }
+html.va-js .va-animate.visible { opacity: 1; transform: none; }
 
 /* ── Animációk ─────────────────────────────────── */
 @keyframes va-pulse { 0%,100% { opacity:1; } 50% { opacity:0.5; } }

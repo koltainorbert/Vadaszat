@@ -15,6 +15,15 @@
 ### Eredmény
 - A kártyák megjelenése egységes lett az egész oldalon (kereső, archívum, kategória): arányos kép + rendezett cím/ár/meta blokk.
 
+### Hotfix (ugyanebben a sessionben)
+- [x] Hiba: `Hirdetések` oldalon a találatszám látszott, de kártyák nem
+- [x] Ok: a kártyák `va-animate` class miatt CSS-ben alapból rejtve voltak (`opacity:0`), de ezen az oldalon nem futott mindig a láthatóvá tevő JS
+- [x] Javítás:
+  - `frontend.css`: `va-animate` alapállapot látható
+  - csak JS jelenlét esetén legyen rejtett (`html.va-js .va-animate`)
+  - `frontend.js`: `document.documentElement.classList.add('va-js')`
+- [x] Deploy: `Deploy All` kész
+
 ---
 
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)

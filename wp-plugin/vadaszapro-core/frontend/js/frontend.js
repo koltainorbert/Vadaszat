@@ -6,6 +6,8 @@
 (function($) {
   'use strict';
 
+  document.documentElement.classList.add('va-js');
+
   // ── Megtekintés számláló ─────────────────────────────────
   if (typeof VA_Data !== 'undefined' && VA_Data.post_id) {
     $.post(VA_Data.ajax_url, {
