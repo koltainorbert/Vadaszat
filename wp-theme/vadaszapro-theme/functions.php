@@ -40,6 +40,15 @@ add_action( 'wp_default_scripts', function ( $scripts ) {
     }
 } );
 
+// Összes script defer – kivéve admin és inline
+add_filter( 'script_loader_tag', function ( $tag, $handle ) {
+    if ( is_admin() ) return $tag;
+    // Inline scriptek és már defer/async tagek ne duplázódjanak
+    if ( str_contains( $tag, ' defer' ) || str_contains( $tag, ' async' ) ) return $tag;
+    if ( ! str_contains( $tag, ' src=' ) ) return $tag;
+    return str_replace( ' src=', ' defer src=', $tag );
+}, 10, 2 );
+
 // DNS prefetch + preconnect
 add_action( 'wp_head', function () {
     echo '<link rel="preconnect" href="' . esc_url( home_url() ) . '">' . "\n";
