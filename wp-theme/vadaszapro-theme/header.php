@@ -62,13 +62,17 @@
                             + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':r.type==='category'?'Kategória':r.type==='user'?'Felhasználó':'Hirdetés')+'</span>'
                             + '</a>';
                     }).join('') + '<a class="va-sd__all" href="#" id="va-sd-all-link">Összes találat →</a>';
-                    // "Összes találat" link: ha van kategória találat → annak összes terméke; egyébként kulcsszavas keresés
-                    var catItem = items.find(function(r){ return r.type === 'category'; });
-                    var allLink = dropdown.querySelector('#va-sd-all-link');
+                    // "Összes találat" link prioritás: kategória → user → kulcsszó
+                    var catItem  = items.find(function(r){ return r.type === 'category'; });
+                    var userItem = items.find(function(r){ return r.type === 'user'; });
+                    var allLink  = dropdown.querySelector('#va-sd-all-link');
+                    var baseUrl  = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>';
                     if (catItem) {
-                        allLink.href = catItem.url; // ?cat=ID → az adott kategória összes hirdetése
+                        allLink.href = catItem.url; // ?cat=ID → kategória összes hirdetése
+                    } else if (userItem) {
+                        allLink.href = baseUrl + '?user_search=1&s=' + encodeURIComponent(input.value); // összes felhasználó
                     } else {
-                        allLink.href = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>?s=' + encodeURIComponent(input.value);
+                        allLink.href = baseUrl + '?s=' + encodeURIComponent(input.value);
                     }
                     dropdown.hidden = false;
                 }

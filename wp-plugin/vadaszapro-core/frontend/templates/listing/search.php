@@ -9,9 +9,51 @@ $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] 
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 
 // URL paraméterek
-$url_s         = sanitize_text_field( wp_unslash( $_GET['s']         ?? '' ) );
-$url_cat       = intval( $_GET['cat']       ?? 0 );
-$url_author_id = intval( $_GET['author_id'] ?? 0 );
+$url_s           = sanitize_text_field( wp_unslash( $_GET['s']           ?? '' ) );
+$url_cat         = intval( $_GET['cat']         ?? 0 );
+$url_author_id   = intval( $_GET['author_id']   ?? 0 );
+$url_user_search = ! empty( $_GET['user_search'] );
+
+// ── Felhasználó-kereső mód ────────────────────────────────────
+if ( $url_user_search ) {
+    wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
+    $user_args = [
+        'number'  => 50,
+        'orderby' => 'display_name',
+        'order'   => 'ASC',
+    ];
+    if ( $url_s ) {
+        $user_args['search']         = '*' . $url_s . '*';
+        $user_args['search_columns'] = [ 'user_login', 'display_name' ];
+    }
+    $users = get_users( $user_args );
+    $search_page = get_page_by_path( 'va-hirdetes-kereses' );
+    $search_url  = $search_page ? get_permalink( $search_page ) : home_url( '/va-hirdetes-kereses/' );
+    ?>
+    <div class="va-wrap">
+        <?php va_display_flash(); ?>
+        <div class="va-filter-bar" style="margin-bottom:24px;">
+            <div class="va-filter-bar__title">👤 Felhasználók<?php echo $url_s ? ' – <em>' . esc_html( $url_s ) . '</em>' : ''; ?></div>
+        </div>
+        <div class="va-user-grid">
+        <?php if ( empty( $users ) ): ?>
+            <p style="color:rgba(255,255,255,0.5);">Nem találtunk felhasználót.</p>
+        <?php else: foreach ( $users as $u ):
+            $avatar      = get_avatar_url( $u->ID, [ 'size' => 160 ] );
+            $listing_url = add_query_arg( 'author_id', $u->ID, $search_url );
+            $count       = count_user_posts( $u->ID, 'va_listing' );
+        ?>
+            <a class="va-user-card" href="<?php echo esc_url( $listing_url ); ?>">
+                <img class="va-user-card__avatar" src="<?php echo esc_url( $avatar ); ?>" alt="" loading="lazy">
+                <div class="va-user-card__name"><?php echo esc_html( $u->display_name ); ?></div>
+                <div class="va-user-card__meta"><?php echo intval( $count ); ?> hirdetés</div>
+            </a>
+        <?php endforeach; endif; ?>
+        </div>
+    </div>
+    <?php
+    return; // ne futtassa a hirdetés-szűrő részt
+}
 
 wp_enqueue_script( 'va-frontend', VA_PLUGIN_URL . 'frontend/js/frontend.js', [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-frontend', 'VA_Data', [

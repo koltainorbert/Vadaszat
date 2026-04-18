@@ -90,6 +90,14 @@
 .va-grid--list .va-card { display: grid; grid-template-columns: 180px 1fr; }
 .va-grid--list .va-card__thumb, .va-grid--list .va-card__thumb-placeholder { height: 100%; min-height: 140px; }
 
+/* ── Felhasználó rács ─────────────────────────────── */
+.va-user-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 20px; }
+.va-user-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 14px; background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); text-decoration: none; color: #fff; transition: border-color .2s, box-shadow .2s; }
+.va-user-card:hover { border-color: #ff0000; box-shadow: 0 0 16px rgba(255,0,0,.25); }
+.va-user-card__avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,.15); }
+.va-user-card__name { font-size: 14px; font-weight: 600; text-align: center; }
+.va-user-card__meta { font-size: 12px; color: rgba(255,255,255,.45); }
+
 /* ── Szűrő sáv ────────────────────────────────────── */
 .va-filter-bar { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px; margin-bottom: 24px; }
 .va-filter-bar__title { font-size: 13px; font-weight: 700; color: var(--va-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
