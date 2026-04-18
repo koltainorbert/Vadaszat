@@ -99,6 +99,39 @@ class VA_Settings_Page {
             'va_color_footer_text'     => 'rgba(255,255,255,.72)',
             'va_color_footer_headings' => '#ffffff',
             'va_color_footer_links'    => '#ff4444',
+
+            // Hero méretek (összes oldal)
+            'va_size_home_hero_badge'      => 11,
+            'va_size_home_hero_title'      => 64,
+            'va_size_home_hero_sub'        => 19,
+            'va_size_home_hero_btn'        => 15,
+            'va_size_kat_hero_badge'       => 10,
+            'va_size_kat_hero_title'       => 56,
+            'va_size_kat_hero_sub'         => 15,
+            'va_size_kat_hero_stat_num'    => 20,
+            'va_size_kat_hero_stat_label'  => 10,
+            'va_size_tax_hero_badge'       => 11,
+            'va_size_tax_hero_title'       => 48,
+            'va_size_tax_hero_lead'        => 16,
+            'va_size_tax_hero_count'       => 14,
+            'va_size_contact_hero_badge'   => 11,
+            'va_size_contact_hero_title'   => 62,
+            'va_size_contact_hero_lead'    => 16,
+
+            // Fejléc elemek (méret + típus/súly)
+            'va_size_header_brand'         => 18,
+            'va_size_header_nav'           => 14,
+            'va_size_header_search'        => 14,
+            'va_size_header_btn'           => 13,
+            'va_weight_header_brand'       => '800',
+            'va_weight_header_nav'         => '600',
+
+            // Lábléc elemek (méret + típus/súly)
+            'va_size_footer_title'         => 13,
+            'va_size_footer_link'          => 13,
+            'va_size_footer_bottom'        => 12,
+            'va_weight_footer_title'       => '700',
+            'va_weight_footer_link'        => '500',
         ];
         foreach ( $design as $key => $default ) {
             register_setting( 'va_design_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
@@ -290,6 +323,15 @@ class VA_Settings_Page {
             'ibm-plex-sans'  => 'IBM Plex Sans',
             'noto-sans'      => 'Noto Sans',
         ];
+        $weights = [
+            '300' => '300 – Light',
+            '400' => '400 – Normal',
+            '500' => '500 – Medium',
+            '600' => '600 – SemiBold',
+            '700' => '700 – Bold',
+            '800' => '800 – ExtraBold',
+            '900' => '900 – Black',
+        ];
         ?>
         <div class="wrap va-admin-wrap">
             <h1>🎨 VadászApró – Design (globális + fejtől lábig)</h1>
@@ -336,6 +378,48 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg (hex vagy rgba)' ); ?>
                     <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsorok' ); ?>
                     <?php self::field_color( 'va_color_footer_links',    'Lábléc linkek' ); ?>
+                </table>
+
+                <h2>Hero szöveg méretek (összes oldal)</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_size_home_hero_badge',    'Főoldal hero badge méret (px)', 8, 32 ); ?>
+                    <?php self::field_num( 'va_size_home_hero_title',    'Főoldal hero cím méret (px)', 24, 120 ); ?>
+                    <?php self::field_num( 'va_size_home_hero_sub',      'Főoldal hero alcím méret (px)', 10, 42 ); ?>
+                    <?php self::field_num( 'va_size_home_hero_btn',      'Főoldal hero gomb szövegméret (px)', 10, 28 ); ?>
+
+                    <?php self::field_num( 'va_size_kat_hero_badge',     'Kategória hero badge méret (px)', 8, 32 ); ?>
+                    <?php self::field_num( 'va_size_kat_hero_title',     'Kategória hero cím méret (px)', 20, 110 ); ?>
+                    <?php self::field_num( 'va_size_kat_hero_sub',       'Kategória hero alcím méret (px)', 10, 40 ); ?>
+                    <?php self::field_num( 'va_size_kat_hero_stat_num',  'Kategória hero stat szám méret (px)', 10, 44 ); ?>
+                    <?php self::field_num( 'va_size_kat_hero_stat_label','Kategória hero stat felirat méret (px)', 8, 24 ); ?>
+
+                    <?php self::field_num( 'va_size_tax_hero_badge',     'Alkategória hero badge méret (px)', 8, 32 ); ?>
+                    <?php self::field_num( 'va_size_tax_hero_title',     'Alkategória hero cím méret (px)', 18, 100 ); ?>
+                    <?php self::field_num( 'va_size_tax_hero_lead',      'Alkategória hero leírás méret (px)', 10, 40 ); ?>
+                    <?php self::field_num( 'va_size_tax_hero_count',     'Alkategória hero találatszám méret (px)', 10, 34 ); ?>
+
+                    <?php self::field_num( 'va_size_contact_hero_badge', 'Kapcsolat hero badge méret (px)', 8, 32 ); ?>
+                    <?php self::field_num( 'va_size_contact_hero_title', 'Kapcsolat hero cím méret (px)', 20, 120 ); ?>
+                    <?php self::field_num( 'va_size_contact_hero_lead',  'Kapcsolat hero alcím méret (px)', 10, 40 ); ?>
+                </table>
+
+                <h2>Fejléc elemek méretei és típusai</h2>
+                <table class="form-table">
+                    <?php self::field_num(    'va_size_header_brand',   'Brand név méret (px)', 10, 44 ); ?>
+                    <?php self::field_num(    'va_size_header_nav',     'Navigáció méret (px)', 10, 34 ); ?>
+                    <?php self::field_num(    'va_size_header_search',  'Keresőmező szövegméret (px)', 10, 30 ); ?>
+                    <?php self::field_num(    'va_size_header_btn',     'Fejléc gomb szövegméret (px)', 10, 30 ); ?>
+                    <?php self::field_select( 'va_weight_header_brand', 'Brand név súly/típus', $weights ); ?>
+                    <?php self::field_select( 'va_weight_header_nav',   'Navigáció súly/típus', $weights ); ?>
+                </table>
+
+                <h2>Lábléc elemek méretei és típusai</h2>
+                <table class="form-table">
+                    <?php self::field_num(    'va_size_footer_title',   'Lábléc oszlopcím méret (px)', 10, 34 ); ?>
+                    <?php self::field_num(    'va_size_footer_link',    'Lábléc link méret (px)', 10, 30 ); ?>
+                    <?php self::field_num(    'va_size_footer_bottom',  'Lábléc alsó sor méret (px)', 10, 28 ); ?>
+                    <?php self::field_select( 'va_weight_footer_title', 'Lábléc címsor súly/típus', $weights ); ?>
+                    <?php self::field_select( 'va_weight_footer_link',  'Lábléc link súly/típus', $weights ); ?>
                 </table>
 
                 <?php submit_button( 'Design mentése' ); ?>

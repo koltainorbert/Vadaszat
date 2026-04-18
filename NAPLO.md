@@ -2,6 +2,29 @@
 
 ---
 
+## 2026. 04. 18. – Session #14 (Összes hero + fejléc + lábléc méret/típus vezérlés)
+
+### Mit csináltunk [x]
+- [x] Design oldalon teljes méretvezérlés az összes hero szövegre:
+  - Főoldal hero (badge, cím, alcím, gomb)
+  - Kategória hero (badge, cím, alcím, stat szám, stat felirat)
+  - Alkategória hero (badge, cím, leírás, találatszám)
+  - Kapcsolat hero (badge, cím, alcím)
+- [x] Fejléc elemek méret + típus/súly beállítások:
+  - brand név méret/súly
+  - navigáció méret/súly
+  - keresőméret
+  - fejléc gombok mérete
+- [x] Lábléc elemek méret + típus/súly beállítások:
+  - oszlopcím méret/súly
+  - link méret/súly
+  - alsó sor méret
+- [x] Frontend dinamikus CSS kibővítve az új opciók lekövetésére
+- [x] Hibavizsgálat: módosított fájlok hibamentesek
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #13 (Kiterjedt betűtípus + színrendszer külön Design oldalon)
 
 ### Mit csináltunk [x]

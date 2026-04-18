@@ -242,6 +242,25 @@ function va_design_css_color( string $value, string $fallback ): string {
     return $fallback;
 }
 
+function va_design_int_option( string $key, int $default, int $min, int $max ): int {
+    $val = absint( get_option( $key, $default ) );
+    if ( $val < $min ) {
+        return $min;
+    }
+    if ( $val > $max ) {
+        return $max;
+    }
+    return $val;
+}
+
+function va_design_weight_option( string $key, string $default ): string {
+    $val = preg_replace( '/[^0-9]/', '', (string) get_option( $key, $default ) );
+    if ( ! in_array( $val, [ '300', '400', '500', '600', '700', '800', '900' ], true ) ) {
+        return $default;
+    }
+    return $val;
+}
+
 add_action( 'wp_enqueue_scripts', function () {
     $font_keys = [
         'va_font_global',
@@ -292,6 +311,36 @@ add_action( 'wp_enqueue_scripts', function () {
     $footer_headings = va_design_css_color( (string) get_option( 'va_color_footer_headings', '#ffffff' ), '#ffffff' );
     $footer_links    = va_design_css_color( (string) get_option( 'va_color_footer_links', '#ff4444' ), '#ff4444' );
 
+    $home_hero_badge     = va_design_int_option( 'va_size_home_hero_badge', 11, 8, 32 );
+    $home_hero_title     = va_design_int_option( 'va_size_home_hero_title', 64, 24, 120 );
+    $home_hero_sub       = va_design_int_option( 'va_size_home_hero_sub', 19, 10, 42 );
+    $home_hero_btn       = va_design_int_option( 'va_size_home_hero_btn', 15, 10, 28 );
+    $kat_hero_badge      = va_design_int_option( 'va_size_kat_hero_badge', 10, 8, 32 );
+    $kat_hero_title      = va_design_int_option( 'va_size_kat_hero_title', 56, 20, 110 );
+    $kat_hero_sub        = va_design_int_option( 'va_size_kat_hero_sub', 15, 10, 40 );
+    $kat_hero_stat_num   = va_design_int_option( 'va_size_kat_hero_stat_num', 20, 10, 44 );
+    $kat_hero_stat_label = va_design_int_option( 'va_size_kat_hero_stat_label', 10, 8, 24 );
+    $tax_hero_badge      = va_design_int_option( 'va_size_tax_hero_badge', 11, 8, 32 );
+    $tax_hero_title      = va_design_int_option( 'va_size_tax_hero_title', 48, 18, 100 );
+    $tax_hero_lead       = va_design_int_option( 'va_size_tax_hero_lead', 16, 10, 40 );
+    $tax_hero_count      = va_design_int_option( 'va_size_tax_hero_count', 14, 10, 34 );
+    $contact_hero_badge  = va_design_int_option( 'va_size_contact_hero_badge', 11, 8, 32 );
+    $contact_hero_title  = va_design_int_option( 'va_size_contact_hero_title', 62, 20, 120 );
+    $contact_hero_lead   = va_design_int_option( 'va_size_contact_hero_lead', 16, 10, 40 );
+
+    $header_brand_size   = va_design_int_option( 'va_size_header_brand', 18, 10, 44 );
+    $header_nav_size     = va_design_int_option( 'va_size_header_nav', 14, 10, 34 );
+    $header_search_size  = va_design_int_option( 'va_size_header_search', 14, 10, 30 );
+    $header_btn_size     = va_design_int_option( 'va_size_header_btn', 13, 10, 30 );
+    $header_brand_weight = va_design_weight_option( 'va_weight_header_brand', '800' );
+    $header_nav_weight   = va_design_weight_option( 'va_weight_header_nav', '600' );
+
+    $footer_title_size   = va_design_int_option( 'va_size_footer_title', 13, 10, 34 );
+    $footer_link_size    = va_design_int_option( 'va_size_footer_link', 13, 10, 30 );
+    $footer_bottom_size  = va_design_int_option( 'va_size_footer_bottom', 12, 10, 28 );
+    $footer_title_weight = va_design_weight_option( 'va_weight_footer_title', '700' );
+    $footer_link_weight  = va_design_weight_option( 'va_weight_footer_link', '500' );
+
     $css = ':root{' .
         '--a:' . $global_accent . ';' .
         '--a2:' . $global_accent . ';' .
@@ -323,7 +372,39 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-footer,.va-footer *{font-family:' . $font_footer . ';}' .
     '.va-footer{background:' . $footer_bg . ';color:' . $footer_text . ';}' .
     '.va-footer__col-title{color:' . $footer_headings . ';}' .
-    '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' ;
+    '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' .
+
+    // Hero méretek – összes oldal
+    '.vh__badge{font-size:' . $home_hero_badge . 'px !important;}' .
+    '.vh__title{font-size:' . $home_hero_title . 'px !important;}' .
+    '.vh__sub{font-size:' . $home_hero_sub . 'px !important;}' .
+    '.vh__btn{font-size:' . $home_hero_btn . 'px !important;}' .
+
+    '.vcp-hero__badge{font-size:' . $kat_hero_badge . 'px !important;}' .
+    '.vcp-hero__title{font-size:' . $kat_hero_title . 'px !important;}' .
+    '.vcp-hero__sub{font-size:' . $kat_hero_sub . 'px !important;}' .
+    '.vcp-hero__stat-n{font-size:' . $kat_hero_stat_num . 'px !important;}' .
+    '.vcp-hero__stat-l{font-size:' . $kat_hero_stat_label . 'px !important;}' .
+
+    '.vcp-video__eyebrow{font-size:' . $tax_hero_badge . 'px !important;}' .
+    '.vcp-video__title{font-size:' . $tax_hero_title . 'px !important;}' .
+    '.vcp-video__lead{font-size:' . $tax_hero_lead . 'px !important;}' .
+    '.va-archive-header__count{font-size:' . $tax_hero_count . 'px !important;}' .
+
+    '.va-contact-page__eyebrow{font-size:' . $contact_hero_badge . 'px !important;}' .
+    '.va-contact-page__title{font-size:' . $contact_hero_title . 'px !important;}' .
+    '.va-contact-page__lead{font-size:' . $contact_hero_lead . 'px !important;}' .
+
+    // Fejléc elemek méretek/típusok
+    '.va-logo__text{font-size:' . $header_brand_size . 'px !important;font-weight:' . $header_brand_weight . ' !important;}' .
+    '.va-nav__item{font-size:' . $header_nav_size . 'px !important;font-weight:' . $header_nav_weight . ' !important;}' .
+    '.va-header__search-input{font-size:' . $header_search_size . 'px !important;}' .
+    '.va-header__submit-btn,.va-header__user,.va-header__user-login{font-size:' . $header_btn_size . 'px !important;}' .
+
+    // Lábléc elemek méretek/típusok
+    '.va-footer__col-title{font-size:' . $footer_title_size . 'px !important;font-weight:' . $footer_title_weight . ' !important;}' .
+    '.va-footer__link{font-size:' . $footer_link_size . 'px !important;font-weight:' . $footer_link_weight . ' !important;}' .
+    '.va-footer__bottom{font-size:' . $footer_bottom_size . 'px !important;}' ;
 
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );
