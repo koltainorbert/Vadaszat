@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #18 (Dinamikus header scroll progress csík)
+
+### Mit csináltunk [x]
+- [x] A header alján lévő fix piros csík eltávolítva
+- [x] Új dinamikus 2px progress csík került be a header aljára
+- [x] A csík görgetés alapján töltődik/leürül (le/fel görgetéskor)
+- [x] Markup + CSS + JS bekötés (`header.php`, `style.css`, `footer.php`)
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #17 (Főoldali hero logó feljebb igazítás)
 
 ### Mit csináltunk [x]

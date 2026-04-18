@@ -60,6 +60,7 @@
 (function(){
     // Hamburger + scroll-aware header
     var hdr  = document.querySelector('.va-header');
+    var progressBar = document.getElementById('va-scroll-progress-bar');
     var hbtn = document.getElementById('va-hamburger');
     var nav  = document.getElementById('va-main-nav');
 
@@ -67,8 +68,18 @@
     function onScroll(){
         if( window.scrollY > 40 ) hdr.classList.add('scrolled');
         else hdr.classList.remove('scrolled');
+
+        if (progressBar) {
+            var top = window.pageYOffset || document.documentElement.scrollTop || 0;
+            var height = document.documentElement.scrollHeight - window.innerHeight;
+            var pct = height > 0 ? (top / height) : 0;
+            if (pct < 0) pct = 0;
+            if (pct > 1) pct = 1;
+            progressBar.style.transform = 'scaleX(' + pct + ')';
+        }
     }
     window.addEventListener('scroll', onScroll, {passive:true});
+    window.addEventListener('resize', onScroll);
     onScroll();
 
     // Hamburger toggle
