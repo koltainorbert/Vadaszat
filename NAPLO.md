@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #20 (Header felső/alsó tér növelése logóhoz)
+
+### Mit csináltunk [x]
+- [x] Header magasság növelve (`--nav: 66px`)
+- [x] Header belső függőleges padding növelve (`.va-header__inner`: felül/alul több hely)
+- [x] Cél: logó ne érjen bele az alsó progress csík/border zónába
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #19 (Hero sorköz magasság állítás)
 
 ### Mit csináltunk [x]
