@@ -19,7 +19,13 @@
 
 /* ── Globális reset (a téma alá) ──────────────────── */
 .va-wrap, .va-wrap * { box-sizing: border-box; }
-.va-wrap { color: var(--va-text); font-family: 'Segoe UI', Arial, sans-serif; }
+.va-wrap {
+  color: var(--va-text);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: var(--va-bg);
+  border-radius: var(--va-radius);
+  padding: 2px 0;
+}
 
 /* ── Notice / flash üzenetek ─────────────────────── */
 .va-notice { padding: 12px 18px; border-radius: var(--va-radius); margin: 12px 0; font-size: 14px; border-left: 4px solid; }
