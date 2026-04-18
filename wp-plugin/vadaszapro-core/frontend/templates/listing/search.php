@@ -128,9 +128,22 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
             <div class="va-filter-bar__actions">
                 <button type="button" id="va-filter-reset" class="va-btn va-btn--outline va-btn--sm">Szűrők törlése</button>
                 <span id="va-results-count" style="font-size:13px;color:rgba(255,255,255,0.5);align-self:center;"></span>
-                <div style="margin-left:auto;display:flex;gap:8px;">
-                    <button type="button" class="va-btn va-btn--outline va-btn--sm" id="va-view-grid" title="Rács nézet">⊞</button>
-                    <button type="button" class="va-btn va-btn--outline va-btn--sm" id="va-view-list" title="Lista nézet">☰</button>
+                <div style="margin-left:auto;display:flex;gap:10px;">
+                    <button type="button" class="va-view-btn" id="va-view-grid" title="Rács nézet">
+                        <svg class="va-view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <rect class="va-grid-c1" x="3" y="3" width="8" height="8" rx="1.5"/>
+                            <rect class="va-grid-c2" x="13" y="3" width="8" height="8" rx="1.5"/>
+                            <rect class="va-grid-c3" x="3" y="13" width="8" height="8" rx="1.5"/>
+                            <rect class="va-grid-c4" x="13" y="13" width="8" height="8" rx="1.5"/>
+                        </svg>
+                    </button>
+                    <button type="button" class="va-view-btn" id="va-view-list" title="Lista nézet">
+                        <svg class="va-view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                            <line class="va-list-l1" x1="3" y1="6" x2="21" y2="6"/>
+                            <line class="va-list-l2" x1="3" y1="12" x2="21" y2="12"/>
+                            <line class="va-list-l3" x1="3" y1="18" x2="21" y2="18"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </form>

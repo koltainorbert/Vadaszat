@@ -40,6 +40,53 @@
 .va-btn--outline   { background: transparent; color: var(--va-text); border: 1px solid var(--va-border); }
 .va-btn--outline:hover { border-color: var(--va-accent); color: var(--va-accent); }
 .va-btn--outline.active { border-color: var(--va-accent); color: var(--va-accent); background: rgba(255,0,0,.1); }
+/* ── Nézetváltó gombok ─────────────────────────── */
+.va-view-btn {
+  width: 48px; height: 48px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px; cursor: pointer;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+  padding: 0;
+}
+.va-view-btn:hover {
+  background: rgba(255,0,0,.1);
+  border-color: rgba(255,0,0,.4);
+  box-shadow: 0 0 12px rgba(255,0,0,.2);
+}
+.va-view-btn.active {
+  background: rgba(255,0,0,.15);
+  border-color: #ff0000;
+  box-shadow: 0 0 16px rgba(255,0,0,.3);
+  color: #ff4040;
+}
+.va-view-icon {
+  width: 26px; height: 26px;
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.va-view-btn:hover .va-view-icon { transform: scale(1.2); }
+.va-view-btn.active .va-view-icon { stroke: #ff4040; }
+
+/* Rács ikon négyzetei egyenként animálódnak */
+.va-view-btn:hover .va-grid-c1 { animation: va-pop .3s .00s both; }
+.va-view-btn:hover .va-grid-c2 { animation: va-pop .3s .05s both; }
+.va-view-btn:hover .va-grid-c3 { animation: va-pop .3s .10s both; }
+.va-view-btn:hover .va-grid-c4 { animation: va-pop .3s .15s both; }
+
+/* Lista sorok egymás után csúsznak be */
+.va-view-btn:hover .va-list-l1 { animation: va-slide .25s .00s both; }
+.va-view-btn:hover .va-list-l2 { animation: va-slide .25s .07s both; }
+.va-view-btn:hover .va-list-l3 { animation: va-slide .25s .14s both; }
+
+@keyframes va-pop {
+  0%   { transform: scale(.6); opacity: .3; }
+  60%  { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes va-slide {
+  0%   { stroke-dasharray: 18; stroke-dashoffset: 18; opacity: 0; }
+  100% { stroke-dasharray: 18; stroke-dashoffset: 0;  opacity: 1; }
+}
 .va-btn--sm { padding: 6px 14px; font-size: 12px; }
 .va-btn--block { width: 100%; justify-content: center; }
 
