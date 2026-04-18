@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #39 (Minden admin mező érték láthatóság fix)
+
+### Mit csináltunk [x]
+- [x] Bevezetve központi `get_display_option()` fallback a settings oldalon
+- [x] Ha egy opció üres/hiányzik, a mező most a regisztrált default értéket mutatja
+- [x] Kiterjesztve az összes helper mezőre: text/email/url/media/number/decimal/select/color/toggle
+- [x] Eredmény: nem maradnak "vak" üres mezők, mindenhol látható aktuális vagy default érték
+- [x] Hibavizsgálat: módosított fájl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #38 (Admin mezők láthatósági fix)
 
 ### Mit csináltunk [x]
