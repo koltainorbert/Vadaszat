@@ -2,6 +2,15 @@
 
 ---
 
+## 2026. 04. 18. – Session #44 (Hold kulso kor eltavolitasa)
+
+### Mit csinaltunk [x]
+- [x] A hold canvas vegso kulso korvonala eltavolitva
+- [x] A belso megvilagitott perem megmaradt, csak a kulso gyuru tunik el
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #43 (Hold peremfeny + ideiglenes fazis szimulacio)
 
 ### Mit csinaltunk [x]

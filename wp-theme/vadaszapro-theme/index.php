@@ -232,9 +232,6 @@ get_header(); ?>
       ctx.restore();
     }
 
-    ctx.beginPath();ctx.arc(cx,cy,R,0,2*PI);
-    ctx.strokeStyle='rgba(180,185,170,'+(0.16+frac*.2)+')';
-    ctx.lineWidth=1;ctx.stroke();
   }
   /* ── Fázisnevek magyarul ── */
   var PH=[[.0625,'🌑 Újhold'],[.1875,'🌒 Növekvő sarló'],[.3125,'🌓 Első negyed'],
