@@ -38,6 +38,12 @@
                 <?php endforeach; ?>
             </nav>
 
+            <!-- Kereső -->
+            <form class="va-header__search" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get">
+                <input class="va-header__search-input" type="text" name="s" placeholder="Keresés… (pl. Beretta, 12/70)" autocomplete="off">
+                <button class="va-header__search-btn" type="submit" aria-label="Keresés">&#128269;</button>
+            </form>
+
             <!-- Jobb oldal -->
             <div class="va-header__right">
                 <?php if ( is_user_logged_in() ):

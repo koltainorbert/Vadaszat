@@ -91,7 +91,7 @@ hr { border-color: var(--border); }
 
 .va-header__inner {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   align-items: center;
   gap: 0;
   padding: 0 32px;
@@ -99,6 +99,31 @@ hr { border-color: var(--border); }
   max-width: 1480px;
   margin: 0 auto;
 }
+
+/* ── Header kereső ── */
+.va-header__search {
+  display: flex; align-items: center;
+  margin: 0 18px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 6px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.va-header__search:focus-within { border-color: rgba(255,0,0,.5); }
+.va-header__search-input {
+  background: transparent; border: none; outline: none;
+  color: #fff; font-size: .78rem; padding: 7px 14px;
+  width: 220px; min-width: 0;
+}
+.va-header__search-input::placeholder { color: rgba(255,255,255,.35); }
+.va-header__search-btn {
+  background: #ff0000; border: none; cursor: pointer;
+  color: #fff; padding: 7px 12px; font-size: .9rem;
+  transition: background .15s;
+}
+.va-header__search-btn:hover { background: #cc0000; }
+@media (max-width: 900px) { .va-header__search { display: none; } }
 
 /* ── Logo ── */
 .va-logo {
