@@ -66,8 +66,10 @@ function va_build_square_favicon_from_attachment( int $attachment_id, int $size 
         wp_mkdir_p( $subdir );
     }
 
-    $target_file = trailingslashit( $subdir ) . $attachment_id . '-' . $size . '.png';
-    $target_url  = trailingslashit( $upload['baseurl'] ) . 'va-favicons/' . $attachment_id . '-' . $size . '.png';
+    // Versionalt fajlnev, hogy a regi cache-elt ikon ne maradjon bent.
+    $variant = 'safe2';
+    $target_file = trailingslashit( $subdir ) . $attachment_id . '-' . $size . '-' . $variant . '.png';
+    $target_url  = trailingslashit( $upload['baseurl'] ) . 'va-favicons/' . $attachment_id . '-' . $size . '-' . $variant . '.png';
 
     if ( file_exists( $target_file ) ) {
         return $target_url;
@@ -78,6 +80,67 @@ function va_build_square_favicon_from_attachment( int $attachment_id, int $size 
         return '';
     }
 
+    $img_info = @getimagesize( $src );
+    $mime = (string) ( $img_info['mime'] ?? '' );
+
+    if ( function_exists( 'imagecreatetruecolor' ) && $mime !== '' ) {
+        $source_image = null;
+        if ( $mime === 'image/png' && function_exists( 'imagecreatefrompng' ) ) {
+            $source_image = @imagecreatefrompng( $src );
+        } elseif ( ( $mime === 'image/jpeg' || $mime === 'image/jpg' ) && function_exists( 'imagecreatefromjpeg' ) ) {
+            $source_image = @imagecreatefromjpeg( $src );
+        } elseif ( $mime === 'image/gif' && function_exists( 'imagecreatefromgif' ) ) {
+            $source_image = @imagecreatefromgif( $src );
+        } elseif ( $mime === 'image/webp' && function_exists( 'imagecreatefromwebp' ) ) {
+            $source_image = @imagecreatefromwebp( $src );
+        }
+
+        if ( $source_image ) {
+            $w = (int) imagesx( $source_image );
+            $h = (int) imagesy( $source_image );
+
+            if ( $w > 0 && $h > 0 ) {
+                $side = min( $w, $h );
+                $x = (int) floor( ( $w - $side ) / 2 );
+                $y = (int) floor( ( $h - $side ) / 2 );
+
+                $canvas = imagecreatetruecolor( $size, $size );
+                imagealphablending( $canvas, false );
+                imagesavealpha( $canvas, true );
+                $transparent = imagecolorallocatealpha( $canvas, 0, 0, 0, 127 );
+                imagefill( $canvas, 0, 0, $transparent );
+
+                // 8% belso margot adunk, hogy a jel ne legyen lecsapva szelen.
+                $inset = max( 1, (int) round( $size * 0.08 ) );
+                $inner = max( 1, $size - ( 2 * $inset ) );
+
+                imagecopyresampled(
+                    $canvas,
+                    $source_image,
+                    $inset,
+                    $inset,
+                    $x,
+                    $y,
+                    $inner,
+                    $inner,
+                    $side,
+                    $side
+                );
+
+                $ok = imagepng( $canvas, $target_file, 6 );
+                imagedestroy( $canvas );
+                imagedestroy( $source_image );
+
+                if ( $ok ) {
+                    return $target_url;
+                }
+            } else {
+                imagedestroy( $source_image );
+            }
+        }
+    }
+
+    // Fallback: ha GD nem elerheto, marad a WP image editor.
     $editor = wp_get_image_editor( $src );
     if ( is_wp_error( $editor ) ) {
         return '';

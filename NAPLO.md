@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #65 (Favicon bal oldal lecsapas javitas)
+
+### Mit csinaltunk [x]
+- [x] Favicon generalas javitva biztonsagi belso margoval (8%)
+- [x] A kesz ikon PNG atlatszo canvason keszul, hogy a jel ne erjen a szelere
+- [x] Versionalt favicon fajlnev bevezetve cache-bustinghoz (`safe2`)
+- [x] Fallback megtartva: GD hianyaban WP image editor
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #64 (Kartya meta egy sor alap + migracio)
 
 ### Mit csinaltunk [x]
