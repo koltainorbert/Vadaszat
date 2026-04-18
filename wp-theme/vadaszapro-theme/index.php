@@ -566,8 +566,10 @@ var MD=[31,28,31,30,31,30,31,31,30,31,30,31];
 var MN=["Jan","Feb","M\u00e1r","\u00c1pr","M\u00e1j","J\u00fan","J\u00fal","Aug","Szep","Okt","Nov","Dec"];
 var MF=["Janu\u00e1r","Febru\u00e1r","M\u00e1rcius","\u00c1prilis","M\u00e1jus","J\u00fanius","J\u00falius","Augusztus","Szeptember","Okt\u00f3ber","November","December"];
 var TOTAL=365;
+var PI=Math.PI,sin=Math.sin,cos=Math.cos,asin=Math.asin,acos=Math.acos,rad=PI/180,e=rad*23.4397;
 function doy(m,d){var i=0;for(var x=1;x<m;x++)i+=MD[x-1];return i+d-1;}
 function nowBPsimple(){var d=new Date(),parts={};new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).formatToParts(d).forEach(function(p){if(p.type!=='literal')parts[p.type]=+p.value;});return parts;}
+function sunDeclination(L){return asin(sin(e)*sin(L));}
 function toJulian(date){return date.valueOf()/86400000-.5+2440588;}
 function fromJulian(j){return new Date((j+0.5-2440588)*86400000);}
 function toDays(date){return toJulian(date)-2451545;}
@@ -589,9 +591,9 @@ function getSunTimesBp(year,month,day){
   var off=tzOffsetMinutes(localNoonUtcGuess,'Europe/Budapest');
   var localNoonUtc=new Date(localNoonUtcGuess.getTime()-off*60000);
   var d=toDays(localNoonUtc),n=julianCycle(d,lw),ds=approxTransit(0,lw,n);
-  var M=solarMeanAnomaly(ds),L=eclipticLongitude(M),dec=dec(L,0);
+  var M=solarMeanAnomaly(ds),L=eclipticLongitude(M),decl=sunDeclination(L);
   var Jnoon=solarTransitJ(ds,M,L);
-  var h0=-0.833*rad,w=hourAngle(h0,phi,dec);
+  var h0=-0.833*rad,w=hourAngle(h0,phi,decl);
   var Jset=solarTransitJ(approxTransit(w,lw,n),M,L);
   var Jrise=Jnoon-(Jset-Jnoon);
   return {rise:fromJulian(Jrise),set:fromJulian(Jset)};
