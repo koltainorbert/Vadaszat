@@ -385,6 +385,54 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        /* Layout builder (Divi/Porto jellegu) */
+        $layout = [
+            'va_layout_preset'                => 'porto',
+
+            // Global container
+            'va_layout_page_max_width'        => '1400',
+            'va_layout_container_pad_x'       => '20',
+            'va_layout_container_pad_x_mobile'=> '12',
+
+            // Main content and sidebars
+            'va_layout_main_pad_y'            => '20',
+            'va_layout_main_pad_x'            => '24',
+            'va_layout_home_main_pad_x'       => '28',
+            'va_layout_content_gap'           => '0',
+            'va_layout_right_sidebar_width'   => '340',
+            'va_layout_right_sidebar_sticky_top' => '48',
+            'va_layout_show_right_sidebar'    => '1',
+
+            // Listing grids
+            'va_layout_grid_cols_desktop'     => '4',
+            'va_layout_grid_cols_tablet'      => '2',
+            'va_layout_grid_cols_mobile'      => '1',
+            'va_layout_grid_gap'              => '14',
+
+            // Card appearance
+            'va_layout_card_radius'           => '6',
+            'va_layout_card_border_alpha'     => '0.08',
+            'va_layout_card_padding_y'        => '14',
+            'va_layout_card_padding_x'        => '14',
+            'va_layout_card_title_size'       => '15',
+            'va_layout_card_price_size'       => '17',
+            'va_layout_card_meta_size'        => '12',
+            'va_layout_card_img_ratio'        => '4/3',
+
+            // Effects
+            'va_layout_card_hover_lift'       => '2',
+            'va_layout_card_shadow_strength'  => '35',
+            'va_layout_card_shadow_red'       => '16',
+            'va_layout_widget_radius'         => '10',
+            'va_layout_widget_padding'        => '16',
+        ];
+
+        foreach ( $layout as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_layout_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
         // Videó URL-ek (hero/oldalblokkok) – adminból szerkeszthető
         $video_urls = [
             'va_home_hero_video_url'      => content_url( 'uploads/2026/04/521380_Gun_Woman_1920x1080.mp4' ),
@@ -863,6 +911,85 @@ class VA_Settings_Page {
                 </table>
 
                 <?php submit_button( 'Fejléc + Lábléc mentése' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /* ══ Layout Builder oldal ═════════════════════════════ */
+    public static function render_layout_builder() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🧩 VadászApró – Layout Állító (Divi / Porto mintára)</h1>
+            <p class="description">Nagy léptékű layout finomhangolás: konténer, rácsok, oldalsáv, kártyák, árnyékok, tördelés, mobil viselkedés.</p>
+            <?php settings_errors( 'va_layout_settings' ); ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_layout_settings' ); ?>
+
+                <h2>Preset</h2>
+                <table class="form-table">
+                    <?php self::field_select( 'va_layout_preset', 'Layout preset', [
+                        'porto' => 'Porto (kompakt, commerce fókusz)',
+                        'divi'  => 'Divi (légiesebb, moduláris)',
+                        'custom'=> 'Custom (kézi finomhangolás)',
+                    ] ); ?>
+                </table>
+
+                <h2>Konténer és Tördelés</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_layout_page_max_width', 'Oldal max szélesség (px)', 960, 2200 ); ?>
+                    <?php self::field_num( 'va_layout_container_pad_x', 'Konténer oldalpárna desktop (px)', 0, 80 ); ?>
+                    <?php self::field_num( 'va_layout_container_pad_x_mobile', 'Konténer oldalpárna mobil (px)', 0, 40 ); ?>
+                    <?php self::field_num( 'va_layout_main_pad_y', 'Főtartalom függőleges padding (px)', 0, 80 ); ?>
+                    <?php self::field_num( 'va_layout_main_pad_x', 'Főtartalom vízszintes padding (px)', 0, 80 ); ?>
+                    <?php self::field_num( 'va_layout_home_main_pad_x', 'Főoldal extra vízszintes padding (px)', 0, 100 ); ?>
+                    <?php self::field_num( 'va_layout_content_gap', 'Tartalmi oszlopok közti gap (px)', 0, 64 ); ?>
+                </table>
+
+                <h2>Oldalsáv</h2>
+                <table class="form-table">
+                    <?php self::field_toggle( 'va_layout_show_right_sidebar', 'Jobb oldalsáv megjelenjen desktopon' ); ?>
+                    <?php self::field_num( 'va_layout_right_sidebar_width', 'Jobb oldalsáv szélesség (px)', 220, 520 ); ?>
+                    <?php self::field_num( 'va_layout_right_sidebar_sticky_top', 'Jobb oldalsáv sticky offset (px)', 0, 180 ); ?>
+                </table>
+
+                <h2>Hirdetés Rács</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop oszlopok száma', 1, 6 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_tablet', 'Tablet oszlopok száma', 1, 4 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_mobile', 'Mobil oszlopok száma', 1, 2 ); ?>
+                    <?php self::field_num( 'va_layout_grid_gap', 'Kártyák közti gap (px)', 4, 40 ); ?>
+                </table>
+
+                <h2>Kártya Design</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_layout_card_radius', 'Kártya lekerekítés (px)', 0, 28 ); ?>
+                    <?php self::field_decimal( 'va_layout_card_border_alpha', 'Kártya border erősség (0..1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_num( 'va_layout_card_padding_y', 'Kártya belső padding Y (px)', 6, 40 ); ?>
+                    <?php self::field_num( 'va_layout_card_padding_x', 'Kártya belső padding X (px)', 6, 40 ); ?>
+                    <?php self::field_num( 'va_layout_card_title_size', 'Kártya cím méret (px)', 12, 28 ); ?>
+                    <?php self::field_num( 'va_layout_card_price_size', 'Kártya ár méret (px)', 12, 36 ); ?>
+                    <?php self::field_num( 'va_layout_card_meta_size', 'Kártya meta méret (px)', 10, 20 ); ?>
+                    <?php self::field_select( 'va_layout_card_img_ratio', 'Kártya képarány', [
+                        '4/3' => '4:3 (klasszikus)',
+                        '16/10' => '16:10 (szélesebb)',
+                        '1/1' => '1:1 (négyzetes)',
+                        '3/2' => '3:2',
+                    ] ); ?>
+                </table>
+
+                <h2>Interakció és Widgetek</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_layout_card_hover_lift', 'Kártya hover emelés (px)', 0, 16 ); ?>
+                    <?php self::field_num( 'va_layout_card_shadow_strength', 'Kártya árnyék erősség (%)', 0, 100 ); ?>
+                    <?php self::field_num( 'va_layout_card_shadow_red', 'Kártya vörös glow erősség (%)', 0, 100 ); ?>
+                    <?php self::field_num( 'va_layout_widget_radius', 'Widget lekerekítés (px)', 0, 28 ); ?>
+                    <?php self::field_num( 'va_layout_widget_padding', 'Widget belső padding (px)', 6, 40 ); ?>
+                </table>
+
+                <?php submit_button( 'Layout mentése' ); ?>
             </form>
         </div>
         <?php

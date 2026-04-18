@@ -507,6 +507,58 @@ add_action( 'wp_enqueue_scripts', function () {
     $hf_footer_glow_color        = va_design_css_color( (string) get_option( 'va_hf_footer_glow_color', 'rgba(255,0,0,.14)' ), 'rgba(255,0,0,.14)' );
     $hf_footer_link_hover_color  = va_design_css_color( (string) get_option( 'va_hf_footer_link_hover_color', '#ffffff' ), '#ffffff' );
 
+    // Layout builder (Divi/Porto jellegu) opciok
+    $layout_preset               = sanitize_key( (string) get_option( 'va_layout_preset', 'porto' ) );
+    if ( ! in_array( $layout_preset, [ 'porto', 'divi', 'custom' ], true ) ) {
+        $layout_preset = 'porto';
+    }
+
+    $layout_page_max_width       = va_design_int_option( 'va_layout_page_max_width', 1400, 960, 2200 );
+    $layout_container_pad_x      = va_design_int_option( 'va_layout_container_pad_x', 20, 0, 80 );
+    $layout_container_pad_m      = va_design_int_option( 'va_layout_container_pad_x_mobile', 12, 0, 40 );
+    $layout_main_pad_y           = va_design_int_option( 'va_layout_main_pad_y', 20, 0, 80 );
+    $layout_main_pad_x           = va_design_int_option( 'va_layout_main_pad_x', 24, 0, 80 );
+    $layout_home_pad_x           = va_design_int_option( 'va_layout_home_main_pad_x', 28, 0, 100 );
+    $layout_content_gap          = va_design_int_option( 'va_layout_content_gap', 0, 0, 64 );
+    $layout_sidebar_width        = va_design_int_option( 'va_layout_right_sidebar_width', 340, 220, 520 );
+    $layout_sidebar_top          = va_design_int_option( 'va_layout_right_sidebar_sticky_top', 48, 0, 180 );
+    $layout_show_sidebar         = get_option( 'va_layout_show_right_sidebar', '1' ) === '1';
+
+    $layout_cols_desktop         = va_design_int_option( 'va_layout_grid_cols_desktop', 4, 1, 6 );
+    $layout_cols_tablet          = va_design_int_option( 'va_layout_grid_cols_tablet', 2, 1, 4 );
+    $layout_cols_mobile          = va_design_int_option( 'va_layout_grid_cols_mobile', 1, 1, 2 );
+    $layout_grid_gap             = va_design_int_option( 'va_layout_grid_gap', 14, 4, 40 );
+
+    $layout_card_radius          = va_design_int_option( 'va_layout_card_radius', 6, 0, 28 );
+    $layout_card_border_alpha    = va_design_float_option( 'va_layout_card_border_alpha', 0.08, 0, 1 );
+    $layout_card_pad_y           = va_design_int_option( 'va_layout_card_padding_y', 14, 6, 40 );
+    $layout_card_pad_x           = va_design_int_option( 'va_layout_card_padding_x', 14, 6, 40 );
+    $layout_card_title_size      = va_design_int_option( 'va_layout_card_title_size', 15, 12, 28 );
+    $layout_card_price_size      = va_design_int_option( 'va_layout_card_price_size', 17, 12, 36 );
+    $layout_card_meta_size       = va_design_int_option( 'va_layout_card_meta_size', 12, 10, 20 );
+    $layout_card_hover_lift      = va_design_int_option( 'va_layout_card_hover_lift', 2, 0, 16 );
+    $layout_card_shadow_strength = va_design_int_option( 'va_layout_card_shadow_strength', 35, 0, 100 );
+    $layout_card_shadow_red      = va_design_int_option( 'va_layout_card_shadow_red', 16, 0, 100 );
+    $layout_widget_radius        = va_design_int_option( 'va_layout_widget_radius', 10, 0, 28 );
+    $layout_widget_padding       = va_design_int_option( 'va_layout_widget_padding', 16, 6, 40 );
+
+    $layout_card_img_ratio = (string) get_option( 'va_layout_card_img_ratio', '4/3' );
+    if ( ! in_array( $layout_card_img_ratio, [ '4/3', '16/10', '1/1', '3/2' ], true ) ) {
+        $layout_card_img_ratio = '4/3';
+    }
+
+    // Preset finomhangolas (Divi / Porto mintara)
+    if ( $layout_preset === 'divi' ) {
+        $layout_grid_gap = max( $layout_grid_gap, 18 );
+        $layout_card_radius = max( $layout_card_radius, 10 );
+        $layout_card_hover_lift = max( $layout_card_hover_lift, 4 );
+        $layout_content_gap = max( $layout_content_gap, 14 );
+    } elseif ( $layout_preset === 'porto' ) {
+        $layout_grid_gap = min( $layout_grid_gap, 16 );
+        $layout_card_radius = min( $layout_card_radius, 8 );
+        $layout_card_hover_lift = min( $layout_card_hover_lift, 3 );
+    }
+
     // Fluid, reszponzív méretkimenet
     $home_hero_badge_css    = va_design_fluid_px( $home_hero_badge, va_design_scaled_ratio( 0.90, $mobile_factor_hero ), '1.4vw' );
     $home_hero_title_css    = va_design_fluid_px( $home_hero_title, va_design_scaled_ratio( 0.58, $mobile_factor_hero ), '7.6vw' );
