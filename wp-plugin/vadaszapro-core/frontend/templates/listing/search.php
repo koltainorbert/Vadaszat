@@ -109,16 +109,16 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                     <div class="va-price-spin">
                         <input type="number" id="va-min-price" class="va-input va-price-input" placeholder="Ártól (Ft)" min="0">
                         <div class="va-price-spin__btns">
-                            <button type="button" class="va-spin-up" data-target="va-min-price" title="Növelés">&#9650;</button>
-                            <button type="button" class="va-spin-down" data-target="va-min-price" title="Csökkentés">&#9660;</button>
+                            <button type="button" class="va-spin-down" data-target="va-min-price" title="Csökkentés">&minus;</button>
+                            <button type="button" class="va-spin-up" data-target="va-min-price" title="Növelés">+</button>
                         </div>
                     </div>
                     <span class="va-price-sep">–</span>
                     <div class="va-price-spin">
                         <input type="number" id="va-max-price" class="va-input va-price-input" placeholder="Árig (Ft)" min="0">
                         <div class="va-price-spin__btns">
-                            <button type="button" class="va-spin-up" data-target="va-max-price" title="Növelés">&#9650;</button>
-                            <button type="button" class="va-spin-down" data-target="va-max-price" title="Csökkentés">&#9660;</button>
+                            <button type="button" class="va-spin-down" data-target="va-max-price" title="Csökkentés">&minus;</button>
+                            <button type="button" class="va-spin-up" data-target="va-max-price" title="Növelés">+</button>
                         </div>
                     </div>
                 </div>

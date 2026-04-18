@@ -388,17 +388,24 @@ hr { border-color: var(--border); }
 }
 
 .va-cat-item {
-  display: flex; align-items: center; gap: 5px;
+  display: flex; align-items: center; gap: 7px;
   white-space: nowrap; flex-shrink: 0;
   background: rgba(255,255,255,.04); border: 1px solid var(--border);
-  border-radius: 20px; padding: 5px 12px;
-  font-size: .72rem; font-weight: 600; color: var(--t2);
-  cursor: pointer; transition: all .15s; letter-spacing: .03em;
+  border-radius: 20px; padding: 6px 14px;
+  font-size: .75rem; font-weight: 600; color: var(--t2);
+  cursor: pointer; transition: all .2s; letter-spacing: .03em;
   text-decoration: none;
 }
 .va-cat-item:hover { background: rgba(255,0,0,.08); border-color: rgba(255,0,0,.3); color: #fff; }
+.va-cat-item:hover .va-cat-item__icon { transform: scale(1.25) rotate(-8deg); }
 .va-cat-item.active { background: rgba(255,0,0,.15); border-color: rgba(255,0,0,.5); color: #fff; box-shadow: 0 0 12px rgba(255,0,0,.15); }
-.va-cat-item__icon { font-size: .9rem; line-height: 1; }
+.va-cat-item__icon {
+  width: 20px; height: 20px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #ff4040;
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.va-cat-item__icon svg { width: 20px; height: 20px; display: block; }
 
 /* ──────────────────────────────────────────────────────────
    FŐOLDAL ELRENDEZÉS

@@ -155,33 +155,35 @@
 /* ── Ár szűrő egyedi spinner ────────────────────────── */
 .va-price-range { display: flex; align-items: center; gap: 10px; }
 .va-price-sep   { color: rgba(255,255,255,.4); font-size: 18px; flex-shrink: 0; }
-.va-price-spin  { position: relative; flex: 1; display: flex; }
+.va-price-spin  { position: relative; flex: 1; display: flex; align-items: center; }
 
 /* Natív spinner elrejtése */
-.va-price-input { -moz-appearance: textfield; padding-right: 36px !important; font-size: 15px; height: 44px; }
+.va-price-input { -moz-appearance: textfield; padding-right: 72px !important; font-size: 15px; height: 44px; }
 .va-price-input::-webkit-outer-spin-button,
 .va-price-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 
-/* Egyedi gombok */
+/* Egyedi gombok – vízszintesen jobb oldalt */
 .va-price-spin__btns {
   position: absolute; right: 0; top: 0; bottom: 0;
-  display: flex; flex-direction: column;
-  width: 32px;
+  display: flex; flex-direction: row;
+  align-items: stretch;
+  width: 68px;
   border-left: 1px solid var(--va-border);
-  overflow: hidden;
   border-radius: 0 var(--va-radius) var(--va-radius) 0;
+  overflow: hidden;
 }
 .va-spin-up, .va-spin-down {
   flex: 1; border: none; cursor: pointer;
-  font-size: 10px; line-height: 1;
+  font-size: 13px; font-weight: 700; line-height: 1;
   display: flex; align-items: center; justify-content: center;
   transition: background .15s, color .15s;
   padding: 0;
+  letter-spacing: 0;
 }
-.va-spin-up   { background: rgba(255,40,40,.18); color: #ff5555; border-bottom: 1px solid var(--va-border); }
-.va-spin-up:hover   { background: rgba(255,0,0,.35); color: #fff; }
-.va-spin-down { background: rgba(0,200,80,.15);  color: #00cc60; }
-.va-spin-down:hover { background: rgba(0,180,60,.35); color: #fff; }
+.va-spin-down { background: rgba(255,40,40,.18); color: #ff5555; border-right: 1px solid var(--va-border); }
+.va-spin-down:hover { background: rgba(255,0,0,.35); color: #fff; }
+.va-spin-up   { background: rgba(0,200,80,.15);  color: #00cc60; }
+.va-spin-up:hover { background: rgba(0,180,60,.35); color: #fff; }
 
 /* ── Hirdetés detail oldal ───────────────────────── */
 .va-listing-detail { max-width: 900px; }
