@@ -607,6 +607,12 @@ function sunriseIcon(){
 function sunsetIcon(){
   return '<svg class="va-hnaptar__sun-ico va-hnaptar__sun-ico--set" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17h16"/><path d="M7 17a5 5 0 0 1 10 0"/><path d="M12 9v5"/><path d="m9.5 11.5 2.5 2.5 2.5-2.5"/></svg>';
 }
+function shootIcon(){
+  return '<svg class="va-hnaptar__sun-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.5"/><path d="M12 3v3"/><path d="M12 18v3"/><path d="M3 12h3"/><path d="M18 12h3"/></svg>';
+}
+function isLeap(y){return(y%4===0&&y%100!==0)||y%400===0;}
+function daysInMonth(y,m){if(m===2)return isLeap(y)?29:28;return [31,0,31,30,31,30,31,31,30,31,30,31][m-1]||31;}
+function nextBpDay(y,m,d){d++;if(d>daysInMonth(y,m)){d=1;m++;if(m>12){m=1;y++;}}return{y:y,m:m,d:d};}
 var _sunKey='';
 function updateSunInfo(bp){
   var sunEl=document.getElementById('va-hn-sun');
@@ -616,7 +622,26 @@ function updateSunInfo(bp){
   _sunKey=key;
   var st=getSunTimesBp(bp.year,bp.month,bp.day);
   sunEl.innerHTML='<span class="va-hnaptar__sun-item">'+sunriseIcon()+'Napkelte '+fmtBpHm(st.rise)+'</span>'
-    +'<span class="va-hnaptar__sun-item">'+sunsetIcon()+'Napnyugta '+fmtBpHm(st.set)+'</span>';
+    +'<span class="va-hnaptar__sun-item">'+sunsetIcon()+'Napnyugta '+fmtBpHm(st.set)+'</span>'
+    +'<span class="va-hnaptar__sun-item">'+shootIcon()+'<span id="va-hn-shoot-cd">&ndash;</span></span>';
+}
+function updateShootCountdown(bp){
+  var el=document.getElementById('va-hn-shoot-cd');
+  if(!el)return;
+
+  var now=new Date();
+  var stToday=getSunTimesBp(bp.year,bp.month,bp.day);
+  var cutoffToday=new Date(stToday.set.getTime()+3600000); // napnyugta + 1 óra
+
+  if(now<=cutoffToday){
+    el.textContent='Lőhető még '+fmtMs(cutoffToday-now);
+    return;
+  }
+
+  var nd=nextBpDay(bp.year,bp.month,bp.day);
+  var stNext=getSunTimesBp(nd.y,nd.m,nd.d);
+  var cutoffNext=new Date(stNext.set.getTime()+3600000);
+  el.textContent='Következő ablak '+fmtMs(cutoffNext-now)+' múlva';
 }
 var _bp=nowBPsimple();
 var TODAY={m:_bp.month,d:_bp.day};
@@ -804,6 +829,7 @@ if(_grpData.length>0&&grpDaysSinceOpen(groups[0])<9999){
 function updateCDs(){
   var bp=nowBPsimple();
   updateSunInfo(bp);
+  updateShootCountdown(bp);
   /* Élő óra a Gantt fejlécben */
   var clk=document.getElementById('va-hn-clock');
   if(clk){
