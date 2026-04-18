@@ -5,12 +5,17 @@
 get_header(); ?>
 
 <?php if ( is_front_page() ): ?>
+<?php
+$va_show_season_widget = get_option( 'va_show_hunting_season_widget', '1' ) === '1';
+$va_show_moon_widget   = get_option( 'va_show_moon_widget', '1' ) === '1';
+?>
 <div class="va-home-layout">
 
 <!-- ═══ BAL SIDEBAR ═════════════════════════════════════════════ -->
 <aside class="va-home-sidebar">
 
 <!-- ═══ VADÁSZATI IDÉNY WIDGET ════════════════════════════ -->
+<?php if ( $va_show_season_widget ): ?>
 <section class="va-season" id="ideny-widget">
   <div class="va-season__hd">
     <span class="va-season__title">🏹 Vadászati idény</span>
@@ -21,8 +26,10 @@ get_header(); ?>
   <div class="va-season__soon-lbl" id="sw-soon-lbl"></div>
   <div id="sw-soon"></div>
 </section>
+<?php endif; ?>
 
 <!-- ═══ HOLDNAPTÁR ════════════════════════════════════════ -->
+<?php if ( $va_show_moon_widget ): ?>
 <section class="va-moon" id="holdnaptar">
   <div class="va-moon__hd">
     <span class="va-moon__title">🌙 Holdnaptár</span>
@@ -43,10 +50,12 @@ get_header(); ?>
     <div class="va-moon__next"  id="mNext"></div>
   </div>
 </section>
+  <?php endif; ?>
 
 </aside>
 
 </aside>
+<?php if ( $va_show_moon_widget ): ?>
 <script>
 (function(){
   var PI=Math.PI,sin=Math.sin,cos=Math.cos,tan=Math.tan,
@@ -303,7 +312,9 @@ get_header(); ?>
   });
 })();
 </script>
+<?php endif; ?>
 
+<?php if ( $va_show_season_widget ): ?>
 <script>
 /* ════════════════════════════════════════════════════════════
    VADÁSZATI IDÉNY SIDEBAR WIDGET
@@ -562,6 +573,7 @@ get_header(); ?>
   setTimeout(function(){build();setInterval(build,86400000);},msToMidnight);
 })();
 </script>
+<?php endif; ?>
 
 <!-- FŐ TARTALOM -->
 <main class="va-home-main">

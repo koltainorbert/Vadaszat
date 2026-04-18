@@ -3,6 +3,19 @@
  * page-vadasz-naptar.php – Vadászati idények + Holdnaptár
  * Automatikusan betöltődik a slug = vadasz-naptar oldalra.
  */
+
+if ( get_option( 'va_enable_hunting_calendar_page', '1' ) !== '1' ) {
+  get_header();
+  ?>
+  <main style="max-width:960px;margin:40px auto;padding:24px 18px;color:#fff;background:rgba(6,6,6,.92);border:1px solid rgba(255,255,255,.1);border-radius:12px;">
+    <h1 style="margin:0 0 10px;">Vadászati naptár letiltva</h1>
+    <p style="margin:0;color:rgba(255,255,255,.78);">Ez az oldal jelenleg admin beállításból ki van kapcsolva.</p>
+  </main>
+  <?php
+  get_footer();
+  return;
+}
+
 get_header();
 ?>
 

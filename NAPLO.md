@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 18. – Session #51 (Hold/Ideny/Naptar kapcsolhatosag adminbol)
+
+### Mit csinaltunk [x]
+- [x] Uj admin togglek az Altalanos beallitasokban:
+- [x] `va_show_hunting_season_widget` (Vadaszati ideny widget)
+- [x] `va_show_moon_widget` (Hold widget)
+- [x] `va_enable_hunting_calendar_page` (Vadaszati naptar oldal)
+- [x] A fooldali `index.php` mar feltetelhez kotve rendereli a ket widgetet es a kapcsolodo JS-eket
+- [x] A `page-vadasz-naptar.php` oldal teljes tartalma adminbol letilthato
+- [x] Hibavizsgalat: modosított fajlok rendben
+
+---
+
 ## 2026. 04. 18. – Session #50 (Hold widget datum stilus vissza az elozore)
 
 ### Mit csinaltunk [x]
