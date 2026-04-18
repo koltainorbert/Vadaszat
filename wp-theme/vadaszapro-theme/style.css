@@ -163,13 +163,13 @@ hr { border-color: var(--border); }
 .va-header__search-btn {
   flex-shrink: 0;
   width: 28px; height: 28px;
-  background: rgba(255,255,255,.94) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000000' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cline x1='16' y1='16' x2='21' y2='21'/%3E%3C/svg%3E") center/16px no-repeat;
+  background: rgba(255,255,255,.14) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cline x1='16' y1='16' x2='21' y2='21'/%3E%3C/svg%3E") center/16px no-repeat;
   border: none; cursor: pointer; border-radius: 50%;
   opacity: .92;
   animation: va-search-icon-float 1.8s ease-in-out infinite;
   box-shadow: 0 4px 14px rgba(0,0,0,.22);
 }
-.va-header__search-btn:hover { opacity: 1; transform: scale(1.06); background-color: #ffffff; }
+.va-header__search-btn:hover { opacity: 1; transform: scale(1.06); background-color: rgba(255,255,255,.22); }
 
 .va-header__search::before,
 .va-header__search::after,
