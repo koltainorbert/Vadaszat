@@ -640,14 +640,14 @@ function updateShootCountdown(bp){
   var cutoffToday=new Date(stToday.set.getTime()+3600000); // napnyugta + 1 óra
 
   if(now<=cutoffToday){
-    el.textContent='Trófeás vad lőhető: '+fmtHp(cutoffToday-now);
+    el.textContent='Trófeás vad a mai napon lőhető még '+fmtHp(cutoffToday-now);
     return;
   }
 
   var nd=nextBpDay(bp.year,bp.month,bp.day);
   var stNext=getSunTimesBp(nd.y,nd.m,nd.d);
   var cutoffNext=new Date(stNext.set.getTime()+3600000);
-  el.textContent='Trófeás vad lőhető: '+fmtHp(cutoffNext-now);
+  el.textContent='Trófeás vad a mai napon lőhető még '+fmtHp(cutoffNext-now);
 }
 var _bp=nowBPsimple();
 var TODAY={m:_bp.month,d:_bp.day};
