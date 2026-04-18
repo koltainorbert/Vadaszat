@@ -7,8 +7,22 @@ get_header(); ?>
 <?php if ( is_front_page() ): ?>
 <div class="va-home-layout">
 
-<!-- ═══ BAL SIDEBAR — csak holdnaptár ═════════════════════════════ -->
+<!-- ═══ BAL SIDEBAR ═════════════════════════════════════════════ -->
 <aside class="va-home-sidebar">
+
+<!-- ═══ VADÁSZATI IDÉNY WIDGET ════════════════════════════ -->
+<section class="va-season" id="ideny-widget">
+  <div class="va-season__hd">
+    <span class="va-season__title">🏹 Vadászati idény</span>
+    <span class="va-season__date" id="sw-date">–</span>
+  </div>
+  <div class="va-season__cnt" id="sw-open-cnt"></div>
+  <div id="sw-open"></div>
+  <div class="va-season__soon-lbl" id="sw-soon-lbl"></div>
+  <div id="sw-soon"></div>
+</section>
+
+<!-- ═══ HOLDNAPTÁR ════════════════════════════════════════ -->
 <section class="va-moon" id="holdnaptar">
   <div class="va-moon__hd">
     <span class="va-moon__title">🌙 Holdnaptár</span>
@@ -27,17 +41,7 @@ get_header(); ?>
   </div>
 </section>
 
-<!-- ═══ VADÁSZATI IDÉNY WIDGET ════════════════════════════ -->
-<section class="va-season" id="ideny-widget">
-  <div class="va-season__hd">
-    <span class="va-season__title">🏹 Vadászati idény</span>
-    <span class="va-season__date" id="sw-date">–</span>
-  </div>
-  <div class="va-season__cnt" id="sw-open-cnt"></div>
-  <div id="sw-open"></div>
-  <div class="va-season__soon-lbl" id="sw-soon-lbl"></div>
-  <div id="sw-soon"></div>
-</section>
+</aside>
 
 </aside>
 <script>
