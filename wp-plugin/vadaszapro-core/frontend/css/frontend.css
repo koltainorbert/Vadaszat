@@ -208,7 +208,7 @@
 .va-user-card { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 20px 14px; background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); text-decoration: none; color: #fff; transition: border-color .2s, box-shadow .2s; }
 .va-user-card:hover { border-color: #ff0000; box-shadow: 0 0 16px rgba(255,0,0,.25); }
 .va-user-card__avatar { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(255,255,255,.15); }
-.va-user-card__name { font-size: 14px; font-weight: 600; text-align: center; }
+.va-user-card__name { font-size: 14px; font-weight: 600; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .va-user-card__meta { font-size: 12px; color: rgba(255,255,255,.45); }
 
 /* ── Szűrő sáv ────────────────────────────────────── */

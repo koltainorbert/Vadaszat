@@ -46,9 +46,15 @@ if ( $url_user_search ) {
             $listing_url = add_query_arg( 'author_id', $u->ID, $search_url );
             $count       = count_user_posts( $u->ID, 'va_listing' );
         ?>
+            <?php
+                // Ha display_name email, használjuk a user_login-t
+                $show_name = ( strpos( $u->display_name, '@' ) !== false )
+                    ? $u->user_login
+                    : $u->display_name;
+            ?>
             <a class="va-user-card" href="<?php echo esc_url( $listing_url ); ?>">
                 <img class="va-user-card__avatar" src="<?php echo esc_url( $avatar ); ?>" alt="" loading="lazy">
-                <div class="va-user-card__name"><?php echo esc_html( $u->display_name ); ?></div>
+                <div class="va-user-card__name"><?php echo esc_html( $show_name ); ?></div>
                 <div class="va-user-card__meta"><?php echo intval( $count ); ?> hirdetés</div>
             </a>
         <?php endforeach; endif; ?>
