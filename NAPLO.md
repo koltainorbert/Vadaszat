@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 18. – Session #86 (Nem-admin WP tiltás + szerepkör kezelés)
+
+### Mit csinaltunk [x]
+- [x] Nem-admin felhasznaloknal a WordPress admin bar elrejtve (`show_admin_bar` szuro)
+- [x] Nem-admin user `wp-admin` hozzaferese tiltva es fooldalra iranyitva (`admin_init`)
+- [x] Uj egyedi szerepkorok letrehozva: `Maganszemely` (`va_maganszemely`) es `Ceg` (`va_ceg`)
+- [x] Regisztraciokor account type alapjan automatikus role kiosztas
+- [x] Admin `Felhasznalok` oldalon szerepkor oszlop + role valaszto + mentes gomb minden userhez
+- [x] Szerepkor modositas csak nem-admin roleokra engedett (administrator kizarva)
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #85 (Elfelejtett jelszo frontendben marad)
 
 ### Mit csinaltunk [x]
