@@ -10,7 +10,7 @@ $icon = function_exists('va_category_icon') ? va_category_icon( (int) $term->ter
 <div class="va-wrap">
 
     <div class="va-archive-header">
-        <h1 class="va-archive-header__title"><?php echo esc_html($icon . ' ' . $term->name); ?></h1>
+        <h1 class="va-archive-header__title"><?php echo $icon; ?> <?php echo esc_html( $term->name ); ?></h1>
         <?php if ( $term->description ): ?>
             <p class="va-archive-header__desc"><?php echo esc_html($term->description); ?></p>
         <?php endif; ?>
