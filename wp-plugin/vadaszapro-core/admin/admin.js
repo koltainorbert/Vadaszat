@@ -51,4 +51,10 @@
   $(document).on('change', '.va-media-input', function(){
     updatePreview($(this).attr('id'), $(this).val());
   });
+
+  $(function(){
+    if ($.fn.wpColorPicker) {
+      $('.va-color-input').wpColorPicker();
+    }
+  });
 })(jQuery);

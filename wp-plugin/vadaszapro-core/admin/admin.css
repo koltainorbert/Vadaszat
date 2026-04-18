@@ -40,3 +40,7 @@
    border-radius: 8px;
    padding: 4px;
 }
+
+.va-admin-wrap h2 { margin-top: 26px; }
+.va-admin-wrap .wp-picker-container { vertical-align: middle; }
+.va-admin-wrap .va-color-input { max-width: 220px; }

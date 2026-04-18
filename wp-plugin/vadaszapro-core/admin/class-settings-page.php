@@ -68,6 +68,43 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        /* Design (betűk + színek) */
+        $design = [
+            // Betűtípusok
+            'va_font_global'        => 'system',
+            'va_font_headings'      => 'montserrat',
+            'va_font_header'        => 'montserrat',
+            'va_font_content'       => 'source-sans-3',
+            'va_font_footer'        => 'source-sans-3',
+
+            // Globális színek
+            'va_color_global_bg'     => '#060606',
+            'va_color_global_text'   => '#ffffff',
+            'va_color_global_muted'  => 'rgba(255,255,255,.65)',
+            'va_color_global_accent' => '#ff0000',
+
+            // Header
+            'va_color_header_bg'     => 'rgba(6,4,4,.82)',
+            'va_color_header_text'   => '#ffffff',
+            'va_color_header_accent' => '#ff0000',
+
+            // Tartalom
+            'va_color_content_bg'       => '#060606',
+            'va_color_content_text'     => '#ffffff',
+            'va_color_content_headings' => '#ffffff',
+            'va_color_content_links'    => '#ff4444',
+
+            // Footer
+            'va_color_footer_bg'       => '#0a0a0a',
+            'va_color_footer_text'     => 'rgba(255,255,255,.72)',
+            'va_color_footer_headings' => '#ffffff',
+            'va_color_footer_links'    => '#ff4444',
+        ];
+        foreach ( $design as $key => $default ) {
+            register_setting( 'va_design_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
         // Videó URL-ek (hero/oldalblokkok) – adminból szerkeszthető
         $video_urls = [
             'va_home_hero_video_url'      => content_url( 'uploads/2026/04/521380_Gun_Woman_1920x1080.mp4' ),
@@ -222,6 +259,86 @@ class VA_Settings_Page {
                 <hr>
                 <?php endforeach; ?>
                 <?php submit_button( 'Reklámzónák mentése' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /* ══ Design oldal (globális + header/content/footer) ════════ */
+    public static function render_design() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $fonts = [
+            'system'         => 'System UI (gyors, natív)',
+            'inter'          => 'Inter',
+            'roboto'         => 'Roboto',
+            'montserrat'     => 'Montserrat',
+            'oswald'         => 'Oswald',
+            'merriweather'   => 'Merriweather',
+            'playfair'       => 'Playfair Display',
+            'lora'           => 'Lora',
+            'nunito'         => 'Nunito',
+            'source-sans-3'  => 'Source Sans 3',
+            'pt-sans'        => 'PT Sans',
+            'raleway'        => 'Raleway',
+            'bebas-neue'     => 'Bebas Neue',
+            'rubik'          => 'Rubik',
+            'dm-sans'        => 'DM Sans',
+            'work-sans'      => 'Work Sans',
+            'manrope'        => 'Manrope',
+            'fira-sans'      => 'Fira Sans',
+            'ibm-plex-sans'  => 'IBM Plex Sans',
+            'noto-sans'      => 'Noto Sans',
+        ];
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🎨 VadászApró – Design (globális + fejtől lábig)</h1>
+            <p class="description">Külön oldalon kezelhető a teljes tipográfia és színvilág: globális, fejléc, tartalom és lábléc szinten.</p>
+            <?php settings_errors( 'va_design_settings' ); ?>
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_design_settings' ); ?>
+
+                <h2>Betűtípusok</h2>
+                <table class="form-table">
+                    <?php self::field_select( 'va_font_global',   'Globális alap betűtípus', $fonts ); ?>
+                    <?php self::field_select( 'va_font_headings', 'Címsorok (H1-H6) betűtípus', $fonts ); ?>
+                    <?php self::field_select( 'va_font_header',   'Fejléc/Navigáció betűtípus', $fonts ); ?>
+                    <?php self::field_select( 'va_font_content',  'Tartalmi szöveg betűtípus', $fonts ); ?>
+                    <?php self::field_select( 'va_font_footer',   'Lábléc betűtípus', $fonts ); ?>
+                </table>
+
+                <h2>Globális színek</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_global_bg',     'Globális háttér' ); ?>
+                    <?php self::field_color( 'va_color_global_text',   'Globális fő szöveg' ); ?>
+                    <?php self::field_text(  'va_color_global_muted',  'Globális halvány szöveg (pl. rgba...)' ); ?>
+                    <?php self::field_color( 'va_color_global_accent', 'Globális accent szín' ); ?>
+                </table>
+
+                <h2>Fejléc színek</h2>
+                <table class="form-table">
+                    <?php self::field_text(  'va_color_header_bg',     'Fejléc háttér (hex vagy rgba)' ); ?>
+                    <?php self::field_color( 'va_color_header_text',   'Fejléc szöveg' ); ?>
+                    <?php self::field_color( 'va_color_header_accent', 'Fejléc accent' ); ?>
+                </table>
+
+                <h2>Tartalom színek</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_content_bg',       'Tartalom háttér' ); ?>
+                    <?php self::field_color( 'va_color_content_text',     'Tartalom szöveg' ); ?>
+                    <?php self::field_color( 'va_color_content_headings', 'Tartalom címsorok' ); ?>
+                    <?php self::field_color( 'va_color_content_links',    'Tartalom linkek' ); ?>
+                </table>
+
+                <h2>Lábléc színek</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_footer_bg',       'Lábléc háttér' ); ?>
+                    <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg (hex vagy rgba)' ); ?>
+                    <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsorok' ); ?>
+                    <?php self::field_color( 'va_color_footer_links',    'Lábléc linkek' ); ?>
+                </table>
+
+                <?php submit_button( 'Design mentése' ); ?>
             </form>
         </div>
         <?php
@@ -438,6 +555,11 @@ class VA_Settings_Page {
             echo '<option value="' . esc_attr( $value ) . '" ' . selected( $current, (string) $value, false ) . '>' . esc_html( (string) $text ) . '</option>';
         }
         echo '</select></td></tr>';
+    }
+
+    private static function field_color( string $key, string $label ): void {
+        $val = esc_attr( get_option( $key, '' ) );
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"text\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text va-color-input\" data-default-color=\"{$val}\"></td></tr>";
     }
 
     private static function field_toggle( string $key, string $label ): void {

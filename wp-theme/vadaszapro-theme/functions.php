@@ -188,6 +188,146 @@ add_action( 'wp_enqueue_scripts', function () {
     }
 });
 
+function va_design_font_map(): array {
+    return [
+        'system'        => [
+            'stack'  => '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+            'google' => '',
+        ],
+        'inter'         => [ 'stack' => '"Inter", sans-serif', 'google' => 'Inter:wght@400;500;600;700;800;900' ],
+        'roboto'        => [ 'stack' => '"Roboto", sans-serif', 'google' => 'Roboto:wght@400;500;700;900' ],
+        'montserrat'    => [ 'stack' => '"Montserrat", sans-serif', 'google' => 'Montserrat:wght@400;500;600;700;800;900' ],
+        'oswald'        => [ 'stack' => '"Oswald", sans-serif', 'google' => 'Oswald:wght@400;500;600;700' ],
+        'merriweather'  => [ 'stack' => '"Merriweather", serif', 'google' => 'Merriweather:wght@400;700;900' ],
+        'playfair'      => [ 'stack' => '"Playfair Display", serif', 'google' => 'Playfair+Display:wght@400;600;700;800;900' ],
+        'lora'          => [ 'stack' => '"Lora", serif', 'google' => 'Lora:wght@400;500;600;700' ],
+        'nunito'        => [ 'stack' => '"Nunito", sans-serif', 'google' => 'Nunito:wght@400;500;600;700;800;900' ],
+        'source-sans-3' => [ 'stack' => '"Source Sans 3", sans-serif', 'google' => 'Source+Sans+3:wght@400;500;600;700;800;900' ],
+        'pt-sans'       => [ 'stack' => '"PT Sans", sans-serif', 'google' => 'PT+Sans:wght@400;700' ],
+        'raleway'       => [ 'stack' => '"Raleway", sans-serif', 'google' => 'Raleway:wght@400;500;600;700;800;900' ],
+        'bebas-neue'    => [ 'stack' => '"Bebas Neue", sans-serif', 'google' => 'Bebas+Neue' ],
+        'rubik'         => [ 'stack' => '"Rubik", sans-serif', 'google' => 'Rubik:wght@400;500;700;900' ],
+        'dm-sans'       => [ 'stack' => '"DM Sans", sans-serif', 'google' => 'DM+Sans:wght@400;500;700;900' ],
+        'work-sans'     => [ 'stack' => '"Work Sans", sans-serif', 'google' => 'Work+Sans:wght@400;500;600;700;800;900' ],
+        'manrope'       => [ 'stack' => '"Manrope", sans-serif', 'google' => 'Manrope:wght@400;500;600;700;800' ],
+        'fira-sans'     => [ 'stack' => '"Fira Sans", sans-serif', 'google' => 'Fira+Sans:wght@400;500;600;700;800;900' ],
+        'ibm-plex-sans' => [ 'stack' => '"IBM Plex Sans", sans-serif', 'google' => 'IBM+Plex+Sans:wght@400;500;600;700' ],
+        'noto-sans'     => [ 'stack' => '"Noto Sans", sans-serif', 'google' => 'Noto+Sans:wght@400;500;600;700;800;900' ],
+    ];
+}
+
+function va_design_font_stack( string $slug ): string {
+    $map = va_design_font_map();
+    if ( ! isset( $map[ $slug ] ) ) {
+        $slug = 'system';
+    }
+    return $map[ $slug ]['stack'];
+}
+
+function va_design_css_color( string $value, string $fallback ): string {
+    $value = trim( $value );
+    if ( $value === '' ) {
+        return $fallback;
+    }
+    // Egyszerű whitelist: #hex vagy rgb/rgba/hsl/hsla vagy named.
+    if ( preg_match( '/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/', $value ) ) {
+        return $value;
+    }
+    if ( preg_match( '/^(rgb|rgba|hsl|hsla)\([^\)]*\)$/i', $value ) ) {
+        return $value;
+    }
+    if ( preg_match( '/^[a-zA-Z]{3,20}$/', $value ) ) {
+        return $value;
+    }
+    return $fallback;
+}
+
+add_action( 'wp_enqueue_scripts', function () {
+    $font_keys = [
+        'va_font_global',
+        'va_font_headings',
+        'va_font_header',
+        'va_font_content',
+        'va_font_footer',
+    ];
+
+    $font_map = va_design_font_map();
+    $google_families = [];
+
+    foreach ( $font_keys as $key ) {
+        $slug = sanitize_key( (string) get_option( $key, 'system' ) );
+        if ( isset( $font_map[ $slug ] ) && $font_map[ $slug ]['google'] !== '' ) {
+            $google_families[] = $font_map[ $slug ]['google'];
+        }
+    }
+
+    $google_families = array_values( array_unique( $google_families ) );
+    if ( ! empty( $google_families ) ) {
+        $fonts_url = 'https://fonts.googleapis.com/css2?family=' . implode( '&family=', $google_families ) . '&display=swap';
+        wp_enqueue_style( 'va-custom-fonts', esc_url_raw( $fonts_url ), [], null );
+    }
+
+    $font_global   = va_design_font_stack( sanitize_key( (string) get_option( 'va_font_global', 'system' ) ) );
+    $font_headings = va_design_font_stack( sanitize_key( (string) get_option( 'va_font_headings', 'montserrat' ) ) );
+    $font_header   = va_design_font_stack( sanitize_key( (string) get_option( 'va_font_header', 'montserrat' ) ) );
+    $font_content  = va_design_font_stack( sanitize_key( (string) get_option( 'va_font_content', 'source-sans-3' ) ) );
+    $font_footer   = va_design_font_stack( sanitize_key( (string) get_option( 'va_font_footer', 'source-sans-3' ) ) );
+
+    $global_bg     = va_design_css_color( (string) get_option( 'va_color_global_bg', '#060606' ), '#060606' );
+    $global_text   = va_design_css_color( (string) get_option( 'va_color_global_text', '#ffffff' ), '#ffffff' );
+    $global_muted  = va_design_css_color( (string) get_option( 'va_color_global_muted', 'rgba(255,255,255,.65)' ), 'rgba(255,255,255,.65)' );
+    $global_accent = va_design_css_color( (string) get_option( 'va_color_global_accent', '#ff0000' ), '#ff0000' );
+
+    $header_bg     = va_design_css_color( (string) get_option( 'va_color_header_bg', 'rgba(6,4,4,.82)' ), 'rgba(6,4,4,.82)' );
+    $header_text   = va_design_css_color( (string) get_option( 'va_color_header_text', '#ffffff' ), '#ffffff' );
+    $header_accent = va_design_css_color( (string) get_option( 'va_color_header_accent', '#ff0000' ), '#ff0000' );
+
+    $content_bg       = va_design_css_color( (string) get_option( 'va_color_content_bg', '#060606' ), '#060606' );
+    $content_text     = va_design_css_color( (string) get_option( 'va_color_content_text', '#ffffff' ), '#ffffff' );
+    $content_headings = va_design_css_color( (string) get_option( 'va_color_content_headings', '#ffffff' ), '#ffffff' );
+    $content_links    = va_design_css_color( (string) get_option( 'va_color_content_links', '#ff4444' ), '#ff4444' );
+
+    $footer_bg       = va_design_css_color( (string) get_option( 'va_color_footer_bg', '#0a0a0a' ), '#0a0a0a' );
+    $footer_text     = va_design_css_color( (string) get_option( 'va_color_footer_text', 'rgba(255,255,255,.72)' ), 'rgba(255,255,255,.72)' );
+    $footer_headings = va_design_css_color( (string) get_option( 'va_color_footer_headings', '#ffffff' ), '#ffffff' );
+    $footer_links    = va_design_css_color( (string) get_option( 'va_color_footer_links', '#ff4444' ), '#ff4444' );
+
+    $css = ':root{' .
+        '--a:' . esc_attr( $global_accent ) . ';' .
+        '--a2:' . esc_attr( $global_accent ) . ';' .
+        '--a3:' . esc_attr( $global_accent ) . ';' .
+        '--t:' . esc_attr( $global_text ) . ';' .
+        '--t2:' . esc_attr( $global_muted ) . ';' .
+    '}' .
+    'body{' .
+        'font-family:' . esc_attr( $font_global ) . ';' .
+        'background:' . esc_attr( $global_bg ) . ';' .
+        'color:' . esc_attr( $global_text ) . ';' .
+    '}' .
+    'h1,h2,h3,h4,h5,h6{font-family:' . esc_attr( $font_headings ) . ';}' .
+    '.va-header,.va-header *{' .
+        'font-family:' . esc_attr( $font_header ) . ';' .
+        'color:' . esc_attr( $header_text ) . ';' .
+    '}' .
+    '.va-header{background:' . esc_attr( $header_bg ) . ';border-bottom-color:' . esc_attr( $header_accent ) . ';}' .
+    '.va-nav__item--accent,.va-header__submit-btn,.va-header__search-btn{background-color:' . esc_attr( $header_accent ) . ';border-color:' . esc_attr( $header_accent ) . ';}' .
+    '.va-container,.va-content-layout,.va-main-content,.va-wrap,.va-cat-page,.va-contact-page{' .
+        'background-color:' . esc_attr( $content_bg ) . ';' .
+        'color:' . esc_attr( $content_text ) . ';' .
+        'font-family:' . esc_attr( $font_content ) . ';' .
+    '}' .
+    '.va-container h1,.va-container h2,.va-container h3,.va-container h4,.va-container h5,.va-container h6,.va-wrap h1,.va-wrap h2,.va-wrap h3,.va-wrap h4,.va-wrap h5,.va-wrap h6{' .
+        'color:' . esc_attr( $content_headings ) . ';' .
+    '}' .
+    '.va-container a,.va-wrap a,.va-contact-page a,.va-cat-page a{color:' . esc_attr( $content_links ) . ';}' .
+    '.va-footer,.va-footer *{font-family:' . esc_attr( $font_footer ) . ';}' .
+    '.va-footer{background:' . esc_attr( $footer_bg ) . ';color:' . esc_attr( $footer_text ) . ';}' .
+    '.va-footer__col-title{color:' . esc_attr( $footer_headings ) . ';}' .
+    '.va-footer__link,.va-footer__bottom a{color:' . esc_attr( $footer_links ) . ';}' ;
+
+    wp_add_inline_style( 'va-theme', $css );
+}, 20 );
+
 /* ── Alapoldalak automatikus létrehozása (egyszer fut) ── */
 add_action( 'wp_loaded', function () {
     if ( get_option( 'va_pages_created_v4' ) ) return;
