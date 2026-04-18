@@ -14,16 +14,35 @@
     });
   }
 
-  // ── Ár spinner gombok (+/-) ──────────────────────────────
-  var spinStep = 5000;
-  $(document).on('click', '.va-spin-up, .va-spin-down', function() {
-    var targetId = $(this).data('target');
-    var $input   = $('#' + targetId);
-    var val      = parseFloat($input.val()) || 0;
-    var isUp     = $(this).hasClass('va-spin-up');
-    val = isUp ? val + spinStep : Math.max(0, val - spinStep);
-    $input.val(val).trigger('change');
+  // ── Ár csúszka (range slider) ────────────────────────────
+  function va_format_price(val) {
+    return parseInt(val).toLocaleString('hu-HU');
+  }
+  function va_update_range() {
+    var $min  = $('#va-min-price');
+    var $max  = $('#va-max-price');
+    if (!$min.length) return;
+    var minV  = parseInt($min.val());
+    var maxV  = parseInt($max.val());
+    var total = parseInt($min.attr('max')) || 50000000;
+    // csere ha min > max
+    if (minV > maxV) {
+      var tmp = minV; minV = maxV; maxV = tmp;
+      $min.val(minV); $max.val(maxV);
+    }
+    $('#va-min-price-display').text(va_format_price(minV));
+    $('#va-max-price-display').text(va_format_price(maxV));
+    // fill sáv
+    var left  = (minV / total) * 100;
+    var right = 100 - (maxV / total) * 100;
+    $('#va-range-fill').css({ left: left + '%', right: right + '%' });
+  }
+  $(document).on('input', '#va-min-price, #va-max-price', function() {
+    va_update_range();
+    clearTimeout(filterTimeout);
+    filterTimeout = setTimeout(function() { va_load_listings(1); }, 400);
   });
+  va_update_range();
 
   // ── Watchlist toggle ─────────────────────────────────────
   $(document).on('click', '.va-card__watchlist', function(e) {
@@ -57,6 +76,12 @@
     $loader.show();
     $results.css('opacity', 0.4);
 
+    var $minR     = $('#va-min-price');
+    var $maxR     = $('#va-max-price');
+    var maxLimit  = parseInt($minR.attr('max') || 50000000);
+    var minVal    = $minR.length ? parseInt($minR.val()) : 0;
+    var maxVal    = $maxR.length ? parseInt($maxR.val()) : 0;
+
     var data = {
       action:     'va_filter_listings',
       paged:      page,
@@ -64,8 +89,8 @@
       category:   $('#va-cat').val(),
       county:     $('#va-county').val(),
       condition:  $('#va-cond').val(),
-      min_price:  $('#va-min-price').val(),
-      max_price:  $('#va-max-price').val(),
+      min_price:  minVal > 0 ? minVal : 0,
+      max_price:  (maxVal > 0 && maxVal < maxLimit) ? maxVal : 0,
       sort:       $('#va-sort').val(),
       post_type:  $form.data('post-type') || 'va_listing',
       author_id:  $form.data('author-id') || 0

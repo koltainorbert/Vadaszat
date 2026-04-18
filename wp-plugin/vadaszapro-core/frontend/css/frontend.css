@@ -152,38 +152,48 @@
 .va-filter-bar__actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 @media (max-width: 600px) { .va-filter-bar { padding: 14px; } .va-filter-bar__grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 380px) { .va-filter-bar__grid { grid-template-columns: 1fr; } }
-/* ── Ár szűrő egyedi spinner ────────────────────────── */
-.va-price-range { display: flex; align-items: center; gap: 10px; }
-.va-price-sep   { color: rgba(255,255,255,.4); font-size: 18px; flex-shrink: 0; }
-.va-price-spin  { position: relative; flex: 1; display: flex; align-items: center; }
-
-/* Natív spinner elrejtése */
-.va-price-input { -moz-appearance: textfield; padding-right: 72px !important; font-size: 15px; height: 44px; }
-.va-price-input::-webkit-outer-spin-button,
-.va-price-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-
-/* Egyedi gombok – vízszintesen jobb oldalt */
-.va-price-spin__btns {
-  position: absolute; right: 0; top: 0; bottom: 0;
-  display: flex; flex-direction: row;
-  align-items: stretch;
-  width: 68px;
-  border-left: 1px solid var(--va-border);
-  border-radius: 0 var(--va-radius) var(--va-radius) 0;
-  overflow: hidden;
+/* ── Ár csúszka szűrő ───────────────────────────────── */
+.va-price-slider-wrap {
+  grid-column: 1 / -1;
+  padding: 14px 16px 10px;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--va-radius);
 }
-.va-spin-up, .va-spin-down {
-  flex: 1; border: none; cursor: pointer;
-  font-size: 13px; font-weight: 700; line-height: 1;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .15s, color .15s;
-  padding: 0;
-  letter-spacing: 0;
+.va-price-slider-labels {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: rgba(255,255,255,.5); margin-bottom: 10px; font-weight: 600;
 }
-.va-spin-down { background: rgba(255,40,40,.18); color: #ff5555; border-right: 1px solid var(--va-border); }
-.va-spin-down:hover { background: rgba(255,0,0,.35); color: #fff; }
-.va-spin-up   { background: rgba(0,200,80,.15);  color: #00cc60; }
-.va-spin-up:hover { background: rgba(0,180,60,.35); color: #fff; }
+.va-price-slider-display { color: #ff4040; font-weight: 700; font-size: 13px; }
+.va-price-slider-track {
+  position: relative; height: 4px;
+  background: rgba(255,255,255,.12); border-radius: 2px;
+  margin: 10px 0 6px;
+}
+.va-range-fill {
+  position: absolute; height: 100%; background: #ff0000; border-radius: 2px; pointer-events: none;
+}
+.va-range {
+  position: absolute; width: 100%; height: 4px; top: 0;
+  -webkit-appearance: none; appearance: none;
+  background: transparent; pointer-events: none;
+  margin: 0;
+}
+.va-range::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #ff0000; border: 2px solid #fff;
+  cursor: pointer; pointer-events: all;
+  box-shadow: 0 0 6px rgba(255,0,0,.5);
+  transition: transform .15s;
+}
+.va-range::-webkit-slider-thumb:hover { transform: scale(1.25); box-shadow: 0 0 12px rgba(255,0,0,.7); }
+.va-range::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #ff0000; border: 2px solid #fff;
+  cursor: pointer; pointer-events: all;
+  box-shadow: 0 0 6px rgba(255,0,0,.5);
+}
 
 /* ── Hirdetés detail oldal ───────────────────────── */
 .va-listing-detail { max-width: 900px; }
