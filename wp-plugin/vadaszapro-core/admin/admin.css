@@ -44,3 +44,27 @@
 .va-admin-wrap h2 { margin-top: 26px; }
 .va-admin-wrap .wp-picker-container { vertical-align: middle; }
 .va-admin-wrap .va-color-input { max-width: 220px; }
+
+/* Beállítás mezők: mindig olvasható kontraszt */
+.va-admin-wrap input[type="text"],
+.va-admin-wrap input[type="email"],
+.va-admin-wrap input[type="url"],
+.va-admin-wrap input[type="number"],
+.va-admin-wrap select,
+.va-admin-wrap textarea {
+   background: #ffffff !important;
+   color: #111111 !important;
+   border: 1px solid #8c8f94 !important;
+}
+
+.va-admin-wrap input::placeholder,
+.va-admin-wrap textarea::placeholder {
+   color: #6b7280 !important;
+}
+
+.va-admin-wrap input:focus,
+.va-admin-wrap select:focus,
+.va-admin-wrap textarea:focus {
+   border-color: #2271b1 !important;
+   box-shadow: 0 0 0 1px #2271b1 !important;
+}

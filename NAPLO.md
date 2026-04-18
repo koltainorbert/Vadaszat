@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #38 (Admin mezők láthatósági fix)
+
+### Mit csináltunk [x]
+- [x] Javítva az admin beállítás oldalak input láthatósági hibája
+- [x] Minden settings mezőre kontrasztos stílus: fehér háttér + sötét szöveg + fókusz keret
+- [x] Kiterjesztve text/email/url/number/select/textarea mezőkre
+- [x] Eredmény: a beírt és mentett értékek minden admin oldalon olvashatóak
+
+---
+
 ## 2026. 04. 18. – Session #37 (Lábléc logó pozíció finomítás)
 
 ### Mit csináltunk [x]
