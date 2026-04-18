@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #69 (Layout Allito grafikus abra blokkok)
+
+### Mit csinaltunk [x]
+- [x] A Layout Allito tetejere vizualis magyarazo kartyak kerultek (nem steril tabla)
+- [x] Grafikus blokkok: kontener + oldalpárna, responsive toréspont flow, kartya anatomia
+- [x] Kulon admin CSS keszult a diagram elemekhez (dark panel, piros kiemeles, responsziv admin elrendezes)
+- [x] Cel: gyorsabb ertelmezes, egyertelmu "mi mit csinal" UX
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #68 (Mobil-first responzivitas + Breakpoint Preview)
 
 ### Mit csinaltunk [x]

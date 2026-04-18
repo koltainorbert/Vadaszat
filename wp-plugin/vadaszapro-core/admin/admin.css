@@ -68,3 +68,111 @@
    border-color: #2271b1 !important;
    box-shadow: 0 0 0 1px #2271b1 !important;
 }
+
+/* Layout guide (grafikus magyarazo blokkok) */
+.va-layout-guide {
+   display: grid;
+   grid-template-columns: repeat(3, minmax(0, 1fr));
+   gap: 14px;
+   margin: 16px 0 22px;
+}
+.va-layout-guide__card {
+   background: #141414;
+   border: 1px solid #2b2b2b;
+   border-radius: 10px;
+   padding: 12px;
+   color: #f3f3f3;
+}
+.va-layout-guide__card h3 {
+   margin: 0 0 10px;
+   font-size: 13px;
+   color: #fff;
+}
+.va-layout-guide__card p {
+   margin: 10px 0 0;
+   font-size: 12px;
+   color: #bfc3c8;
+   line-height: 1.45;
+}
+
+.va-diagram {
+   border: 1px solid #333;
+   border-radius: 8px;
+   background: linear-gradient(135deg, #0e0e0e, #111);
+   padding: 10px;
+   min-height: 96px;
+}
+
+/* Container diagram */
+.va-diagram--container .va-d-outer {
+   height: 76px;
+   border: 1px dashed #4a4a4a;
+   border-radius: 6px;
+   display: grid;
+   grid-template-columns: 20% 1fr 20%;
+   overflow: hidden;
+}
+.va-diagram--container .va-d-gutter {
+   background: repeating-linear-gradient(45deg, rgba(255,255,255,.05), rgba(255,255,255,.05) 6px, rgba(255,255,255,.02) 6px, rgba(255,255,255,.02) 12px);
+}
+.va-diagram--container .va-d-inner {
+   background: linear-gradient(180deg, rgba(255,0,0,.24), rgba(255,0,0,.1));
+   border-left: 1px solid rgba(255,0,0,.4);
+   border-right: 1px solid rgba(255,0,0,.4);
+}
+
+/* Breakpoint diagram */
+.va-diagram--breakpoints {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   gap: 8px;
+}
+.va-d-bp {
+   border-radius: 7px;
+   border: 1px solid #3b3b3b;
+   background: #191919;
+   font-size: 11px;
+   color: #fff;
+   padding: 9px 8px;
+   text-align: center;
+   min-width: 64px;
+}
+.va-d-bp--desktop { min-width: 78px; background: rgba(255,255,255,.05); }
+.va-d-bp--tablet { min-width: 60px; background: rgba(255,0,0,.09); border-color: rgba(255,0,0,.35); }
+.va-d-bp--mobile { min-width: 46px; background: rgba(255,255,255,.03); }
+.va-d-arrow { color: #ff4a4a; font-weight: 700; }
+
+/* Card diagram */
+.va-diagram--card {
+   display: grid;
+   grid-template-columns: 90px 1fr;
+   gap: 8px;
+   align-items: stretch;
+}
+.va-d-card-img {
+   border-radius: 7px;
+   border: 1px solid #3a3a3a;
+   background: linear-gradient(155deg, #262626, #161616);
+}
+.va-d-card-body {
+   border-radius: 7px;
+   border: 1px solid #303030;
+   background: #181818;
+   padding: 8px;
+}
+.va-d-line {
+   height: 8px;
+   border-radius: 999px;
+   background: rgba(255,255,255,.18);
+   margin-bottom: 7px;
+}
+.va-d-line--title { width: 88%; }
+.va-d-line--price { width: 56%; background: rgba(255,0,0,.45); }
+.va-d-line--meta { width: 72%; margin-bottom: 0; }
+
+@media (max-width: 1200px) {
+   .va-layout-guide {
+      grid-template-columns: 1fr;
+   }
+}

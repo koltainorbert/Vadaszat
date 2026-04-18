@@ -928,6 +928,45 @@ class VA_Settings_Page {
             <p class="description">Nagy léptékű layout finomhangolás: konténer, rácsok, oldalsáv, kártyák, árnyékok, tördelés, mobil viselkedés.</p>
             <?php settings_errors( 'va_layout_settings' ); ?>
 
+            <div class="va-layout-guide">
+                <div class="va-layout-guide__card">
+                    <h3>Konténer + oldalpárna</h3>
+                    <div class="va-diagram va-diagram--container">
+                        <div class="va-d-outer">
+                            <div class="va-d-gutter"></div>
+                            <div class="va-d-inner"></div>
+                            <div class="va-d-gutter"></div>
+                        </div>
+                    </div>
+                    <p>Az <strong>Oldal max szélesség</strong> és a <strong>Konténer oldalpárna</strong> itt rajzolódik ki.</p>
+                </div>
+
+                <div class="va-layout-guide__card">
+                    <h3>Töréspontok (responsive)</h3>
+                    <div class="va-diagram va-diagram--breakpoints">
+                        <div class="va-d-bp va-d-bp--desktop">Desktop</div>
+                        <div class="va-d-arrow">→</div>
+                        <div class="va-d-bp va-d-bp--tablet">Tablet</div>
+                        <div class="va-d-arrow">→</div>
+                        <div class="va-d-bp va-d-bp--mobile">Mobil</div>
+                    </div>
+                    <p>A <strong>desktop → tablet</strong> és <strong>tablet → mobil</strong> váltás pontos px értékekkel állítható.</p>
+                </div>
+
+                <div class="va-layout-guide__card">
+                    <h3>Kártya anatómia</h3>
+                    <div class="va-diagram va-diagram--card">
+                        <div class="va-d-card-img"></div>
+                        <div class="va-d-card-body">
+                            <div class="va-d-line va-d-line--title"></div>
+                            <div class="va-d-line va-d-line--price"></div>
+                            <div class="va-d-line va-d-line--meta"></div>
+                        </div>
+                    </div>
+                    <p>Itt állítod a <strong>radius</strong>, <strong>padding</strong>, <strong>árnyék</strong>, <strong>tipográfia</strong> értékeit.</p>
+                </div>
+            </div>
+
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_layout_settings' ); ?>
 
