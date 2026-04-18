@@ -13,6 +13,7 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_export_settings', [ __CLASS__, 'handle_export_settings' ] );
         add_action( 'admin_post_va_import_settings', [ __CLASS__, 'handle_import_settings' ] );
         add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );
+        add_action( 'admin_post_va_apply_hf_preset', [ __CLASS__, 'handle_apply_hf_preset' ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
@@ -554,11 +555,35 @@ class VA_Settings_Page {
             '800' => '800 – ExtraBold',
             '900' => '900 – Black',
         ];
+
+        $preset_msg = isset( $_GET['va_hf_preset'] ) ? sanitize_key( (string) $_GET['va_hf_preset'] ) : '';
+        $presets = self::get_header_footer_presets();
         ?>
         <div class="wrap va-admin-wrap">
             <h1>🧩 VadászApró – Fejléc + Lábléc (100% kontroll)</h1>
             <p class="description">Külön menüből finomhangolhatod a fejléc és a lábléc layoutját, szövegeit, méreteit, mobil viselkedését és vizuális részleteit.</p>
+            <?php if ( $preset_msg === 'ok' ): ?>
+                <div class="notice notice-success"><p>Preset alkalmazva. Mentés nélkül is azonnal él.</p></div>
+            <?php elseif ( $preset_msg === 'invalid' ): ?>
+                <div class="notice notice-error"><p>Ismeretlen preset kulcs.</p></div>
+            <?php endif; ?>
             <?php settings_errors( 'va_design_settings' ); ?>
+
+            <h2>🎛️ Egy kattintásos modern presetek</h2>
+            <p class="description">10 előre összehangolt fejléc + lábléc paletta, árnyék és glow beállítással.</p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;max-width:1200px;margin:10px 0 18px;">
+                <?php foreach ( $presets as $preset_key => $preset ): ?>
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="border:1px solid #dcdcde;border-radius:8px;padding:12px;background:#fff;">
+                        <input type="hidden" name="action" value="va_apply_hf_preset">
+                        <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
+                        <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
+                        <strong><?php echo esc_html( $preset['label'] ); ?></strong>
+                        <div style="margin:8px 0 10px;color:#50575e;"><?php echo esc_html( $preset['desc'] ); ?></div>
+                        <button type="submit" class="button button-secondary">Preset alkalmazása</button>
+                    </form>
+                <?php endforeach; ?>
+            </div>
+
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_design_settings' ); ?>
 
@@ -1031,6 +1056,31 @@ class VA_Settings_Page {
         exit;
     }
 
+    public static function handle_apply_hf_preset() {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Nincs jogosultság.' );
+        }
+        check_admin_referer( 'va_apply_hf_preset' );
+
+        $preset_key = sanitize_key( (string) ( $_POST['preset_key'] ?? '' ) );
+        $presets = self::get_header_footer_presets();
+
+        if ( ! isset( $presets[ $preset_key ] ) ) {
+            wp_safe_redirect( add_query_arg( 'va_hf_preset', 'invalid', admin_url( 'admin.php?page=vadaszapro-header-footer' ) ) );
+            exit;
+        }
+
+        foreach ( $presets[ $preset_key ]['options'] as $key => $value ) {
+            if ( strpos( (string) $key, 'va_' ) !== 0 ) {
+                continue;
+            }
+            update_option( (string) $key, $value );
+        }
+
+        wp_safe_redirect( add_query_arg( 'va_hf_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-header-footer' ) ) );
+        exit;
+    }
+
     private static function get_all_va_options(): array {
         global $wpdb;
 
@@ -1054,6 +1104,231 @@ class VA_Settings_Page {
 
         ksort( $options );
         return $options;
+    }
+
+    private static function get_header_footer_presets(): array {
+        return [
+            'carbon_red' => [
+                'label' => 'Carbon Red',
+                'desc'  => 'Fekete karbon alap, tiszta piros glow.',
+                'options' => [
+                    'va_hf_header_color_base' => '#050505',
+                    'va_hf_header_color_alt' => '#1a0a0a',
+                    'va_hf_header_border_color' => '#ff2a2a',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.74)',
+                    'va_hf_header_glow_color' => 'rgba(255,0,0,.24)',
+                    'va_hf_header_search_glow_color' => 'rgba(255,0,0,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(255,0,0,.52)',
+                    'va_hf_footer_color_base' => '#090909',
+                    'va_hf_footer_color_alt' => '#180808',
+                    'va_hf_footer_border_color' => '#ff2a2a',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.38)',
+                    'va_hf_footer_glow_color' => 'rgba(255,0,0,.14)',
+                    'va_hf_footer_link_hover_color' => '#ffffff',
+                    'va_color_header_text' => '#ffffff',
+                    'va_color_footer_text' => 'rgba(255,255,255,.76)',
+                    'va_color_footer_links' => '#ff4d4d',
+                ],
+            ],
+            'steel_ember' => [
+                'label' => 'Steel Ember',
+                'desc'  => 'Acélos szürke + izzó narancs hangsúly.',
+                'options' => [
+                    'va_hf_header_color_base' => '#111317',
+                    'va_hf_header_color_alt' => '#25170f',
+                    'va_hf_header_border_color' => '#ff7a22',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.70)',
+                    'va_hf_header_glow_color' => 'rgba(255,122,34,.20)',
+                    'va_hf_header_search_glow_color' => 'rgba(255,122,34,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(255,122,34,.42)',
+                    'va_hf_footer_color_base' => '#0d0f13',
+                    'va_hf_footer_color_alt' => '#20140f',
+                    'va_hf_footer_border_color' => '#ff7a22',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.36)',
+                    'va_hf_footer_glow_color' => 'rgba(255,122,34,.12)',
+                    'va_hf_footer_link_hover_color' => '#ffd0b0',
+                    'va_color_header_text' => '#f5f7fa',
+                    'va_color_footer_text' => 'rgba(245,247,250,.76)',
+                    'va_color_footer_links' => '#ff9a57',
+                ],
+            ],
+            'night_copper' => [
+                'label' => 'Night Copper',
+                'desc'  => 'Sotet barna-femes retegzes, premium hangulat.',
+                'options' => [
+                    'va_hf_header_color_base' => '#0d0a08',
+                    'va_hf_header_color_alt' => '#2a1b12',
+                    'va_hf_header_border_color' => '#c67a3d',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.72)',
+                    'va_hf_header_glow_color' => 'rgba(198,122,61,.20)',
+                    'va_hf_header_search_glow_color' => 'rgba(198,122,61,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(198,122,61,.40)',
+                    'va_hf_footer_color_base' => '#0e0906',
+                    'va_hf_footer_color_alt' => '#20140d',
+                    'va_hf_footer_border_color' => '#c67a3d',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.37)',
+                    'va_hf_footer_glow_color' => 'rgba(198,122,61,.12)',
+                    'va_hf_footer_link_hover_color' => '#ffe2cc',
+                    'va_color_header_text' => '#fff5eb',
+                    'va_color_footer_text' => 'rgba(255,245,235,.74)',
+                    'va_color_footer_links' => '#e4a06d',
+                ],
+            ],
+            'midnight_ice' => [
+                'label' => 'Midnight Ice',
+                'desc'  => 'Hideg kek-szurke modern, minimal premium.',
+                'options' => [
+                    'va_hf_header_color_base' => '#080d16',
+                    'va_hf_header_color_alt' => '#122339',
+                    'va_hf_header_border_color' => '#57b0ff',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.72)',
+                    'va_hf_header_glow_color' => 'rgba(87,176,255,.20)',
+                    'va_hf_header_search_glow_color' => 'rgba(87,176,255,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(87,176,255,.40)',
+                    'va_hf_footer_color_base' => '#070b12',
+                    'va_hf_footer_color_alt' => '#102034',
+                    'va_hf_footer_border_color' => '#57b0ff',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.38)',
+                    'va_hf_footer_glow_color' => 'rgba(87,176,255,.12)',
+                    'va_hf_footer_link_hover_color' => '#d8efff',
+                    'va_color_header_text' => '#eef7ff',
+                    'va_color_footer_text' => 'rgba(238,247,255,.74)',
+                    'va_color_footer_links' => '#89c8ff',
+                ],
+            ],
+            'forest_glass' => [
+                'label' => 'Forest Glass',
+                'desc'  => 'Mely zold uveges panel erzes.',
+                'options' => [
+                    'va_hf_header_color_base' => '#06100b',
+                    'va_hf_header_color_alt' => '#0f2b1f',
+                    'va_hf_header_border_color' => '#36d487',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.70)',
+                    'va_hf_header_glow_color' => 'rgba(54,212,135,.18)',
+                    'va_hf_header_search_glow_color' => 'rgba(54,212,135,.16)',
+                    'va_hf_header_btn_glow_color' => 'rgba(54,212,135,.36)',
+                    'va_hf_footer_color_base' => '#060f0a',
+                    'va_hf_footer_color_alt' => '#10261c',
+                    'va_hf_footer_border_color' => '#36d487',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.36)',
+                    'va_hf_footer_glow_color' => 'rgba(54,212,135,.11)',
+                    'va_hf_footer_link_hover_color' => '#cbffe5',
+                    'va_color_header_text' => '#effff7',
+                    'va_color_footer_text' => 'rgba(239,255,247,.74)',
+                    'va_color_footer_links' => '#7decb7',
+                ],
+            ],
+            'obsidian_gold' => [
+                'label' => 'Obsidian Gold',
+                'desc'  => 'Fekete + arany, exkluziv karakter.',
+                'options' => [
+                    'va_hf_header_color_base' => '#090909',
+                    'va_hf_header_color_alt' => '#1d1705',
+                    'va_hf_header_border_color' => '#e5b843',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.74)',
+                    'va_hf_header_glow_color' => 'rgba(229,184,67,.20)',
+                    'va_hf_header_search_glow_color' => 'rgba(229,184,67,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(229,184,67,.40)',
+                    'va_hf_footer_color_base' => '#080808',
+                    'va_hf_footer_color_alt' => '#1b1505',
+                    'va_hf_footer_border_color' => '#e5b843',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.38)',
+                    'va_hf_footer_glow_color' => 'rgba(229,184,67,.12)',
+                    'va_hf_footer_link_hover_color' => '#fff2cb',
+                    'va_color_header_text' => '#fff9e8',
+                    'va_color_footer_text' => 'rgba(255,249,232,.74)',
+                    'va_color_footer_links' => '#f0cf76',
+                ],
+            ],
+            'graphite_rose' => [
+                'label' => 'Graphite Rose',
+                'desc'  => 'Grafit alap finom rozsas accenttel.',
+                'options' => [
+                    'va_hf_header_color_base' => '#0f1013',
+                    'va_hf_header_color_alt' => '#261521',
+                    'va_hf_header_border_color' => '#ff6f91',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.72)',
+                    'va_hf_header_glow_color' => 'rgba(255,111,145,.20)',
+                    'va_hf_header_search_glow_color' => 'rgba(255,111,145,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(255,111,145,.38)',
+                    'va_hf_footer_color_base' => '#0d0e10',
+                    'va_hf_footer_color_alt' => '#21131b',
+                    'va_hf_footer_border_color' => '#ff6f91',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.36)',
+                    'va_hf_footer_glow_color' => 'rgba(255,111,145,.11)',
+                    'va_hf_footer_link_hover_color' => '#ffdbe5',
+                    'va_color_header_text' => '#fff0f5',
+                    'va_color_footer_text' => 'rgba(255,240,245,.74)',
+                    'va_color_footer_links' => '#ff97b0',
+                ],
+            ],
+            'arctic_mint' => [
+                'label' => 'Arctic Mint',
+                'desc'  => 'Hideg tiszta menta vilagitas, modern tech vibe.',
+                'options' => [
+                    'va_hf_header_color_base' => '#071015',
+                    'va_hf_header_color_alt' => '#103036',
+                    'va_hf_header_border_color' => '#4ce8d2',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.70)',
+                    'va_hf_header_glow_color' => 'rgba(76,232,210,.20)',
+                    'va_hf_header_search_glow_color' => 'rgba(76,232,210,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(76,232,210,.38)',
+                    'va_hf_footer_color_base' => '#060f12',
+                    'va_hf_footer_color_alt' => '#0f282d',
+                    'va_hf_footer_border_color' => '#4ce8d2',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.36)',
+                    'va_hf_footer_glow_color' => 'rgba(76,232,210,.11)',
+                    'va_hf_footer_link_hover_color' => '#d8fff8',
+                    'va_color_header_text' => '#eefffb',
+                    'va_color_footer_text' => 'rgba(238,255,251,.74)',
+                    'va_color_footer_links' => '#8bf4e7',
+                ],
+            ],
+            'royal_plum' => [
+                'label' => 'Royal Plum',
+                'desc'  => 'Kiralyi sotet lila-bordo, eros kontraszttal.',
+                'options' => [
+                    'va_hf_header_color_base' => '#12091a',
+                    'va_hf_header_color_alt' => '#2b1020',
+                    'va_hf_header_border_color' => '#c75cff',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.73)',
+                    'va_hf_header_glow_color' => 'rgba(199,92,255,.22)',
+                    'va_hf_header_search_glow_color' => 'rgba(199,92,255,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(199,92,255,.40)',
+                    'va_hf_footer_color_base' => '#100717',
+                    'va_hf_footer_color_alt' => '#230d1a',
+                    'va_hf_footer_border_color' => '#c75cff',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.37)',
+                    'va_hf_footer_glow_color' => 'rgba(199,92,255,.12)',
+                    'va_hf_footer_link_hover_color' => '#f1dcff',
+                    'va_color_header_text' => '#f8f0ff',
+                    'va_color_footer_text' => 'rgba(248,240,255,.74)',
+                    'va_color_footer_links' => '#da98ff',
+                ],
+            ],
+            'desert_sand' => [
+                'label' => 'Desert Sand',
+                'desc'  => 'Meleg homok + rozsda modern outdoor erzet.',
+                'options' => [
+                    'va_hf_header_color_base' => '#15110c',
+                    'va_hf_header_color_alt' => '#3a2312',
+                    'va_hf_header_border_color' => '#ff9d4d',
+                    'va_hf_header_shadow_color' => 'rgba(0,0,0,.72)',
+                    'va_hf_header_glow_color' => 'rgba(255,157,77,.20)',
+                    'va_hf_header_search_glow_color' => 'rgba(255,157,77,.18)',
+                    'va_hf_header_btn_glow_color' => 'rgba(255,157,77,.40)',
+                    'va_hf_footer_color_base' => '#120e0a',
+                    'va_hf_footer_color_alt' => '#2f1d10',
+                    'va_hf_footer_border_color' => '#ff9d4d',
+                    'va_hf_footer_shadow_color' => 'rgba(0,0,0,.36)',
+                    'va_hf_footer_glow_color' => 'rgba(255,157,77,.12)',
+                    'va_hf_footer_link_hover_color' => '#ffe7d2',
+                    'va_color_header_text' => '#fff5eb',
+                    'va_color_footer_text' => 'rgba(255,245,235,.74)',
+                    'va_color_footer_links' => '#ffbf8b',
+                ],
+            ],
+        ];
     }
 
     private static function get_export_taxonomies(): array {
