@@ -308,6 +308,12 @@ class VA_Ajax {
         wp_send_json_success( $result );
     }
 
+    /* ── Filter cache törlése ──────────────────────────── */
+    public static function flush_filter_cache(): void {
+        global $wpdb;
+        $wpdb->query( "DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_va_fl_%' OR option_name LIKE '_transient_timeout_va_fl_%'" );
+    }
+
     /* ── Élő keresés (header dropdown) ─────────────────── */
     public static function live_search() {
         $q = sanitize_text_field( wp_unslash( $_POST['q'] ?? '' ) );
