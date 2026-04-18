@@ -16,6 +16,7 @@ $is_auction= $post->post_type === 'va_auction';
 $categories= get_the_terms( $post_id, 'va_category' );
 $county    = get_the_terms( $post_id, 'va_county' );
 $watching  = va_user_watches( $post_id );
+$author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
 
 $card_image_html = '';
 if ( has_post_thumbnail( $post_id ) ) {
@@ -96,18 +97,24 @@ if ( has_post_thumbnail( $post_id ) ) {
             <div class="va-card__price"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></div>
         <?php endif; ?>
 
-        <div class="va-card__meta">
+        <div class="va-card__meta va-card__meta--top">
             <?php if ( $categories && ! is_wp_error( $categories ) ): ?>
                 <span class="va-card__meta-item">🏷 <?php echo esc_html( $categories[0]->name ); ?></span>
             <?php endif; ?>
             <?php if ( $county && ! is_wp_error( $county ) ): ?>
                 <span class="va-card__meta-item">📍 <?php echo esc_html( $county[0]->name ); ?></span>
             <?php endif; ?>
+        </div>
+
+        <div class="va-card__meta va-card__meta--middle">
             <?php if ( $location ): ?>
                 <span class="va-card__meta-item"><?php echo esc_html( $location ); ?></span>
             <?php endif; ?>
             <span class="va-card__meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><?php echo esc_html( $views ); ?></span>
-            <span class="va-card__meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="va-card__meta-item--author"><?php echo esc_html( get_the_author_meta('display_name', get_post_field('post_author', $post_id)) ); ?></span></span>
+        </div>
+
+        <div class="va-card__meta va-card__meta--bottom">
+            <span class="va-card__meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="va-card__meta-item--author"><?php echo esc_html( $author_name ); ?></span></span>
             <span class="va-card__meta-item">🗓 <?php echo esc_html( get_the_date( 'Y.m.d', $post_id ) ); ?></span>
         </div>
     </div>
