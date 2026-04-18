@@ -171,10 +171,10 @@ hr { border-color: var(--border); }
   font-size: .65rem; font-weight: 700; text-transform: uppercase;
   padding: 3px 7px; border-radius: 20px; flex-shrink: 0;
 }
-.va-sd__badge--va_listing  { background: rgba(255,255,255,.1); color: rgba(255,255,255,.6); }
+.va-sd__badge--va_listing  { background: rgba(255,0,0,.18);    color: #ff4040; }
 .va-sd__badge--va_auction  { background: rgba(255,160,0,.15);  color: #ffa000; }
-.va-sd__badge--category    { background: rgba(0,180,100,.15);  color: #00c864; }
-.va-sd__badge--user        { background: rgba(80,140,255,.15); color: #6fa0ff; }
+.va-sd__badge--category    { background: rgba(0,200,100,.18);  color: #00e070; }
+.va-sd__badge--user        { background: rgba(80,140,255,.18); color: #6fa0ff; }
 .va-sd__all {
   display: block; text-align: center;
   padding: 10px; font-size: .78rem; color: #ff0000;
