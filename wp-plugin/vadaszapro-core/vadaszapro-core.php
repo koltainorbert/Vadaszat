@@ -28,11 +28,12 @@ require_once VA_PLUGIN_DIR . 'includes/class-ajax.php';
 require_once VA_PLUGIN_DIR . 'includes/class-shortcodes.php';
 require_once VA_PLUGIN_DIR . 'includes/helpers.php';
 
+require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php'; // frontend is használja (VA_Form_Builder::get_fields)
+
 if ( is_admin() ) {
     require_once VA_PLUGIN_DIR . 'admin/class-admin.php';
     require_once VA_PLUGIN_DIR . 'admin/class-settings-page.php';
     require_once VA_PLUGIN_DIR . 'admin/class-listing-columns.php';
-    require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php';
 }
 
 /* ── Boot ────────────────────────────────────────── */
