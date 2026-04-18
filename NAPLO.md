@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #60 (Kartya meta sorkoz tomorites)
+
+### Mit csinaltunk [x]
+- [x] A kartya meta sorok sortavja egységesitve es csokkentve
+- [x] Sorok kozti tavolsag tomoritve (top/middle/bottom fix spacing)
+- [x] Cel: kompaktabb, egysegesebb kartyamegjelenes
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #59 (Kartya meta sorstruktura fix)
 
 ### Mit csinaltunk [x]
