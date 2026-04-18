@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #22 (Header keresősáv egyszerűsítés)
+
+### Mit csináltunk [x]
+- [x] Header keresősáv leegyszerűsítve, ugyanakkora hossz/magasság megtartásával
+- [x] A jobb oldali nagy piros blokk helyett kis piros nagyító ikon került be
+- [x] A nagyító enyhe lebegő animációt kapott
+- [x] A mező sima lekerekített, letisztult megjelenést kapott
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #21 (Lebegő vissza-a-tetjére gomb körkörös indikátorral)
 
 ### Mit csináltunk [x]
