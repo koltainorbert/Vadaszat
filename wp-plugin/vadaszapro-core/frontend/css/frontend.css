@@ -152,8 +152,36 @@
 .va-filter-bar__actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 @media (max-width: 600px) { .va-filter-bar { padding: 14px; } .va-filter-bar__grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 380px) { .va-filter-bar__grid { grid-template-columns: 1fr; } }
-.va-price-range { display: flex; align-items: center; gap: 8px; }
-.va-price-range .va-input { flex: 1; }
+/* ── Ár szűrő egyedi spinner ────────────────────────── */
+.va-price-range { display: flex; align-items: center; gap: 10px; }
+.va-price-sep   { color: rgba(255,255,255,.4); font-size: 18px; flex-shrink: 0; }
+.va-price-spin  { position: relative; flex: 1; display: flex; }
+
+/* Natív spinner elrejtése */
+.va-price-input { -moz-appearance: textfield; padding-right: 36px !important; font-size: 15px; height: 44px; }
+.va-price-input::-webkit-outer-spin-button,
+.va-price-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Egyedi gombok */
+.va-price-spin__btns {
+  position: absolute; right: 0; top: 0; bottom: 0;
+  display: flex; flex-direction: column;
+  width: 32px;
+  border-left: 1px solid var(--va-border);
+  overflow: hidden;
+  border-radius: 0 var(--va-radius) var(--va-radius) 0;
+}
+.va-spin-up, .va-spin-down {
+  flex: 1; border: none; cursor: pointer;
+  font-size: 10px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, color .15s;
+  padding: 0;
+}
+.va-spin-up   { background: rgba(255,40,40,.18); color: #ff5555; border-bottom: 1px solid var(--va-border); }
+.va-spin-up:hover   { background: rgba(255,0,0,.35); color: #fff; }
+.va-spin-down { background: rgba(0,200,80,.15);  color: #00cc60; }
+.va-spin-down:hover { background: rgba(0,180,60,.35); color: #fff; }
 
 /* ── Hirdetés detail oldal ───────────────────────── */
 .va-listing-detail { max-width: 900px; }

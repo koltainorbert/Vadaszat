@@ -14,6 +14,17 @@
     });
   }
 
+  // ── Ár spinner gombok (+/-) ──────────────────────────────
+  var spinStep = 5000;
+  $(document).on('click', '.va-spin-up, .va-spin-down', function() {
+    var targetId = $(this).data('target');
+    var $input   = $('#' + targetId);
+    var val      = parseFloat($input.val()) || 0;
+    var isUp     = $(this).hasClass('va-spin-up');
+    val = isUp ? val + spinStep : Math.max(0, val - spinStep);
+    $input.val(val).trigger('change');
+  });
+
   // ── Watchlist toggle ─────────────────────────────────────
   $(document).on('click', '.va-card__watchlist', function(e) {
     e.preventDefault();
