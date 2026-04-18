@@ -33,6 +33,9 @@ get_header(); ?>
       <canvas id="mCanvas" width="208" height="208"></canvas>
       <div class="va-moon__illum" id="mIllum">–</div>
     </div>
+    <div class="va-moon__meter" aria-label="Hold megvilágítottság">
+      <div class="va-moon__meter-fill" id="mIllumBar"></div>
+    </div>
   </div>
   <div class="va-moon__info">
     <div class="va-moon__phase" id="mPhase">–</div>
@@ -235,6 +238,7 @@ get_header(); ?>
     document.getElementById('mPhase').textContent=phName(ph);
     document.getElementById('mAge').textContent=(ph*SYN).toFixed(1)+' napos hold';
     document.getElementById('mIllum').textContent=Math.round(fr*100)+'%';
+    document.getElementById('mIllumBar').style.width=Math.max(4,Math.round(fr*100))+'%';
     document.getElementById('mTime').textContent=now.toLocaleString('hu-HU',{
       timeZone:'Europe/Budapest',year:'numeric',month:'2-digit',day:'2-digit',
       hour:'2-digit',minute:'2-digit'

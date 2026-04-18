@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #42 (Hold szazalek sav lathatosag javitas)
+
+### Mit csinaltunk [x]
+- [x] A hold megvilagitottsag szazalek badge eros kontrasztot kapott
+- [x] Uj vizualis sav kerult a hold ala, ami a megvilagitott resz %-at mutatja
+- [x] A sav JS-bol frissul az aktualis holdfazis alapjan
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #41 (Valodi hold skin bekotese)
 
 ### Mit csinaltunk [x]
