@@ -483,6 +483,7 @@ get_header(); ?>
 <div class="va-hnaptar" id="va-hnaptar-wrap">
 <div class="va-hnaptar__hd">
   <span class="va-hnaptar__title">&#127993; Vad&aacute;szati id&eacute;nyek 2026</span>
+  <span class="va-hnaptar__clock" id="va-hn-clock">&ndash;</span>
   <span class="va-hnaptar__sub">Csoportra kattintva &ouml;sszecsukhat&oacute; &middot; <span style="color:#ff0000;font-weight:700;">|</span> = ma</span>
 </div>
 <div class="va-hnaptar__legend" id="va-hn-legend"></div>
@@ -493,8 +494,9 @@ get_header(); ?>
 
 <style>
 .va-hnaptar{margin-bottom:24px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
-.va-hnaptar__hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:12px 16px 10px;border-bottom:1px solid rgba(255,0,0,.12);}
+.va-hnaptar__hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:12px 20px 10px;border-bottom:1px solid rgba(255,0,0,.12);}
 .va-hnaptar__title{font-size:.88rem;font-weight:800;letter-spacing:.06em;color:#fff;}
+.va-hnaptar__clock{font-size:.72rem;font-weight:700;color:rgba(255,180,0,.85);letter-spacing:.06em;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .va-hnaptar__sub{font-size:.68rem;color:rgba(255,255,255,.35);}
 .va-hnaptar__legend{display:flex;flex-wrap:wrap;gap:5px 14px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
 .va-hn-leg{display:flex;align-items:center;gap:5px;font-size:.65rem;color:rgba(255,255,255,.6);}
@@ -742,6 +744,16 @@ if(_grpData.length>0&&grpDaysSinceOpen(groups[0])<9999){
 
 function updateCDs(){
   var bp=nowBPsimple();
+  /* Élő óra a Gantt fejlécben */
+  var clk=document.getElementById('va-hn-clock');
+  if(clk){
+    var WD=['vasárnap','hétfő','kedd','szerda','csütörtök','péntek','szombat'];
+    var MFN=['jan.','febr.','márc.','ápr.','máj.','jún.','júl.','aug.','szept.','okt.','nov.','dec.'];
+    var jsDate=new Date();
+    var dow=new Intl.DateTimeFormat('hu-HU',{timeZone:'Europe/Budapest',weekday:'short'}).format(jsDate);
+    clk.textContent=bp.year+'. '+MFN[bp.month-1]+' '+bp.day+'. '+dow+' — '
+      +String(bp.hour).padStart(2,'0')+':'+String(bp.minute).padStart(2,'0')+':'+String(bp.second).padStart(2,'0');
+  }
   _acdList.forEach(function(c){
     var on=isInSeason(c.seasons,bp.month,bp.day);
     var nxt=nextSeasonChange(c.seasons,bp.month,bp.day);
