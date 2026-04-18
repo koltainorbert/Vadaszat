@@ -40,8 +40,16 @@
 
             <!-- Kereső -->
             <form class="va-header__search" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get">
-                <input class="va-header__search-input" type="text" name="s" placeholder="Keresés… (pl. Beretta, 12/70)" autocomplete="off">
-                <button class="va-header__search-btn" type="submit" aria-label="Keresés">&#128269;</button>
+                <svg class="va-header__search-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="8.5" cy="8.5" r="5.25" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+                </svg>
+                <input class="va-header__search-input" type="text" name="s" placeholder="Keresés a hirdetések között…" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
+                <button class="va-header__search-btn" type="submit" aria-label="Keresés">
+                    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </form>
 
             <!-- Jobb oldal -->

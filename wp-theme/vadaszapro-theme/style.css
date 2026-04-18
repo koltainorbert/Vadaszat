@@ -103,27 +103,48 @@ hr { border-color: var(--border); }
 /* ── Header kereső ── */
 .va-header__search {
   display: flex; align-items: center;
-  margin: 0 18px;
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  border-radius: 6px;
-  overflow: hidden;
-  transition: border-color .2s;
+  margin: 0 20px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 100px;
+  padding: 0 4px 0 14px;
+  gap: 6px;
+  transition: border-color .25s, box-shadow .25s, background .25s;
+  backdrop-filter: blur(4px);
 }
-.va-header__search:focus-within { border-color: rgba(255,0,0,.5); }
+.va-header__search:focus-within {
+  border-color: rgba(255,0,0,.6);
+  background: rgba(255,255,255,.08);
+  box-shadow: 0 0 0 3px rgba(255,0,0,.1), 0 4px 24px rgba(0,0,0,.3);
+}
+.va-header__search-icon {
+  width: 15px; height: 15px;
+  color: rgba(255,255,255,.35);
+  flex-shrink: 0;
+  transition: color .25s;
+}
+.va-header__search:focus-within .va-header__search-icon { color: rgba(255,255,255,.6); }
 .va-header__search-input {
   background: transparent; border: none; outline: none;
-  color: #fff; font-size: .78rem; padding: 7px 14px;
-  width: 220px; min-width: 0;
+  color: #fff; font-size: .8rem; letter-spacing: .01em;
+  padding: 8px 4px; width: 200px; min-width: 0;
 }
-.va-header__search-input::placeholder { color: rgba(255,255,255,.35); }
+.va-header__search-input::placeholder { color: rgba(255,255,255,.3); }
 .va-header__search-btn {
-  background: #ff0000; border: none; cursor: pointer;
-  color: #fff; padding: 7px 12px; font-size: .9rem;
-  transition: background .15s;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  background: #ff0000; border: none; cursor: pointer; border-radius: 100px;
+  color: #fff;
+  transition: background .2s, transform .15s, box-shadow .2s;
 }
-.va-header__search-btn:hover { background: #cc0000; }
-@media (max-width: 900px) { .va-header__search { display: none; } }
+.va-header__search-btn svg { width: 14px; height: 14px; }
+.va-header__search-btn:hover {
+  background: #e00;
+  box-shadow: 0 0 12px rgba(255,0,0,.5);
+  transform: scale(1.08);
+}
+@media (max-width: 960px) { .va-header__search { display: none; } }
 
 /* ── Logo ── */
 .va-logo {
