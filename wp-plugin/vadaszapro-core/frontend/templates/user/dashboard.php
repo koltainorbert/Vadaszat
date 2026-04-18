@@ -32,13 +32,13 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
 
         <!-- Bal navigáció -->
         <nav class="va-dashboard__nav">
-            <span class="va-dashboard__nav-item active" data-tab="listings">📋 Hirdetéseim (<?php echo count( $listings ); ?>)</span>
+            <span class="va-dashboard__nav-item active" data-tab="listings"><span class="va-dashboard__nav-ico" aria-hidden="true">📋</span><span class="va-dashboard__nav-label">Hirdetéseim (<?php echo count( $listings ); ?>)</span></span>
             <?php if ( $auctions_enabled ): ?>
-            <span class="va-dashboard__nav-item" data-tab="bids">🔨 Licitjeim (<?php echo count( $bids ); ?>)</span>
+            <span class="va-dashboard__nav-item" data-tab="bids"><span class="va-dashboard__nav-ico" aria-hidden="true">🔨</span><span class="va-dashboard__nav-label">Licitjeim (<?php echo count( $bids ); ?>)</span></span>
             <?php endif; ?>
-            <span class="va-dashboard__nav-item" data-tab="watchlist">♥ Kedvenceim (<?php echo count( $watchlist ); ?>)</span>
-            <span class="va-dashboard__nav-item" data-tab="profile">👤 Profilom</span>
-            <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="va-dashboard__nav-item" style="color:#ff0000;margin-top:20px;">🚪 Kijelentkezés</a>
+            <span class="va-dashboard__nav-item" data-tab="watchlist"><span class="va-dashboard__nav-ico" aria-hidden="true">♥</span><span class="va-dashboard__nav-label">Kedvenceim (<?php echo count( $watchlist ); ?>)</span></span>
+            <span class="va-dashboard__nav-item" data-tab="profile"><span class="va-dashboard__nav-ico" aria-hidden="true">👤</span><span class="va-dashboard__nav-label">Profilom</span></span>
+            <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="va-dashboard__nav-item va-dashboard__nav-item--logout"><span class="va-dashboard__nav-ico" aria-hidden="true">🚪</span><span class="va-dashboard__nav-label">Kijelentkezés</span></a>
         </nav>
 
         <!-- Tartalom -->

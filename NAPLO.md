@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #76 (Dashboard menu teljes egyvonalas igazitas)
+
+### Mit csinaltunk [x]
+- [x] A dashboard menupontok icon + label kulon elemekre bontva
+- [x] Fix ikon oszlop bevezetve (`grid-template-columns: 20px 1fr`), hogy minden sor tokeletesen egyvonalban legyen
+- [x] A kijelentkezes sor is ugyanabba a strukturaba kerult (inline style eltavolitva)
+- [x] Label oldal overflow-biztos lett (`text-overflow: ellipsis`)
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #75 (Profil dashboard menupont UX fix)
 
 ### Mit csinaltunk [x]

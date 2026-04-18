@@ -430,9 +430,10 @@
 @media (max-width: 768px) { .va-dashboard { grid-template-columns: 1fr; } }
 .va-dashboard__nav { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 16px 0; height: fit-content; }
 .va-dashboard__nav-item {
-  display: flex;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
   align-items: center;
-  gap: 8px;
+  column-gap: 10px;
   width: 100%;
   padding: 10px 20px;
   color: var(--va-muted);
@@ -445,11 +446,31 @@
   border-left: 3px solid transparent;
   transition: var(--va-transition);
 }
+.va-dashboard__nav-ico {
+  width: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 1;
+}
+.va-dashboard__nav-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .va-dashboard__nav-item:hover,
 .va-dashboard__nav-item.active {
   color: var(--va-text);
   background: rgba(255,0,0,0.08);
   border-left-color: var(--va-accent);
+}
+.va-dashboard__nav-item--logout {
+  color: #ff4a4a;
+  margin-top: 8px;
+}
+.va-dashboard__nav-item--logout:hover {
+  color: #ff0000;
 }
 .va-dashboard__content { min-width: 0; }
 .va-dashboard__section { display: none; }
