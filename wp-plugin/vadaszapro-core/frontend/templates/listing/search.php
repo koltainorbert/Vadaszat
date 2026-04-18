@@ -8,11 +8,17 @@ $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false, '
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 
+// URL paraméterek
+$url_s   = sanitize_text_field( wp_unslash( $_GET['s']   ?? '' ) );
+$url_cat = intval( $_GET['cat'] ?? 0 );
+
 wp_enqueue_script( 'va-frontend', VA_PLUGIN_URL . 'frontend/js/frontend.js', [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-frontend', 'VA_Data', [
-    'ajax_url' => admin_url( 'admin-ajax.php' ),
-    'nonce'    => wp_create_nonce( 'va_user_nonce' ),
-    'post_id'  => 0,
+    'ajax_url'    => admin_url( 'admin-ajax.php' ),
+    'nonce'       => wp_create_nonce( 'va_user_nonce' ),
+    'post_id'     => 0,
+    'initial_s'   => $url_s,
+    'initial_cat' => $url_cat,
 ]);
 wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 ?>
@@ -24,7 +30,7 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
         <div class="va-filter-bar__title">🔍 Hirdetések keresése</div>
         <form id="va-filter-form" data-post-type="va_listing">
             <div class="va-filter-bar__grid">
-                <input type="text" id="va-kw" class="va-input" placeholder="Kulcsszó...">
+                <input type="text" id="va-kw" class="va-input" placeholder="Kulcsszó..." value="<?php echo esc_attr( $url_s ); ?>">
 
                 <select id="va-cat" class="va-select">
                     <option value="">– Kategória –</option>
