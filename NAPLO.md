@@ -2,6 +2,14 @@
 
 ---
 
+## 2026. 04. 18. – Session #37 (Lábléc logó pozíció finomítás)
+
+### Mit csináltunk [x]
+- [x] A lábléc első oszlopában a logó markup áthelyezve a cím alá
+- [x] Eredmény: a logó a vonal alá kerül, nem a szöveg/cím fölé
+
+---
+
 ## 2026. 04. 18. – Session #36 (Visszanullázódó mentés végleges ok + javítás)
 
 ### Mit csináltunk [x]

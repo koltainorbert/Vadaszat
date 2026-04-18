@@ -41,10 +41,10 @@
     <footer class="va-footer">
         <div class="va-footer__grid">
             <div>
+                <div class="va-footer__col-title"><?php echo esc_html( $f_brand_title ); ?></div>
                 <?php if ( $f_logo_url !== '' ): ?>
                     <img src="<?php echo esc_url( $f_logo_url ); ?>" class="va-footer__brand-logo" style="height:<?php echo esc_attr( $f_logo_height ); ?>px;" alt="<?php echo esc_attr( $f_brand_title ); ?>" loading="lazy" decoding="async">
                 <?php endif; ?>
-                <div class="va-footer__col-title"><?php echo esc_html( $f_brand_title ); ?></div>
                 <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;"><?php echo esc_html(get_option('va_site_description', 'Magyarország vadászati apróhirdetési oldala')); ?></p>
             </div>
             <div>
