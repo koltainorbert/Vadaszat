@@ -16,6 +16,39 @@ $is_auction= $post->post_type === 'va_auction';
 $categories= get_the_terms( $post_id, 'va_category' );
 $county    = get_the_terms( $post_id, 'va_county' );
 $watching  = va_user_watches( $post_id );
+
+$card_image_html = '';
+if ( has_post_thumbnail( $post_id ) ) {
+    static $va_card_count = 0;
+    $va_card_count++;
+    $is_lcp = $va_card_count <= 4;
+    $card_image_html = get_the_post_thumbnail( $post_id, 'va-card', [
+        'class'         => 'va-card__thumb',
+        'alt'           => esc_attr( get_the_title( $post_id ) ),
+        'loading'       => $is_lcp ? 'eager' : 'lazy',
+        'fetchpriority' => $is_lcp ? 'high' : 'low',
+        'decoding'      => $is_lcp ? 'sync'  : 'async',
+    ] );
+} else {
+    $attachment_ids = get_posts( [
+        'post_type'      => 'attachment',
+        'posts_per_page' => 1,
+        'post_parent'    => $post_id,
+        'post_mime_type' => 'image',
+        'fields'         => 'ids',
+        'orderby'        => 'menu_order ID',
+        'order'          => 'ASC',
+        'no_found_rows'  => true,
+    ] );
+    if ( ! empty( $attachment_ids ) ) {
+        $card_image_html = wp_get_attachment_image( (int) $attachment_ids[0], 'va-card', false, [
+            'class'    => 'va-card__thumb',
+            'alt'      => esc_attr( get_the_title( $post_id ) ),
+            'loading'  => 'lazy',
+            'decoding' => 'async',
+        ] );
+    }
+}
 ?>
 <div class="va-card va-animate" data-post-id="<?php echo esc_attr( $post_id ); ?>">
 
@@ -34,18 +67,8 @@ $watching  = va_user_watches( $post_id );
     <?php endif; ?>
 
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
-        <?php if ( has_post_thumbnail( $post_id ) ):
-            // Első 4 kártya LCP jelölt – fetchpriority=high, többi lazy
-            static $va_card_count = 0;
-            $va_card_count++;
-            $is_lcp = $va_card_count <= 4;
-            echo get_the_post_thumbnail( $post_id, 'va-card', [
-                'class'         => 'va-card__thumb',
-                'alt'           => esc_attr( get_the_title( $post_id ) ),
-                'loading'       => $is_lcp ? 'eager' : 'lazy',
-                'fetchpriority' => $is_lcp ? 'high' : 'low',
-                'decoding'      => $is_lcp ? 'sync'  : 'async',
-            ] );
+        <?php if ( $card_image_html ):
+            echo $card_image_html;
         else: ?>
             <div class="va-card__thumb-placeholder">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="40" height="40" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>

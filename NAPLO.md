@@ -2,6 +2,16 @@
 
 ---
 
+## 2026. 04. 18. – Session #58 (Nyitolap kartyakep fallback javitas)
+
+### Mit csinaltunk [x]
+- [x] A listing kartya kepforrasa kiegeszitve fallbackkel
+- [x] Ha nincs kiemelt kep, az elso feltoltott hirdeteskep jelenik meg
+- [x] Igy a nyitolap / archiv / kategoria listak kepmegjelenese egyezik a hirdetes aloldal kepforrasaival
+- [x] Hibavizsgalat: modosított fajl hibamentes
+
+---
+
 ## 2026. 04. 18. – Session #57 (Idojaras 7 nap holnaptol indul)
 
 ### Mit csinaltunk [x]
