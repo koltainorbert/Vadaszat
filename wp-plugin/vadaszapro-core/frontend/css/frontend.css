@@ -143,7 +143,8 @@
 .va-card__title { font-size: 15px; font-weight: 700; color: var(--va-text); margin: 0 0 6px; line-height: 1.3; }
 .va-card__title a { color: inherit; text-decoration: none; }
 .va-card__title a:hover { color: var(--va-accent); }
-.va-card__price { font-size: 17px; font-weight: 800; color: var(--va-accent); margin-bottom: 8px; }
+.va-card__price-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.va-card__price { font-size: 17px; font-weight: 800; color: var(--va-accent); margin-bottom: 0; }
 .va-card__meta {
   font-size: 12px;
   line-height: 1.15;
@@ -174,19 +175,19 @@
 .va-card__badge { position: absolute; top: 10px; left: 10px; background: var(--va-accent); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 3px; }
 .va-card__badge--featured { background: #ffaa00; color: #000; }
 .va-card__watchlist {
-  position: absolute;
-  top: 10px;
-  right: 10px;
+  position: static;
   background: rgba(0, 0, 0, 0.62);
   border: 1px solid rgba(255, 0, 0, 0.45);
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   cursor: pointer;
   color: #ff2a2a;
+  flex-shrink: 0;
   transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
 }
 .va-card__watchlist-icon {
@@ -247,7 +248,7 @@
 .va-grid--list .va-card__price { font-size: 20px; margin-bottom: 8px; }
 .va-grid--list .va-card__meta  { flex-wrap: wrap; gap: 10px; }
 .va-grid--list .va-card__badge { top: 10px; left: 10px; }
-.va-grid--list .va-card__watchlist { top: 10px; right: 10px; }
+.va-grid--list .va-card__watchlist { position: static; }
 @media (max-width: 600px) {
   .va-grid--list .va-card { flex-direction: column; }
   .va-grid--list .va-card__img-wrap { width: 100%; height: 200px; }

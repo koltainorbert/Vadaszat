@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #71 (Kedvencek sziv az ar melle helyezve)
+
+### Mit csinaltunk [x]
+- [x] A kartyan a kedvencek sziv mar nem a kepre van pozicionalva
+- [x] A sziv fizikailag az ar soraba kerult (ar melle)
+- [x] A gomb emiatt nem takarja a kepet es stabilan kattinthato marad
+- [x] A kartya cim linkes maradt, a kedvencek gomb kulon, tiszta interakcios zonat kapott
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #70 (Kartya kedvencek szivecske redesign)
 
 ### Mit csinaltunk [x]

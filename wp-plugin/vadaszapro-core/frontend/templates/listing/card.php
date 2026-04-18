@@ -37,6 +37,13 @@ $show_views    = get_option( 'va_card_meta_show_views', '0' ) === '1';
 $show_author   = get_option( 'va_card_meta_show_author', '0' ) === '1';
 $show_date     = get_option( 'va_card_meta_show_date', '1' ) === '1';
 
+$watchlist_button_html = '';
+if ( is_user_logged_in() ) {
+    $watchlist_button_html = '<button class="va-card__watchlist' . ( $watching ? ' active' : '' ) . '" data-post-id="' . esc_attr( $post_id ) . '" title="' . esc_attr( $watching ? 'Eltávolítás kedvencekből' : 'Hozzáadás kedvencekhez' ) . '">'
+        . '<svg class="va-card__watchlist-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
+        . '</button>';
+}
+
 $row_category = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_category', '1' ) ) );
 $row_county   = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_county', '1' ) ) );
 $row_location = max( 1, min( $meta_rows, (int) get_option( 'va_card_meta_row_location', '1' ) ) );
@@ -111,16 +118,6 @@ if ( has_post_thumbnail( $post_id ) ) {
         <span class="va-card__badge">🔨 Aukció</span>
     <?php endif; ?>
 
-    <?php if ( is_user_logged_in() ): ?>
-    <button class="va-card__watchlist<?php echo $watching ? ' active' : ''; ?>"
-            data-post-id="<?php echo esc_attr( $post_id ); ?>"
-            title="<?php echo $watching ? 'Eltávolítás kedvencekből' : 'Hozzáadás kedvencekhez'; ?>">
-        <svg class="va-card__watchlist-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
-    </button>
-    <?php endif; ?>
-
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
         <?php if ( $card_image_html ):
             echo $card_image_html;
@@ -131,24 +128,29 @@ if ( has_post_thumbnail( $post_id ) ) {
         <?php endif; ?>
     </a>
 
-    <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__body-link">
     <div class="va-card__body">
-        <h3 class="va-card__title"><?php the_title(); ?></h3>
+        <h3 class="va-card__title"><a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php the_title(); ?></a></h3>
 
         <?php if ( $is_auction ): ?>
             <?php $cur_bid = get_post_meta( $post_id, 'va_current_bid', true ); ?>
             <?php $start   = get_post_meta( $post_id, 'va_start_price', true ); ?>
-            <div class="va-card__price">
-                <?php echo esc_html( $cur_bid
-                    ? number_format( (float) $cur_bid, 0, ',', ' ' ) . ' Ft'
-                    : number_format( (float) $start, 0, ',', ' ' ) . ' Ft (kikiáltási)' ); ?>
+            <div class="va-card__price-row">
+                <div class="va-card__price">
+                    <?php echo esc_html( $cur_bid
+                        ? number_format( (float) $cur_bid, 0, ',', ' ' ) . ' Ft'
+                        : number_format( (float) $start, 0, ',', ' ' ) . ' Ft (kikiáltási)' ); ?>
+                </div>
+                <?php echo $watchlist_button_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </div>
             <div class="va-card__meta">
                 <span class="va-card__meta-item">⏱ <?php echo va_auction_countdown( $post_id ); ?></span>
                 <span class="va-card__meta-item">🔨 <?php echo esc_html( get_post_meta( $post_id, 'va_bid_count', true ) ?: 0 ); ?> licit</span>
             </div>
         <?php else: ?>
-            <div class="va-card__price"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></div>
+            <div class="va-card__price-row">
+                <div class="va-card__price"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></div>
+                <?php echo $watchlist_button_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            </div>
         <?php endif; ?>
 
         <?php for ( $row_i = 1; $row_i <= $meta_rows; $row_i++ ): ?>
@@ -160,5 +162,4 @@ if ( has_post_thumbnail( $post_id ) ) {
             </div>
         <?php endfor; ?>
     </div>
-    </a>
 </div>
