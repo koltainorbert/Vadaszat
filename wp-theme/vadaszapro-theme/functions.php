@@ -430,7 +430,7 @@ add_action( 'wp_enqueue_scripts', function () {
         'color:' . $header_text . ';' .
     '}' .
     '.va-header{background:' . $header_bg . ';border-bottom-color:' . $header_accent . ';}' .
-    '.va-nav__item--accent,.va-header__submit-btn,.va-header__search-btn{background-color:' . $header_accent . ';border-color:' . $header_accent . ';}' .
+    '.va-nav__item--accent,.va-header__submit-btn{background-color:' . $header_accent . ';border-color:' . $header_accent . ';}' .
     '.va-container,.va-content-layout,.va-main-content,.va-wrap,.va-cat-page,.va-contact-page{' .
         'background-color:' . $content_bg . ';' .
         'color:' . $content_text . ';' .

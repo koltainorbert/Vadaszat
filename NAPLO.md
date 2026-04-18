@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 18. – Session #23 (Keresősáv dinamikus felülírás javítás)
+
+### Mit csináltunk [x]
+- [x] Javítva a Design rendszerből érkező dinamikus CSS felülírás
+- [x] A keresőgomb kikerült a globális header accent háttérszabályból
+- [x] Így az egyszerűsített kis piros nagyító stílus ténylegesen érvényesül
+- [x] Hibavizsgálat: `functions.php` hibamentes
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #22 (Header keresősáv egyszerűsítés)
 
 ### Mit csináltunk [x]
