@@ -27,6 +27,7 @@ class VA_Admin {
 
         add_submenu_page( 'vadaszapro', 'Általános beállítások', 'Általános',     'manage_options', 'vadaszapro',             [ VA_Settings_Page::class, 'render_general'  ] );
         add_submenu_page( 'vadaszapro', 'Design beállítások',    'Design',        'manage_options', 'vadaszapro-design',     [ VA_Settings_Page::class, 'render_design'   ] );
+        add_submenu_page( 'vadaszapro', 'Layout Állító',         'Layout Állító', 'manage_options', 'vadaszapro-layout',     [ VA_Settings_Page::class, 'render_layout_builder' ] );
         add_submenu_page( 'vadaszapro', 'Fejléc + Lábléc',        'Fejléc + Lábléc','manage_options', 'vadaszapro-header-footer', [ VA_Settings_Page::class, 'render_header_footer' ] );
         add_submenu_page( 'vadaszapro', 'Export / Import',       'Export / Import','manage_options', 'vadaszapro-tools',      [ VA_Settings_Page::class, 'render_tools' ] );
         add_submenu_page( 'vadaszapro', 'Reklámzónák',           'Reklámzónák',   'manage_options', 'vadaszapro-reklam',      [ VA_Settings_Page::class, 'render_ad_zones'  ] );
