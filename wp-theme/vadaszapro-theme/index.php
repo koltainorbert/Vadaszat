@@ -62,7 +62,10 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
   </div>
   <div class="va-weather__now" id="vwNow">Adatok betöltése…</div>
   <div class="va-weather__meta" id="vwMeta">–</div>
-  <div class="va-weather__days" id="vwDays"></div>
+  <button type="button" class="va-weather__toggle" id="vwToggle" aria-expanded="false" aria-controls="vwPanel">7 napos előrejelzés ▼</button>
+  <div class="va-weather__panel" id="vwPanel" hidden>
+    <div class="va-weather__days" id="vwDays"></div>
+  </div>
   <div class="va-weather__note" id="vwNote">Forrás: Open-Meteo (DWD/ECMWF/NCEP modellek).</div>
 </section>
 <?php endif; ?>
@@ -338,6 +341,20 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
   var nowEl=document.getElementById('vwNow');
   var metaEl=document.getElementById('vwMeta');
   var daysEl=document.getElementById('vwDays');
+  var toggleEl=document.getElementById('vwToggle');
+  var panelEl=document.getElementById('vwPanel');
+
+  function toggleForecast(forceOpen){
+    if(!toggleEl||!panelEl)return;
+    var open=typeof forceOpen==='boolean' ? forceOpen : toggleEl.getAttribute('aria-expanded')!=='true';
+    toggleEl.setAttribute('aria-expanded',open?'true':'false');
+    toggleEl.textContent=open?'7 napos előrejelzés ▲':'7 napos előrejelzés ▼';
+    panelEl.hidden=!open;
+  }
+  if(toggleEl){
+    toggleEl.addEventListener('click',function(){toggleForecast();});
+    toggleForecast(false);
+  }
 
   function wcText(code){
     var map={
@@ -359,6 +376,15 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
     var d=new Date(iso+'T12:00:00');
     return new Intl.DateTimeFormat('hu-HU',{weekday:'short'}).format(d);
   }
+  function dateHu(iso){
+    var d=new Date(iso+'T12:00:00');
+    return new Intl.DateTimeFormat('hu-HU',{year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
+  }
+  function dateTimeHu(dateObj){
+    return new Intl.DateTimeFormat('hu-HU',{
+      year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false
+    }).format(dateObj||new Date());
+  }
   function fmtLoc(raw){
     if(!raw)return 'Ismeretlen hely';
     return raw;
@@ -370,14 +396,14 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
     }
     var c=data.current;
     locEl.textContent=fmtLoc(label);
-    nowEl.innerHTML='<strong>'+Math.round(c.temperature_2m)+'°C</strong> • '+wcText(c.weather_code);
-    metaEl.textContent='Hőérzet '+Math.round(c.apparent_temperature)+'°C • Pára '+Math.round(c.relative_humidity_2m)+'% • Szél '+Math.round(c.wind_speed_10m)+' km/h ('+wdText(c.wind_direction_10m)+') • Csapadék '+(c.precipitation||0)+' mm/h';
+    nowEl.innerHTML='<strong>'+Math.round(c.temperature_2m)+'°C</strong> • '+wcText(c.weather_code)+' <span class="va-weather__stamp">('+dateTimeHu(new Date())+')</span>';
+    metaEl.textContent='Hőérzet '+Math.round(c.apparent_temperature)+'°C • Pára '+Math.round(c.relative_humidity_2m)+'% • Szél '+Math.round(c.wind_speed_10m)+' km/h ('+wdText(c.wind_direction_10m)+') • Csapadék '+(c.precipitation||0)+' mm/h • Dátum: '+dateHu(d.time[0]);
 
     var d=data.daily;
     var html='';
     for(var i=0;i<d.time.length&&i<7;i++){
       html+='<div class="va-weather__day">'
-        +'<div class="va-weather__d1">'+dayHu(d.time[i])+'</div>'
+        +'<div class="va-weather__d1">'+dayHu(d.time[i])+' · '+dateHu(d.time[i])+'</div>'
         +'<div class="va-weather__d2">'+Math.round(d.temperature_2m_min[i])+' / '+Math.round(d.temperature_2m_max[i])+'°C</div>'
         +'<div class="va-weather__d3">'+wcText(d.weather_code[i])+'</div>'
         +'<div class="va-weather__d4">Csap. '+Math.round(d.precipitation_probability_max[i]||0)+'% · '+(d.precipitation_sum[i]||0).toFixed(1)+' mm · Szél '+Math.round(d.wind_speed_10m_max[i]||0)+' km/h</div>'
