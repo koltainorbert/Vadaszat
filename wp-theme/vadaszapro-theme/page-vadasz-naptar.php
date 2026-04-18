@@ -8,14 +8,18 @@ get_header();
 
 <style>
 /* ══ VN prefix – vadásznaptár oldal ══════════════════════════════════ */
-.vn-page-header{position:sticky;top:0;z-index:50;background:rgba(6,6,6,.96);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,0,0,.2);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:0;}
+.vn-page-header{position:sticky;top:var(--nav,54px);z-index:50;background:rgba(6,6,6,.96);backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,0,0,.2);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:0;}
 .vn-page-header-title{font-size:.9rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:8px;}
 .vn-page-header-title span{color:#ff0000;}
 .vn-page-clock{font-size:.82rem;font-weight:700;color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.04em;text-align:right;line-height:1.5;}
 .vn-page-clock .vn-pc-date{font-size:.72rem;color:rgba(255,255,255,.5);font-weight:400;}
 .vn-wrap{max-width:1280px;margin:0 auto;padding:20px 20px 60px;}
 
-/* ── LEGEND ── */
+/* ── FULLWIDTH OVERRIDE: sideb\u00e1rok elt\u00fcntetése, teljes sz\u00e9less\u00e9g ── */
+.va-sidebar{display:none!important;}
+.va-main-content{padding:0!important;min-width:0;}
+.va-content-layout{display:block!important;}
+.va-container{padding:0!important;max-width:100%!important;}
 .vn-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-bottom:20px;}
 .vn-leg{display:flex;align-items:center;gap:6px;font-size:.75rem;color:rgba(255,255,255,.7)}
 .vn-leg-dot{width:16px;height:10px;border-radius:3px;flex-shrink:0}
@@ -101,7 +105,7 @@ get_header();
   border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;
 }
 .vn-month-header{
-  display:flex;position:sticky;top:80px;z-index:20;
+  display:flex;position:sticky;top:calc(var(--nav,54px) + 46px);z-index:20;
   background:rgb(10,10,10);border-bottom:1px solid rgba(255,255,255,.1);
   box-shadow:0 2px 12px rgba(0,0,0,.7);
 }
