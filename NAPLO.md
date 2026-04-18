@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 04. 18. – Session #16 (Admin mobil szorzó vezérlés)
+
+### Mit csináltunk [x]
+- [x] Design oldalon új mobil skála mezők:
+  - `va_mobile_factor_hero`
+  - `va_mobile_factor_header`
+  - `va_mobile_factor_footer`
+- [x] A fluid `clamp()` képletekbe bekötve a mobil szorzók (70–120%)
+- [x] Új helper: `va_design_scaled_ratio()`
+- [x] Validáció: módosított fájlok hibamentesek
+- [x] Deploy: `Deploy All` lefutott
+
+---
+
 ## 2026. 04. 18. – Session #15 (Reszponzív fluid méretezés a Design vezérléshez)
 
 ### Mit csináltunk [x]

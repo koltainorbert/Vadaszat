@@ -132,6 +132,11 @@ class VA_Settings_Page {
             'va_size_footer_bottom'        => 12,
             'va_weight_footer_title'       => '700',
             'va_weight_footer_link'        => '500',
+
+            // Mobil skála (%)
+            'va_mobile_factor_hero'        => 100,
+            'va_mobile_factor_header'      => 100,
+            'va_mobile_factor_footer'      => 100,
         ];
         foreach ( $design as $key => $default ) {
             register_setting( 'va_design_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
@@ -420,6 +425,13 @@ class VA_Settings_Page {
                     <?php self::field_num(    'va_size_footer_bottom',  'Lábléc alsó sor méret (px)', 10, 28 ); ?>
                     <?php self::field_select( 'va_weight_footer_title', 'Lábléc címsor súly/típus', $weights ); ?>
                     <?php self::field_select( 'va_weight_footer_link',  'Lábléc link súly/típus', $weights ); ?>
+                </table>
+
+                <h2>Mobil skála finomhangolás</h2>
+                <table class="form-table">
+                    <?php self::field_num( 'va_mobile_factor_hero',   'Hero mobil szorzó (%)', 70, 120 ); ?>
+                    <?php self::field_num( 'va_mobile_factor_header', 'Fejléc mobil szorzó (%)', 70, 120 ); ?>
+                    <?php self::field_num( 'va_mobile_factor_footer', 'Lábléc mobil szorzó (%)', 70, 120 ); ?>
                 </table>
 
                 <?php submit_button( 'Design mentése' ); ?>

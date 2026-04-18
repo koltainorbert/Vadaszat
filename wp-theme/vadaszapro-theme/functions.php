@@ -266,6 +266,17 @@ function va_design_fluid_px( int $desktop_px, float $mobile_ratio, string $vw ):
     return 'clamp(' . $mobile_px . 'px, ' . $vw . ', ' . $desktop_px . 'px)';
 }
 
+function va_design_scaled_ratio( float $base_ratio, int $factor_percent ): float {
+    $ratio = $base_ratio * ( $factor_percent / 100 );
+    if ( $ratio < 0.45 ) {
+        return 0.45;
+    }
+    if ( $ratio > 0.98 ) {
+        return 0.98;
+    }
+    return $ratio;
+}
+
 add_action( 'wp_enqueue_scripts', function () {
     $font_keys = [
         'va_font_global',
@@ -346,35 +357,39 @@ add_action( 'wp_enqueue_scripts', function () {
     $footer_title_weight = va_design_weight_option( 'va_weight_footer_title', '700' );
     $footer_link_weight  = va_design_weight_option( 'va_weight_footer_link', '500' );
 
+    $mobile_factor_hero   = va_design_int_option( 'va_mobile_factor_hero', 100, 70, 120 );
+    $mobile_factor_header = va_design_int_option( 'va_mobile_factor_header', 100, 70, 120 );
+    $mobile_factor_footer = va_design_int_option( 'va_mobile_factor_footer', 100, 70, 120 );
+
     // Fluid, reszponzív méretkimenet
-    $home_hero_badge_css    = va_design_fluid_px( $home_hero_badge, 0.90, '1.4vw' );
-    $home_hero_title_css    = va_design_fluid_px( $home_hero_title, 0.58, '7.6vw' );
-    $home_hero_sub_css      = va_design_fluid_px( $home_hero_sub, 0.82, '2.8vw' );
-    $home_hero_btn_css      = va_design_fluid_px( $home_hero_btn, 0.86, '2.2vw' );
+    $home_hero_badge_css    = va_design_fluid_px( $home_hero_badge, va_design_scaled_ratio( 0.90, $mobile_factor_hero ), '1.4vw' );
+    $home_hero_title_css    = va_design_fluid_px( $home_hero_title, va_design_scaled_ratio( 0.58, $mobile_factor_hero ), '7.6vw' );
+    $home_hero_sub_css      = va_design_fluid_px( $home_hero_sub, va_design_scaled_ratio( 0.82, $mobile_factor_hero ), '2.8vw' );
+    $home_hero_btn_css      = va_design_fluid_px( $home_hero_btn, va_design_scaled_ratio( 0.86, $mobile_factor_hero ), '2.2vw' );
 
-    $kat_hero_badge_css     = va_design_fluid_px( $kat_hero_badge, 0.90, '1.3vw' );
-    $kat_hero_title_css     = va_design_fluid_px( $kat_hero_title, 0.58, '6.8vw' );
-    $kat_hero_sub_css       = va_design_fluid_px( $kat_hero_sub, 0.84, '2.2vw' );
-    $kat_hero_stat_num_css  = va_design_fluid_px( $kat_hero_stat_num, 0.84, '2.8vw' );
-    $kat_hero_stat_lbl_css  = va_design_fluid_px( $kat_hero_stat_label, 0.90, '1.5vw' );
+    $kat_hero_badge_css     = va_design_fluid_px( $kat_hero_badge, va_design_scaled_ratio( 0.90, $mobile_factor_hero ), '1.3vw' );
+    $kat_hero_title_css     = va_design_fluid_px( $kat_hero_title, va_design_scaled_ratio( 0.58, $mobile_factor_hero ), '6.8vw' );
+    $kat_hero_sub_css       = va_design_fluid_px( $kat_hero_sub, va_design_scaled_ratio( 0.84, $mobile_factor_hero ), '2.2vw' );
+    $kat_hero_stat_num_css  = va_design_fluid_px( $kat_hero_stat_num, va_design_scaled_ratio( 0.84, $mobile_factor_hero ), '2.8vw' );
+    $kat_hero_stat_lbl_css  = va_design_fluid_px( $kat_hero_stat_label, va_design_scaled_ratio( 0.90, $mobile_factor_hero ), '1.5vw' );
 
-    $tax_hero_badge_css     = va_design_fluid_px( $tax_hero_badge, 0.90, '1.3vw' );
-    $tax_hero_title_css     = va_design_fluid_px( $tax_hero_title, 0.62, '6.0vw' );
-    $tax_hero_lead_css      = va_design_fluid_px( $tax_hero_lead, 0.84, '2.3vw' );
-    $tax_hero_count_css     = va_design_fluid_px( $tax_hero_count, 0.88, '2.0vw' );
+    $tax_hero_badge_css     = va_design_fluid_px( $tax_hero_badge, va_design_scaled_ratio( 0.90, $mobile_factor_hero ), '1.3vw' );
+    $tax_hero_title_css     = va_design_fluid_px( $tax_hero_title, va_design_scaled_ratio( 0.62, $mobile_factor_hero ), '6.0vw' );
+    $tax_hero_lead_css      = va_design_fluid_px( $tax_hero_lead, va_design_scaled_ratio( 0.84, $mobile_factor_hero ), '2.3vw' );
+    $tax_hero_count_css     = va_design_fluid_px( $tax_hero_count, va_design_scaled_ratio( 0.88, $mobile_factor_hero ), '2.0vw' );
 
-    $contact_hero_badge_css = va_design_fluid_px( $contact_hero_badge, 0.90, '1.3vw' );
-    $contact_hero_title_css = va_design_fluid_px( $contact_hero_title, 0.60, '7.0vw' );
-    $contact_hero_lead_css  = va_design_fluid_px( $contact_hero_lead, 0.84, '2.3vw' );
+    $contact_hero_badge_css = va_design_fluid_px( $contact_hero_badge, va_design_scaled_ratio( 0.90, $mobile_factor_hero ), '1.3vw' );
+    $contact_hero_title_css = va_design_fluid_px( $contact_hero_title, va_design_scaled_ratio( 0.60, $mobile_factor_hero ), '7.0vw' );
+    $contact_hero_lead_css  = va_design_fluid_px( $contact_hero_lead, va_design_scaled_ratio( 0.84, $mobile_factor_hero ), '2.3vw' );
 
-    $header_brand_css       = va_design_fluid_px( $header_brand_size, 0.90, '2.4vw' );
-    $header_nav_css         = va_design_fluid_px( $header_nav_size, 0.90, '2.0vw' );
-    $header_search_css      = va_design_fluid_px( $header_search_size, 0.90, '1.9vw' );
-    $header_btn_css         = va_design_fluid_px( $header_btn_size, 0.90, '1.9vw' );
+    $header_brand_css       = va_design_fluid_px( $header_brand_size, va_design_scaled_ratio( 0.90, $mobile_factor_header ), '2.4vw' );
+    $header_nav_css         = va_design_fluid_px( $header_nav_size, va_design_scaled_ratio( 0.90, $mobile_factor_header ), '2.0vw' );
+    $header_search_css      = va_design_fluid_px( $header_search_size, va_design_scaled_ratio( 0.90, $mobile_factor_header ), '1.9vw' );
+    $header_btn_css         = va_design_fluid_px( $header_btn_size, va_design_scaled_ratio( 0.90, $mobile_factor_header ), '1.9vw' );
 
-    $footer_title_css       = va_design_fluid_px( $footer_title_size, 0.92, '1.9vw' );
-    $footer_link_css        = va_design_fluid_px( $footer_link_size, 0.92, '1.8vw' );
-    $footer_bottom_css      = va_design_fluid_px( $footer_bottom_size, 0.92, '1.7vw' );
+    $footer_title_css       = va_design_fluid_px( $footer_title_size, va_design_scaled_ratio( 0.92, $mobile_factor_footer ), '1.9vw' );
+    $footer_link_css        = va_design_fluid_px( $footer_link_size, va_design_scaled_ratio( 0.92, $mobile_factor_footer ), '1.8vw' );
+    $footer_bottom_css      = va_design_fluid_px( $footer_bottom_size, va_design_scaled_ratio( 0.92, $mobile_factor_footer ), '1.7vw' );
 
     $css = ':root{' .
         '--a:' . $global_accent . ';' .
