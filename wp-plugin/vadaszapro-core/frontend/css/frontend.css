@@ -39,6 +39,7 @@
 .va-btn--primary:hover { background: var(--va-accent-dk); }
 .va-btn--outline   { background: transparent; color: var(--va-text); border: 1px solid var(--va-border); }
 .va-btn--outline:hover { border-color: var(--va-accent); color: var(--va-accent); }
+.va-btn--outline.active { border-color: var(--va-accent); color: var(--va-accent); background: rgba(255,0,0,.1); }
 .va-btn--sm { padding: 6px 14px; font-size: 12px; }
 .va-btn--block { width: 100%; justify-content: center; }
 

@@ -112,6 +112,28 @@
     $('#va-results-count').text(total + ' hirdetés');
   }
 
+  // ── Nézet váltó (rács / lista) ───────────────────────────
+  $('#va-view-grid').on('click', function() {
+    $('#va-listing-results').removeClass('va-grid--list');
+    $('#va-view-grid').addClass('active');
+    $('#va-view-list').removeClass('active');
+    localStorage.setItem('va_view', 'grid');
+  });
+  $('#va-view-list').on('click', function() {
+    $('#va-listing-results').addClass('va-grid--list');
+    $('#va-view-list').addClass('active');
+    $('#va-view-grid').removeClass('active');
+    localStorage.setItem('va_view', 'list');
+  });
+  // Mentett nézet visszaállítása
+  if (localStorage.getItem('va_view') === 'list') {
+    $('#va-listing-results').addClass('va-grid--list');
+    $('#va-view-list').addClass('active');
+    $('#va-view-grid').removeClass('active');
+  } else {
+    $('#va-view-grid').addClass('active');
+  }
+
   // ── Galéria kapcsoló (detail oldal) ─────────────────────
   $(document).on('click', '.va-listing-detail__thumb', function() {
     var src = $(this).data('src');
