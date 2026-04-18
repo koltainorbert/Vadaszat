@@ -10,6 +10,7 @@ class VA_Ajax {
     public static function init() {
         // Hirdetés feladás
         add_action( 'wp_ajax_va_submit_listing',  [ __CLASS__, 'submit_listing' ] );
+        add_action( 'template_redirect', [ __CLASS__, 'handle_listing_payment_callback' ] );
 
         // Watchlist
         add_action( 'wp_ajax_va_toggle_watchlist', [ __CLASS__, 'toggle_watchlist' ] );
@@ -47,37 +48,6 @@ class VA_Ajax {
         $paid_price = max( 0, absint( get_option( 'va_listing_price_after_free', 1990 ) ) );
         $payment_url = trim( (string) get_option( 'va_listing_payment_url', '' ) );
 
-        $existing_count = (int) $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->posts}
-             WHERE post_type = %s
-             AND post_author = %d
-             AND post_status IN ('publish','pending','draft','future','private')",
-            'va_listing',
-            $user_id
-        ) );
-
-        $is_free_allowed = ( $free_limit === 0 ) || ( $existing_count < $free_limit );
-        if ( ! $is_free_allowed ) {
-            if ( $payment_url === '' ) {
-                wp_send_json_error([
-                    'message' => 'A további hirdetés fizetős, de a bankkártyás fizetési link még nincs beállítva. Kérjük, lépjen kapcsolatba az üzemeltetővel.',
-                ]);
-            }
-
-            $checkout_url = add_query_arg([
-                'intent'  => 'listing_submission',
-                'user_id' => $user_id,
-                'amount'  => $paid_price,
-            ], $payment_url );
-
-            wp_send_json_error([
-                'message'          => 'Az ingyenes hirdetési limit elfogyott. A következő hirdetés bankkártyás fizetéssel adható fel.',
-                'payment_required' => true,
-                'amount'           => $paid_price,
-                'payment_url'      => esc_url_raw( $checkout_url ),
-            ]);
-        }
-
         $title       = sanitize_text_field( wp_unslash( $_POST['title']       ?? '' ) );
         $description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
         $price       = floatval( $_POST['price'] ?? 0 );
@@ -97,8 +67,27 @@ class VA_Ajax {
             wp_send_json_error( [ 'message' => 'A cím kötelező.' ] );
         }
 
+        $existing_count = (int) $wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->posts}
+             WHERE post_type = %s
+             AND post_author = %d
+             AND post_status IN ('publish','pending','draft','future','private')",
+            'va_listing',
+            $user_id
+        ) );
+
+        $is_free_allowed = ( $free_limit === 0 ) || ( $existing_count < $free_limit );
+
         // WP beállítástól függ: auto-publish vagy pending review
-        $status = get_option( 'va_auto_publish_listings', '0' ) === '1' ? 'publish' : 'pending';
+        $final_status = get_option( 'va_auto_publish_listings', '0' ) === '1' ? 'publish' : 'pending';
+
+        $status = $is_free_allowed ? $final_status : 'draft';
+
+        if ( ! $is_free_allowed && $payment_url === '' ) {
+            wp_send_json_error([
+                'message' => 'A további hirdetés fizetős, de a bankkártyás fizetési link még nincs beállítva. Kérjük, lépjen kapcsolatba az üzemeltetővel.',
+            ]);
+        }
 
         $post_id = wp_insert_post([
             'post_title'   => $title,
@@ -139,6 +128,41 @@ class VA_Ajax {
             self::handle_images( $post_id, $_FILES['listing_images'] );
         }
 
+        if ( ! $is_free_allowed ) {
+            $token = wp_generate_password( 24, false, false );
+            update_post_meta( $post_id, 'va_payment_required', '1' );
+            update_post_meta( $post_id, 'va_payment_status', 'pending' );
+            update_post_meta( $post_id, 'va_payment_amount', $paid_price );
+            update_post_meta( $post_id, 'va_payment_token', $token );
+
+            $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
+            $submit_url = $submit_page ? get_permalink( $submit_page ) : home_url( '/va-hirdetes-feladas/' );
+            $success_url = add_query_arg([
+                'va_payment' => 'success',
+                'token'      => rawurlencode( $token ),
+            ], $submit_url );
+            $cancel_url = add_query_arg([
+                'va_payment' => 'cancel',
+                'token'      => rawurlencode( $token ),
+            ], $submit_url );
+
+            $checkout_url = add_query_arg([
+                'intent'      => 'listing_submission',
+                'listing_id'  => $post_id,
+                'token'       => $token,
+                'amount'      => $paid_price,
+                'success_url' => rawurlencode( $success_url ),
+                'cancel_url'  => rawurlencode( $cancel_url ),
+            ], $payment_url );
+
+            wp_send_json_error([
+                'message'          => 'Az ingyenes hirdetési limit elfogyott. A hirdetés vázlatként mentve. Fizetés után automatikusan aktiváljuk és számlát készítünk.',
+                'payment_required' => true,
+                'amount'           => $paid_price,
+                'payment_url'      => esc_url_raw( $checkout_url ),
+            ]);
+        }
+
         $msg = $status === 'publish'
             ? 'Hirdetés sikeresen feladva!'
             : 'Hirdetés mentve – jóváhagyásra vár.';
@@ -148,6 +172,113 @@ class VA_Ajax {
             'post_id'    => $post_id,
             'permalink'  => get_permalink( $post_id ),
         ]);
+    }
+
+    public static function handle_listing_payment_callback(): void {
+        $payment_state = isset( $_GET['va_payment'] ) ? sanitize_key( (string) wp_unslash( $_GET['va_payment'] ) ) : '';
+        if ( $payment_state === '' ) {
+            return;
+        }
+
+        $token = isset( $_GET['token'] ) ? sanitize_text_field( (string) wp_unslash( $_GET['token'] ) ) : '';
+        if ( $token === '' || ! is_user_logged_in() ) {
+            return;
+        }
+
+        $posts = get_posts([
+            'post_type'      => 'va_listing',
+            'post_status'    => [ 'draft', 'pending', 'publish' ],
+            'author'         => get_current_user_id(),
+            'posts_per_page' => 1,
+            'meta_query'     => [
+                [
+                    'key'   => 'va_payment_token',
+                    'value' => $token,
+                ],
+            ],
+        ]);
+
+        if ( empty( $posts ) ) {
+            va_set_flash( 'error', 'A fizetési tranzakció nem található.' );
+            self::redirect_submit_page();
+        }
+
+        $post = $posts[0];
+        $post_id = (int) $post->ID;
+
+        if ( $payment_state === 'cancel' ) {
+            va_set_flash( 'warning', 'A fizetés megszakadt. A hirdetés vázlatban maradt.' );
+            self::redirect_submit_page();
+        }
+
+        if ( $payment_state !== 'success' ) {
+            return;
+        }
+
+        $already_paid = get_post_meta( $post_id, 'va_payment_status', true ) === 'paid';
+        if ( ! $already_paid ) {
+            $final_status = get_option( 'va_auto_publish_listings', '0' ) === '1' ? 'publish' : 'pending';
+            wp_update_post([
+                'ID'          => $post_id,
+                'post_status' => $final_status,
+            ]);
+
+            update_post_meta( $post_id, 'va_payment_status', 'paid' );
+            update_post_meta( $post_id, 'va_payment_paid_at', current_time( 'mysql' ) );
+
+            $invoice_no = self::generate_invoice( $post_id );
+            $msg = 'Sikeres fizetés. A hirdetés aktiválva.';
+            if ( $invoice_no !== '' ) {
+                $msg .= ' Számla: ' . $invoice_no;
+            }
+            va_set_flash( 'success', $msg );
+        } else {
+            va_set_flash( 'info', 'A fizetés már feldolgozásra került.' );
+        }
+
+        self::redirect_submit_page();
+    }
+
+    private static function generate_invoice( int $post_id ): string {
+        $invoice_no = 'VA-' . date( 'Ymd' ) . '-' . str_pad( (string) $post_id, 6, '0', STR_PAD_LEFT );
+        $amount = (int) get_post_meta( $post_id, 'va_payment_amount', true );
+        $post = get_post( $post_id );
+
+        update_post_meta( $post_id, 'va_invoice_no', $invoice_no );
+        update_post_meta( $post_id, 'va_invoice_amount', $amount );
+        update_post_meta( $post_id, 'va_invoice_generated_at', current_time( 'mysql' ) );
+
+        $upload = wp_upload_dir();
+        if ( empty( $upload['error'] ) ) {
+            $dir = trailingslashit( $upload['basedir'] ) . 'va-invoices';
+            if ( ! wp_mkdir_p( $dir ) ) {
+                return $invoice_no;
+            }
+
+            $filename = sanitize_file_name( strtolower( $invoice_no ) . '.txt' );
+            $path = trailingslashit( $dir ) . $filename;
+            $url  = trailingslashit( $upload['baseurl'] ) . 'va-invoices/' . $filename;
+
+            $content = "Vadaszapro - Szamla\n"
+                . "Szamlaszam: {$invoice_no}\n"
+                . "Datum: " . current_time( 'Y-m-d H:i:s' ) . "\n"
+                . "Hirdetes ID: {$post_id}\n"
+                . "Hirdetes cim: " . ( $post ? $post->post_title : '' ) . "\n"
+                . "Tetel: Hirdetes feladas dij\n"
+                . "Osszeg: " . number_format( $amount, 0, ',', ' ' ) . " Ft\n";
+
+            file_put_contents( $path, $content );
+            update_post_meta( $post_id, 'va_invoice_url', esc_url_raw( $url ) );
+        }
+
+        return $invoice_no;
+    }
+
+    private static function redirect_submit_page(): void {
+        $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
+        $url = $submit_page ? get_permalink( $submit_page ) : home_url( '/va-hirdetes-feladas/' );
+        wp_safe_redirect( $url );
+        exit;
     }
 
     /* ── Képfeltöltés ──────────────────────────────────── */

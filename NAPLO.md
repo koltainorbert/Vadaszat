@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 04. 18. – Session #89 (Fizetesi fallback + fizetes utani aktivalas + szamla)
+
+### Mit csinaltunk [x]
+- [x] Hirdetes feladas form fallback javitas: explicit `method="post"` es `action=admin-ajax.php`, hogy ne GET-es ures oldal legyen
+- [x] Fizetos limitnel a hirdetes mar nem vesz el: draftkent mentjuk (`va_listing`) fizetes elott
+- [x] Fizetesi allapot meta mezok bevezetve a hirdeteshez:
+- [x] `va_payment_required`, `va_payment_status`, `va_payment_amount`, `va_payment_token`
+- [x] Fizetesi URL most tokenes callback parameterekkel epul (`va_payment=success|cancel`, `token`)
+- [x] Uj callback feldolgozas `template_redirect` alatt:
+- [x] sikeres fizetesnel automatikus status valtas `publish/pending` allapotba
+- [x] megszakitott fizetesnel hirdetes draftban marad
+- [x] Flash uzenetekkel egyertelmu UX visszajelzes a feladas oldalon
+- [x] Szamla generalas fizetes utan:
+- [x] szamlaszam (`va_invoice_no`) + osszeg + datum meta mentes
+- [x] letoltetheto TXT szamla file generalas `uploads/va-invoices/` konyvtarba (`va_invoice_url`)
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #88 (Admin mentes push notifikacio)
 
 ### Mit csinaltunk [x]
