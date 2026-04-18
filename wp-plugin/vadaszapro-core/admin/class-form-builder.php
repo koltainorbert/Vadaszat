@@ -123,28 +123,38 @@ class VA_Form_Builder {
         $saved = [];
         $order = 1;
         foreach ( $keys_order as $fkey ) {
-            $def = null;
-            foreach ( $defaults as $d ) {
-                if ( $d['key'] === $fkey ) {
-                    $def = $d;
-                    break;
+            $is_custom = substr( $fkey, 0, 7 ) === 'custom_';
+
+            if ( $is_custom ) {
+                $label_raw = isset( $_POST['field_label'][$fkey] )    ? sanitize_text_field( wp_unslash( (string) $_POST['field_label'][$fkey] ) ) : '';
+                $ph_raw    = isset( $_POST['field_ph'][$fkey] )       ? sanitize_text_field( wp_unslash( (string) $_POST['field_ph'][$fkey]    ) ) : '';
+                $type_raw  = isset( $_POST['field_type'][$fkey] )     ? sanitize_key( wp_unslash( (string) $_POST['field_type'][$fkey] ) ) : 'text';
+                $allowed_types = [ 'text','textarea','number','email','tel','checkbox' ];
+                if ( ! in_array( $type_raw, $allowed_types, true ) ) $type_raw = 'text';
+                if ( $label_raw === '' ) continue;
+            } else {
+                $def = null;
+                foreach ( $defaults as $d ) {
+                    if ( $d['key'] === $fkey ) { $def = $d; break; }
                 }
+                if ( ! $def ) continue;
+                $label_raw = isset( $_POST['field_label'][$fkey] ) ? sanitize_text_field( wp_unslash( (string) $_POST['field_label'][$fkey] ) ) : $def['label'];
+                $ph_raw    = isset( $_POST['field_ph'][$fkey] )    ? sanitize_text_field( wp_unslash( (string) $_POST['field_ph'][$fkey]   ) ) : $def['placeholder'];
+                $type_raw  = $def['type'];
             }
-            if ( ! $def ) continue;
 
             $enabled_raw  = isset( $_POST['field_enabled'][$fkey] )  ? sanitize_text_field( wp_unslash( (string) $_POST['field_enabled'][$fkey]  ) ) : '0';
             $required_raw = isset( $_POST['field_required'][$fkey] ) ? sanitize_text_field( wp_unslash( (string) $_POST['field_required'][$fkey] ) ) : '0';
-            $label_raw    = isset( $_POST['field_label'][$fkey] )    ? sanitize_text_field( wp_unslash( (string) $_POST['field_label'][$fkey]    ) ) : $def['label'];
-            $ph_raw       = isset( $_POST['field_ph'][$fkey] )       ? sanitize_text_field( wp_unslash( (string) $_POST['field_ph'][$fkey]       ) ) : $def['placeholder'];
 
             $saved[] = [
                 'key'         => $fkey,
                 'label'       => $label_raw,
                 'placeholder' => $ph_raw,
-                'type'        => $def['type'],
+                'type'        => $type_raw,
                 'required'    => $required_raw === '1',
                 'enabled'     => $enabled_raw === '1',
                 'order'       => $order++,
+                'custom'      => $is_custom,
             ];
         }
 
@@ -265,64 +275,104 @@ class VA_Form_Builder {
                                             <span class="va-toggle-slider"></span>
                                         </label>
                                     </label>
-                                </div>
-                            </div>
+                                </div>                                <?php if ( substr( $fkey, 0, 7 ) === 'custom_' ): ?>
+                                <button type="button" class="va-fb-delete-btn" title="Törlés">🗑</button>
+                                <?php endif; ?>                            </div>
                         <?php endforeach; ?>
                     </div>
 
                     <div class="va-fb-actions">
                         <button type="submit" class="button button-primary va-fb-save-btn">💾 Form mentése</button>
-                        <a href="<?php echo esc_url( add_query_arg( [ 'page' => 'va-form-builder', 'form' => $active, 'va_reset_form' => '1', '_wpnonce' => wp_create_nonce( 'va_reset_form_' . $active ) ], admin_url( 'admin.php' ) ) ); ?>"
+                        <a href="<?php echo esc_url( add_query_arg( [ 'page' => 'va-form-builder', 'form' => $active, 'va_reset_form' => $active, '_wpnonce' => wp_create_nonce( 'va_reset_form_' . $active ) ], admin_url( 'admin.php' ) ) ); ?>"
                            class="button va-fb-reset-btn"
                            onclick="return confirm('Visszaállítod az alapértelmezésre?')">↩ Visszaállítás</a>
+                    </div>
+
+                    <div class="va-fb-add-panel">
+                        <h4>➕ Új egyedi mező hozzáadása</h4>
+                        <div class="va-fb-add-row">
+                            <input type="text"   id="va-fb-new-label" placeholder="Felirat (pl. Engedélyszám)">
+                            <input type="text"   id="va-fb-new-ph"    placeholder="Placeholder (pl. ENG-12345)">
+                            <select id="va-fb-new-type">
+                                <option value="text">Szöveg</option>
+                                <option value="textarea">Hosszú szöveg</option>
+                                <option value="number">Szám</option>
+                                <option value="email">E-mail</option>
+                                <option value="tel">Telefon</option>
+                                <option value="checkbox">Jelölőnégyzet</option>
+                            </select>
+                            <button type="button" id="va-fb-add-btn" class="button va-fb-add-btn">+ Hozzáad</button>
+                        </div>
+                        <p style="font-size:11px;color:#888;margin:8px 0 0;">Az egyedi mezők a frontend formon megjelennek (a mentett sorrend szerint), és a hirdetés post meta-jaiban tárolódnak.</p>
                     </div>
                 </form>
             </div>
         </div>
 
         <style>
-        .va-fb-wrap { max-width: 920px; }
-        .va-fb-tabs { display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
-        .va-fb-tab  { padding:8px 18px; border-radius:6px 6px 0 0; background:rgba(255,255,255,.06); color:#ccc; text-decoration:none; font-size:13px; font-weight:600; border:1px solid rgba(255,255,255,.08); border-bottom:none; transition:.15s; }
-        .va-fb-tab:hover { background:rgba(255,255,255,.12); color:#fff; }
-        .va-fb-tab--active { background:rgba(255,0,0,.18); color:#fff; border-color:rgba(255,0,0,.4); }
-        .va-fb-body { background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08); border-radius:0 8px 8px 8px; padding:20px; }
-        .va-fb-info { font-size:12px; color:rgba(255,255,255,.45); margin-bottom:16px; padding:10px 14px; background:rgba(255,255,255,.04); border-radius:6px; }
-        .va-fb-list { display:flex; flex-direction:column; gap:8px; }
-        .va-fb-row  { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; padding:10px 14px; cursor:default; transition:.15s; }
-        .va-fb-row:hover { border-color:rgba(255,0,0,.35); background:rgba(255,0,0,.06); }
-        .va-fb-row.sortable-chosen { opacity:.7; border-color:#ff0000; }
+        /* ── Form Builder – fekete szöveg, WP admin fehér háttérre ── */
+        .va-fb-wrap * { color:#111 !important; box-sizing:border-box; }
+        .va-fb-wrap { max-width:960px; }
+        .va-fb-tabs { display:flex; gap:6px; margin-bottom:0; flex-wrap:wrap; }
+        .va-fb-tab  { padding:8px 18px; border-radius:6px 6px 0 0; background:#f0f0f1; color:#333 !important; text-decoration:none; font-size:13px; font-weight:600; border:1px solid #c3c4c7; border-bottom:none; transition:.15s; }
+        .va-fb-tab:hover { background:#e0e0e0; color:#000 !important; }
+        .va-fb-tab--active { background:#fff; color:#c0392b !important; border-color:#c3c4c7; font-weight:700; }
+        .va-fb-body { background:#fff; border:1px solid #c3c4c7; border-radius:0 6px 6px 6px; padding:20px; }
+        .va-fb-info { font-size:12px; color:#555 !important; margin-bottom:16px; padding:10px 14px; background:#f6f7f7; border-left:3px solid #c0392b; border-radius:0 4px 4px 0; }
+        .va-fb-list { display:flex; flex-direction:column; gap:7px; }
+        .va-fb-row  { display:flex; align-items:center; gap:12px; background:#fafafa; border:1px solid #ddd; border-radius:6px; padding:9px 13px; cursor:default; transition:.15s; }
+        .va-fb-row:hover { border-color:#c0392b; background:#fff5f5; }
+        .va-fb-row.sortable-chosen { opacity:.75; border-color:#c0392b; box-shadow:0 2px 8px rgba(192,57,43,.15); }
         .va-fb-row.sortable-ghost  { opacity:.3; }
-        .va-fb-row--disabled { opacity:.45; }
-        .va-fb-handle { font-size:20px; cursor:grab; color:rgba(255,255,255,.3); user-select:none; flex-shrink:0; }
+        .va-fb-row--disabled { opacity:.5; background:#f0f0f0; }
+        .va-fb-row--custom { border-left:3px solid #2980b9; }
+        .va-fb-handle { font-size:20px; cursor:grab; color:#aaa !important; user-select:none; flex-shrink:0; }
         .va-fb-handle:active { cursor:grabbing; }
-        .va-fb-type-icon { font-size:18px; flex-shrink:0; width:24px; text-align:center; }
+        .va-fb-type-icon { font-size:17px; flex-shrink:0; width:22px; text-align:center; }
         .va-fb-row-inputs { display:flex; gap:10px; flex:1; flex-wrap:wrap; }
-        .va-fb-input-group { display:flex; flex-direction:column; gap:3px; flex:1; min-width:140px; }
-        .va-fb-input-group label { font-size:10px; font-weight:700; text-transform:uppercase; color:rgba(255,255,255,.4); letter-spacing:.6px; }
-        .va-fb-label-input, .va-fb-ph-input { background:rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.12); color:#fff; border-radius:5px; padding:5px 9px; font-size:13px; width:100%; box-sizing:border-box; }
-        .va-fb-label-input:focus, .va-fb-ph-input:focus { border-color:rgba(255,0,0,.5); outline:none; }
-        .va-fb-row-controls { display:flex; gap:16px; flex-shrink:0; align-items:center; }
+        .va-fb-input-group { display:flex; flex-direction:column; gap:3px; flex:1; min-width:130px; }
+        .va-fb-input-group > label { font-size:10px; font-weight:700; text-transform:uppercase; color:#888 !important; letter-spacing:.6px; }
+        .va-fb-label-input, .va-fb-ph-input, .va-fb-type-sel { background:#fff; border:1px solid #c3c4c7; color:#111 !important; border-radius:4px; padding:5px 8px; font-size:13px; width:100%; }
+        .va-fb-label-input:focus, .va-fb-ph-input:focus, .va-fb-type-sel:focus { border-color:#c0392b; outline:none; box-shadow:0 0 0 1px #c0392b; }
+        .va-fb-row-controls { display:flex; gap:14px; flex-shrink:0; align-items:center; }
         .va-fb-ctrl-label { display:flex; flex-direction:column; align-items:center; gap:4px; }
-        .va-fb-ctrl-label > span { font-size:10px; font-weight:700; text-transform:uppercase; color:rgba(255,255,255,.4); letter-spacing:.5px; }
-        .va-toggle-slider--red { background:rgba(255,255,255,.15) !important; }
-        input:checked + .va-toggle-slider--red { background:#ff0000 !important; }
-        .va-fb-actions { margin-top:20px; display:flex; gap:10px; }
-        .va-fb-save-btn  { background:#ff0000 !important; border-color:#cc0000 !important; color:#fff !important; font-weight:700 !important; padding:8px 24px !important; }
-        .va-fb-save-btn:hover { background:#cc0000 !important; }
-        .va-fb-reset-btn { border-color:rgba(255,255,255,.2) !important; color:rgba(255,255,255,.6) !important; }
+        .va-fb-ctrl-label > span { font-size:10px; font-weight:700; text-transform:uppercase; color:#888 !important; letter-spacing:.5px; }
+        /* Toggle az adminban – fekete alapon is látható legyen */
+        .va-fb-wrap .va-toggle { position:relative; display:inline-block; width:36px; height:20px; }
+        .va-fb-wrap .va-toggle input { opacity:0; width:0; height:0; position:absolute; }
+        .va-fb-wrap .va-toggle-slider { position:absolute; inset:0; background:#ccc; border-radius:20px; transition:.2s; cursor:pointer; }
+        .va-fb-wrap .va-toggle-slider:before { content:''; position:absolute; width:14px; height:14px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; }
+        .va-fb-wrap input:checked + .va-toggle-slider { background:#27ae60; }
+        .va-fb-wrap input:checked + .va-toggle-slider--red { background:#c0392b !important; }
+        .va-fb-wrap .va-toggle-slider--red { background:#ddd !important; }
+        .va-fb-wrap input:checked + .va-toggle-slider:before { transform:translateX(16px); }
+        /* Törlés gomb */
+        .va-fb-delete-btn { background:none; border:none; cursor:pointer; font-size:16px; color:#c0392b !important; padding:2px 5px; border-radius:4px; flex-shrink:0; line-height:1; }
+        .va-fb-delete-btn:hover { background:#fdecea; }
+        /* Mező hozzáadás panel */
+        .va-fb-add-panel { margin-top:18px; background:#f6f7f7; border:1px dashed #bbb; border-radius:6px; padding:14px 16px; }
+        .va-fb-add-panel h4 { margin:0 0 12px; font-size:13px; font-weight:700; color:#333 !important; }
+        .va-fb-add-row { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; }
+        .va-fb-add-row input, .va-fb-add-row select { background:#fff; border:1px solid #c3c4c7; color:#111 !important; border-radius:4px; padding:6px 9px; font-size:13px; }
+        .va-fb-add-row input { flex:1; min-width:120px; }
+        .va-fb-add-btn { background:#2980b9 !important; border-color:#1a5f8a !important; color:#fff !important; font-weight:600 !important; white-space:nowrap; }
+        .va-fb-add-btn:hover { background:#1a5f8a !important; }
+        .va-fb-actions { margin-top:18px; display:flex; gap:10px; flex-wrap:wrap; }
+        .va-fb-save-btn  { background:#c0392b !important; border-color:#a93226 !important; color:#fff !important; font-weight:700 !important; padding:8px 24px !important; }
+        .va-fb-save-btn:hover { background:#a93226 !important; }
+        .va-fb-reset-btn { border-color:#bbb !important; color:#555 !important; }
+        .va-fb-custom-badge { font-size:10px; background:#2980b9; color:#fff !important; border-radius:3px; padding:1px 5px; margin-left:4px; vertical-align:middle; }
         </style>
 
         <script>
         jQuery(function($){
-            // SortableJS CDN fallback → natív HTML5 drag-and-drop
             const list = document.getElementById('va-fb-sortable');
             if (!list) return;
 
+            // ── Drag & drop ──────────────────────────────
             if (typeof Sortable !== 'undefined') {
                 Sortable.create(list, { handle: '.va-fb-handle', animation: 150 });
             } else {
-                // Natív drag-and-drop fallback
                 let dragged = null;
                 list.querySelectorAll('.va-fb-row').forEach(row => {
                     row.setAttribute('draggable','true');
@@ -333,20 +383,78 @@ class VA_Form_Builder {
                         e.preventDefault();
                         if (dragged && dragged !== row) {
                             const rows = [...list.querySelectorAll('.va-fb-row')];
-                            const fromIdx = rows.indexOf(dragged);
-                            const toIdx   = rows.indexOf(row);
-                            if (fromIdx < toIdx) list.insertBefore(dragged, row.nextSibling);
+                            if (rows.indexOf(dragged) < rows.indexOf(row)) list.insertBefore(dragged, row.nextSibling);
                             else list.insertBefore(dragged, row);
                         }
                     });
                 });
             }
 
-            // Enabled toggle → row dimming
+            // ── Enabled toggle → row dimming ─────────────
             list.addEventListener('change', function(e){
                 if ($(e.target).hasClass('va-fb-enable-cb')) {
                     $(e.target).closest('.va-fb-row').toggleClass('va-fb-row--disabled', !e.target.checked);
                 }
+            });
+
+            // ── Mező törlése ─────────────────────────────
+            list.addEventListener('click', function(e){
+                const btn = $(e.target).closest('.va-fb-delete-btn');
+                if (!btn.length) return;
+                if (!confirm('Biztosan törlöd ezt a mezőt?')) return;
+                btn.closest('.va-fb-row').remove();
+            });
+
+            // ── Új mező hozzáadása ────────────────────────
+            $('#va-fb-add-btn').on('click', function(){
+                const label = $('#va-fb-new-label').val().trim();
+                const ph    = $('#va-fb-new-ph').val().trim();
+                const type  = $('#va-fb-new-type').val();
+                if (!label) { alert('Add meg a mező feliratát!'); return; }
+
+                const key = 'custom_' + Date.now();
+                const typeIcons = {text:'✏️',email:'📧',tel:'📱',number:'🔢',textarea:'📝',select:'🔽',checkbox:'☑️'};
+                const icon = typeIcons[type] || '✏️';
+                const showPh = !['checkbox','select'].includes(type);
+
+                const row = $('<div class="va-fb-row va-fb-row--custom"></div>');
+                row.append('<input type="hidden" name="field_order[]" value="' + key + '">');
+                row.append('<span class="va-fb-handle" title="Húzd">⠿</span>');
+                row.append('<span class="va-fb-type-icon">' + icon + '</span>');
+
+                let inputs = '<div class="va-fb-row-inputs">';
+                inputs += '<div class="va-fb-input-group"><label>Felirat</label>';
+                inputs += '<input type="text" name="field_label[' + key + ']" value="' + $('<div>').text(label).html() + '" class="va-fb-label-input"></div>';
+                if (showPh) {
+                    inputs += '<div class="va-fb-input-group"><label>Placeholder</label>';
+                    inputs += '<input type="text" name="field_ph[' + key + ']" value="' + $('<div>').text(ph).html() + '" class="va-fb-ph-input"></div>';
+                }
+                inputs += '<div class="va-fb-input-group"><label>Típus</label>';
+                inputs += '<input type="hidden" name="field_type[' + key + ']" value="' + type + '"></div>';
+                inputs += '</div>';
+                row.append(inputs);
+
+                let controls = '<div class="va-fb-row-controls">';
+                controls += '<label class="va-fb-ctrl-label"><span>Kötelező</span>';
+                controls += '<input type="hidden" name="field_required[' + key + ']" value="0">';
+                controls += '<label class="va-toggle va-fb-toggle-req"><input type="checkbox" name="field_required[' + key + ']" value="1"><span class="va-toggle-slider va-toggle-slider--red"></span></label></label>';
+                controls += '<label class="va-fb-ctrl-label"><span>Aktív</span>';
+                controls += '<input type="hidden" name="field_enabled[' + key + ']" value="0">';
+                controls += '<label class="va-toggle"><input type="checkbox" name="field_enabled[' + key + ']" value="1" checked class="va-fb-enable-cb"><span class="va-toggle-slider"></span></label></label>';
+                controls += '<button type="button" class="va-fb-delete-btn" title="Törlés">🗑</button>';
+                controls += '</div>';
+                row.append(controls);
+
+                row.append('<span class="va-fb-custom-badge">egyedi</span>');
+                list.appendChild(row[0]);
+
+                $('#va-fb-new-label').val('').focus();
+                $('#va-fb-new-ph').val('');
+            });
+
+            // Enter = hozzáad
+            $('#va-fb-new-label, #va-fb-new-ph').on('keydown', function(e){
+                if (e.key === 'Enter') { e.preventDefault(); $('#va-fb-add-btn').click(); }
             });
         });
         </script>
