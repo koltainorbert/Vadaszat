@@ -456,14 +456,13 @@ get_header(); ?>
     updateCDs();
   }
 
-  document.addEventListener('DOMContentLoaded',function(){
-    build();
-    setInterval(updateCDs,1000);
-    /* Napi újraépítés éjfélkor */
-    var bp=nowBP();
-    var msToMidnight=((23-bp.hour)*3600+(59-bp.minute)*60+(60-bp.second)+1)*1000;
-    setTimeout(function(){build();setInterval(build,86400000);},msToMidnight);
-  });
+  /* Azonnali hívás — elemek már a DOM-ban vannak */
+  build();
+  setInterval(updateCDs,1000);
+  /* Napi újraépítés éjfélkor */
+  var bp=nowBP();
+  var msToMidnight=((23-bp.hour)*3600+(59-bp.minute)*60+(60-bp.second)+1)*1000;
+  setTimeout(function(){build();setInterval(build,86400000);},msToMidnight);
 })();
 </script>
 

@@ -1114,11 +1114,18 @@ textarea { min-height: 110px; resize: vertical; }
 .va-home-sidebar {
   position: sticky;
   top: 90px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.1) transparent;
 }
+.va-home-sidebar::-webkit-scrollbar { width: 3px; }
+.va-home-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 2px; }
 .va-home-main { min-width: 0; }
 @media (max-width: 900px) {
   .va-home-layout { grid-template-columns: 1fr; }
-  .va-home-sidebar { position: static; }
+  .va-home-sidebar { position: static; max-height: none; overflow-y: visible; }
 }
 
 /* ── Holdnaptár ──────────────────────────────────────────────────── */
