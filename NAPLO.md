@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 04. 18. – Session #31 (Full export/import + modern fejléc/lábléc paletta)
+
+### Mit csináltunk [x]
+- [x] Export/Import oldal bővítve teljes migráció opciókkal
+- [x] Export: opcionálisan taxonómiák (`va_category`, `va_county`, `va_condition`) és fix oldalak tartalma is mehet a JSON-ba
+- [x] Import: opcionálisan taxonómiák és oldalak visszaállítása/upsertje is lefut
+- [x] Import visszajelzés bővítve: opciók + taxonómiák + oldalak darabszáma
+- [x] Fejléc + Lábléc admin oldal modern színpaletta mezőkkel bővítve
+- [x] Új fejléc vezérlés: gradient alapszínek, border szín, shadow szín, glow szín, kereső glow, CTA glow
+- [x] Új lábléc vezérlés: gradient alapszínek, border szín, shadow/glow, link hover szín
+- [x] Frontend dinamikus CSS bekötve az új paletta/árnyék opciókra
+- [x] Hibavizsgálat: módosított fájlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #30 (Admin Export/Import + Alaphelyzet)
 
 ### Mit csináltunk [x]

@@ -398,6 +398,11 @@ add_action( 'wp_enqueue_scripts', function () {
     $hf_header_blur              = va_design_int_option( 'va_hf_header_blur', 16, 0, 40 );
     $hf_header_blur_scroll       = va_design_int_option( 'va_hf_header_blur_scrolled', 20, 0, 44 );
     $hf_header_shadow_alpha      = va_design_float_option( 'va_hf_header_shadow_alpha', 0.70, 0, 1 );
+    $hf_header_color_base        = va_design_css_color( (string) get_option( 'va_hf_header_color_base', '#050505' ), '#050505' );
+    $hf_header_color_alt         = va_design_css_color( (string) get_option( 'va_hf_header_color_alt', '#140909' ), '#140909' );
+    $hf_header_border_color      = va_design_css_color( (string) get_option( 'va_hf_header_border_color', '#ff2a2a' ), '#ff2a2a' );
+    $hf_header_shadow_color      = va_design_css_color( (string) get_option( 'va_hf_header_shadow_color', 'rgba(0,0,0,.72)' ), 'rgba(0,0,0,.72)' );
+    $hf_header_glow_color        = va_design_css_color( (string) get_option( 'va_hf_header_glow_color', 'rgba(255,0,0,.24)' ), 'rgba(255,0,0,.24)' );
 
     $hf_search_max_width         = va_design_int_option( 'va_hf_header_search_max_width', 460, 220, 760 );
     $hf_search_height            = va_design_int_option( 'va_hf_header_search_height', 42, 30, 64 );
@@ -409,12 +414,14 @@ add_action( 'wp_enqueue_scripts', function () {
     $hf_search_icon_size         = va_design_int_option( 'va_hf_header_search_icon_size', 16, 10, 28 );
     $hf_search_icon_bg_alpha     = va_design_float_option( 'va_hf_header_search_icon_bg_alpha', 0.14, 0, 1 );
     $hf_search_icon_bg_hover     = va_design_float_option( 'va_hf_header_search_icon_bg_hover_alpha', 0.22, 0, 1 );
+    $hf_search_glow_color        = va_design_css_color( (string) get_option( 'va_hf_header_search_glow_color', 'rgba(255,0,0,.18)' ), 'rgba(255,0,0,.18)' );
     $hf_search_btn_size          = max( 24, min( 44, $hf_search_icon_size + 12 ) );
 
     $hf_btn_radius               = va_design_int_option( 'va_hf_header_btn_radius', 999, 8, 999 );
     $hf_btn_pad_y                = va_design_int_option( 'va_hf_header_btn_pad_y', 8, 4, 20 );
     $hf_btn_pad_x                = va_design_int_option( 'va_hf_header_btn_pad_x', 20, 8, 40 );
     $hf_btn_glow_alpha           = va_design_float_option( 'va_hf_header_btn_glow_alpha', 0.40, 0, 1 );
+    $hf_btn_glow_color           = va_design_css_color( (string) get_option( 'va_hf_header_btn_glow_color', 'rgba(255,0,0,.52)' ), 'rgba(255,0,0,.52)' );
     $hf_user_border_alpha        = va_design_float_option( 'va_hf_header_user_border_alpha', 0.12, 0, 1 );
     $hf_user_bg_alpha            = va_design_float_option( 'va_hf_header_user_bg_alpha', 0.06, 0, 1 );
     $hf_mobile_show_search       = get_option( 'va_hf_header_mobile_show_search', '0' ) === '1';
@@ -430,6 +437,12 @@ add_action( 'wp_enqueue_scripts', function () {
     $hf_footer_border_alpha      = va_design_float_option( 'va_hf_footer_border_alpha', 0.07, 0, 1 );
     $hf_footer_bottom_border     = va_design_float_option( 'va_hf_footer_bottom_border_alpha', 0.07, 0, 1 );
     $hf_footer_max_width         = va_design_int_option( 'va_hf_footer_max_width', 1400, 800, 2200 );
+    $hf_footer_color_base        = va_design_css_color( (string) get_option( 'va_hf_footer_color_base', '#0a0a0a' ), '#0a0a0a' );
+    $hf_footer_color_alt         = va_design_css_color( (string) get_option( 'va_hf_footer_color_alt', '#150707' ), '#150707' );
+    $hf_footer_border_color      = va_design_css_color( (string) get_option( 'va_hf_footer_border_color', '#ff2a2a' ), '#ff2a2a' );
+    $hf_footer_shadow_color      = va_design_css_color( (string) get_option( 'va_hf_footer_shadow_color', 'rgba(0,0,0,.36)' ), 'rgba(0,0,0,.36)' );
+    $hf_footer_glow_color        = va_design_css_color( (string) get_option( 'va_hf_footer_glow_color', 'rgba(255,0,0,.14)' ), 'rgba(255,0,0,.14)' );
+    $hf_footer_link_hover_color  = va_design_css_color( (string) get_option( 'va_hf_footer_link_hover_color', '#ffffff' ), '#ffffff' );
 
     // Fluid, reszponzív méretkimenet
     $home_hero_badge_css    = va_design_fluid_px( $home_hero_badge, va_design_scaled_ratio( 0.90, $mobile_factor_hero ), '1.4vw' );
@@ -481,16 +494,19 @@ add_action( 'wp_enqueue_scripts', function () {
     '}' .
     '.va-header{' .
         'height:' . $hf_header_height . 'px;' .
-        'background:rgba(6,4,4,' . $hf_header_bg_opacity . ');' .
+        'background-color:rgba(6,4,4,' . $hf_header_bg_opacity . ');' .
+        'background-image:linear-gradient(120deg,' . $hf_header_color_base . ',' . $hf_header_color_alt . ');' .
+        'background-blend-mode:overlay;' .
         'backdrop-filter:blur(' . $hf_header_blur . 'px) saturate(1.4);' .
         '-webkit-backdrop-filter:blur(' . $hf_header_blur . 'px) saturate(1.4);' .
-        'border-bottom-color:' . $header_accent . ';' .
+        'border-bottom:1px solid ' . $hf_header_border_color . ';' .
+        'box-shadow:0 1px 30px ' . $hf_header_glow_color . ';' .
     '}' .
     '.va-header.scrolled{' .
-        'background:rgba(6,4,4,' . $hf_header_bg_opacity_scroll . ');' .
+        'background-color:rgba(6,4,4,' . $hf_header_bg_opacity_scroll . ');' .
         'backdrop-filter:blur(' . $hf_header_blur_scroll . 'px) saturate(1.4);' .
         '-webkit-backdrop-filter:blur(' . $hf_header_blur_scroll . 'px) saturate(1.4);' .
-        'box-shadow:0 1px 60px rgba(0,0,0,' . $hf_header_shadow_alpha . ');' .
+        'box-shadow:0 1px 60px rgba(0,0,0,' . $hf_header_shadow_alpha . '),0 0 42px ' . $hf_header_shadow_color . ';' .
     '}' .
     '.va-header__inner{' .
         'max-width:' . $hf_header_max_width . 'px;' .
@@ -504,8 +520,8 @@ add_action( 'wp_enqueue_scripts', function () {
         'border-color:rgba(255,255,255,' . $hf_search_border_alpha . ');' .
         'background:rgba(255,255,255,' . $hf_search_bg_alpha . ');' .
     '}' .
-    '.va-header__search:hover{border-color:rgba(255,0,0,' . $hf_search_hover_alpha . ');}' .
-    '.va-header__search:focus-within{border-color:rgba(255,0,0,' . $hf_search_focus_alpha . ');}' .
+    '.va-header__search:hover{border-color:rgba(255,0,0,' . $hf_search_hover_alpha . ');box-shadow:0 0 18px ' . $hf_search_glow_color . ';}' .
+    '.va-header__search:focus-within{border-color:rgba(255,0,0,' . $hf_search_focus_alpha . ');box-shadow:0 0 22px ' . $hf_search_glow_color . ';}' .
     '.va-header__search-btn{' .
         'width:' . $hf_search_btn_size . 'px;' .
         'height:' . $hf_search_btn_size . 'px;' .
@@ -521,7 +537,7 @@ add_action( 'wp_enqueue_scripts', function () {
         'border-radius:' . $hf_btn_radius . 'px;' .
         'padding:' . $hf_btn_pad_y . 'px ' . $hf_btn_pad_x . 'px;' .
     '}' .
-    '.va-header__submit-btn{box-shadow:0 0 24px rgba(255,0,0,' . $hf_btn_glow_alpha . ');}' .
+    '.va-header__submit-btn{box-shadow:0 0 24px rgba(255,0,0,' . $hf_btn_glow_alpha . '),0 0 24px ' . $hf_btn_glow_color . ';}' .
     '.va-header__user{' .
         'background:rgba(255,255,255,' . $hf_user_bg_alpha . ');' .
         'border-color:rgba(255,255,255,' . $hf_user_border_alpha . ');' .
@@ -538,10 +554,12 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-container a,.va-wrap a,.va-contact-page a,.va-cat-page a{color:' . $content_links . ';}' .
     '.va-footer,.va-footer *{font-family:' . $font_footer . ';}' .
     '.va-footer{' .
-        'background:' . $footer_bg . ';' .
+        'background-color:' . $footer_bg . ';' .
+        'background-image:linear-gradient(140deg,' . $hf_footer_color_base . ',' . $hf_footer_color_alt . ');' .
         'color:' . $footer_text . ';' .
         'padding:' . $hf_footer_top_padding . 'px 20px ' . $hf_footer_bottom_padding . 'px;' .
-        'border-top-color:rgba(255,255,255,' . $hf_footer_border_alpha . ');' .
+        'border-top:1px solid ' . $hf_footer_border_color . ';' .
+        'box-shadow:inset 0 12px 40px ' . $hf_footer_glow_color . ', inset 0 1px 0 ' . $hf_footer_shadow_color . ';' .
     '}' .
     '.va-footer__grid{' .
         'grid-template-columns:repeat(auto-fit,minmax(' . $hf_footer_col_min_width . 'px,1fr));' .
@@ -553,10 +571,11 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-footer__bottom{' .
         'max-width:' . $hf_footer_max_width . 'px;' .
         'padding-top:' . $hf_footer_bottom_top_pad . 'px;' .
-        'border-top-color:rgba(255,255,255,' . $hf_footer_bottom_border . ');' .
+        'border-top:1px solid rgba(255,255,255,' . $hf_footer_bottom_border . ');' .
     '}' .
     '.va-footer__col-title{color:' . $footer_headings . ';}' .
     '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' .
+    '.va-footer__link:hover,.va-footer__bottom a:hover{color:' . $hf_footer_link_hover_color . ';}' .
 
     // Hero méretek – összes oldal
     '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;}' .
