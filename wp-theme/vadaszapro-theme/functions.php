@@ -92,6 +92,7 @@ add_action( 'wp_loaded', function () {
     if ( get_option( 'va_pages_created_v3' ) ) return;
     $pages = [
         'kategoria'           => 'Kategóriák',
+        'kapcsolat'           => 'Kapcsolat',
         'va-hirdetes-kereses' => 'Hirdetés keresés',
         'va-hirdetes-feladas' => 'Hirdetés feladás',
         'va-bejelentkezes'    => 'Bejelentkezés',
@@ -112,6 +113,63 @@ add_action( 'wp_loaded', function () {
     }
     update_option( 'va_pages_created_v3', '1' );
 } );
+
+/* ── Kapcsolat űrlap – email küldés wp_mail + SMTP ───────── */
+add_action( 'admin_post_nopriv_va_contact_form', 'va_handle_contact_form' );
+add_action( 'admin_post_va_contact_form', 'va_handle_contact_form' );
+
+function va_handle_contact_form(): void {
+    $redirect = wp_get_referer();
+    if ( ! $redirect ) {
+        $contact_page = get_page_by_path( 'kapcsolat' );
+        $redirect = $contact_page ? get_permalink( $contact_page ) : home_url( '/kapcsolat/' );
+    }
+
+    if ( strtoupper( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' ) {
+        wp_safe_redirect( $redirect );
+        exit;
+    }
+
+    if ( ! empty( $_POST['va_company'] ) ) {
+        wp_safe_redirect( add_query_arg( 'contact_status', 'ok', $redirect ) );
+        exit;
+    }
+
+    if ( ! isset( $_POST['va_contact_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_contact_nonce'] ) ), 'va_contact_form' ) ) {
+        wp_safe_redirect( add_query_arg( 'contact_status', 'nonce', $redirect ) );
+        exit;
+    }
+
+    $name    = sanitize_text_field( wp_unslash( $_POST['va_name'] ?? '' ) );
+    $email   = sanitize_email( wp_unslash( $_POST['va_email'] ?? '' ) );
+    $subject = sanitize_text_field( wp_unslash( $_POST['va_subject'] ?? '' ) );
+    $message = trim( (string) wp_unslash( $_POST['va_message'] ?? '' ) );
+
+    if ( $name === '' || ! is_email( $email ) || $subject === '' || $message === '' ) {
+        wp_safe_redirect( add_query_arg( 'contact_status', 'invalid', $redirect ) );
+        exit;
+    }
+
+    $recipient = get_option( 'admin_email' );
+    $site_name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+    $mail_subject = '[' . $site_name . '] Kapcsolati üzenet: ' . $subject;
+    $mail_body = "Új kapcsolatfelvételi üzenet érkezett a weboldalról.\n\n"
+        . "Név: {$name}\n"
+        . "E-mail: {$email}\n"
+        . "Tárgy: {$subject}\n\n"
+        . "Üzenet:\n"
+        . wp_strip_all_tags( $message ) . "\n";
+
+    $headers = [
+        'Reply-To: ' . $name . ' <' . $email . '>',
+        'Content-Type: text/plain; charset=UTF-8',
+    ];
+
+    $sent = wp_mail( $recipient, $mail_subject, $mail_body, $headers );
+
+    wp_safe_redirect( add_query_arg( 'contact_status', $sent ? 'ok' : 'error', $redirect ) );
+    exit;
+}
 
 /* ── Custom login/register page átirányítás ──────── */
 add_action( 'template_redirect', function () {

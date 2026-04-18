@@ -1196,6 +1196,270 @@ textarea { min-height: 110px; resize: vertical; }
 /* ── Section ─────────────────────────────────────────────────────── */
 .vcp-section { max-width: 1400px; margin: 0 auto; padding: 0 32px 80px; }
 
+/* ══════════════════════════════════════════════════════════════════════
+   KAPCSOLAT OLDAL  (page-kapcsolat.php)
+══════════════════════════════════════════════════════════════════════ */
+.va-contact-page {
+  min-height: 100vh;
+  padding-top: var(--nav);
+  padding-bottom: 72px;
+}
+.va-contact-page__hero {
+  position: relative;
+  overflow: hidden;
+  padding: 80px 32px 42px;
+  text-align: center;
+}
+.va-contact-page__hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: .16;
+  pointer-events: none;
+}
+.va-contact-page__hero-glow--1 {
+  width: 360px;
+  height: 360px;
+  background: #ff0000;
+  top: -140px;
+  left: 16%;
+}
+.va-contact-page__hero-glow--2 {
+  width: 320px;
+  height: 320px;
+  background: #ff3b3b;
+  top: -120px;
+  right: 12%;
+}
+.va-contact-page__hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.va-contact-page__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border: 1px solid rgba(255,0,0,.25);
+  border-radius: 999px;
+  color: #ff4040;
+  background: rgba(255,0,0,.08);
+  text-transform: uppercase;
+  letter-spacing: .18em;
+  font-size: .68rem;
+  font-weight: 800;
+  margin-bottom: 22px;
+}
+.va-contact-page__title {
+  font-size: clamp(2.3rem, 5.5vw, 4.6rem);
+  line-height: 1.02;
+  letter-spacing: -.03em;
+  font-weight: 900;
+  margin-bottom: 18px;
+}
+.va-contact-page__lead {
+  max-width: 700px;
+  margin: 0 auto;
+  color: rgba(255,255,255,.72);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+.va-contact-page__wrap {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 10px 32px 0;
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  gap: 24px;
+}
+.va-contact-page__info,
+.va-contact-page__form-col {
+  min-width: 0;
+}
+.va-contact-card,
+.va-contact-formbox {
+  background: linear-gradient(180deg, rgba(20,20,20,.96), rgba(12,12,12,.98));
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 22px;
+  box-shadow: 0 14px 46px rgba(0,0,0,.38);
+}
+.va-contact-card {
+  padding: 24px;
+  margin-bottom: 18px;
+}
+.va-contact-card--accent {
+  border-color: rgba(255,0,0,.22);
+  background: linear-gradient(180deg, rgba(28,18,18,.98), rgba(15,12,12,.98));
+}
+.va-contact-card__icon {
+  width: 54px;
+  height: 54px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  color: #ff4040;
+  background: rgba(255,0,0,.08);
+  border: 1px solid rgba(255,0,0,.18);
+  margin-bottom: 16px;
+}
+.va-contact-card__icon svg {
+  width: 24px;
+  height: 24px;
+}
+.va-contact-card__title,
+.va-contact-formbox__title {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 12px;
+}
+.va-contact-card__mini {
+  font-size: .88rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(255,255,255,.82);
+  margin-bottom: 12px;
+}
+.va-contact-card__text {
+  color: rgba(255,255,255,.68);
+  line-height: 1.8;
+  font-size: .95rem;
+}
+.va-contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.va-contact-list li {
+  position: relative;
+  padding-left: 18px;
+  color: rgba(255,255,255,.74);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.va-contact-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 11px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff0000;
+  box-shadow: 0 0 8px rgba(255,0,0,.5);
+}
+.va-contact-formbox {
+  padding: 28px;
+}
+.va-contact-alert {
+  padding: 13px 15px;
+  border-radius: 14px;
+  font-size: .92rem;
+  margin-bottom: 18px;
+}
+.va-contact-alert--success {
+  color: #c7ffd9;
+  background: rgba(0,150,60,.14);
+  border: 1px solid rgba(0,180,80,.25);
+}
+.va-contact-alert--error {
+  color: #ffd2d2;
+  background: rgba(255,0,0,.12);
+  border: 1px solid rgba(255,0,0,.22);
+}
+.va-contact-form {
+  display: grid;
+  gap: 18px;
+}
+.va-contact-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+.va-contact-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: rgba(255,255,255,.7);
+  font-size: .78rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.va-contact-field input,
+.va-contact-field textarea {
+  width: 100%;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
+  color: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .18s, box-shadow .18s, background .18s;
+}
+.va-contact-field textarea {
+  resize: vertical;
+  min-height: 180px;
+}
+.va-contact-field input:focus,
+.va-contact-field textarea:focus {
+  border-color: rgba(255,0,0,.45);
+  box-shadow: 0 0 0 3px rgba(255,0,0,.08);
+  background: rgba(255,255,255,.05);
+}
+.va-contact-form__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 0 24px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff0000, #d90000);
+  color: #fff;
+  font-size: .92rem;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 30px rgba(255,0,0,.26);
+  transition: transform .16s, box-shadow .16s, filter .16s;
+}
+.va-contact-form__submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(255,0,0,.34);
+  filter: brightness(1.04);
+}
+.va-contact-form__hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+@media (max-width: 980px) {
+  .va-contact-page__wrap {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .va-contact-page__hero,
+  .va-contact-page__wrap {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .va-contact-form__row {
+    grid-template-columns: 1fr;
+  }
+  .va-contact-formbox,
+  .va-contact-card {
+    border-radius: 18px;
+  }
+}
+
 /* ── Grid — 4 egyforma oszlop ───────────────────────────────────── */
 .vcp-grid {
   display: grid;
