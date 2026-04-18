@@ -86,10 +86,6 @@ $register_enabled = get_option( 'va_enable_register', '1' ) === '1';
                             <label>Székhely <span class="required">*</span></label>
                             <input type="text" name="reg_company_seat" class="va-input" data-company-field="1" disabled data-typing="1123 Budapest, Minta utca 10.|6720 Szeged, Fő tér 3.">
                         </div>
-                        <div class="va-form-group va-register-field">
-                            <label>Személynév <span class="required">*</span></label>
-                            <input type="text" name="reg_contact_name" class="va-input" data-company-field="1" disabled data-typing="Kiss Gábor|Szabó Anna">
-                        </div>
                     </div>
                 </div>
 

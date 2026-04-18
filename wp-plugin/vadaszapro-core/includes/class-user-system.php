@@ -89,7 +89,6 @@ class VA_User_System {
         $company_name = sanitize_text_field( wp_unslash( $_POST['reg_company_name'] ?? '' ) );
         $company_tax  = sanitize_text_field( wp_unslash( $_POST['reg_company_tax'] ?? '' ) );
         $company_seat = sanitize_text_field( wp_unslash( $_POST['reg_company_seat'] ?? '' ) );
-        $contact_name = sanitize_text_field( wp_unslash( $_POST['reg_contact_name'] ?? '' ) );
 
         if ( ! in_array( $account_type, [ 'private', 'company' ], true ) ) {
             $account_type = 'private';
@@ -106,8 +105,8 @@ class VA_User_System {
         }
 
         if ( $account_type === 'company' ) {
-            if ( $company_name === '' || $company_tax === '' || $company_seat === '' || $contact_name === '' ) {
-                va_set_flash( 'error', 'Céges regisztrációnál minden cégadat mező kitöltése kötelező.' );
+            if ( $company_name === '' || $company_tax === '' || $company_seat === '' ) {
+                va_set_flash( 'error', 'Céges regisztrációnál a cégnév, adószám és székhely kitöltése kötelező.' );
                 return;
             }
 
@@ -156,12 +155,10 @@ class VA_User_System {
             update_user_meta( $user_id, 'va_company_name', $company_name );
             update_user_meta( $user_id, 'va_company_tax', $company_tax );
             update_user_meta( $user_id, 'va_company_seat', $company_seat );
-            update_user_meta( $user_id, 'va_contact_name', $contact_name );
         } else {
             delete_user_meta( $user_id, 'va_company_name' );
             delete_user_meta( $user_id, 'va_company_tax' );
             delete_user_meta( $user_id, 'va_company_seat' );
-            delete_user_meta( $user_id, 'va_contact_name' );
         }
 
         // Automatikus bejelentkezés regisztráció után

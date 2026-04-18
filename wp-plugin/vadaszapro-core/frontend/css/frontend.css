@@ -446,10 +446,13 @@
   margin-top: 4px;
 }
 .va-account-switch {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  gap: 10px;
-  padding: 8px 12px;
+  column-gap: 14px;
+  width: min(100%, 560px);
+  margin: 0 auto;
+  padding: 8px 16px;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 999px;
   background: rgba(255,255,255,.03);
@@ -458,6 +461,13 @@
   font-size: 13px;
   color: rgba(255,255,255,.78);
   font-weight: 600;
+  white-space: nowrap;
+}
+.va-account-switch__label:first-of-type {
+  text-align: right;
+}
+.va-account-switch__label:last-of-type {
+  text-align: left;
 }
 .va-account-switch__toggle {
   position: relative;
@@ -547,6 +557,9 @@
   .va-register-company__grid {
     grid-template-columns: 1fr;
     gap: 12px;
+  }
+  .va-account-switch {
+    width: 100%;
   }
 }
 

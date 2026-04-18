@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 18. – Session #81 (Ceges mezo tisztitas + toggle szimmetria)
+
+### Mit csinaltunk [x]
+- [x] Ceges regisztraciobol a `Szemelynev` mezo eltavolitva (nem kotelezo tobbe)
+- [x] Backend validacio frissitve: ceges modban csak `Cegnev + Adoszam + Szekhely` kotelezo
+- [x] Kontakt nev meta mentes/torles logika eltavolitva
+- [x] Account type toggle ujrarendezve szimmetrikus gridre (kozepre zarva)
+- [x] Bal/jobb label igazitas kulon finomitva, hogy vizualisan ne csusszon el
+- [x] Hibavizsgalat: modosított fajlok hibamentesek
+
+---
+
 ## 2026. 04. 18. – Session #80 (Login/Regisztracio kulon ki-be kapcsolhato)
 
 ### Mit csinaltunk [x]
