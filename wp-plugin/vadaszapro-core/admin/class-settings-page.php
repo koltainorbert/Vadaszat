@@ -118,6 +118,16 @@ class VA_Settings_Page {
             'va_size_contact_hero_title'   => 62,
             'va_size_contact_hero_lead'    => 16,
 
+            // Hero sorközök
+            'va_lh_home_hero_title'        => '1.05',
+            'va_lh_home_hero_sub'          => '1.60',
+            'va_lh_kat_hero_title'         => '1.06',
+            'va_lh_kat_hero_sub'           => '1.70',
+            'va_lh_tax_hero_title'         => '1.05',
+            'va_lh_tax_hero_lead'          => '1.75',
+            'va_lh_contact_hero_title'     => '1.02',
+            'va_lh_contact_hero_lead'      => '1.80',
+
             // Fejléc elemek (méret + típus/súly)
             'va_size_header_brand'         => 18,
             'va_size_header_nav'           => 14,
@@ -408,6 +418,18 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_size_contact_hero_lead',  'Kapcsolat hero alcím méret (px)', 10, 40 ); ?>
                 </table>
 
+                <h2>Hero sorköz magasságok</h2>
+                <table class="form-table">
+                    <?php self::field_decimal( 'va_lh_home_hero_title',    'Főoldal hero cím sorköz', 0.8, 2.4, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_lh_home_hero_sub',      'Főoldal hero alcím sorköz', 0.8, 2.8, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_lh_kat_hero_title',     'Kategória hero cím sorköz', 0.8, 2.4, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_lh_kat_hero_sub',       'Kategória hero alcím sorköz', 0.8, 2.8, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_lh_tax_hero_title',     'Alkategória hero cím sorköz', 0.8, 2.4, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_lh_tax_hero_lead',      'Alkategória hero leírás sorköz', 0.8, 2.8, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_lh_contact_hero_title', 'Kapcsolat hero cím sorköz', 0.8, 2.4, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_lh_contact_hero_lead',  'Kapcsolat hero alcím sorköz', 0.8, 2.8, 0.01 ); ?>
+                </table>
+
                 <h2>Fejléc elemek méretei és típusai</h2>
                 <table class="form-table">
                     <?php self::field_num(    'va_size_header_brand',   'Brand név méret (px)', 10, 44 ); ?>
@@ -642,6 +664,11 @@ class VA_Settings_Page {
     private static function field_num( string $key, string $label, int $min = 0, int $max = 9999 ): void {
         $val = esc_attr( get_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" class=\"small-text\"></td></tr>";
+    }
+
+    private static function field_decimal( string $key, string $label, float $min = 0.1, float $max = 5, float $step = 0.01 ): void {
+        $val = esc_attr( get_option( $key, '' ) );
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" step=\"{$step}\" class=\"small-text"></td></tr>";
     }
 
     private static function field_select( string $key, string $label, array $options ): void {
