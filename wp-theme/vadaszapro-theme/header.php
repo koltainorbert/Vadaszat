@@ -167,6 +167,12 @@
         $hero_video = get_option( 'va_home_hero_video_url', content_url( 'uploads/2026/04/521380_Gun_Woman_1920x1080.mp4' ) );
         $submit_page = get_page_by_path('va-hirdetes-feladas');
         $search_page = get_page_by_path('va-hirdetes-kereses');
+        $home_badge  = get_option( 'va_home_hero_badge_text', 'Magyarország első vadászati hirdetőoldala' );
+        $home_title1 = get_option( 'va_home_hero_title_top', 'VadászBazár' );
+        $home_title2 = get_option( 'va_home_hero_title_bottom', 'és Apróhirdetés' );
+        $home_sub    = get_option( 'va_home_hero_sub_text', 'Magyarország első vadászati hirdetőoldala' );
+        $home_cta_1  = get_option( 'va_home_hero_primary_cta_text', '+ Hirdetés feladása' );
+        $home_cta_2  = get_option( 'va_home_hero_secondary_cta_text', 'Hirdetések böngészése →' );
     ?>
     <div class="vh">
         <?php if ( $hero_video ): ?>
@@ -182,22 +188,22 @@
             <?php if ( ! empty( $hero_logo ) ): ?>
                 <img src="<?php echo esc_url( $hero_logo ); ?>" class="vh__logo vh__logo--<?php echo esc_attr( $hero_logo_pos ); ?>" style="height:<?php echo esc_attr( $hero_logo_h ); ?>px;" alt="<?php echo esc_attr( $brand_name ); ?>" loading="eager" decoding="async">
             <?php endif; ?>
-            <div class="vh__badge"><span class="vcp-hero__badge-dot"></span><?php echo $auctions_enabled ? 'Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala' : 'Magyarorsz&aacute;g els&#337; vad&aacute;szati hirdet&#337;oldala'; ?></div>
+            <div class="vh__badge"><span class="vcp-hero__badge-dot"></span><?php echo esc_html( $home_badge ); ?></div>
             <h2 class="vh__title">
-                Vad&aacute;sz<span>Baz&aacute;r</span><br>
-                <?php echo $auctions_enabled ? '&eacute;s Aukci&oacute;' : '&eacute;s Apr&oacute;hirdet&eacute;s'; ?>
+                <?php echo esc_html( $home_title1 ); ?><br>
+                <?php echo esc_html( $home_title2 ); ?>
             </h2>
             <p class="vh__sub">
-                <?php echo $auctions_enabled ? 'Magyarorsz&aacute;g els&#337; vad&aacute;szati aukci&oacute;s hirdet&#337;oldala' : 'Magyarorsz&aacute;g els&#337; vad&aacute;szati hirdet&#337;oldala'; ?>
+                <?php echo esc_html( $home_sub ); ?>
             </p>
             <div class="vh__actions">
                 <?php if ( $submit_page ): ?>
                 <a href="<?php echo esc_url( get_permalink($submit_page) ); ?>" class="vh__btn vh__btn--primary">
-                    &#43; Hirdet&eacute;s felad&aacute;sa
+                    <?php echo esc_html( $home_cta_1 ); ?>
                 </a>
                 <?php endif; ?>
                 <a href="<?php echo esc_url( $search_page ? get_permalink($search_page) : home_url('/hirdetes') ); ?>" class="vh__btn vh__btn--ghost">
-                    Hirdet&eacute;sek b&ouml;ng&eacute;sz&eacute;se &rarr;
+                    <?php echo esc_html( $home_cta_2 ); ?>
                 </a>
             </div>
         </div>

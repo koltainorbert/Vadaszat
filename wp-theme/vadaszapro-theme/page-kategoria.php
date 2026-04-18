@@ -6,6 +6,12 @@
 get_header();
 
 $categories_video = get_option( 'va_category_video_url', content_url( 'uploads/2026/04/1434963_Hunter_Autumn_1920x1080.mp4' ) );
+$k_hero_badge  = get_option( 'va_kategoria_hero_badge_text', 'Vadász Apróhirdetések' );
+$k_hero_title1 = get_option( 'va_kategoria_hero_title_top', 'Válassz' );
+$k_hero_title2 = get_option( 'va_kategoria_hero_title_bottom', 'Kategóriát' );
+$k_hero_sub    = get_option( 'va_kategoria_hero_sub_text', 'Golyós puskáktól a trófea-alapzatokig – minden vadász felszerelésnél egy helyen' );
+$k_hero_stat1  = get_option( 'va_kategoria_hero_stat1_label', 'Főkategória' );
+$k_hero_stat2  = get_option( 'va_kategoria_hero_stat2_label', 'Aktív hirdetés' );
 
 /* ── Fotó tár — Unsplash valódi képek ─────────────────────────────────── */
 function va_cat_icon( string $name ): string {
@@ -50,23 +56,23 @@ if ( is_wp_error( $top_terms ) ) $top_terms = [];
         <div class="vcp-hero__inner">
             <div class="vcp-hero__badge">
                 <span class="vcp-hero__badge-dot"></span>
-                Vadász Apróhirdetések
+                <?php echo esc_html( $k_hero_badge ); ?>
             </div>
             <h1 class="vcp-hero__title">
-                Válassz<br><em>Kategóriát</em>
+                <?php echo esc_html( $k_hero_title1 ); ?><br><em><?php echo esc_html( $k_hero_title2 ); ?></em>
             </h1>
             <p class="vcp-hero__sub">
-                Golyós puskáktól a trófea-alapzatokig – minden vadász felszerelésnél egy helyen
+                <?php echo esc_html( $k_hero_sub ); ?>
             </p>
             <div class="vcp-hero__stats">
                 <div class="vcp-hero__stat">
                     <span class="vcp-hero__stat-n"><?php echo count($top_terms); ?></span>
-                    <span class="vcp-hero__stat-l">Főkategória</span>
+                    <span class="vcp-hero__stat-l"><?php echo esc_html( $k_hero_stat1 ); ?></span>
                 </div>
                 <div class="vcp-hero__stat-sep"></div>
                 <div class="vcp-hero__stat">
                     <span class="vcp-hero__stat-n"><?php echo wp_count_posts('va_listing')->publish; ?></span>
-                    <span class="vcp-hero__stat-l">Aktív hirdetés</span>
+                    <span class="vcp-hero__stat-l"><?php echo esc_html( $k_hero_stat2 ); ?></span>
                 </div>
             </div>
         </div>

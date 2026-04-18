@@ -31,6 +31,32 @@ class VA_Settings_Page {
             'va_require_phone'       => '1',
             'va_maintenance_mode'    => '0',
             'va_maintenance_msg'     => 'Az oldal karbantartás alatt van.',
+
+            // Főoldal hero szövegek
+            'va_home_hero_badge_text'        => 'Magyarország első vadászati hirdetőoldala',
+            'va_home_hero_title_top'         => 'VadászBazár',
+            'va_home_hero_title_bottom'      => 'és Apróhirdetés',
+            'va_home_hero_sub_text'          => 'Magyarország első vadászati hirdetőoldala',
+            'va_home_hero_primary_cta_text'  => '+ Hirdetés feladása',
+            'va_home_hero_secondary_cta_text'=> 'Hirdetések böngészése →',
+
+            // Kategória oldal hero szövegek
+            'va_kategoria_hero_badge_text'   => 'Vadász Apróhirdetések',
+            'va_kategoria_hero_title_top'    => 'Válassz',
+            'va_kategoria_hero_title_bottom' => 'Kategóriát',
+            'va_kategoria_hero_sub_text'     => 'Golyós puskáktól a trófea-alapzatokig – minden vadász felszerelésnél egy helyen',
+            'va_kategoria_hero_stat1_label'  => 'Főkategória',
+            'va_kategoria_hero_stat2_label'  => 'Aktív hirdetés',
+
+            // Alkategória hero szövegek
+            'va_tax_hero_badge_text'         => 'Kategória ajánló',
+            'va_tax_hero_fallback_lead'      => 'A kiválasztott kategóriában böngészel, görgess tovább a friss ajánlatokért.',
+            'va_tax_hero_count_suffix'       => 'hirdetés',
+
+            // Kapcsolat oldal hero szövegek
+            'va_contact_hero_badge_text'     => 'Kapcsolat',
+            'va_contact_hero_title_text'     => 'Írj nekünk e-mailt',
+            'va_contact_hero_lead_text'      => 'A kapcsolatfelvétel kizárólag e-mailben történik. Az itt elküldött üzenetek WordPress oldalon keresztül, a WP Mail SMTP bővítményen át jutnak el hozzánk.',
         ];
 
         foreach ( $general as $key => $default ) {
@@ -135,6 +161,28 @@ class VA_Settings_Page {
                     <?php self::field_toggle('va_require_phone',         'Telefonszám kötelező' ); ?>
                     <?php self::field_toggle('va_maintenance_mode',      'Karbantartási mód' ); ?>
                     <?php self::field_text(  'va_maintenance_msg',       'Karbantartási üzenet' ); ?>
+
+                    <?php self::field_text(  'va_home_hero_badge_text',         'Főoldal hero badge szöveg' ); ?>
+                    <?php self::field_text(  'va_home_hero_title_top',          'Főoldal hero cím 1. sor' ); ?>
+                    <?php self::field_text(  'va_home_hero_title_bottom',       'Főoldal hero cím 2. sor' ); ?>
+                    <?php self::field_text(  'va_home_hero_sub_text',           'Főoldal hero alcím' ); ?>
+                    <?php self::field_text(  'va_home_hero_primary_cta_text',   'Főoldal hero első gomb szöveg' ); ?>
+                    <?php self::field_text(  'va_home_hero_secondary_cta_text', 'Főoldal hero második gomb szöveg' ); ?>
+
+                    <?php self::field_text(  'va_kategoria_hero_badge_text',    'Kategória hero badge szöveg' ); ?>
+                    <?php self::field_text(  'va_kategoria_hero_title_top',     'Kategória hero cím 1. sor' ); ?>
+                    <?php self::field_text(  'va_kategoria_hero_title_bottom',  'Kategória hero cím 2. sor' ); ?>
+                    <?php self::field_text(  'va_kategoria_hero_sub_text',      'Kategória hero alcím' ); ?>
+                    <?php self::field_text(  'va_kategoria_hero_stat1_label',   'Kategória hero stat 1 felirat' ); ?>
+                    <?php self::field_text(  'va_kategoria_hero_stat2_label',   'Kategória hero stat 2 felirat' ); ?>
+
+                    <?php self::field_text(  'va_tax_hero_badge_text',          'Alkategória hero badge szöveg' ); ?>
+                    <?php self::field_text(  'va_tax_hero_fallback_lead',       'Alkategória hero alapértelmezett leírás' ); ?>
+                    <?php self::field_text(  'va_tax_hero_count_suffix',        'Alkategória hero találatszám utótag' ); ?>
+
+                    <?php self::field_text(  'va_contact_hero_badge_text',      'Kapcsolat hero badge szöveg' ); ?>
+                    <?php self::field_text(  'va_contact_hero_title_text',      'Kapcsolat hero cím' ); ?>
+                    <?php self::field_text(  'va_contact_hero_lead_text',       'Kapcsolat hero alcím' ); ?>
                 </table>
                 <?php submit_button( 'Mentés' ); ?>
             </form>
