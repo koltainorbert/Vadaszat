@@ -10,6 +10,7 @@ $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] 
 
 // URL paraméterek
 $url_s           = sanitize_text_field( wp_unslash( $_GET['s']           ?? '' ) );
+$url_q           = sanitize_text_field( wp_unslash( $_GET['q']           ?? '' ) ); // user_search módban
 $url_cat         = intval( $_GET['cat']         ?? 0 );
 $url_author_id   = intval( $_GET['author_id']   ?? 0 );
 $url_user_search = ! empty( $_GET['user_search'] );
@@ -18,13 +19,14 @@ $url_post_type   = in_array( $_GET['post_type'] ?? '', [ 'va_listing', 'va_aucti
 // ── Felhasználó-kereső mód ────────────────────────────────────
 if ( $url_user_search ) {
     wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
+    $search_q  = $url_q ?: $url_s; // q= elsőbbséget élvez, fallback: s=
     $user_args = [
         'number'  => 50,
         'orderby' => 'display_name',
         'order'   => 'ASC',
     ];
-    if ( $url_s ) {
-        $user_args['search']         = '*' . $url_s . '*';
+    if ( $search_q ) {
+        $user_args['search']         = '*' . $search_q . '*';
         $user_args['search_columns'] = [ 'user_login', 'display_name' ];
     }
     $users = get_users( $user_args );
@@ -34,7 +36,7 @@ if ( $url_user_search ) {
     <div class="va-wrap">
         <?php va_display_flash(); ?>
         <div class="va-filter-bar" style="margin-bottom:24px;">
-            <div class="va-filter-bar__title">👤 Felhasználók<?php echo $url_s ? ' – <em>' . esc_html( $url_s ) . '</em>' : ''; ?></div>
+            <div class="va-filter-bar__title">👤 Felhasználók<?php echo ( $search_q ?? '' ) ? ' – <em>' . esc_html( $search_q ) . '</em>' : ''; ?></div>
         </div>
         <div class="va-user-grid">
         <?php if ( empty( $users ) ): ?>

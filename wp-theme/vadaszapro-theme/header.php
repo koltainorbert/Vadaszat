@@ -73,7 +73,7 @@
                     } else if (auctionItem) {
                         allLink.href = baseUrl + '?post_type=va_auction&s=' + encodeURIComponent(input.value); // aukciók listája
                     } else if (userItem) {
-                        allLink.href = baseUrl + '?user_search=1&s=' + encodeURIComponent(input.value); // összes felhasználó
+                        allLink.href = baseUrl + '?user_search=1&q=' + encodeURIComponent(input.value); // összes felhasználó
                     } else {
                         allLink.href = baseUrl + '?s=' + encodeURIComponent(input.value);
                     }
