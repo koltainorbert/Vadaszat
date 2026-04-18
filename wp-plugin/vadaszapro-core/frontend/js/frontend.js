@@ -161,6 +161,10 @@
 
   // ── Oldal betöltésekor szűrő init ────────────────────────
   if ($('#va-filter-form').length && $('#va-listing-results').length) {
+    if (typeof VA_Data !== 'undefined') {
+      if (VA_Data.initial_s)   { $('#va-kw').val(VA_Data.initial_s); }
+      if (VA_Data.initial_cat) { $('#va-cat').val(VA_Data.initial_cat); }
+    }
     va_load_listings(1);
   }
 

@@ -285,11 +285,13 @@ class VA_Ajax {
             'number'     => 3,
         ]);
         if ( ! is_wp_error( $cats ) ) {
+            $search_page = get_page_by_path( 'va-hirdetes-kereses' );
+            $search_url  = $search_page ? get_permalink( $search_page ) : home_url( '/va-hirdetes-kereses/' );
             foreach ( $cats as $cat ) {
                 $results[] = [
                     'id'    => $cat->term_id,
                     'title' => $cat->name,
-                    'url'   => get_term_link( $cat ),
+                    'url'   => add_query_arg( 'cat', $cat->term_id, $search_url ),
                     'price' => $cat->count . ' hirdetés',
                     'thumb' => '',
                     'type'  => 'category',
