@@ -106,44 +106,39 @@ hr { border-color: var(--border); }
 .va-header__search {
   display: flex; align-items: center;
   margin: 0 24px;
-  background: rgba(255,255,255,.06);
-  border: 1px solid rgba(255,255,255,.13);
+  background: transparent;
+  border: 1.5px solid rgba(255,255,255,.18);
   border-radius: 100px;
-  padding: 4px 4px 4px 20px;
-  gap: 0;
+  padding: 3px 3px 3px 18px;
   flex: 1 1 420px; max-width: 460px;
-  height: 42px; box-sizing: border-box;
-  transition: border-color .25s, box-shadow .25s, background .25s;
-  backdrop-filter: blur(6px);
+  height: 40px; box-sizing: border-box;
+  transition: border-color .2s, box-shadow .2s;
 }
 .va-header__search:focus-within {
-  border-color: rgba(255,0,0,.6);
-  background: rgba(255,255,255,.08);
-  box-shadow: 0 0 0 3px rgba(255,0,0,.1);
+  border-color: #ff0000;
+  box-shadow: 0 0 0 2px rgba(255,0,0,.15);
 }
 .va-header__search-input {
   background: transparent; border: none; outline: none;
-  color: #fff; font-size: .84rem; letter-spacing: .01em;
+  color: #fff; font-size: .84rem;
   flex: 1; min-width: 0; padding: 0;
-  line-height: 1;
 }
-.va-header__search-input::placeholder { color: rgba(255,255,255,.28); }
+.va-header__search-input::placeholder { color: rgba(255,255,255,.3); }
 .va-header__search-btn {
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
   width: 34px; height: 34px;
   background: #ff0000; border: none; cursor: pointer;
-  border-radius: 100px;
-  color: #fff; padding: 0;
-  transition: background .2s, transform .15s, box-shadow .2s;
+  border-radius: 100px; padding: 0;
+  transition: background .2s, box-shadow .2s, transform .15s;
 }
-.va-header__search-btn svg { width: 18px; height: 18px; display: block; }
+.va-header__search-btn svg { width: 17px; height: 17px; display: block; }
 .va-header__search-btn:hover {
-  background: #d40000;
-  box-shadow: 0 0 18px rgba(255,0,0,.5);
+  background: #c90000;
+  box-shadow: 0 0 20px rgba(255,0,0,.5);
   transform: scale(1.08);
 }
-@media (max-width: 1080px) { .va-header__search { flex: 0 1 300px; } }
+@media (max-width: 1080px) { .va-header__search { flex: 0 1 280px; } }
 @media (max-width: 960px)  { .va-header__search { display: none; } }
 
 /* ── Logo ── */
