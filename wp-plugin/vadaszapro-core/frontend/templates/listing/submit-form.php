@@ -548,18 +548,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 ],
                 handlers: {
                     image: function() {
-                        if (typeof wp === 'undefined' || !wp.media) return;
-                        var frame = wp.media({
-                            title: 'Kép kiválasztása',
-                            button: { text: 'Beillesztés' },
-                            multiple: false
+                        var input = document.createElement('input');
+                        input.setAttribute('type', 'file');
+                        input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                        input.click();
+                        input.addEventListener('change', function() {
+                            var file = input.files[0];
+                            if (!file) return;
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                var range = quill.getSelection(true);
+                                quill.insertEmbed(range ? range.index : quill.getLength(), 'image', e.target.result);
+                            };
+                            reader.readAsDataURL(file);
                         });
-                        frame.on('select', function() {
-                            var url = frame.state().get('selection').first().toJSON().url;
-                            var range = quill.getSelection(true);
-                            quill.insertEmbed(range ? range.index : 0, 'image', url);
-                        });
-                        frame.open();
                     }
                 }
             }
