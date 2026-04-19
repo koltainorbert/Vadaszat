@@ -466,23 +466,23 @@ class VA_Ajax {
     }
 
     /* ── Képfeltöltés ──────────────────────────────────── */
-    private static function handle_images( $post_id, $files, int $featured_idx = 0 ) {
+    private static function handle_images( $post_id, $files, int $featured_idx = 0 ): array {
         require_once ABSPATH . 'wp-admin/includes/image.php';
         require_once ABSPATH . 'wp-admin/includes/file.php';
         require_once ABSPATH . 'wp-admin/includes/media.php';
 
-        // Subscribers don't have upload_files cap; grant it temporarily for the upload
-        $current_user = wp_get_current_user();
-        $granted_cap  = false;
-        if ( $current_user->ID && ! $current_user->has_cap( 'upload_files' ) ) {
-            $current_user->add_cap( 'upload_files' );
-            $granted_cap = true;
-        }
+        // Grant upload_files cap via filter (no DB write, reverted after)
+        $cap_filter = static function ( $allcaps ) {
+            $allcaps['upload_files'] = true;
+            return $allcaps;
+        };
+        add_filter( 'user_has_cap', $cap_filter );
 
-        $max_images    = intval( get_option( 'va_max_images_per_listing', 10 ) );
-        $allowed_types = [ 'image/jpeg', 'image/png', 'image/webp' ];
-        $count         = 0;
+        $max_images     = intval( get_option( 'va_max_images_per_listing', 10 ) );
+        $allowed_types  = [ 'image/jpeg', 'image/png', 'image/webp' ];
+        $count          = 0;
         $attachment_ids = [];
+        $errors         = [];
 
         // Normalizálás (több fájl esetén)
         $file_count = is_array( $files['name'] ) ? count( $files['name'] ) : 1;
@@ -500,30 +500,36 @@ class VA_Ajax {
                 $single = $files;
             }
 
-            if ( $single['error'] !== UPLOAD_ERR_OK ) continue;
-            if ( ! in_array( $single['type'], $allowed_types, true ) ) continue;
+            if ( (int) $single['error'] !== UPLOAD_ERR_OK ) {
+                $errors[] = 'PHP upload error ' . $single['error'] . ' for ' . $single['name'];
+                continue;
+            }
+            if ( ! in_array( $single['type'], $allowed_types, true ) ) {
+                $errors[] = 'Invalid type ' . $single['type'];
+                continue;
+            }
 
             $_FILES['va_upload'] = $single;
             $attachment_id = media_handle_upload( 'va_upload', $post_id );
 
-            if ( ! is_wp_error( $attachment_id ) ) {
+            if ( is_wp_error( $attachment_id ) ) {
+                $errors[] = $attachment_id->get_error_message();
+            } else {
                 $attachment_ids[] = $attachment_id;
                 $count++;
             }
         }
 
+        remove_filter( 'user_has_cap', $cap_filter );
+
         // Főkép beállítása a kiválasztott index alapján (vagy az első ha invalid)
         if ( ! empty( $attachment_ids ) ) {
             $feat = isset( $attachment_ids[ $featured_idx ] ) ? $attachment_ids[ $featured_idx ] : $attachment_ids[0];
             set_post_thumbnail( $post_id, $feat );
-            // Galéria sorrend mentése post meta-ba
             update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $attachment_ids ) );
         }
 
-        // Revoke temporarily granted cap
-        if ( $granted_cap ) {
-            $current_user->remove_cap( 'upload_files' );
-        }
+        return $errors;
     }
 
     /* ── Watchlist (kedvencek) ─────────────────────────── */
