@@ -16,6 +16,40 @@ class VA_Listing_Edit {
         add_action( 'admin_post_va_listing_save',    [ __CLASS__, 'handle_save'    ] );
         add_action( 'admin_post_va_listing_approve', [ __CLASS__, 'handle_approve' ] );
         add_action( 'admin_post_va_listing_delete',  [ __CLASS__, 'handle_delete'  ] );
+        // TinyMCE sötét toolbar — admin_footer-ben fut, minden CSS után
+        add_action( 'admin_footer', [ __CLASS__, 'tinymce_dark_css' ] );
+    }
+
+    /* ── TinyMCE sötét skin CSS (footer = legkésőbb tölt be) ── */
+    public static function tinymce_dark_css(): void {
+        $screen = get_current_screen();
+        if ( ! $screen || strpos( $screen->id, 'vadaszapro-listing-edit' ) === false ) return;
+        ?>
+        <style>
+        #wp-va_listing_description-wrap .wp-editor-tools { background: #141414 !important; border: none !important; }
+        #wp-va_listing_description-wrap .wp-media-buttons .button { background: #1e1e1e !important; color: #ccc !important; border-color: rgba(255,255,255,.2) !important; box-shadow: none !important; text-shadow: none !important; }
+        #wp-va_listing_description-wrap .wp-editor-tabs button { background: #141414 !important; color: #888 !important; border-color: rgba(255,255,255,.12) !important; box-shadow: none !important; }
+        #wp-va_listing_description-wrap .wp-editor-tabs button.active,
+        #wp-va_listing_description-wrap .wp-editor-tabs button:hover { background: #1e1e1e !important; color: #e8e8e8 !important; }
+        #wp-va_listing_description-editor-container { border: 1px solid rgba(255,255,255,.12) !important; overflow: hidden; }
+        #wp-va_listing_description-editor-container .tox-tinymce { border: none !important; border-radius: 0 !important; }
+        #wp-va_listing_description-editor-container .tox-editor-header,
+        #wp-va_listing_description-editor-container .tox-toolbar-overlord,
+        #wp-va_listing_description-editor-container .tox-toolbar__primary,
+        #wp-va_listing_description-editor-container .tox-toolbar { background: #1e1e1e !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
+        #wp-va_listing_description-editor-container .tox-toolbar__group { border-right-color: rgba(255,255,255,.1) !important; }
+        #wp-va_listing_description-editor-container .tox-tbtn { color: #ccc !important; background: transparent !important; border: none !important; }
+        #wp-va_listing_description-editor-container .tox-tbtn svg { fill: #aaa !important; }
+        #wp-va_listing_description-editor-container .tox-tbtn:hover { background: #2a2a2a !important; }
+        #wp-va_listing_description-editor-container .tox-tbtn--active { background: #333 !important; }
+        #wp-va_listing_description-editor-container .tox-tbtn__select-label { color: #ccc !important; }
+        #wp-va_listing_description-editor-container .tox-split-button { border-color: transparent !important; }
+        #wp-va_listing_description-editor-container .tox-statusbar { background: #1e1e1e !important; border-top: 1px solid rgba(255,255,255,.1) !important; }
+        #wp-va_listing_description-editor-container .tox-statusbar__path-item,
+        #wp-va_listing_description-editor-container .tox-statusbar__wordcount { color: #555 !important; }
+        #wp-va_listing_description-editor-container .tox-statusbar__resize-handle svg { fill: #444 !important; }
+        </style>
+        <?php
     }
 
     /* ── Block editor kikapcs. ───────────────────────────────── */
