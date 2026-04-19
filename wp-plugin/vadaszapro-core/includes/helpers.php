@@ -211,7 +211,7 @@ function va_get_user_listings( int $user_id, string $status = 'any', int $per_pa
 
     return get_posts([
         'post_type'      => $post_types,
-        'post_status'    => $status === 'any' ? [ 'publish', 'pending', 'draft' ] : $status,
+        'post_status'    => $status === 'any' ? [ 'publish', 'pending', 'draft', 'private' ] : $status,
         'author'         => $user_id,
         'posts_per_page' => $per_page,
         'offset'         => ( $page - 1 ) * $per_page,
