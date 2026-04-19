@@ -58,6 +58,28 @@ class VA_Admin {
         $vars .= '}';
 
         echo '<style id="va-admin-theme-vars">' . $vars . '</style>' . "\n";
+
+        // TinyMCE editor sötétítés az admin hirdetés szerkesztőben
+        echo '<style id="va-tinymce-dark">
+.wp-editor-wrap { border-color: rgba(255,255,255,.12) !important; border-radius: 6px; overflow: hidden; }
+.wp-editor-tabs .wp-switch-editor { background: #1a1a1a; color: #aaa; border-color: rgba(255,255,255,.12); }
+.wp-editor-tabs .wp-switch-editor:hover,
+.wp-editor-tabs .html-active .wp-switch-editor[data-wp-editor-id],
+.wp-editor-tabs .tmce-active .wp-switch-editor[data-wp-editor-id] { background: #2a2a2a; color: #e8e8e8; }
+.mce-toolbar-grp, .mce-container, .mce-container-body,
+.mce-panel, .mce-toolbar, .mce-menubar { background: #1a1a1a !important; border-color: rgba(255,255,255,.1) !important; }
+.mce-ico { color: #ccc !important; }
+.mce-btn button { color: #ccc !important; }
+.mce-btn:hover, .mce-btn.mce-active { background: #2a2a2a !important; }
+.mce-edit-area { background: #1a1a1a !important; }
+.mce-edit-area iframe { background: #1a1a1a !important; }
+.wp-media-buttons { background: #111; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.wp-media-buttons .button { background: #222; color: #ddd; border-color: rgba(255,255,255,.2); }
+.wp-media-buttons .button:hover { background: #2a2a2a; color: #fff; }
+.quicktags-toolbar { background: #1a1a1a !important; border-color: rgba(255,255,255,.1) !important; }
+.quicktags-toolbar input.ed_button { background: #252525 !important; color: #ccc !important; border-color: rgba(255,255,255,.15) !important; }
+.quicktags-toolbar input.ed_button:hover { background: #333 !important; color: #fff !important; }
+</style>' . "\n";
     }
 
     /* ── Body class ─────────────────────────────────────────── */
