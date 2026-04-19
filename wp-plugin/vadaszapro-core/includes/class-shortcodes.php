@@ -52,6 +52,8 @@ class VA_Shortcodes {
         wp_enqueue_script( 'jquery-ui-sortable' );
         wp_enqueue_editor();
         wp_enqueue_media();
+        // Mindig vizuális módban nyíljon, ne vegye figyelembe a cookie-t
+        add_filter( 'wp_default_editor', function() { return 'tinymce'; }, 99 );
         ob_start();
         va_template( 'listing/submit-form' );
         return ob_get_clean();
