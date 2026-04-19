@@ -18,6 +18,7 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_apply_hf_preset', [ __CLASS__, 'handle_apply_hf_preset' ] );
         add_action( 'admin_post_va_apply_ap_preset',  [ __CLASS__, 'handle_apply_ap_preset'  ] );
         add_action( 'admin_post_va_apply_single_preset', [ __CLASS__, 'handle_apply_single_preset' ] );
+        add_action( 'admin_post_va_save_nav_items',   [ __CLASS__, 'handle_save_nav_items'   ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
@@ -1057,6 +1058,110 @@ class VA_Settings_Page {
 
                 <?php submit_button( 'Fejléc + Lábléc mentése' ); ?>
             </form>
+
+            <!-- ═══ Nav gombok szerkesztő (külön form, JSON mentés) ═══ -->
+            <hr style="margin:32px 0;">
+            <h2>🔗 Navigációs gombok szerkesztése</h2>
+            <p class="description">Rendezd, kapcsold ki/be, vagy adj hozzá új menüpontot. A sorrend drag &amp; drop-pal állítható.</p>
+            <?php
+            $nav_json = get_option( 'va_nav_items_json', '' );
+            $nav_items_saved = [];
+            if ( $nav_json ) {
+                $decoded = json_decode( $nav_json, true );
+                if ( is_array( $decoded ) ) $nav_items_saved = $decoded;
+            }
+            if ( empty( $nav_items_saved ) ) {
+                $nav_items_saved = [
+                    [ 'label' => 'Hirdetések', 'url' => '/va-hirdetes-kereses', 'enabled' => true ],
+                    [ 'label' => 'Kategóriák', 'url' => '/kategoria',           'enabled' => true ],
+                    [ 'label' => 'Kapcsolat',  'url' => '/kapcsolat',           'enabled' => true ],
+                ];
+            }
+            if ( isset( $_GET['va_nav_saved'] ) ): ?>
+                <div class="notice notice-success is-dismissible"><p>Navigációs gombok elmentve.</p></div>
+            <?php endif; ?>
+            <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" id="va-nav-form">
+                <?php wp_nonce_field( 'va_save_nav_items', 'va_nav_nonce' ); ?>
+                <input type="hidden" name="action" value="va_save_nav_items">
+                <input type="hidden" name="va_nav_json" id="va-nav-json-input" value="<?php echo esc_attr( $nav_json ?: wp_json_encode( $nav_items_saved ) ); ?>">
+
+                <div id="va-nav-list" style="max-width:700px;margin-bottom:16px;">
+                    <?php foreach ( $nav_items_saved as $idx => $item ): ?>
+                    <div class="va-nav-row" style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;" draggable="true">
+                        <span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>
+                        <input type="checkbox" class="va-nav-enabled" <?php checked( $item['enabled'] ?? true ); ?> title="Megjelenítés">
+                        <input type="text" class="va-nav-label regular-text" value="<?php echo esc_attr( $item['label'] ); ?>" placeholder="Felirat" style="width:200px;">
+                        <input type="text" class="va-nav-url regular-text" value="<?php echo esc_attr( $item['url'] ); ?>" placeholder="/url vagy https://..." style="flex:1;">
+                        <button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <button type="button" class="button" id="va-nav-add">+ Új gomb hozzáadása</button>
+                &nbsp;
+                <?php submit_button( 'Navigáció mentése', 'primary', 'va-nav-submit', false ); ?>
+            </form>
+            <script>
+            (function(){
+                var list = document.getElementById('va-nav-list');
+                var jsonInput = document.getElementById('va-nav-json-input');
+
+                function collectJSON() {
+                    var rows = list.querySelectorAll('.va-nav-row');
+                    var items = [];
+                    rows.forEach(function(row) {
+                        items.push({
+                            label:   row.querySelector('.va-nav-label').value.trim(),
+                            url:     row.querySelector('.va-nav-url').value.trim(),
+                            enabled: row.querySelector('.va-nav-enabled').checked
+                        });
+                    });
+                    jsonInput.value = JSON.stringify(items);
+                }
+
+                document.getElementById('va-nav-form').addEventListener('submit', collectJSON);
+
+                document.getElementById('va-nav-add').addEventListener('click', function(){
+                    var div = document.createElement('div');
+                    div.className = 'va-nav-row';
+                    div.draggable = true;
+                    div.style.cssText = 'display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;';
+                    div.innerHTML = '<span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>'
+                        + '<input type="checkbox" class="va-nav-enabled" checked title="Megjelenítés">'
+                        + '<input type="text" class="va-nav-label regular-text" value="" placeholder="Felirat" style="width:200px;">'
+                        + '<input type="text" class="va-nav-url regular-text" value="" placeholder="/url vagy https://..." style="flex:1;">'
+                        + '<button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>';
+                    list.appendChild(div);
+                    bindDel(div);
+                    bindDrag(div);
+                });
+
+                function bindDel(row) {
+                    row.querySelector('.va-nav-del').addEventListener('click', function(){
+                        row.remove();
+                    });
+                }
+                function bindDrag(row) {
+                    row.addEventListener('dragstart', function(e) {
+                        e.dataTransfer.effectAllowed = 'move';
+                        row.classList.add('va-nav-dragging');
+                        window._vaDragSrc = row;
+                    });
+                    row.addEventListener('dragend', function() { row.classList.remove('va-nav-dragging'); });
+                    row.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        var src = window._vaDragSrc;
+                        if (src && src !== row) {
+                            var rect = row.getBoundingClientRect();
+                            var mid  = rect.top + rect.height / 2;
+                            if (e.clientY < mid) list.insertBefore(src, row);
+                            else list.insertBefore(src, row.nextSibling);
+                        }
+                    });
+                }
+                list.querySelectorAll('.va-nav-row').forEach(function(r){ bindDel(r); bindDrag(r); });
+            })();
+            </script>
         </div>
         <?php
     }
