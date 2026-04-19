@@ -62,42 +62,89 @@
 /* ── Form elemek ─────────────────────────────────── */
 .va-form-group { margin-bottom: 18px; }
 .va-form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,.65); font-weight: 500; } ─────────────────────────── */
+.va-view-toggle {
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 16px;
+  padding: 6px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
 .va-view-btn {
-  width: 48px; height: 48px;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
-  border-radius: 10px; cursor: pointer;
-  transition: background .2s, border-color .2s, box-shadow .2s;
+  --va-vbtn-icon: rgba(255,255,255,.7);
+  position: relative;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 30% 20%, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,.14);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform .24s cubic-bezier(.22,.61,.36,1), border-color .24s ease, box-shadow .24s ease, background .24s ease;
   padding: 0;
+  color: var(--va-vbtn-icon);
+  overflow: hidden;
+}
+.va-view-btn::before {
+  content: "";
+  position: absolute;
+  inset: -18px;
+  background: radial-gradient(circle, rgba(255,0,0,.28), rgba(255,0,0,0) 62%);
+  opacity: 0;
+  transform: scale(.7);
+  transition: opacity .24s ease, transform .24s ease;
+  pointer-events: none;
+}
+.va-view-btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg, rgba(255,255,255,.17), rgba(255,255,255,0) 55%);
+  opacity: .25;
+  transition: opacity .24s ease;
+  pointer-events: none;
 }
 .va-view-btn:hover {
-  background: rgba(255,0,0,.1);
-  border-color: rgba(255,0,0,.4);
-  box-shadow: 0 0 12px rgba(255,0,0,.2);
+  transform: translateY(-1px);
+  border-color: rgba(255,0,0,.42);
+  background: radial-gradient(circle at 30% 20%, rgba(255,0,0,.16), rgba(255,255,255,.03));
+  box-shadow: 0 10px 26px rgba(0,0,0,.35), 0 0 16px rgba(255,0,0,.22);
 }
+.va-view-btn:hover::before {
+  opacity: .7;
+  transform: scale(1);
+}
+.va-view-btn:hover::after { opacity: .4; }
 .va-view-btn.active {
-  background: rgba(255,0,0,.15);
-  border-color: #ff0000;
-  box-shadow: 0 0 16px rgba(255,0,0,.3);
-  color: #ff4040;
+  --va-vbtn-icon: #ff2f2f;
+  border-color: rgba(255,0,0,.72);
+  background: radial-gradient(circle at 30% 20%, rgba(255,0,0,.28), rgba(255,255,255,.03));
+  box-shadow: 0 0 0 1px rgba(255,0,0,.35) inset, 0 0 22px rgba(255,0,0,.34), 0 8px 20px rgba(0,0,0,.34);
+  animation: va-view-active-pulse 1.7s ease-in-out infinite;
 }
 .va-view-icon {
-  width: 26px; height: 26px;
-  transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  transition: transform .24s cubic-bezier(.34,1.56,.64,1), stroke .24s ease;
 }
-.va-view-btn:hover .va-view-icon { transform: scale(1.2); }
-.va-view-btn.active .va-view-icon { stroke: #ff4040; }
+.va-view-btn:hover .va-view-icon { transform: scale(1.11) rotate(-2deg); }
+.va-view-btn.active .va-view-icon { stroke: #ff2f2f; filter: drop-shadow(0 0 5px rgba(255,47,47,.42)); }
 
 /* Rács ikon négyzetei egyenként animálódnak */
-.va-view-btn:hover .va-grid-c1 { animation: va-pop .3s .00s both; }
-.va-view-btn:hover .va-grid-c2 { animation: va-pop .3s .05s both; }
-.va-view-btn:hover .va-grid-c3 { animation: va-pop .3s .10s both; }
-.va-view-btn:hover .va-grid-c4 { animation: va-pop .3s .15s both; }
+.va-view-btn:hover .va-grid-c1 { animation: va-pop .34s .00s both; }
+.va-view-btn:hover .va-grid-c2 { animation: va-pop .34s .06s both; }
+.va-view-btn:hover .va-grid-c3 { animation: va-pop .34s .12s both; }
+.va-view-btn:hover .va-grid-c4 { animation: va-pop .34s .18s both; }
 
 /* Lista sorok egymás után csúsznak be */
-.va-view-btn:hover .va-list-l1 { animation: va-slide .25s .00s both; }
-.va-view-btn:hover .va-list-l2 { animation: va-slide .25s .07s both; }
-.va-view-btn:hover .va-list-l3 { animation: va-slide .25s .14s both; }
+.va-view-btn:hover .va-list-l1 { animation: va-slide .28s .00s both; }
+.va-view-btn:hover .va-list-l2 { animation: va-slide .28s .07s both; }
+.va-view-btn:hover .va-list-l3 { animation: va-slide .28s .14s both; }
 
 @keyframes va-pop {
   0%   { transform: scale(.6); opacity: .3; }
@@ -107,6 +154,15 @@
 @keyframes va-slide {
   0%   { stroke-dasharray: 18; stroke-dashoffset: 18; opacity: 0; }
   100% { stroke-dasharray: 18; stroke-dashoffset: 0;  opacity: 1; }
+}
+@keyframes va-view-active-pulse {
+  0%, 100% { box-shadow: 0 0 0 1px rgba(255,0,0,.35) inset, 0 0 22px rgba(255,0,0,.34), 0 8px 20px rgba(0,0,0,.34); }
+  50% { box-shadow: 0 0 0 1px rgba(255,0,0,.45) inset, 0 0 30px rgba(255,0,0,.5), 0 12px 24px rgba(0,0,0,.38); }
+}
+@media (max-width: 640px) {
+  .va-view-toggle { border-radius: 12px; padding: 5px; }
+  .va-view-btn { width: 40px; height: 40px; border-radius: 10px; }
+  .va-view-icon { width: 20px; height: 20px; }
 }
 .va-btn--sm { padding: 0 14px; font-size: 12px; height: 34px; box-sizing: border-box; line-height: 34px; display: inline-flex; align-items: center; }
 .va-btn--outline { background: transparent; color: var(--va-text); border: 1px solid var(--va-border); box-sizing: border-box; }
