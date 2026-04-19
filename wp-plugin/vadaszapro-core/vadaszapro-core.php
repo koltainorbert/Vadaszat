@@ -175,6 +175,7 @@ function va_create_default_pages() {
         'va-regisztracio'      => [ 'title' => 'Regisztráció',         'content' => '[va_register_form]' ],
         'va-fiok'              => [ 'title' => 'Fiókom',               'content' => '[va_user_dashboard]' ],
         'va-hirdetes-kereses'  => [ 'title' => 'Hirdetések keresése',  'content' => '[va_listing_search]' ],
+        'va-kredit-vasarlas'   => [ 'title' => 'Vásárlás',             'content' => '[va_buy_credits]' ],
     ];
 
     if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : get_option( 'va_enable_auctions', '1' ) === '1' ) {
