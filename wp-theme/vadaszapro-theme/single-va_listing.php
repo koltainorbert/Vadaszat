@@ -107,9 +107,87 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     'nonce'    => wp_create_nonce('va_user_nonce'),
     'post_id'  => $post_id,
 ]);
+
+$sl_layout_mode = (string) get_option( 'va_single_layout_mode', 'split' );
+if ( ! in_array( $sl_layout_mode, [ 'split', 'stacked' ], true ) ) {
+    $sl_layout_mode = 'split';
+}
+
+$sl_content_max   = max( 960, min( 1800, absint( get_option( 'va_single_content_max', 1320 ) ) ) );
+$sl_sidebar_width = max( 280, min( 620, absint( get_option( 'va_single_sidebar_width', 390 ) ) ) );
+$sl_layout_gap    = max( 8, min( 60, absint( get_option( 'va_single_layout_gap', 24 ) ) ) );
+$sl_thumb_size    = max( 54, min( 140, absint( get_option( 'va_single_thumb_size', 86 ) ) ) );
+$sl_radius        = max( 0, min( 40, absint( get_option( 'va_single_card_radius', 14 ) ) ) );
+$sl_padding       = max( 10, min( 48, absint( get_option( 'va_single_card_padding', 22 ) ) );
+$sl_title_size    = max( 24, min( 72, absint( get_option( 'va_single_title_size', 40 ) ) ) );
+$sl_price_size    = max( 24, min( 72, absint( get_option( 'va_single_price_size', 42 ) ) ) );
+$sl_meta_size     = max( 10, min( 22, absint( get_option( 'va_single_meta_size', 13 ) ) ) );
+$sl_btn_height    = max( 34, min( 72, absint( get_option( 'va_single_btn_height', 48 ) ) ) );
+$sl_share_size    = max( 28, min( 62, absint( get_option( 'va_single_share_size', 40 ) ) ) );
+$sl_mobile_scale  = max( 60, min( 100, absint( get_option( 'va_single_mobile_title_scale', 78 ) ) ) );
+
+$sl_gallery_ratio = (string) get_option( 'va_single_gallery_ratio', '4/3' );
+if ( ! in_array( $sl_gallery_ratio, [ '1/1', '4/3', '16/10', '16/9' ], true ) ) {
+    $sl_gallery_ratio = '4/3';
+}
+$sl_gallery_fit = (string) get_option( 'va_single_gallery_fit', 'cover' );
+if ( ! in_array( $sl_gallery_fit, [ 'cover', 'contain' ], true ) ) {
+    $sl_gallery_fit = 'cover';
+}
+
+$sl_viewer_bg = sanitize_text_field( (string) get_option( 'va_single_viewer_bg', 'rgba(4,4,4,.96)' ) );
+$sl_accent    = sanitize_hex_color( (string) get_option( 'va_single_accent', '#ff2a2a' ) ) ?: '#ff2a2a';
+$sl_glass     = sanitize_text_field( (string) get_option( 'va_single_glass', 'rgba(255,255,255,.07)' ) );
+$sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'rgba(255,255,255,.12)' ) );
 ?>
 
-<div class="sl">
+<style>
+.sl {
+    max-width: <?php echo esc_attr( (string) $sl_content_max ); ?>px;
+    --sl-accent: <?php echo esc_attr( $sl_accent ); ?>;
+    --sl-glass: <?php echo esc_attr( $sl_glass ); ?>;
+    --sl-border: <?php echo esc_attr( $sl_border ); ?>;
+}
+.sl__layout { gap: <?php echo esc_attr( (string) $sl_layout_gap ); ?>px; }
+.sl--layout-split .sl__layout { grid-template-columns: minmax(0, 1fr) <?php echo esc_attr( (string) $sl_sidebar_width ); ?>px; }
+.sl--layout-stacked .sl__layout { grid-template-columns: 1fr; }
+
+.sl .sl__card {
+    border-radius: <?php echo esc_attr( (string) $sl_radius ); ?>px;
+    padding: <?php echo esc_attr( (string) $sl_padding ); ?>px;
+    background: var(--sl-glass);
+    border-color: var(--sl-border);
+}
+.sl .sl__main-wrap { aspect-ratio: <?php echo esc_attr( $sl_gallery_ratio ); ?>; }
+.sl .sl__main-img { object-fit: <?php echo esc_attr( $sl_gallery_fit ); ?>; }
+.sl .sl__thumb {
+    width: <?php echo esc_attr( (string) $sl_thumb_size ); ?>px;
+    height: <?php echo esc_attr( (string) floor( $sl_thumb_size * 0.74 ) ); ?>px;
+}
+.sl .sl__title { font-size: <?php echo esc_attr( (string) $sl_title_size ); ?>px; }
+.sl .sl__price { font-size: <?php echo esc_attr( (string) $sl_price_size ); ?>px; color: var(--sl-accent); }
+.sl .sl__meta-row span { font-size: <?php echo esc_attr( (string) $sl_meta_size ); ?>px; }
+.sl .sl__btn { min-height: <?php echo esc_attr( (string) $sl_btn_height ); ?>px; }
+.sl .sl__share-btn {
+    width: <?php echo esc_attr( (string) $sl_share_size ); ?>px;
+    height: <?php echo esc_attr( (string) $sl_share_size ); ?>px;
+}
+.sl .sl__cat-pill,
+.sl .sl__btn--watch.active,
+.sl .sl__btn--phone,
+.sl .sl__btn--email { border-color: var(--sl-accent); }
+.sl .sl__btn--phone,
+.sl .sl__btn--watch.active { background: var(--sl-accent); }
+.sl-viewer { background: <?php echo esc_attr( $sl_viewer_bg ); ?>; }
+
+@media (max-width: 900px) {
+    .sl .sl__title { font-size: <?php echo esc_attr( (string) max( 20, (int) floor( $sl_title_size * ( $sl_mobile_scale / 100 ) ) ) ); ?>px; }
+    .sl .sl__price { font-size: <?php echo esc_attr( (string) max( 22, (int) floor( $sl_price_size * 0.82 ) ) ); ?>px; }
+    .sl--layout-split .sl__layout { grid-template-columns: 1fr; }
+}
+</style>
+
+<div class="sl sl--layout-<?php echo esc_attr( $sl_layout_mode ); ?>">
 
     <?php if ( $featured ): ?>
     <div class="sl__featured-bar">Kiemelt hirdet&eacute;s</div>

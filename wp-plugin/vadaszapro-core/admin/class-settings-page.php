@@ -3268,6 +3268,208 @@ class VA_Settings_Page {
         echo "<tr><th>{$label}</th><td><input type=\"hidden\" name=\"{$key}\" value=\"0\"><label class=\"va-toggle\"><input type=\"checkbox\" name=\"{$key}\" value=\"1\"" . checked( $val, '1', false ) . "><span class=\"va-toggle-slider\"></span></label></td></tr>";
     }
 
+    public static function render_single_designer(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $presets = self::get_single_presets();
+        $preset_msg = sanitize_key( (string) ( $_GET['va_single_preset'] ?? '' ) );
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🧱 VadászApró – Termékoldal Designer</h1>
+            <p class="description">A hirdetés részletes oldal teljes wireframe-je állítható: layout, tipográfia, galéria, kártyák, akciógombok és viewer.</p>
+
+            <?php if ( $preset_msg === 'ok' ): ?>
+                <div class="notice notice-success"><p>Preset sikeresen alkalmazva.</p></div>
+            <?php elseif ( $preset_msg === 'invalid' ): ?>
+                <div class="notice notice-error"><p>Ismeretlen preset.</p></div>
+            <?php endif; ?>
+
+            <div class="va-le-card" style="margin-top:14px;max-width:1300px;">
+                <div class="va-le-card-hdr">⚡ Wireframe Presetek</div>
+                <div class="va-single-presets-grid">
+                    <?php foreach ( $presets as $key => $preset ): ?>
+                        <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="va-single-preset-card">
+                            <?php wp_nonce_field( 'va_apply_single_preset' ); ?>
+                            <input type="hidden" name="action" value="va_apply_single_preset">
+                            <input type="hidden" name="preset_key" value="<?php echo esc_attr( $key ); ?>">
+                            <button type="submit" class="va-single-preset-btn">
+                                <span class="va-single-preset-title"><?php echo esc_html( $preset['label'] ); ?></span>
+                                <span class="va-single-preset-desc"><?php echo esc_html( $preset['desc'] ); ?></span>
+                                <span class="va-single-preset-wire">
+                                    <i class="w-main"></i><i class="w-side"></i><i class="w-thumbs"></i>
+                                </span>
+                            </button>
+                        </form>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <form id="va-single-designer-form" method="post" action="options.php" style="max-width:1300px;margin-top:14px;">
+                <?php settings_fields( 'va_single_settings' ); ?>
+
+                <div class="va-single-main-grid">
+                    <div>
+                        <div class="va-le-card">
+                            <div class="va-le-card-hdr">🏗️ Layout és szerkezet</div>
+                            <table class="form-table">
+                                <?php self::field_select( 'va_single_layout_mode', 'Elrendezés', [ 'split' => 'Kétoszlopos (galéria + oldalpanel)', 'stacked' => 'Egyhasábos (stackelt)' ] ); ?>
+                                <?php self::field_num( 'va_single_content_max', 'Maximális tartalomszélesség (px)', 960, 1800 ); ?>
+                                <?php self::field_num( 'va_single_sidebar_width', 'Oldalpanel szélesség (px)', 280, 620 ); ?>
+                                <?php self::field_num( 'va_single_layout_gap', 'Oszlopköz / blokkköz (px)', 8, 60 ); ?>
+                                <?php self::field_num( 'va_single_card_radius', 'Kártya lekerekítés (px)', 0, 40 ); ?>
+                                <?php self::field_num( 'va_single_card_padding', 'Kártya belső térköz (px)', 10, 48 ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🖼️ Galéria és média</div>
+                            <table class="form-table">
+                                <?php self::field_select( 'va_single_gallery_ratio', 'Fő kép arány', [ '1/1' => '1:1', '4/3' => '4:3', '16/10' => '16:10', '16/9' => '16:9' ] ); ?>
+                                <?php self::field_select( 'va_single_gallery_fit', 'Képkitöltés', [ 'cover' => 'Kitöltés (cover)', 'contain' => 'Teljes kép (contain)' ] ); ?>
+                                <?php self::field_num( 'va_single_thumb_size', 'Bélyegkép méret (px)', 54, 140 ); ?>
+                                <?php self::field_text( 'va_single_viewer_bg', 'Viewer háttér (CSS szín / rgba)' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🔤 Tipográfia és gombok</div>
+                            <table class="form-table">
+                                <?php self::field_num( 'va_single_title_size', 'Címméret desktopon (px)', 24, 72 ); ?>
+                                <?php self::field_num( 'va_single_price_size', 'Ár méret desktopon (px)', 24, 72 ); ?>
+                                <?php self::field_num( 'va_single_meta_size', 'Meta címkék mérete (px)', 10, 22 ); ?>
+                                <?php self::field_num( 'va_single_btn_height', 'Akciógomb magasság (px)', 34, 72 ); ?>
+                                <?php self::field_num( 'va_single_share_size', 'Megosztás gomb méret (px)', 28, 62 ); ?>
+                                <?php self::field_num( 'va_single_mobile_title_scale', 'Mobil címskála (%)', 60, 100 ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🎨 Színek és felületek</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_single_accent', 'Accent szín' ); ?>
+                                <?php self::field_text( 'va_single_glass', 'Üveg háttér (rgba)' ); ?>
+                                <?php self::field_text( 'va_single_border', 'Üveg keret (rgba)' ); ?>
+                            </table>
+                        </div>
+
+                        <?php submit_button( 'Termékoldal dizájn mentése', 'primary', 'submit', false, [ 'style' => 'margin-top:14px;' ] ); ?>
+                    </div>
+
+                    <aside>
+                        <div class="va-le-card va-single-preview-card">
+                            <div class="va-le-card-hdr">👁️ Élő wireframe előnézet</div>
+                            <div id="va-single-preview" class="va-single-preview">
+                                <div class="sp-top"></div>
+                                <div class="sp-grid">
+                                    <div class="sp-main">
+                                        <div class="sp-hero"></div>
+                                        <div class="sp-thumbs"><i></i><i></i><i></i><i></i></div>
+                                        <div class="sp-title"></div>
+                                        <div class="sp-meta"><b></b><b></b><b></b></div>
+                                        <div class="sp-text"></div>
+                                    </div>
+                                    <div class="sp-side">
+                                        <div class="sp-price"></div>
+                                        <div class="sp-btn"></div>
+                                        <div class="sp-btn sp-btn--ghost"></div>
+                                        <div class="sp-share"><i></i><i></i><i></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="description" style="margin-top:10px;">A mentés után a beállítások azonnal élesednek a hirdetés részletes oldalon.</p>
+                        </div>
+                    </aside>
+                </div>
+            </form>
+        </div>
+
+        <style>
+        .va-single-presets-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; }
+        .va-single-preset-card { margin:0; }
+        .va-single-preset-btn {
+            width:100%; border:1px solid var(--va-border2); background:var(--va-bg3); color:var(--va-text);
+            border-radius:12px; padding:12px; text-align:left; cursor:pointer; transition:.2s ease;
+        }
+        .va-single-preset-btn:hover { border-color:var(--va-accent); box-shadow:0 8px 28px rgba(0,0,0,.35); transform:translateY(-2px); }
+        .va-single-preset-title { display:block; font-weight:700; font-size:12px; }
+        .va-single-preset-desc { display:block; font-size:11px; color:var(--va-muted); margin-top:2px; }
+        .va-single-preset-wire { display:grid; grid-template-columns:1fr .62fr; gap:8px; margin-top:10px; }
+        .va-single-preset-wire i { display:block; background:rgba(255,255,255,.07); border-radius:7px; }
+        .va-single-preset-wire .w-main { height:48px; }
+        .va-single-preset-wire .w-side { height:48px; }
+        .va-single-preset-wire .w-thumbs { grid-column:1 / span 2; height:10px; }
+
+        .va-single-main-grid { display:grid; grid-template-columns:1fr 380px; gap:18px; align-items:start; }
+        .va-single-preview-card { position:sticky; top:74px; }
+        @media (max-width:1120px) {
+            .va-single-main-grid { grid-template-columns:1fr; }
+            .va-single-preview-card { position:static; }
+        }
+
+        .va-single-preview {
+            --sp-accent:#ff2a2a; --sp-glass:rgba(255,255,255,.07); --sp-border:rgba(255,255,255,.12);
+            --sp-gap:20px; --sp-radius:12px; --sp-pad:18px; --sp-side:38%; --sp-ratio:4/3; --sp-thumb:74px;
+            background:#080808; border:1px solid var(--sp-border); border-radius:16px; padding:12px;
+        }
+        .va-single-preview .sp-top { height:8px; width:120px; background:rgba(255,255,255,.15); border-radius:999px; margin-bottom:12px; }
+        .va-single-preview .sp-grid { display:grid; grid-template-columns:1fr var(--sp-side); gap:var(--sp-gap); }
+        .va-single-preview.sp-stacked .sp-grid { grid-template-columns:1fr; }
+        .va-single-preview .sp-main,
+        .va-single-preview .sp-side { background:var(--sp-glass); border:1px solid var(--sp-border); border-radius:var(--sp-radius); padding:var(--sp-pad); }
+        .va-single-preview .sp-hero { aspect-ratio:var(--sp-ratio); border-radius:calc(var(--sp-radius) - 2px); background:linear-gradient(130deg, rgba(255,255,255,.16), rgba(255,255,255,.05)); }
+        .va-single-preview .sp-thumbs { display:flex; gap:8px; margin-top:10px; }
+        .va-single-preview .sp-thumbs i { width:var(--sp-thumb); height:calc(var(--sp-thumb) * .75); border-radius:8px; background:rgba(255,255,255,.16); }
+        .va-single-preview .sp-title { margin-top:14px; height:14px; width:76%; border-radius:5px; background:#fff; opacity:.85; }
+        .va-single-preview .sp-meta { display:flex; gap:8px; margin-top:10px; }
+        .va-single-preview .sp-meta b { width:66px; height:8px; border-radius:999px; background:rgba(255,255,255,.2); display:block; }
+        .va-single-preview .sp-text { margin-top:12px; height:42px; border-radius:10px; background:rgba(255,255,255,.08); }
+        .va-single-preview .sp-price { height:14px; width:70%; border-radius:7px; background:var(--sp-accent); margin-bottom:16px; }
+        .va-single-preview .sp-btn { height:42px; border-radius:10px; background:var(--sp-accent); margin-bottom:10px; }
+        .va-single-preview .sp-btn--ghost { background:transparent; border:1px solid var(--sp-border); }
+        .va-single-preview .sp-share { display:flex; gap:8px; margin-top:8px; }
+        .va-single-preview .sp-share i { width:38px; height:38px; border-radius:999px; border:1px solid var(--sp-border); background:rgba(255,255,255,.05); display:block; }
+        </style>
+
+        <script>
+        (function () {
+            const form = document.getElementById('va-single-designer-form');
+            const preview = document.getElementById('va-single-preview');
+            if (!form || !preview) return;
+
+            const ratioMap = {
+                '1/1': '1 / 1',
+                '4/3': '4 / 3',
+                '16/10': '16 / 10',
+                '16/9': '16 / 9'
+            };
+
+            function val(name, fallback = '') {
+                const el = form.querySelector('[name="' + name + '"]');
+                return el ? (el.value || fallback) : fallback;
+            }
+
+            function syncPreview() {
+                const mode = val('va_single_layout_mode', 'split');
+                preview.classList.toggle('sp-stacked', mode === 'stacked');
+                preview.style.setProperty('--sp-side', Math.max(28, Math.min(52, Number(val('va_single_sidebar_width', 390)) / 10)) + '%');
+                preview.style.setProperty('--sp-gap', Math.max(8, Math.min(40, Number(val('va_single_layout_gap', 24)))) + 'px');
+                preview.style.setProperty('--sp-radius', Math.max(0, Math.min(40, Number(val('va_single_card_radius', 14)))) + 'px');
+                preview.style.setProperty('--sp-pad', Math.max(8, Math.min(40, Number(val('va_single_card_padding', 22)))) + 'px');
+                preview.style.setProperty('--sp-ratio', ratioMap[val('va_single_gallery_ratio', '4/3')] || '4 / 3');
+                preview.style.setProperty('--sp-thumb', Math.max(44, Math.min(110, Number(val('va_single_thumb_size', 86)))) + 'px');
+                preview.style.setProperty('--sp-accent', val('va_single_accent', '#ff2a2a'));
+                preview.style.setProperty('--sp-glass', val('va_single_glass', 'rgba(255,255,255,.07)'));
+                preview.style.setProperty('--sp-border', val('va_single_border', 'rgba(255,255,255,.12)'));
+            }
+
+            form.addEventListener('input', syncPreview);
+            form.addEventListener('change', syncPreview);
+            syncPreview();
+        })();
+        </script>
+        <?php
+    }
+
     /* ══ Social Media beállítások ═════════════════════════ */
     public static function render_social(): void {
         if ( ! current_user_can( 'manage_options' ) ) return;
