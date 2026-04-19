@@ -490,6 +490,15 @@ class VA_User_System {
             require_once ABSPATH . 'wp-admin/includes/file.php';
             require_once ABSPATH . 'wp-admin/includes/image.php';
 
+            // Felhasználónkénti könyvtár: /va-users/{user_id}/avatar/
+            $va_avatar_dir_filter = static function( $dirs ) use ( $user_id ) {
+                $dirs['subdir'] = '/va-users/' . $user_id . '/avatar';
+                $dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
+                $dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
+                return $dirs;
+            };
+            add_filter( 'upload_dir', $va_avatar_dir_filter );
+
             $uploaded = wp_handle_upload( $_FILES['profile_avatar'], [
                 'test_form' => false,
                 'mimes'     => [
@@ -498,6 +507,8 @@ class VA_User_System {
                     'webp'     => 'image/webp',
                 ],
             ] );
+
+            remove_filter( 'upload_dir', $va_avatar_dir_filter );
 
             if ( ! empty( $uploaded['error'] ) ) {
                 va_set_flash( 'error', 'A profilkép feltöltése sikertelen: ' . sanitize_text_field( $uploaded['error'] ) );
