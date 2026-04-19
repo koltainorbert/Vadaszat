@@ -38,6 +38,9 @@ class VA_Ajax {
         // Base64 kép feltöltése médiatárba
         add_action( 'wp_ajax_va_upload_editor_image', [ __CLASS__, 'upload_editor_image' ] );
 
+        // Hirdetés törlésekor editor képek törlése
+        add_action( 'before_delete_post', [ __CLASS__, 'delete_editor_images_on_listing_delete' ] );
+
         // Élő keresés
         add_action( 'wp_ajax_va_live_search',        [ __CLASS__, 'live_search' ] );
         add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
@@ -972,6 +975,27 @@ class VA_Ajax {
         }
         check_ajax_referer( 'va_upload_editor_image', 'nonce' );
 
+        $user_id  = get_current_user_id();
+        $post_id  = absint( $_POST['post_id'] ?? 0 );
+
+        // Max 2 editor kép / hirdetés / felhasználó limitálása szerver oldalon
+        if ( $post_id > 0 ) {
+            $existing = get_posts( [
+                'post_type'      => 'attachment',
+                'post_parent'    => $post_id,
+                'post_status'    => 'inherit',
+                'posts_per_page' => -1,
+                'no_found_rows'  => true,
+                'meta_key'       => '_va_editor_img',
+                'meta_value'     => '1',
+                'author'         => $user_id,
+                'fields'         => 'ids',
+            ] );
+            if ( count( $existing ) >= 2 ) {
+                wp_send_json_error( [ 'message' => 'Maximum 2 kép engedélyezett a leírásban.' ] );
+            }
+        }
+
         $data_url = wp_unslash( $_POST['data_url'] ?? '' );
         if ( ! preg_match( '/^data:(image\/(jpeg|png|webp|gif));base64,(.+)$/s', $data_url, $m ) ) {
             wp_send_json_error( [ 'message' => 'Érvénytelen képadat.' ] );
@@ -995,11 +1019,37 @@ class VA_Ajax {
             'post_mime_type' => $mime,
             'post_title'     => sanitize_file_name( basename( $upload['file'] ) ),
             'post_status'    => 'inherit',
+            'post_author'    => $user_id,
+            'post_parent'    => $post_id > 0 ? $post_id : 0,
         ], $upload['file'] );
+
+        // Jelöljük meg hogy editor kép → törléskor tudjuk tisztítani
+        update_post_meta( $attachment_id, '_va_editor_img', '1' );
+        update_post_meta( $attachment_id, '_va_editor_img_owner', $user_id );
 
         require_once ABSPATH . 'wp-admin/includes/image.php';
         wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
 
-        wp_send_json_success( [ 'url' => $upload['url'] ] );
+        wp_send_json_success( [ 'url' => $upload['url'], 'attachment_id' => $attachment_id ] );
+    }
+
+    /* ── Hirdetés törlésekor editor képek törlése ───────────── */
+    public static function delete_editor_images_on_listing_delete( int $post_id ): void {
+        if ( get_post_type( $post_id ) !== 'va_listing' ) return;
+
+        $attachments = get_posts( [
+            'post_type'      => 'attachment',
+            'post_parent'    => $post_id,
+            'post_status'    => 'inherit',
+            'posts_per_page' => 100,
+            'no_found_rows'  => true,
+            'meta_key'       => '_va_editor_img',
+            'meta_value'     => '1',
+            'fields'         => 'ids',
+        ] );
+
+        foreach ( $attachments as $att_id ) {
+            wp_delete_attachment( $att_id, true );
+        }
     }
 }

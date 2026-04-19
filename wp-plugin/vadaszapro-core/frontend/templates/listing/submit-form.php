@@ -547,6 +547,10 @@ document.addEventListener('DOMContentLoaded', function() {
             ],
             handlers: {
                 image: function() {
+                    if (quill.root.querySelectorAll('img').length >= 2) {
+                        alert('Maximum 2 kép engedélyezett a leírásban.');
+                        return;
+                    }
                     var input = document.createElement('input');
                     input.setAttribute('type', 'file');
                     input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
@@ -651,7 +655,7 @@ document.addEventListener('DOMContentLoaded', function() {
             uploads.push($.ajax({
                 url: VA_Data.ajax_url,
                 type: 'POST',
-                data: { action: 'va_upload_editor_image', nonce: VA_Data.nonce_editor_img, data_url: img.src },
+                data: { action: 'va_upload_editor_image', nonce: VA_Data.nonce_editor_img, post_id: VA_Data.post_id || 0, data_url: img.src },
                 success: function(res) { if (res.success) img.src = res.data.url; }
             }));
         });
