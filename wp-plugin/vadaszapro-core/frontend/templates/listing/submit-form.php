@@ -72,6 +72,17 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 break;
             case 'description':
                 $desc_val = wp_kses_post( (string) $val );
+                // getUserSetting override: mielőtt a wp-editor.js olvasna, mindig 'tmce'-t ad vissza
+                echo '<script>
+(function(){
+    var _orig = window.getUserSetting;
+    window.getUserSetting = function(n) {
+        if (n === "editor") return "tmce";
+        return _orig ? _orig.apply(this, arguments) : "";
+    };
+    if (typeof setUserSetting === "function") setUserSetting("editor", "tmce");
+})();
+</script>';
                 wp_editor(
                     $desc_val,
                     'va_desc_editor',
