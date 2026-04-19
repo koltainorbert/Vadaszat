@@ -376,6 +376,8 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
     display:flex;
     align-items:center;
     gap:10px;
+    min-width:0;
+    overflow:hidden;
 }
 .va-dash-user-head__avatar {
     width:52px;
@@ -394,7 +396,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
     flex-shrink:0;
 }
 .va-dash-user-head__avatar img { width:100% !important;height:100% !important;object-fit:cover;display:block;border-radius:50%;max-width:none !important;max-height:none !important; }
-.va-dash-user-head__name { color:#fff;font-size:13px;font-weight:700; }
+.va-dash-user-head__name { color:#fff;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0; }
 
 .va-dash-avatar-form {
     padding:10px 14px 12px;
