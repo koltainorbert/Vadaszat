@@ -378,12 +378,13 @@ body.va-admin-page .va-users-table td { background: transparent !important; colo
 body.va-admin-page .va-users-table tr,
 body.va-admin-page .va-users-table.striped > tbody > tr:nth-child(odd) { background: transparent !important; }
 body.va-admin-page .va-users-table { table-layout: fixed !important; width: 100% !important; }
+body.va-admin-page .va-users-table th { white-space: nowrap !important; }
 body.va-admin-page .va-users-table th:nth-child(1),
-body.va-admin-page .va-users-table td:nth-child(1) { width: 14% !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+body.va-admin-page .va-users-table td:nth-child(1) { width: 13% !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
 body.va-admin-page .va-users-table th:nth-child(2),
-body.va-admin-page .va-users-table td:nth-child(2) { width: 10% !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+body.va-admin-page .va-users-table td:nth-child(2) { width: 9% !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
 body.va-admin-page .va-users-table th:nth-child(3),
-body.va-admin-page .va-users-table td:nth-child(3) { width: 18% !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+body.va-admin-page .va-users-table td:nth-child(3) { width: 17% !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
 body.va-admin-page .va-users-table th:nth-child(4),
 body.va-admin-page .va-users-table td:nth-child(4) { width: 120px !important; }
 body.va-admin-page .va-users-table td:nth-child(4) select { width: 100% !important; box-sizing: border-box !important; font-size: 12px !important; padding: 3px 4px !important; }
@@ -392,7 +393,7 @@ body.va-admin-page .va-users-table td:nth-child(5) { width: 110px !important; wh
 body.va-admin-page .va-users-table th:nth-child(6),
 body.va-admin-page .va-users-table td:nth-child(6) { width: 90px !important; white-space: nowrap !important; }
 body.va-admin-page .va-users-table th:nth-child(7),
-body.va-admin-page .va-users-table td:nth-child(7) { width: 10% !important; }
+body.va-admin-page .va-users-table td:nth-child(7) { width: 11% !important; white-space: nowrap !important; }
 body.va-admin-page .va-users-table th:nth-child(8),
 body.va-admin-page .va-users-table td:nth-child(8) { width: 80px !important; white-space: nowrap !important; }
 body.va-admin-page .widefat tr:hover td,
