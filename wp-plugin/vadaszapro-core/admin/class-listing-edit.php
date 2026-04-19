@@ -100,6 +100,22 @@ class VA_Listing_Edit {
             va_sync_listing_meta( $post_id );
         }
 
+        // Egyedi (custom_*) mezők mentése a Form Builder konfigból
+        if ( class_exists( 'VA_Form_Builder' ) ) {
+            $admin_fields = VA_Form_Builder::get_fields( 'va_admin_listing_edit' );
+            foreach ( $admin_fields as $aff ) {
+                $akey = (string)( $aff['key'] ?? '' );
+                if ( ! str_starts_with( $akey, 'custom_' ) ) continue;
+                if ( empty( $aff['enabled'] ) ) continue;
+                $atype = (string)( $aff['type'] ?? 'text' );
+                if ( $atype === 'checkbox' ) {
+                    update_post_meta( $post_id, $akey, isset( $_POST[ $akey ] ) ? '1' : '0' );
+                } elseif ( isset( $_POST[ $akey ] ) ) {
+                    update_post_meta( $post_id, $akey, sanitize_text_field( wp_unslash( $_POST[ $akey ] ) ) );
+                }
+            }
+        }
+
         wp_safe_redirect( admin_url( 'admin.php?page=vadaszapro-listing-edit&id=' . $post_id . '&va_saved=1' ) );
         exit;
     }
@@ -359,6 +375,18 @@ class VA_Listing_Edit {
         $post_status = $post ? $post->post_status : 'draft';
 
         $price_types = [ 'fixed' => 'Fix ár', 'negotiable' => 'Alkudható', 'free' => 'Ingyenes', 'on_request' => 'Érdeklődjön' ];
+
+        // Form Builder config – admin listing edit
+        $fb_raw     = class_exists( 'VA_Form_Builder' ) ? VA_Form_Builder::get_fields( 'va_admin_listing_edit' ) : [];
+        usort( $fb_raw, static fn( $a, $b ) => (int)( $a['order'] ?? 99 ) - (int)( $b['order'] ?? 99 ) );
+        $fb = [];
+        foreach ( $fb_raw as $ff ) { $fb[ $ff['key'] ] = $ff; }
+        $fb_on  = static fn( $k )          => ! isset( $fb[ $k ] ) || ! empty( $fb[ $k ]['enabled'] );
+        $fb_lbl = static fn( $k, $default ) => ( isset( $fb[ $k ]['label'] ) && $fb[ $k ]['label'] !== '' ) ? esc_html( $fb[ $k ]['label'] ) : $default;
+        $fb_ph  = static fn( $k, $default ) => ( isset( $fb[ $k ]['placeholder'] ) && $fb[ $k ]['placeholder'] !== '' ) ? esc_attr( $fb[ $k ]['placeholder'] ) : $default;
+
+        // Egyedi (custom_*) mezők gyűjtése
+        $custom_fields = array_filter( $fb_raw, static fn( $ff ) => str_starts_with( (string)( $ff['key'] ?? '' ), 'custom_' ) && ! empty( $ff['enabled'] ) );
         ?>
         <div class="va-le-wrap">
 
@@ -424,66 +452,119 @@ class VA_Listing_Edit {
                         </div>
 
                         <!-- Árazás -->
+                        <?php if ( $fb_on('va_price') || $fb_on('va_price_type') ): ?>
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">💰 Árazás</div>
                             <div class="va-le-field-grid">
+                                <?php if ( $fb_on('va_price') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Ár (Ft)</label>
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_price', 'Ár (Ft)'); ?></label>
                                     <input type="number" name="va_price" min="0" value="<?php echo esc_attr($get_meta('va_price')); ?>"
-                                           placeholder="0" class="va-le-input">
+                                           placeholder="<?php echo $fb_ph('va_price','0'); ?>" class="va-le-input">
                                 </div>
+                                <?php endif; ?>
+                                <?php if ( $fb_on('va_price_type') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Árazás típusa</label>
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_price_type', 'Árazás típusa'); ?></label>
                                     <select name="va_price_type" class="va-le-select">
                                         <?php foreach ($price_types as $v => $l): ?>
                                         <option value="<?php echo esc_attr($v); ?>" <?php selected($get_meta('va_price_type'), $v); ?>><?php echo esc_html($l); ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
+                                <?php endif; ?>
                             </div>
                         </div>
+                        <?php endif; ?>
 
                         <!-- Részletek -->
+                        <?php if ( $fb_on('va_brand') || $fb_on('va_model') || $fb_on('va_caliber') || $fb_on('va_year') ): ?>
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">🔍 Termék részletei</div>
                             <div class="va-le-field-grid">
+                                <?php if ( $fb_on('va_brand') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Márka / Gyártó</label>
-                                    <input type="text" name="va_brand" value="<?php echo esc_attr($get_meta('va_brand')); ?>" class="va-le-input" placeholder="pl. Browning">
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_brand', 'Márka / Gyártó'); ?></label>
+                                    <input type="text" name="va_brand" value="<?php echo esc_attr($get_meta('va_brand')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_brand','pl. Browning'); ?>">
                                 </div>
+                                <?php endif; ?>
+                                <?php if ( $fb_on('va_model') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Modell / Típus</label>
-                                    <input type="text" name="va_model" value="<?php echo esc_attr($get_meta('va_model')); ?>" class="va-le-input" placeholder="pl. X-Bolt">
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_model', 'Modell / Típus'); ?></label>
+                                    <input type="text" name="va_model" value="<?php echo esc_attr($get_meta('va_model')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_model','pl. X-Bolt'); ?>">
                                 </div>
+                                <?php endif; ?>
+                                <?php if ( $fb_on('va_caliber') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Kaliber</label>
-                                    <input type="text" name="va_caliber" value="<?php echo esc_attr($get_meta('va_caliber')); ?>" class="va-le-input" placeholder="pl. .308 Win">
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_caliber', 'Kaliber'); ?></label>
+                                    <input type="text" name="va_caliber" value="<?php echo esc_attr($get_meta('va_caliber')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_caliber','pl. .308 Win'); ?>">
                                 </div>
+                                <?php endif; ?>
+                                <?php if ( $fb_on('va_year') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Gyártási év</label>
-                                    <input type="number" name="va_year" min="1800" max="2026" value="<?php echo esc_attr($get_meta('va_year')); ?>" class="va-le-input" placeholder="pl. 2020">
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_year', 'Gyártási év'); ?></label>
+                                    <input type="number" name="va_year" min="1800" max="2099" value="<?php echo esc_attr($get_meta('va_year')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_year','pl. 2020'); ?>">
                                 </div>
+                                <?php endif; ?>
                             </div>
                         </div>
+                        <?php endif; ?>
 
                         <!-- Kapcsolat -->
+                        <?php if ( $fb_on('va_phone') || $fb_on('va_location') || $fb_on('va_email_show') ): ?>
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">📞 Kapcsolat</div>
                             <div class="va-le-field-grid">
+                                <?php if ( $fb_on('va_phone') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Telefonszám</label>
-                                    <input type="tel" name="va_phone" value="<?php echo esc_attr($get_meta('va_phone')); ?>" class="va-le-input" placeholder="+36 20 …">
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_phone', 'Telefonszám'); ?></label>
+                                    <input type="tel" name="va_phone" value="<?php echo esc_attr($get_meta('va_phone')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_phone','+36 20 …'); ?>">
                                 </div>
+                                <?php endif; ?>
+                                <?php if ( $fb_on('va_location') ): ?>
                                 <div class="va-le-field">
-                                    <label class="va-le-lbl">Helység</label>
-                                    <input type="text" name="va_location" value="<?php echo esc_attr($get_meta('va_location')); ?>" class="va-le-input" placeholder="pl. Budapest">
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_location', 'Helység'); ?></label>
+                                    <input type="text" name="va_location" value="<?php echo esc_attr($get_meta('va_location')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_location','pl. Budapest'); ?>">
                                 </div>
+                                <?php endif; ?>
                             </div>
+                            <?php if ( $fb_on('va_email_show') ): ?>
                             <label class="va-le-check-lbl">
                                 <input type="checkbox" name="va_email_show" value="1" <?php checked($get_meta('va_email_show'), '1'); ?>>
-                                <span>Email cím megjelenítése a hirdetésen</span>
+                                <span><?php echo $fb_lbl('va_email_show', 'Email cím megjelenítése a hirdetésen'); ?></span>
                             </label>
+                            <?php endif; ?>
                         </div>
+                        <?php endif; ?>
+
+                        <!-- Egyedi (custom_*) mezők -->
+                        <?php if ( $custom_fields ): ?>
+                        <div class="va-le-card">
+                            <div class="va-le-card-hdr">➕ Egyéb mezők</div>
+                            <div class="va-le-field-grid">
+                            <?php foreach ( $custom_fields as $cff ):
+                                $ck = esc_attr( (string)( $cff['key'] ?? '' ) );
+                                $ct = (string)( $cff['type'] ?? 'text' );
+                                $cl = esc_html( (string)( $cff['label'] ?? $ck ) );
+                                $cp = esc_attr( (string)( $cff['placeholder'] ?? '' ) );
+                            ?>
+                            <div class="va-le-field">
+                                <label class="va-le-lbl"><?php echo $cl; ?></label>
+                                <?php if ( $ct === 'checkbox' ): ?>
+                                <label class="va-le-check-lbl">
+                                    <input type="checkbox" name="<?php echo $ck; ?>" value="1" <?php checked( (string)get_post_meta($post_id, $ck, true), '1' ); ?>>
+                                    <span><?php echo $cl; ?></span>
+                                </label>
+                                <?php elseif ( $ct === 'textarea' ): ?>
+                                <textarea name="<?php echo $ck; ?>" class="va-le-input" rows="3" placeholder="<?php echo $cp; ?>"><?php echo esc_textarea( (string)get_post_meta($post_id, $ck, true) ); ?></textarea>
+                                <?php else: ?>
+                                <input type="<?php echo esc_attr($ct); ?>" name="<?php echo $ck; ?>" value="<?php echo esc_attr( (string)get_post_meta($post_id, $ck, true) ); ?>" class="va-le-input" placeholder="<?php echo $cp; ?>">
+                                <?php endif; ?>
+                            </div>
+                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
 
                     </div><!-- .va-le-edit-main -->
 
@@ -538,25 +619,35 @@ class VA_Listing_Edit {
                         </div>
 
                         <!-- Jelölések és beállítások -->
+                        <?php if ( $fb_on('va_featured') || $fb_on('va_verified') || $fb_on('va_license_req') || $fb_on('va_expires') ): ?>
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">🏷️ Jelölések</div>
+                            <?php if ( $fb_on('va_featured') ): ?>
                             <label class="va-le-check-lbl">
                                 <input type="checkbox" name="va_featured" value="1" <?php checked($get_meta('va_featured'), '1'); ?>>
-                                <span>⭐ Kiemelt hirdetés</span>
+                                <span><?php echo $fb_lbl('va_featured', '⭐ Kiemelt hirdetés'); ?></span>
                             </label>
+                            <?php endif; ?>
+                            <?php if ( $fb_on('va_verified') ): ?>
                             <label class="va-le-check-lbl">
                                 <input type="checkbox" name="va_verified" value="1" <?php checked($get_meta('va_verified'), '1'); ?>>
-                                <span>✅ Ellenőrzött hirdető</span>
+                                <span><?php echo $fb_lbl('va_verified', '✅ Ellenőrzött hirdető'); ?></span>
                             </label>
+                            <?php endif; ?>
+                            <?php if ( $fb_on('va_license_req') ): ?>
                             <label class="va-le-check-lbl">
                                 <input type="checkbox" name="va_license_req" value="1" <?php checked($get_meta('va_license_req'), '1'); ?>>
-                                <span>🔒 Fegyverengedély szükséges</span>
+                                <span><?php echo $fb_lbl('va_license_req', '🔒 Fegyverengedély szükséges'); ?></span>
                             </label>
+                            <?php endif; ?>
+                            <?php if ( $fb_on('va_expires') ): ?>
                             <div class="va-le-field" style="margin-top:12px">
-                                <label class="va-le-lbl">⏰ Lejárat dátuma</label>
+                                <label class="va-le-lbl"><?php echo $fb_lbl('va_expires', '⏰ Lejárat dátuma'); ?></label>
                                 <input type="date" name="va_expires" value="<?php echo esc_attr($get_meta('va_expires')); ?>" class="va-le-input">
                             </div>
+                            <?php endif; ?>
                         </div>
+                        <?php endif; ?>
 
                         <!-- Statisztika (meglévő hirdetésnél) -->
                         <?php if (!$is_new): ?>
