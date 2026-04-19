@@ -71,7 +71,9 @@ class VA_User_Roles {
     /* ── Boot ───────────────────────────────────────────────── */
     public static function init(): void {
         // Admin AJAX: admin állítja a tervet
-        add_action( 'wp_ajax_va_admin_set_user_plan', [ __CLASS__, 'ajax_admin_set_plan' ] );
+        add_action( 'wp_ajax_va_admin_set_user_plan',  [ __CLASS__, 'ajax_admin_set_plan'      ] );
+        // Admin AJAX: plan beállítások mentése
+        add_action( 'wp_ajax_va_admin_save_plan_cfg',  [ __CLASS__, 'ajax_save_plan_settings'  ] );
 
         // Frontend AJAX: felhasználó boostol egy hirdetést
         add_action( 'wp_ajax_va_boost_listing', [ __CLASS__, 'ajax_boost_listing' ] );
@@ -80,24 +82,67 @@ class VA_User_Roles {
         add_filter( 'posts_clauses', [ __CLASS__, 'filter_posts_clauses' ], 10, 2 );
     }
 
-    /* ══ Plan lekérdezések ══════════════════════════════════════ */
+    /* ══ Plan config – options overlay ════════════════════════ */
+
+    /**
+     * Teljes plans config DB-ből (wp_options), merged a PLANS const alapértékeivel.
+     * @return array<string,array>
+     */
+    public static function get_all_plan_configs(): array {
+        if ( self::$_cfg_cache !== null ) return self::$_cfg_cache;
+
+        $saved = get_option( 'va_plans_config', [] );
+        if ( ! is_array( $saved ) ) $saved = [];
+
+        $merged = [];
+        foreach ( self::PLANS as $slug => $defaults ) {
+            $override        = isset( $saved[ $slug ] ) && is_array( $saved[ $slug ] ) ? $saved[ $slug ] : [];
+            $merged[ $slug ] = array_merge( $defaults, $override );
+            // Típus kényszer
+            $merged[ $slug ]['monthly_limit']  = (int)  $merged[ $slug ]['monthly_limit'];
+            $merged[ $slug ]['boost_cooldown'] = (int)  $merged[ $slug ]['boost_cooldown'];
+            $merged[ $slug ]['basis']          = in_array( $merged[ $slug ]['basis'], [ 'active', 'monthly' ], true )
+                ? $merged[ $slug ]['basis'] : $defaults['basis'];
+        }
+
+        // Globális boost beállítások
+        $global_defaults = [
+            'boost_badge_window' => 14,
+            'boost_badge_text'   => '⚡ Előre téve',
+            'boost_enabled'      => true,
+        ];
+        $global_saved    = isset( $saved['_global'] ) && is_array( $saved['_global'] ) ? $saved['_global'] : [];
+        $merged['_global'] = array_merge( $global_defaults, $global_saved );
+
+        self::$_cfg_cache = $merged;
+        return $merged;
+    }
+
+    /** Plan config invalidálása (mentés után hívandó) */
+    public static function flush_plan_cache(): void {
+        self::$_cfg_cache = null;
+    }
 
     public static function get_user_plan( int $user_id ): string {
         $plan = (string) get_user_meta( $user_id, 'va_plan', true );
-        return isset( self::PLANS[ $plan ] ) ? $plan : 'basic';
+        $all  = self::get_all_plan_configs();
+        // _global key nem plan slug
+        return ( isset( $all[ $plan ] ) && $plan !== '_global' ) ? $plan : 'basic';
     }
 
     /**
-     * Plan konfiguráció – platinum esetén felülírja a user-specifikus értékeket.
+     * Plan konfiguráció – DB override-dal, platinum esetén user-specifikus értékekkel.
      * @return array{label:string,color:string,bg:string,icon:string,monthly_limit:int,boost_cooldown:int,basis:string,description:string}
      */
     public static function get_plan_config( string $plan, int $user_id = 0 ): array {
-        $cfg = self::PLANS[ $plan ] ?? self::PLANS['basic'];
+        $all = self::get_all_plan_configs();
+        $cfg = ( isset( $all[ $plan ] ) && $plan !== '_global' ) ? $all[ $plan ] : $all['basic'];
+
         if ( $plan === 'platinum' && $user_id > 0 ) {
             $custom_limit = (int) get_user_meta( $user_id, 'va_plan_listing_limit', true );
             $custom_cd    = (int) get_user_meta( $user_id, 'va_plan_boost_cooldown', true );
-            if ( $custom_limit > 0 ) $cfg['monthly_limit'] = $custom_limit;
-            if ( $custom_cd    > 0 ) $cfg['boost_cooldown']  = $custom_cd;
+            if ( $custom_limit > 0 ) $cfg['monthly_limit']  = $custom_limit;
+            if ( $custom_cd    > 0 ) $cfg['boost_cooldown'] = $custom_cd;
         }
         return $cfg;
     }
