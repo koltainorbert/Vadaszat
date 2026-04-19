@@ -531,31 +531,46 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ── Fájl input ──────────────────────────────────── */
     $input.on('change', function(){ addFiles(this.files); this.value = ''; });
 
-    /* ══ TinyMCE alapból vizuális mód ══════════════════════════ */
-    // Cookie beállítása AZONNAL, mielőtt a WP wp-editor.js olvasna
-    if (typeof setUserSetting === 'function') {
-        setUserSetting('editor', 'tmce');
-    }
-    function ensureVisual() {
-        var $wrap = $('#wp-va_desc_editor-wrap');
-        if (!$wrap.length) return;
-        // WP saját switchEditors API
-        if (typeof switchEditors !== 'undefined' && !$wrap.hasClass('tmce-active')) {
-            switchEditors.go('va_desc_editor', 'tmce');
-            return;
+    /* ══ Quill editor init ═══════════════════════════════════════ */
+    var quill = new Quill('#va-quill-editor', {
+        theme: 'snow',
+        placeholder: 'Írja le a hirdetett terméket részletesen...',
+        modules: {
+            toolbar: {
+                container: [
+                    [{ header: [2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['blockquote'],
+                    [{ align: [] }],
+                    ['link', 'image'],
+                    ['clean']
+                ],
+                handlers: {
+                    image: function() {
+                        if (typeof wp === 'undefined' || !wp.media) return;
+                        var frame = wp.media({
+                            title: 'Kép kiválasztása',
+                            button: { text: 'Beillesztés' },
+                            multiple: false
+                        });
+                        frame.on('select', function() {
+                            var url = frame.state().get('selection').first().toJSON().url;
+                            var range = quill.getSelection(true);
+                            quill.insertEmbed(range ? range.index : 0, 'image', url);
+                        });
+                        frame.open();
+                    }
+                }
+            }
         }
-        // Fallback: gomb kattintás
-        if (!$wrap.hasClass('tmce-active')) {
-            $wrap.find('.switch-tmce').trigger('click');
-        }
-    }
-    $(document).ready(function(){
-        ensureVisual();
-        setTimeout(ensureVisual, 200);
-        setTimeout(ensureVisual, 600);
-        setTimeout(ensureVisual, 1500);
     });
-    $(window).on('load', function(){ ensureVisual(); });
+
+    // Edit módban meglévő tartalom betöltése
+    var $hidden = $('#va-desc-hidden');
+    if ($hidden.val().trim()) {
+        quill.root.innerHTML = $hidden.val();
+    }
 
     /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
