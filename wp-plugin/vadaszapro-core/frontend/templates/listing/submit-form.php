@@ -396,7 +396,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
 
 <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 (function($){
@@ -568,9 +568,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     };
-    if (typeof ImageResize !== 'undefined') {
-        try { Quill.register('modules/imageResize', ImageResize); quillModules.imageResize = { parchment: Quill.import('parchment') }; } catch(e) {}
-    }
     var quill = new Quill('#va-quill-editor', {
         theme: 'snow',
         placeholder: 'Írja le a hirdetett terméket részletesen...',
@@ -582,6 +579,62 @@ document.addEventListener('DOMContentLoaded', function() {
     if ($hidden.val().trim()) {
         quill.root.innerHTML = $hidden.val();
     }
+
+    /* ══ Kép átméretezés ════════════════════════════════ */
+    (function(){
+        var activeImg = null, handle = null, startX, startW;
+        handle = document.createElement('div');
+        handle.style.cssText = 'position:absolute;width:12px;height:12px;background:#ff4444;border:2px solid #fff;border-radius:3px;cursor:se-resize;display:none;z-index:999;box-shadow:0 0 4px rgba(0,0,0,.6);';
+        document.body.appendChild(handle);
+
+        function positionHandle() {
+            if (!activeImg) return;
+            var r = activeImg.getBoundingClientRect();
+            handle.style.left = (r.right + window.scrollX - 8) + 'px';
+            handle.style.top  = (r.bottom + window.scrollY - 8) + 'px';
+        }
+
+        quill.root.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG') {
+                activeImg = e.target;
+                if (!activeImg.style.width) activeImg.style.width = activeImg.offsetWidth + 'px';
+                activeImg.style.cursor = 'pointer';
+                positionHandle();
+                handle.style.display = 'block';
+            } else {
+                handle.style.display = 'none';
+                activeImg = null;
+            }
+        });
+
+        handle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            startX = e.clientX;
+            startW = activeImg ? activeImg.offsetWidth : 100;
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+
+        function onMove(e) {
+            if (!activeImg) return;
+            var w = Math.max(40, startW + (e.clientX - startX));
+            activeImg.style.width = w + 'px';
+            activeImg.style.height = 'auto';
+            positionHandle();
+        }
+        function onUp() {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+        }
+        window.addEventListener('scroll', positionHandle);
+        window.addEventListener('resize', positionHandle);
+        document.addEventListener('click', function(e){
+            if (e.target !== activeImg && e.target !== handle) {
+                handle.style.display = 'none';
+                activeImg = null;
+            }
+        });
+    })();
 
     /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
