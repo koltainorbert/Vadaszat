@@ -2,6 +2,36 @@
 
 ---
 
+## 2026. 04. 19. – Session #96 (Admin + Frontend galéria képkezelő)
+
+### Mit csinaltunk [x]
+- [x] `class-listing-edit.php` – `handle_save()`: egykép → többkép mentés
+  - `va_thumbnail_id` → borítókép (post_thumbnail)
+  - `va_gallery_ids` → összes kép ID vesszővel (azonos meta mint frontend, `va_sync_listing_meta` kompatibilis)
+  - Ha thumbnail_id = 0: delete_post_thumbnail()
+- [x] `class-listing-edit.php` – `render_edit()`: `wp_enqueue_script('jquery-ui-sortable')` hozzáadva
+  - Galéria betöltése: `va_gallery_ids` meta + post_thumbnail szinkronizálás (ha thumb nincs a galériában, elé kerül; ha nincs thumb de van galéria, az első lesz a thumb)
+  - `<div class="va-gallery-grid">` – thumbnail grid (90×90px kártyák)
+  - Minden kártyán: ★ borítókép gomb (SVG) + ✕ eltávolítás gomb (SVG) + hover overlay
+  - Borítóképen piros keret + „Borítókép" badge alul
+  - „+ Képek hozzáadása" gomb a grid végén
+  - `<input type="hidden" name="va_thumbnail_id">` + `<input type="hidden" name="va_gallery_ids">`
+  - wp.media frame: `multiple: 'add'` → több kép egyszerre kijelölhető
+  - Duplikát védelem (meglévő ID-k kiszűrve)
+  - jQuery UI Sortable drag & drop átrendezés (document-ready wrapperben – ez volt a drag fix)
+- [x] `admin.css` – galéria CSS: `.va-gallery-grid`, `.va-gallery-item`, `.va-gallery-item-overlay`, `.va-gallery-cover-btn/rm-btn`, `.va-gallery-cover-badge`, `.va-gallery-add-btn`, placeholder stílusok
+- [x] **Frontend** – `submit-form.php` képkártya HTML: emoji ikonok → SVG csillag + SVG X, overlay hover-re jelenik meg, borítókép badge lent (nem pill, hanem teljes sáv)
+- [x] `frontend.css` – kártyastílus újraírva: `cursor: grab`, hover overlay, SVG gombok 30×30px lekerekített négyzetben, „Borítókép" badge piros sáv alul
+- [x] Deploy All: exit 0 ✅
+
+### Technikai döntések
+- Admin: jQuery UI Sortable (már WordPress-ben van, CDN nélkül)
+- Frontend: SortableJS CDN marad (nincs jQuery UI a frontendem)
+- wp.media `multiple: 'add'` = médiatárban Ctrl/Shift+click, vagy checkbox kijelölés
+- Drag fix: `jQuery(function($){...})` document-ready wrapper (inline script korábban a sortable betöltése előtt futott)
+
+---
+
 ## 2026. 04. 19. – Session #95 (Admin Panel teljes személyre szabás – presetek + live preview + CSS injektálás)
 
 ### Mit csinaltunk [x]
