@@ -246,6 +246,12 @@ class VA_User_Roles {
         $now = time();
         update_post_meta( $post_id, 'va_boost_time', $now );
         update_post_meta( $post_id, 'va_boost_user_' . $user_id . '_last', $now );
+
+        // Keresési cache törlése, hogy az új sorrend azonnal megjelenjen
+        if ( class_exists( 'VA_Ajax' ) ) {
+            VA_Ajax::flush_filter_cache();
+        }
+
         return true;
     }
 
@@ -298,8 +304,13 @@ class VA_User_Roles {
             ON ( {$alias}.post_id = {$wpdb->posts}.ID
                  AND {$alias}.meta_key = 'va_boost_time' )";
 
-        // Boosted hirdetések először (frissebb boost → magasabb), aztán feladás dátuma
-        $clauses['orderby'] = "COALESCE( CAST( {$alias}.meta_value AS UNSIGNED ), 0 ) DESC, {$wpdb->posts}.post_date DESC";
+        // Ablakidő a DB-ből (boost_badge_window nap) – az ablakon kívüliek nem számítanak boostnak
+        $global_cfg   = self::get_all_plan_configs()['_global'] ?? [];
+        $window_days  = (int) ( $global_cfg['boost_badge_window'] ?? 14 );
+        $boost_cutoff = time() - $window_days * DAY_IN_SECONDS;
+
+        // Boosted (az ablakon belül) hirdetések először, aztán feladás dátuma
+        $clauses['orderby'] = "CASE WHEN CAST( {$alias}.meta_value AS UNSIGNED ) > {$boost_cutoff} THEN 1 ELSE 0 END DESC, {$wpdb->posts}.post_date DESC";
 
         return $clauses;
     }
