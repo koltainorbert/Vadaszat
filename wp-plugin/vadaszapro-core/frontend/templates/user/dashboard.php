@@ -24,6 +24,14 @@ $watchlist= va_get_user_watchlist( $user->ID );
 $bids     = $auctions_enabled ? va_get_user_bids( $user->ID ) : [];
 $phone    = get_user_meta( $user->ID, 'va_phone', true );
 $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
+
+// Plan adatok
+$user_plan    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_user_plan( $user->ID ) : 'basic';
+$plan_configs = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::PLANS : [];
+$plan_cfg     = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_plan_config( $user_plan, $user->ID ) : [];
+$plan_check   = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::can_post_listing( $user->ID ) : [ 'used' => 0, 'limit' => 0 ];
+$boost_nonce  = wp_create_nonce( 'va_user_nonce' );
+$ajax_url     = admin_url( 'admin-ajax.php' );
 ?>
 <div class="va-wrap">
     <?php va_display_flash(); ?>
@@ -39,6 +47,26 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
             <span class="va-dashboard__nav-item" data-tab="watchlist"><span class="va-dashboard__nav-ico" aria-hidden="true">♥</span><span class="va-dashboard__nav-label">Kedvenceim (<?php echo count( $watchlist ); ?>)</span></span>
             <span class="va-dashboard__nav-item" data-tab="profile"><span class="va-dashboard__nav-ico" aria-hidden="true">👤</span><span class="va-dashboard__nav-label">Profilom</span></span>
             <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="va-dashboard__nav-item va-dashboard__nav-item--logout"><span class="va-dashboard__nav-ico" aria-hidden="true">🚪</span><span class="va-dashboard__nav-label">Kijelentkezés</span></a>
+
+            <?php if ( $plan_cfg ): ?>
+            <div class="va-dash-plan-badge" style="--pc:<?php echo esc_attr( $plan_cfg['color'] ); ?>;--pb:<?php echo esc_attr( $plan_cfg['bg'] ); ?>">
+                <span class="va-dash-plan-icon"><?php echo esc_html( $plan_cfg['icon'] ); ?></span>
+                <span class="va-dash-plan-label"><?php echo esc_html( $plan_cfg['label'] ); ?> Csomag</span>
+                <?php if ( $plan_check['limit'] > 0 ): ?>
+                <div class="va-dash-plan-usage">
+                    <?php
+                    $pu = $plan_check['used'];
+                    $pl = $plan_check['limit'];
+                    $pp = min( 100, (int) round( $pu / $pl * 100 ) );
+                    $pc = $pp >= 100 ? '#ff4444' : ( $pp >= 80 ? '#ffb400' : '#00c850' );
+                    ?>
+                    <span><?php echo esc_html( $pu . '/' . $pl ); ?> hird.</span>
+                    <div class="va-dash-plan-bar"><div style="width:<?php echo esc_attr( $pp ); ?>%;background:<?php echo esc_attr( $pc ); ?>"></div></div>
+                </div>
+                <?php endif; ?>
+                <small>⭡ <?php echo esc_html( $plan_cfg['boost_cooldown'] ); ?> naponként emelhető</small>
+            </div>
+            <?php endif; ?>
         </nav>
 
         <!-- Tartalom -->
@@ -61,6 +89,7 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Ár</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Státusz</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Dátum</th>
+                            <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Kiemelés</th>
                             <th style="padding:8px;"></th>
                         </tr>
                     </thead>
@@ -84,6 +113,38 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
                         <td style="padding:10px 8px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
+                        <td style="padding:10px 8px;text-align:right;">
+                            <?php
+                            $edit_page = get_page_by_path('va-hirdetes-feladas');
+                            $edit_url  = $edit_page
+                                ? add_query_arg( 'edit', $l->ID, get_permalink( $edit_page ) )
+                                : get_edit_post_link( $l->ID );
+                            ?>
+                            <?php
+                            // Boost gomb
+                            if ( class_exists( 'VA_User_Roles' ) ) :
+                                $boost_info = VA_User_Roles::can_boost( $user->ID, $l->ID );
+                                if ( $boost_info['can'] ):
+                            ?>
+                            <button class="va-boost-btn va-btn va-btn--accent va-btn--sm"
+                                    data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                    data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                    data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    style="background:rgba(255,200,0,.15);border:1px solid #ffcc00;color:#ffcc00;">
+                                ⚡ Előre
+                            </button>
+                            <?php else:
+                                $hrs = (int) ceil( $boost_info['seconds_remaining'] / 3600 );
+                                $days_left = round( $boost_info['seconds_remaining'] / 86400, 1 );
+                            ?>
+                            <span class="va-boost-cd" style="font-size:11px;color:rgba(255,255,255,.35);" title="<?php echo esc_attr( $boost_info['cooldown_days'] . ' naponként emelhető' ); ?>">
+                                ⚡ <?php echo $boost_info['seconds_remaining'] >= 86400 ? esc_html( $days_left . ' nap' ) : esc_html( $hrs . 'ó' ); ?>
+                            </span>
+                            <?php
+                                endif;
+                            endif;
+                            ?>
+                        </td>
                         <td style="padding:10px 8px;text-align:right;">
                             <?php
                             $edit_page = get_page_by_path('va-hirdetes-feladas');
