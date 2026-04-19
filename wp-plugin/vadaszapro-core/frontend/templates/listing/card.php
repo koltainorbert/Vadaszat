@@ -12,7 +12,10 @@ $price_type= get_post_meta( $post_id, 'va_price_type', true ) ?: 'fixed';
 $location  = get_post_meta( $post_id, 'va_location', true );
 $views      = va_display_views( $post_id );
 $featured  = get_post_meta( $post_id, 'va_featured', true ) === '1';
-$is_boosted = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_boosted( $post_id, 14 ) : false;
+$is_boosted    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_boosted( $post_id ) : false;
+$boost_badge_text = ( class_exists( 'VA_User_Roles' ) && $is_boosted )
+    ? ( VA_User_Roles::get_all_plan_configs()['_global']['boost_badge_text'] ?? '⚡ Előre téve' )
+    : '⚡ Előre téve';
 $is_auction= $post->post_type === 'va_auction';
 $categories= get_the_terms( $post_id, 'va_category' );
 $county    = get_the_terms( $post_id, 'va_county' );
@@ -121,7 +124,7 @@ if ( has_post_thumbnail( $post_id ) ) {
         <span class="va-card__badge">🔨 Aukció</span>
     <?php endif; ?>
     <?php if ( $is_boosted ): ?>
-        <span class="va-card__badge va-card__badge--boost">⚡ Előre téve</span>
+        <span class="va-card__badge va-card__badge--boost"><?php echo esc_html( $boost_badge_text ); ?></span>
     <?php endif; ?>
 
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">

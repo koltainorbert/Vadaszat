@@ -736,8 +736,22 @@ class VA_Ajax {
 
         $where_sql = 'WHERE ' . implode( ' AND ', $where );
 
+        // ── Boost rendezés konfig ─────────────────────────
+        $boost_join         = '';
+        $boost_order_prefix = '';
+        if ( class_exists( 'VA_User_Roles' ) ) {
+            $global_cfg = VA_User_Roles::get_all_plan_configs()['_global'] ?? [];
+            if ( ! empty( $global_cfg['boost_enabled'] ) ) {
+                $window_days        = (int) ( $global_cfg['boost_badge_window'] ?? 14 );
+                $boost_cutoff       = time() - $window_days * DAY_IN_SECONDS;
+                $boost_join         = "LEFT JOIN {$wpdb->postmeta} AS va_bst
+                                        ON ( va_bst.post_id = p.ID AND va_bst.meta_key = 'va_boost_time' )";
+                $boost_order_prefix = "CASE WHEN CAST( va_bst.meta_value AS UNSIGNED ) > {$boost_cutoff} THEN 1 ELSE 0 END DESC, ";
+            }
+        }
+
         // ── Rendezés ─────────────────────────────────────
-        $order_sql = match ( $sort ) {
+        $order_sql = $boost_order_prefix . match ( $sort ) {
             'price_asc'  => 'lm.featured DESC, lm.price ASC,  p.post_date DESC',
             'price_desc' => 'lm.featured DESC, lm.price DESC, p.post_date DESC',
             'views'      => 'lm.featured DESC, lm.views DESC, p.post_date DESC',
@@ -748,6 +762,7 @@ class VA_Ajax {
         $count_sql = $wpdb->prepare(
             "SELECT COUNT(*) FROM {$posts} p
              LEFT JOIN {$lm} lm ON lm.post_id = p.ID
+             {$boost_join}
              {$where_sql}",
             ...$params
         );
@@ -757,6 +772,7 @@ class VA_Ajax {
         $id_sql = $wpdb->prepare(
             "SELECT p.ID FROM {$posts} p
              LEFT JOIN {$lm} lm ON lm.post_id = p.ID
+             {$boost_join}
              {$where_sql}
              ORDER BY {$order_sql}
              LIMIT %d OFFSET %d",
