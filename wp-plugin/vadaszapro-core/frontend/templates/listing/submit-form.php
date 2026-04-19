@@ -72,13 +72,15 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
                 ?>
                 <div class="va-img-picker" id="va-img-picker">
-                    <div class="va-img-drop" id="va-img-drop">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="opacity:.5;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                        <span class="va-img-drop__text">Húzd ide a képeket, vagy <label for="va-img-file-input" class="va-img-browse-lbl">tallózz</label> &bull; <span style="color:rgba(255,255,255,.4);font-weight:400;">Max. <?php echo esc_html( (string) $max_img ); ?> kép &bull; JPG PNG WEBP &bull; 5 MB/kép</span></span>
+                    <div class="va-img-grid" id="va-img-grid">
+                        <button type="button" class="va-img-add" id="va-img-add">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="26" height="26"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>Képek<br>hozzáadása</span>
+                        </button>
                     </div>
                     <input type="file" id="va-img-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-max="<?php echo esc_attr( (string) $max_img ); ?>">
                     <input type="hidden" name="featured_image_index" id="va-featured-index" value="0">
-                    <div class="va-img-grid" id="va-img-grid"></div>
+                    <p class="va-img-hint">Húzd a képeket az átrendezéshez &bull; &#9733; = borítókép beállítása</p>
                 </div>
                 <?php
                 break;
@@ -264,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
     let _featured = 0; // index a _files tömbben
 
     const $picker  = $('#va-img-picker');
-    const $drop    = $('#va-img-drop');
     const $grid    = $('#va-img-grid');
     const $input   = $('#va-img-file-input');
     const $featIdx = $('#va-featured-index');
@@ -285,11 +286,9 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ── Grid renderelése ────────────────────────────── */
     function renderGrid() {
         $grid.empty();
-        if (_files.length === 0) { $grid.hide(); return; }
-        $grid.show();
 
         // Biztosítjuk hogy _featured valid
-        if (_featured >= _files.length) _featured = 0;
+        if (_files.length > 0 && _featured >= _files.length) _featured = 0;
         $featIdx.val(_featured);
 
         _files.forEach((item, idx) => {
@@ -324,12 +323,20 @@ document.addEventListener('DOMContentLoaded', function() {
             $grid.append($card);
         });
 
+        // "+ Képek hozzáadása" gomb a grid végére
+        if (_files.length < _maxImg) {
+            const $addBtn = $('<button type="button" class="va-img-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="26" height="26"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Képek<br>hozzáadása</span></button>');
+            $addBtn.on('click', function(){ $input.trigger('click'); });
+            $grid.append($addBtn);
+        }
+
         // Sortable (SortableJS CDN-ből, fallback natív)
         const listEl = $grid[0];
         if (typeof Sortable !== 'undefined') {
             if (!listEl._sortable) {
                 listEl._sortable = Sortable.create(listEl, {
                     animation: 150,
+                    filter: '.va-img-add',
                     onEnd: function(evt) {
                         const moved = _files.splice(evt.oldIndex, 1)[0];
                         _files.splice(evt.newIndex, 0, moved);
@@ -348,14 +355,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    /* ── Drag & drop a drop zone-ra ──────────────────── */
-    $drop.on('dragover', function(e){ e.preventDefault(); $(this).addClass('va-img-drop--hover'); });
-    $drop.on('dragleave', function(){ $(this).removeClass('va-img-drop--hover'); });
-    $drop.on('drop', function(e){
+    /* ── Drag & drop a gridre ───────────────────────── */
+    $grid.on('dragover', function(e){ e.preventDefault(); $(this).addClass('va-img-grid--hover'); });
+    $grid.on('dragleave', function(){ $(this).removeClass('va-img-grid--hover'); });
+    $grid.on('drop', function(e){
         e.preventDefault();
-        $(this).removeClass('va-img-drop--hover');
+        $(this).removeClass('va-img-grid--hover');
         addFiles(e.originalEvent.dataTransfer.files);
     });
+
+    /* ── Statikus "+ gomb" kattintás (első renderelés előtt) ── */
+    $grid.on('click', '.va-img-add', function(){ $input.trigger('click'); });
 
     /* ── Fájl input ──────────────────────────────────── */
     $input.on('change', function(){ addFiles(this.files); this.value = ''; });
