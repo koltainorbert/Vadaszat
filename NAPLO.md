@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 19. – Session #97 (Szerkeszteskor ures keppaletta javitas)
+
+### Mit csinaltunk [x]
+- [x] `wp-plugin/vadaszapro-core/frontend/templates/listing/submit-form.php` – edit mod kepbetoltes robust fallback logika:
+- [x] elso korben `va_gallery_ids` olvasas (uj formatum)
+- [x] ha ures, legacy `va_gallery` kezeles (tomb es vesszos string formatum)
+- [x] ha csak kiemelt kep van, az is bekerul a palettaba
+- [x] ha a kiemelt kep nincs a gallery listaban, automatikusan elore beszurjuk
+- [x] Eredmeny: regi es uj hirdeteseknel is megjelennek a mar feltoltott kepek szerkeszteskor
+- [x] Deploy Plugin: exit 0 ✅
+
+---
+
 ## 2026. 04. 19. – Session #96 (Social ikon minoseg + link masolas javitas + frontend push toast rendszer)
 
 ### Mit csinaltunk [x]

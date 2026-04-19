@@ -134,10 +134,28 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'county'      => (int) ( wp_get_post_terms( $maybe_id, 'va_county',   ['fields'=>'ids'] )[0] ?? 0 ),
             'condition'   => (int) ( wp_get_post_terms( $maybe_id, 'va_condition',['fields'=>'ids'] )[0] ?? 0 ),
         ];
-        // Meglévő képek (va_gallery_ids = vesszővel elválasztott string)
-        $raw_gallery  = get_post_meta( $maybe_id, 'va_gallery_ids', true );
+        // Meglévő képek betöltése (új + legacy meta kompatibilitás)
+        $edit_thumb = (int) get_post_thumbnail_id( $maybe_id );
+
+        $raw_gallery = get_post_meta( $maybe_id, 'va_gallery_ids', true );
         $edit_gallery = array_filter( array_map( 'absint', explode( ',', (string) $raw_gallery ) ) );
-        $edit_thumb   = (int) get_post_thumbnail_id( $maybe_id );
+
+        // Legacy: régi kulcs lehet tömb vagy vesszős string
+        if ( empty( $edit_gallery ) ) {
+            $legacy_gallery = get_post_meta( $maybe_id, 'va_gallery', true );
+            if ( is_array( $legacy_gallery ) ) {
+                $edit_gallery = array_filter( array_map( 'absint', $legacy_gallery ) );
+            } elseif ( is_string( $legacy_gallery ) && $legacy_gallery !== '' ) {
+                $edit_gallery = array_filter( array_map( 'absint', explode( ',', $legacy_gallery ) ) );
+            }
+        }
+
+        // Ha nincs gallery meta, de van kiemelt kép, akkor azt is mutassuk a palettában
+        if ( empty( $edit_gallery ) && $edit_thumb ) {
+            $edit_gallery = [ $edit_thumb ];
+        } elseif ( $edit_thumb && ! in_array( $edit_thumb, $edit_gallery, true ) ) {
+            array_unshift( $edit_gallery, $edit_thumb );
+        }
     }
 }
 
