@@ -699,7 +699,7 @@ class VA_Listing_Edit {
         </div><!-- .va-le-wrap -->
 
         <script>
-        (function ($) {
+        jQuery(function ($) {
             var mediaFrame,
                 grid        = document.getElementById('va-gallery-grid'),
                 addBtn      = document.getElementById('va-gallery-add'),
@@ -818,18 +818,16 @@ class VA_Listing_Edit {
             if (addBtn) addBtn.addEventListener('click', openMedia);
 
             /* ── Drag & drop sorrend (jQuery UI Sortable) ── */
-            if ($ && $.fn.sortable) {
-                $(grid).sortable({
-                    items: '.va-gallery-item',
-                    tolerance: 'pointer',
-                    cursor: 'grabbing',
-                    placeholder: 'ui-sortable-placeholder',
-                    forcePlaceholderSize: true,
-                    stop: function() { sync(); }
-                });
-            }
+            $(grid).sortable({
+                items: '.va-gallery-item',
+                tolerance: 'pointer',
+                cursor: 'grabbing',
+                placeholder: 'ui-sortable-placeholder',
+                forcePlaceholderSize: true,
+                stop: function() { sync(); }
+            });
 
-        }(typeof jQuery !== 'undefined' ? jQuery : { fn: {} }));
+        });
         </script>
         <?php
     }
