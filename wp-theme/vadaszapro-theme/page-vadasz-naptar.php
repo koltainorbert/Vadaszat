@@ -672,6 +672,32 @@ buildTodayPanel();
 
 // ── GANTT CHART ──────────────────────────────────────────────────────
 const chart=document.getElementById('vn-chart');
+const chartWrap=document.querySelector('.vn-wrap');
+const chartScroll=document.querySelector('.vn-chart-scroll');
+const chartMonthInd=document.getElementById('vn-chart-month-ind');
+
+function updateVnOverflowState(){
+  if(!chartWrap||!chartScroll)return;
+  const overflow=chartScroll.scrollWidth>chartScroll.clientWidth+4;
+  chartWrap.classList.toggle('has-overflow',overflow);
+}
+function updateVnMonthIndicator(){
+  if(!chartScroll||!chartMonthInd)return;
+  const max=Math.max(1,chartScroll.scrollWidth-chartScroll.clientWidth);
+  const ratio=chartScroll.scrollLeft/max;
+  const idx=Math.max(0,Math.min(11,Math.round(ratio*11)));
+  chartMonthInd.textContent=MONTHS[idx];
+}
+if(chartScroll){
+  chartScroll.addEventListener('scroll',()=>{
+    if(chartWrap)chartWrap.classList.add('is-scrolled');
+    updateVnMonthIndicator();
+  },{passive:true});
+  window.addEventListener('resize',()=>{
+    updateVnOverflowState();
+    updateVnMonthIndicator();
+  });
+}
 
 function makeTodayLine(){
   const t=document.createElement('div');t.className='vn-today-line';t.style.left=TODAY_PCT;return t;
@@ -754,6 +780,8 @@ if(_grpData2.length>0&&grpDaysSinceOpen2(groups[0])<9999){
   _grpData2[0].gl.classList.remove('collapsed');
 }
 updateAllCountdowns();
+updateVnOverflowState();
+updateVnMonthIndicator();
 
 // ── HOLDNAPTÁR ───────────────────────────────────────────────────────
 (function(){

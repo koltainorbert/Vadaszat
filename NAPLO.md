@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 19. – Session #102 (Naptar UX Pro: scroll hint + sticky oszlop arnyek + mini honap indikator)
+
+### Mit csinaltunk [x]
+- [x] `wp-theme/vadaszapro-theme/index.php` – nyitooldali vadasz naptar UX bovites:
+- [x] mobil scroll hint: "Húzd oldalra a naptárat"
+- [x] mini honap indikator (scroll pozicio alapjan)
+- [x] sticky elso oszlop (faj/csoport) vizualis arnyek leválasztassal
+- [x] `wp-theme/vadaszapro-theme/page-vadasz-naptar.php` – ugyanazon UX fejlesztesek a kulon naptar oldalon
+- [x] JS: overflow allapot figyeles + resize recalculation + scroll allapot markolas
+- [x] Deploy Theme: exit 0 ✅
+
+---
+
 ## 2026. 04. 19. – Session #101 (Vadasz naptar teljes responsive overhaul: nyitooldal + kulon oldal)
 
 ### Mit csinaltunk [x]
