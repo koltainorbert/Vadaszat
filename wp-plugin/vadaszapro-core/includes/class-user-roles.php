@@ -64,7 +64,9 @@ class VA_User_Roles {
             'monthly_limit' => 20,      // felülírja va_plan_listing_limit
             'boost_cooldown'=> 3,       // felülírja va_plan_boost_cooldown
             'basis'         => 'monthly',
-            'description'   => 'Egyedi feltételek – admin határozza meg',            'seller_label'  => '',      // egyedi feladó rang címke (pl. Kereskedő)        ],
+            'description'   => 'Egyedi feltételek – admin határozza meg',
+            'seller_label'  => '',      // egyedi feladó rang címke (pl. Kereskedő)
+        ],
     ];
 
     /* ── Boot ───────────────────────────────────────────────── */
