@@ -2,6 +2,31 @@
 
 ---
 
+## 2026. 04. 19. – Session #110 (TinyMCE editor – előkészítve, folytatás következő session)
+
+### Allapot
+- **Git HEAD:** `Auto_2026.04.19_14.50` — ez az utolsó stabil állapot, TinyMCE még nincs benne
+- **Következő feladat:** TinyMCE rich editor bevezetése (erről most nem lett kész)
+- Előző session (109) bugok javítva: enforce_plan_limits, dashboard UI, auto-visszaállítás
+- TinyMCE implementáció közben adatvesztés történt (leírás eltűnt, 5 hirdetés privát lett)
+- `va_recover.php` script segítségével az adatok visszaállítva
+- Git reset → `Auto_2026.04.19_14.50`-re visszaálltunk, deploy kész
+
+### Következő session teendői
+- [ ] TinyMCE editor implementáció ÓVATOSAN:
+  - `submit-form.php`: textarea → `wp_editor()` sötét skinnel
+  - `class-listing-edit.php`: textarea → `wp_editor()` admin stílusban
+  - `class-ajax.php`: `va_submit_listing` handler: `sanitize_textarea_field` → `wp_kses_post`
+  - `class-ajax.php`: `va_update_listing` handler: ellenőrzés/javítás ugyanígy
+- [ ] Tesztelés: hirdetés feladás + szerkesztés + mentés után leírás megmarad-e
+
+### Tanulság
+- TinyMCE bevezetésekor a szerkesztő `post_content`-et írja (WP default mező)
+- Az AJAX handler ha `sanitize_textarea_field`-et használ, a HTML formázást levágja → leírás "eltűnik"
+- Mindig `wp_kses_post`-ot kell használni leíráshoz ha rich editor van
+
+---
+
 ## 2026. 04. 19. – Session #107 (Rang-alapu csomagvasarlas UI + teljes vasarlasi flow)
 
 ### Mit csinaltunk [x]
