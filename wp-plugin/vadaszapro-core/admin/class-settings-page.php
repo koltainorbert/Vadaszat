@@ -3806,6 +3806,539 @@ class VA_Settings_Page {
                     <?php echo va_social_bar( 'icons', 24 ); ?>
                     <p style="font-size:11px;color:var(--va-muted);margin:16px 0 8px;">Pill változat:</p>
                     <?php echo va_social_bar( 'pills', 20 ); ?>
+
+                    /* ══ Csomag beállítások oldal ═══════════════════════════════ */
+                    public static function render_plans(): void {
+                        if ( ! current_user_can( 'manage_options' ) ) return;
+
+                        $plans    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
+                        $global   = $plans['_global'] ?? [ 'boost_badge_window' => 14, 'boost_badge_text' => '⚡ Előre téve', 'boost_enabled' => true ];
+                        $defaults = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::PLANS : [];
+                        $nonce    = wp_create_nonce( 'va_admin_plan_cfg' );
+                        $plan_slugs = array_keys( $defaults );
+                        ?>
+                        <div class="wrap va-admin-wrap">
+                            <h1>💼 Csomag Beállítások</h1>
+                            <p style="color:var(--va-muted);margin-top:-8px;margin-bottom:24px;">
+                                Módosítsd a felhasználói csomagok paramétereit. A változtatások azonnal érvénybe lépnek – nem kell kézi flusholás.
+                            </p>
+
+                            <!-- ── Plan kártyák grid ── -->
+                            <div class="va-pc-grid">
+                            <?php foreach ( $plan_slugs as $slug ):
+                                $p = $plans[ $slug ] ?? $defaults[ $slug ];
+                                $d = $defaults[ $slug ];
+                            ?>
+                                <div class="va-pc-card" data-slug="<?php echo esc_attr( $slug ); ?>">
+
+                                    <!-- Kártya fejléc (live preview) -->
+                                    <div class="va-pc-card__head" style="--pc:<?php echo esc_attr( $p['color'] ); ?>">
+                                        <div class="va-pc-card__badge-preview">
+                                            <span class="va-pc-preview-icon"><?php echo esc_html( $p['icon'] ); ?></span>
+                                            <span class="va-pc-preview-label"><?php echo esc_html( $p['label'] ); ?></span>
+                                        </div>
+                                        <div class="va-pc-card__slug-tag"><?php echo esc_html( $slug ); ?></div>
+                                    </div>
+
+                                    <div class="va-pc-card__body">
+
+                                        <!-- Megjelenés szekció -->
+                                        <div class="va-pc-section">
+                                            <div class="va-pc-sec-title">Megjelenés</div>
+                                            <div class="va-pc-fields">
+
+                                                <div class="va-pc-field">
+                                                    <label>Megnevezés</label>
+                                                    <input type="text" class="va-pc-inp va-pc-inp--label"
+                                                           data-key="label" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( $p['label'] ); ?>"
+                                                           placeholder="<?php echo esc_attr( $d['label'] ); ?>">
+                                                </div>
+
+                                                <div class="va-pc-field">
+                                                    <label>Ikon (emoji)</label>
+                                                    <input type="text" class="va-pc-inp va-pc-inp--icon"
+                                                           data-key="icon" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( $p['icon'] ); ?>"
+                                                           placeholder="<?php echo esc_attr( $d['icon'] ); ?>"
+                                                           maxlength="8" style="font-size:20px;text-align:center;width:64px;">
+                                                </div>
+
+                                                <div class="va-pc-field">
+                                                    <label>Szín (badge)</label>
+                                                    <div class="va-pc-color-wrap">
+                                                        <input type="color" class="va-pc-color" data-key="color"
+                                                               data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                               value="<?php echo esc_attr( preg_match('/^#[0-9a-fA-F]{6}$/', $p['color']) ? $p['color'] : $d['color'] ); ?>">
+                                                        <input type="text" class="va-pc-inp va-pc-inp--colortext"
+                                                               data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                               value="<?php echo esc_attr( $p['color'] ); ?>"
+                                                               placeholder="<?php echo esc_attr( $d['color'] ); ?>" style="width:100px;">
+                                                    </div>
+                                                </div>
+
+                                                <div class="va-pc-field">
+                                                    <label>Háttér (RGBA)</label>
+                                                    <input type="text" class="va-pc-inp"
+                                                           data-key="bg" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( $p['bg'] ); ?>"
+                                                           placeholder="<?php echo esc_attr( $d['bg'] ); ?>">
+                                                </div>
+
+                                                <div class="va-pc-field va-pc-field--full">
+                                                    <label>Leírás</label>
+                                                    <input type="text" class="va-pc-inp"
+                                                           data-key="description" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( $p['description'] ); ?>"
+                                                           placeholder="<?php echo esc_attr( $d['description'] ); ?>">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- Hirdetési limit szekció -->
+                                        <div class="va-pc-section">
+                                            <div class="va-pc-sec-title">Hirdetési limit</div>
+                                            <div class="va-pc-fields">
+
+                                                <div class="va-pc-field">
+                                                    <label>Limit (0 = korlátlan)</label>
+                                                    <input type="number" class="va-pc-inp va-pc-inp--num"
+                                                           data-key="monthly_limit" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( (string) $p['monthly_limit'] ); ?>"
+                                                           min="0" max="9999">
+                                                </div>
+
+                                                <div class="va-pc-field">
+                                                    <label>Számlálás módja</label>
+                                                    <select class="va-pc-sel" data-key="basis" data-slug="<?php echo esc_attr( $slug ); ?>">
+                                                        <option value="active"  <?php selected( $p['basis'], 'active'  ); ?>>Aktív hirdetések (egyszerre)</option>
+                                                        <option value="monthly" <?php selected( $p['basis'], 'monthly' ); ?>>Havi feladott</option>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- Boost szekció -->
+                                        <div class="va-pc-section">
+                                            <div class="va-pc-sec-title">Boost / Kiemelés</div>
+                                            <div class="va-pc-fields">
+
+                                                <div class="va-pc-field">
+                                                    <label>Cooldown (napokban)</label>
+                                                    <input type="number" class="va-pc-inp va-pc-inp--num"
+                                                           data-key="boost_cooldown" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( (string) $p['boost_cooldown'] ); ?>"
+                                                           min="1" max="365">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- Ár / Marketing szekció -->
+                                        <div class="va-pc-section">
+                                            <div class="va-pc-sec-title">Ár &amp; Marketing</div>
+                                            <div class="va-pc-fields">
+
+                                                <div class="va-pc-field">
+                                                    <label>Havi ár (pl. "990 Ft/hó")</label>
+                                                    <input type="text" class="va-pc-inp"
+                                                           data-key="price_monthly" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( $p['price_monthly'] ?? '' ); ?>"
+                                                           placeholder="pl. 990 Ft/hó">
+                                                </div>
+
+                                                <div class="va-pc-field">
+                                                    <label>Éves ár (pl. "9 900 Ft/év")</label>
+                                                    <input type="text" class="va-pc-inp"
+                                                           data-key="price_yearly" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( $p['price_yearly'] ?? '' ); ?>"
+                                                           placeholder="pl. 9 900 Ft/év">
+                                                </div>
+
+                                                <div class="va-pc-field">
+                                                    <label>Badge felirat (pl. "Legjobb ár")</label>
+                                                    <input type="text" class="va-pc-inp"
+                                                           data-key="badge_text" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                           value="<?php echo esc_attr( $p['badge_text'] ?? '' ); ?>"
+                                                           placeholder="opcionális">
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!-- Reset gomb -->
+                                        <div style="margin-top:10px;">
+                                            <button class="button va-pc-reset-btn"
+                                                    data-slug="<?php echo esc_attr( $slug ); ?>"
+                                                    data-defaults="<?php echo esc_attr( json_encode([
+                                                        'label'          => $d['label'],
+                                                        'icon'           => $d['icon'],
+                                                        'color'          => $d['color'],
+                                                        'bg'             => $d['bg'],
+                                                        'monthly_limit'  => $d['monthly_limit'],
+                                                        'boost_cooldown' => $d['boost_cooldown'],
+                                                        'basis'          => $d['basis'],
+                                                        'description'    => $d['description'],
+                                                        'price_monthly'  => '',
+                                                        'price_yearly'   => '',
+                                                        'badge_text'     => '',
+                                                    ]) ); ?>">
+                                                ↺ Alapértelmezett
+                                            </button>
+                                        </div>
+
+                                    </div><!-- .va-pc-card__body -->
+                                </div><!-- .va-pc-card -->
+                            <?php endforeach; ?>
+                            </div><!-- .va-pc-grid -->
+
+                            <!-- ── Globális Boost beállítások ── -->
+                            <div class="va-pc-global-section">
+                                <h2 class="va-pc-global-title">🌐 Globális Boost beállítások</h2>
+                                <div class="va-pc-fields">
+
+                                    <div class="va-pc-field">
+                                        <label>Badge megjelenítési ablak (nap)
+                                            <span style="font-size:11px;color:var(--va-muted);display:block;margin-top:2px;">
+                                                Ennyi napig látszik a "Kiemelt" badge a kártyán az utolsó boost után.
+                                            </span>
+                                        </label>
+                                        <input type="number" id="va-pc-global-window" class="va-pc-inp va-pc-inp--num"
+                                               value="<?php echo esc_attr( (string) $global['boost_badge_window'] ); ?>"
+                                               min="1" max="365">
+                                    </div>
+
+                                    <div class="va-pc-field">
+                                        <label>Badge szöveg (kártyán)
+                                            <span style="font-size:11px;color:var(--va-muted);display:block;margin-top:2px;">
+                                                Ez jelenik meg a hirdetés kártyán ha a boost aktív.
+                                            </span>
+                                        </label>
+                                        <input type="text" id="va-pc-global-badgetext" class="va-pc-inp"
+                                               value="<?php echo esc_attr( $global['boost_badge_text'] ); ?>"
+                                               placeholder="⚡ Előre téve">
+                                    </div>
+
+                                    <div class="va-pc-field">
+                                        <label>Boost rendszer engedélyezve</label>
+                                        <label class="va-pc-toggle">
+                                            <input type="checkbox" id="va-pc-global-boost-enabled"
+                                                   <?php checked( ! empty( $global['boost_enabled'] ) ); ?>>
+                                            <span class="va-pc-toggle-track"></span>
+                                            <span class="va-pc-toggle-label">
+                                                <?php echo ! empty( $global['boost_enabled'] ) ? 'Bekapcsolva' : 'Kikapcsolva'; ?>
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- ── Mentés gomb + státusz ── -->
+                            <div class="va-pc-save-bar">
+                                <button id="va-pc-save-all" class="button button-primary va-pc-save-main-btn"
+                                        data-nonce="<?php echo esc_attr( $nonce ); ?>">
+                                    💾 Összes csomag mentése
+                                </button>
+                                <span id="va-pc-save-status" class="va-pc-save-status"></span>
+                            </div>
+                        </div><!-- .wrap -->
+
+                        <style>
+                        /* ── Plan Config page styles ── */
+                        .va-pc-grid {
+                            display: grid;
+                            grid-template-columns: repeat( auto-fill, minmax( 360px, 1fr ) );
+                            gap: 18px;
+                            margin-bottom: 28px;
+                        }
+                        .va-pc-card {
+                            background: var(--va-bg2);
+                            border: 1px solid var(--va-border);
+                            border-radius: var(--va-radius);
+                            overflow: hidden;
+                        }
+                        .va-pc-card__head {
+                            background: linear-gradient( 135deg, rgba(255,255,255,.04), transparent );
+                            border-bottom: 2px solid var(--pc, #888);
+                            padding: 14px 18px 12px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: space-between;
+                        }
+                        .va-pc-card__badge-preview {
+                            display: flex;
+                            align-items: center;
+                            gap: 8px;
+                        }
+                        .va-pc-preview-icon  { font-size: 24px; line-height: 1; }
+                        .va-pc-preview-label { font-size: 16px; font-weight: 800; color: var(--pc, #fff); }
+                        .va-pc-card__slug-tag {
+                            font-size: 10px;
+                            font-weight: 700;
+                            letter-spacing: .8px;
+                            text-transform: uppercase;
+                            color: var(--va-muted);
+                            background: rgba(255,255,255,.06);
+                            padding: 3px 8px;
+                            border-radius: 999px;
+                        }
+                        .va-pc-card__body { padding: 16px 18px; }
+
+                        .va-pc-section { margin-bottom: 16px; }
+                        .va-pc-section:last-of-type { margin-bottom: 0; }
+                        .va-pc-sec-title {
+                            font-size: 10px;
+                            font-weight: 700;
+                            letter-spacing: .7px;
+                            text-transform: uppercase;
+                            color: var(--va-muted);
+                            margin-bottom: 8px;
+                            padding-bottom: 5px;
+                            border-bottom: 1px solid var(--va-border);
+                        }
+                        .va-pc-fields {
+                            display: flex;
+                            flex-wrap: wrap;
+                            gap: 10px;
+                        }
+                        .va-pc-field {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 4px;
+                            min-width: 120px;
+                        }
+                        .va-pc-field--full { flex: 1 1 100%; }
+                        .va-pc-field > label {
+                            font-size: 11px;
+                            color: var(--va-muted);
+                            font-weight: 600;
+                        }
+                        .va-pc-inp,
+                        .va-pc-sel {
+                            background: var(--va-bg3) !important;
+                            border: 1px solid var(--va-border2) !important;
+                            color: var(--va-text) !important;
+                            border-radius: var(--va-radius-sm);
+                            padding: 6px 10px;
+                            font-size: 13px;
+                            outline: none;
+                            transition: border-color .2s;
+                        }
+                        .va-pc-inp:focus, .va-pc-sel:focus {
+                            border-color: var(--va-accent) !important;
+                            box-shadow: 0 0 0 2px rgba(255,32,32,.15);
+                        }
+                        .va-pc-inp--num { width: 80px; }
+                        .va-pc-color-wrap { display: flex; align-items: center; gap: 6px; }
+                        .va-pc-color {
+                            width: 38px; height: 34px;
+                            border: 1px solid var(--va-border2);
+                            border-radius: var(--va-radius-sm);
+                            background: none;
+                            cursor: pointer;
+                            padding: 2px;
+                        }
+
+                        /* Toggle */
+                        .va-pc-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+                        .va-pc-toggle input { display: none; }
+                        .va-pc-toggle-track {
+                            width: 38px; height: 20px;
+                            background: rgba(255,255,255,.12);
+                            border-radius: 999px;
+                            position: relative;
+                            transition: background .2s;
+                            flex-shrink: 0;
+                        }
+                        .va-pc-toggle-track::after {
+                            content: '';
+                            position: absolute;
+                            top: 2px; left: 2px;
+                            width: 16px; height: 16px;
+                            background: #fff;
+                            border-radius: 50%;
+                            transition: transform .2s;
+                        }
+                        .va-pc-toggle input:checked + .va-pc-toggle-track { background: var(--va-accent); }
+                        .va-pc-toggle input:checked + .va-pc-toggle-track::after { transform: translateX(18px); }
+                        .va-pc-toggle-label { font-size: 13px; color: var(--va-text); }
+
+                        /* Globális szekció */
+                        .va-pc-global-section {
+                            background: var(--va-bg2);
+                            border: 1px solid var(--va-border);
+                            border-radius: var(--va-radius);
+                            padding: 20px 22px;
+                            margin-bottom: 24px;
+                        }
+                        .va-pc-global-title {
+                            font-size: 15px;
+                            font-weight: 700;
+                            margin: 0 0 16px;
+                        }
+
+                        /* Save bar */
+                        .va-pc-save-bar {
+                            display: flex;
+                            align-items: center;
+                            gap: 14px;
+                            padding: 16px 0;
+                        }
+                        .va-pc-save-main-btn {
+                            font-size: 14px !important;
+                            padding: 8px 22px !important;
+                            background: var(--va-accent) !important;
+                            border-color: var(--va-accent) !important;
+                            color: #fff !important;
+                        }
+                        .va-pc-save-main-btn:hover { opacity: .88; }
+                        .va-pc-save-status { font-size: 13px; }
+                        </style>
+
+                        <script>
+                        (function(){
+                            var nonce = document.getElementById('va-pc-save-all').dataset.nonce;
+
+                            /* Live preview: label + icon + color szinkron */
+                            function updatePreview(slug){
+                                var card  = document.querySelector('.va-pc-card[data-slug="' + slug + '"]');
+                                if(!card) return;
+                                var head  = card.querySelector('.va-pc-card__head');
+                                var icon  = card.querySelector('.va-pc-preview-icon');
+                                var label = card.querySelector('.va-pc-preview-label');
+
+                                var iconVal  = (card.querySelector('[data-key="icon"]')  || {value:''}).value;
+                                var labelVal = (card.querySelector('[data-key="label"]') || {value:''}).value;
+                                var colorVal = (card.querySelector('input[type="color"][data-key="color"]') || {value:'#888'}).value;
+
+                                if(icon)  icon.textContent  = iconVal;
+                                if(label){ label.textContent = labelVal; label.style.color = colorVal; }
+                                if(head)  head.style.setProperty('--pc', colorVal);
+                            }
+
+                            /* Szinkron color picker ↔ szöveg mező */
+                            document.querySelectorAll('.va-pc-color').forEach(function(cp){
+                                var slug = cp.dataset.slug;
+                                var txt  = cp.closest('.va-pc-color-wrap').querySelector('.va-pc-inp--colortext');
+                                cp.addEventListener('input', function(){
+                                    if(txt) txt.value = this.value;
+                                    updatePreview(slug);
+                                });
+                            });
+                            document.querySelectorAll('.va-pc-inp--colortext').forEach(function(inp){
+                                var slug = inp.dataset.slug;
+                                inp.addEventListener('input', function(){
+                                    var wrap = inp.closest('.va-pc-color-wrap');
+                                    var cp   = wrap ? wrap.querySelector('.va-pc-color') : null;
+                                    if(cp && /^#[0-9a-fA-F]{6}$/.test(this.value)) cp.value = this.value;
+                                    updatePreview(slug);
+                                });
+                            });
+
+                            /* Label + icon live preview */
+                            document.querySelectorAll('[data-key="label"],[data-key="icon"]').forEach(function(inp){
+                                inp.addEventListener('input', function(){
+                                    updatePreview(this.dataset.slug);
+                                });
+                            });
+
+                            /* Toggle label frissítés */
+                            var boostToggle = document.getElementById('va-pc-global-boost-enabled');
+                            if(boostToggle){
+                                boostToggle.addEventListener('change', function(){
+                                    var lbl = this.closest('.va-pc-toggle').querySelector('.va-pc-toggle-label');
+                                    if(lbl) lbl.textContent = this.checked ? 'Bekapcsolva' : 'Kikapcsolva';
+                                });
+                            }
+
+                            /* Reset gomb */
+                            document.querySelectorAll('.va-pc-reset-btn').forEach(function(btn){
+                                btn.addEventListener('click', function(){
+                                    var slug     = this.dataset.slug;
+                                    var defaults = JSON.parse(this.dataset.defaults || '{}');
+                                    var card     = document.querySelector('.va-pc-card[data-slug="' + slug + '"]');
+                                    if(!card || !defaults) return;
+
+                                    Object.keys(defaults).forEach(function(key){
+                                        var el = card.querySelector('[data-key="' + key + '"]');
+                                        if(el) el.value = defaults[key];
+                                        // color picker szinkron
+                                        if(key === 'color'){
+                                            var cp = card.querySelector('input[type="color"][data-key="color"]');
+                                            if(cp && /^#[0-9a-fA-F]{6}$/.test(defaults[key])) cp.value = defaults[key];
+                                        }
+                                    });
+                                    updatePreview(slug);
+                                });
+                            });
+
+                            /* ── Összes csomag gyűjtése + mentés ── */
+                            document.getElementById('va-pc-save-all').addEventListener('click', function(){
+                                var status = document.getElementById('va-pc-save-status');
+                                var btn    = this;
+                                btn.disabled = true;
+                                if(status) status.textContent = '⏳ Mentés…';
+
+                                var payload = {};
+
+                                /* Plan kártyák */
+                                document.querySelectorAll('.va-pc-card').forEach(function(card){
+                                    var slug = card.dataset.slug;
+                                    var obj  = {};
+                                    card.querySelectorAll('[data-key]').forEach(function(el){
+                                        var key = el.dataset.key;
+                                        if(el.tagName === 'SELECT'){
+                                            obj[key] = el.value;
+                                        } else if(el.type === 'color'){
+                                            // skip – van text pair
+                                        } else {
+                                            obj[key] = el.value;
+                                        }
+                                    });
+                                    payload[slug] = obj;
+                                });
+
+                                /* Globális beállítások */
+                                payload['_global'] = {
+                                    boost_badge_window : document.getElementById('va-pc-global-window')    ? document.getElementById('va-pc-global-window').value    : 14,
+                                    boost_badge_text   : document.getElementById('va-pc-global-badgetext') ? document.getElementById('va-pc-global-badgetext').value : '',
+                                    boost_enabled      : document.getElementById('va-pc-global-boost-enabled') && document.getElementById('va-pc-global-boost-enabled').checked ? 1 : 0,
+                                };
+
+                                var data = new URLSearchParams({
+                                    action : 'va_admin_save_plan_cfg',
+                                    nonce  : nonce,
+                                    plans  : JSON.stringify(payload)
+                                });
+
+                                fetch('<?php echo esc_url( admin_url('admin-ajax.php') ); ?>', {
+                                    method  : 'POST',
+                                    headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                    body    : data.toString()
+                                })
+                                .then(function(r){ return r.json(); })
+                                .then(function(res){
+                                    btn.disabled = false;
+                                    if(res.success){
+                                        if(status){ status.textContent = '✅ ' + (res.data ? res.data.message : 'Mentve!'); status.style.color = '#00c850'; }
+                                    } else {
+                                        if(status){ status.textContent = '❌ ' + (res.data ? res.data.message : 'Hiba'); status.style.color = '#ff4444'; }
+                                    }
+                                    setTimeout(function(){ if(status) status.textContent = ''; }, 4000);
+                                })
+                                .catch(function(){
+                                    btn.disabled = false;
+                                    if(status){ status.textContent = '❌ Hálózati hiba'; status.style.color = '#ff4444'; }
+                                });
+                            });
+                        })();
+                        </script>
+                        <?php
+                    }
+                }
                 </div>
             </div>
         </div>
