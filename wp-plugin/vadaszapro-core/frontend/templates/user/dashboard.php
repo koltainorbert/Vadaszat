@@ -378,19 +378,22 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
     gap:10px;
 }
 .va-dash-user-head__avatar {
-    width:36px;
-    height:36px;
+    width:52px;
+    height:52px;
+    min-width:52px;
     border-radius:50%;
     overflow:hidden;
     background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.14);
+    border:2px solid rgba(255,255,255,.18);
     display:flex;
     align-items:center;
     justify-content:center;
     color:#fff;
+    font-size:18px;
     font-weight:800;
+    flex-shrink:0;
 }
-.va-dash-user-head__avatar img { width:100%;height:100%;object-fit:cover;display:block; }
+.va-dash-user-head__avatar img { width:100% !important;height:100% !important;object-fit:cover;display:block;border-radius:50%;max-width:none !important;max-height:none !important; }
 .va-dash-user-head__name { color:#fff;font-size:13px;font-weight:700; }
 
 .va-dash-avatar-form {
@@ -474,14 +477,14 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
 }
 .va-dash-plan-label-form__btn:hover { background:rgba(255,42,42,.24); }
 
-.va-profile-avatar-editor { display:flex;align-items:center;gap:12px; }
+.va-profile-avatar-editor { display:flex;align-items:center;gap:16px; }
 .va-profile-avatar-editor__preview {
-    width:64px;height:64px;border-radius:50%;overflow:hidden;
-    border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
+    width:88px;height:88px;border-radius:50%;overflow:hidden;
+    border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);
     display:flex;align-items:center;justify-content:center;
-    color:#fff;font-size:20px;font-weight:800;flex-shrink:0;
+    color:#fff;font-size:28px;font-weight:800;flex-shrink:0;
 }
-.va-profile-avatar-editor__preview img { width:100%;height:100%;object-fit:cover;display:block; }
+.va-profile-avatar-editor__preview img { width:100% !important;height:100% !important;object-fit:cover;display:block;max-width:none !important;max-height:none !important; }
 .va-profile-avatar-editor__fields { flex:1;display:flex;flex-direction:column;gap:8px; }
 .va-profile-avatar-editor__remove { font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:7px; }
 
