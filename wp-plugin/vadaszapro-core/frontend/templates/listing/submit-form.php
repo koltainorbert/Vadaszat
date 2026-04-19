@@ -100,6 +100,40 @@ $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false ] 
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 
+/* ── Edit mód felismerés ───────────────────────────── */
+$edit_post_id = 0;
+$edit_post    = null;
+$edit_meta    = [];
+$edit_mode    = false;
+if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
+    $maybe_id = absint( $_GET['edit'] );
+    $maybe_post = get_post( $maybe_id );
+    if ( $maybe_post && $maybe_post->post_type === 'va_listing' && (int) $maybe_post->post_author === get_current_user_id() ) {
+        $edit_post_id = $maybe_id;
+        $edit_post    = $maybe_post;
+        $edit_mode    = true;
+        $edit_meta    = [
+            'title'       => $maybe_post->post_title,
+            'description' => $maybe_post->post_content,
+            'price'       => get_post_meta( $maybe_id, 'va_price',       true ),
+            'price_type'  => get_post_meta( $maybe_id, 'va_price_type',  true ),
+            'phone'       => get_post_meta( $maybe_id, 'va_phone',       true ),
+            'location'    => get_post_meta( $maybe_id, 'va_location',    true ),
+            'brand'       => get_post_meta( $maybe_id, 'va_brand',       true ),
+            'model'       => get_post_meta( $maybe_id, 'va_model',       true ),
+            'caliber'     => get_post_meta( $maybe_id, 'va_caliber',     true ),
+            'year'        => get_post_meta( $maybe_id, 'va_year',        true ),
+            'license_req' => get_post_meta( $maybe_id, 'va_license_req', true ),
+            'category'    => (int) ( wp_get_post_terms( $maybe_id, 'va_category', ['fields'=>'ids'] )[0] ?? 0 ),
+            'county'      => (int) ( wp_get_post_terms( $maybe_id, 'va_county',   ['fields'=>'ids'] )[0] ?? 0 ),
+            'condition'   => (int) ( wp_get_post_terms( $maybe_id, 'va_condition',['fields'=>'ids'] )[0] ?? 0 ),
+        ];
+        // Meglévő képek
+        $edit_gallery = array_map('absint', (array) get_post_meta( $maybe_id, 'va_gallery', true ));
+        $edit_thumb   = (int) get_post_thumbnail_id( $maybe_id );
+    }
+}
+
 $free_limit = max( 0, absint( get_option( 'va_free_listings_limit', 1 ) ) );
 $paid_price = max( 0, absint( get_option( 'va_listing_price_after_free', 1990 ) ) );
 

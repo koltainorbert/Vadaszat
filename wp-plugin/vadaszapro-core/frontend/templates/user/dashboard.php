@@ -85,7 +85,13 @@ $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
                         <td style="padding:10px 8px;text-align:right;">
-                            <a href="<?php echo esc_url( get_edit_post_link( $l->ID ) ); ?>" class="va-btn va-btn--outline va-btn--sm">Szerk.</a>
+                            <?php
+                            $edit_page = get_page_by_path('va-hirdetes-feladas');
+                            $edit_url  = $edit_page
+                                ? add_query_arg( 'edit', $l->ID, get_permalink( $edit_page ) )
+                                : get_edit_post_link( $l->ID );
+                            ?>
+                            <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--outline va-btn--sm">Szerk.</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>
