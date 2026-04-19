@@ -161,6 +161,9 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
 
 $free_limit = max( 0, absint( get_option( 'va_free_listings_limit', 1 ) ) );
 $paid_price = max( 0, absint( get_option( 'va_listing_price_after_free', 1990 ) ) );
+$buy_page   = get_page_by_path( 'va-kredit-vasarlas' );
+$buy_url    = $buy_page ? get_permalink( $buy_page ) : home_url( '/va-kredit-vasarlas/' );
+$buy_url_submit = add_query_arg( 'va_return', 'submit', $buy_url );
 
 $user_listings_count = 0;
 $user_credit_balance = 0;
@@ -534,7 +537,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (res.data && res.data.need_credits) {
                         // Kredit szükséges → csomagvásárló megjelenítése
                         var price = res.data.paid_price ? Number(res.data.paid_price).toLocaleString('hu-HU') + ' Ft' : '';
-                        var buyPage = '<?php echo esc_js( home_url( '/va-kredit-vasarlas/' ) ); ?>';
+                        var buyPage = '<?php echo esc_js( $buy_url_submit ); ?>';
                         var html = '<div class="va-notice va-notice--warning" style="padding:18px;">'
                             + '<strong>Elfogyott az ingyenes hirdetési kereted.</strong><br>'
                             + (price ? 'Egy hirdetés ára: <strong>' + price + '</strong><br>' : '')
