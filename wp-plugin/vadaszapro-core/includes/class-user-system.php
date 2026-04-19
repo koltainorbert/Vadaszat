@@ -391,6 +391,52 @@ class VA_User_System {
         ]);
         update_user_meta( $user_id, 'va_phone', $phone );
 
+        // Profilkép törlés
+        if ( ! empty( $_POST['profile_avatar_remove'] ) ) {
+            delete_user_meta( $user_id, 'va_profile_avatar_id' );
+        }
+
+        // Profilkép feltöltés
+        if ( ! empty( $_FILES['profile_avatar']['name'] ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            $uploaded = wp_handle_upload( $_FILES['profile_avatar'], [
+                'test_form' => false,
+                'mimes'     => [
+                    'jpg|jpeg' => 'image/jpeg',
+                    'png'      => 'image/png',
+                    'webp'     => 'image/webp',
+                ],
+            ] );
+
+            if ( ! empty( $uploaded['error'] ) ) {
+                va_set_flash( 'error', 'A profilkép feltöltése sikertelen: ' . sanitize_text_field( $uploaded['error'] ) );
+                wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+                exit;
+            }
+
+            $file_path = $uploaded['file'] ?? '';
+            $file_url  = $uploaded['url'] ?? '';
+            if ( $file_path && $file_url ) {
+                $filetype = wp_check_filetype( wp_basename( $file_path ), null );
+                $attach_id = wp_insert_attachment( [
+                    'guid'           => $file_url,
+                    'post_mime_type' => $filetype['type'] ?? 'image/jpeg',
+                    'post_title'     => sanitize_file_name( pathinfo( $file_path, PATHINFO_FILENAME ) ),
+                    'post_content'   => '',
+                    'post_status'    => 'inherit',
+                    'post_author'    => $user_id,
+                ], $file_path );
+
+                if ( ! is_wp_error( $attach_id ) && $attach_id > 0 ) {
+                    $attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
+                    wp_update_attachment_metadata( $attach_id, $attach_data );
+                    update_user_meta( $user_id, 'va_profile_avatar_id', (int) $attach_id );
+                }
+            }
+        }
+
         // Jelszócsere ha megadva
         $new_pass  = wp_unslash( $_POST['profile_newpass']  ?? '' );
         $new_pass2 = wp_unslash( $_POST['profile_newpass2'] ?? '' );

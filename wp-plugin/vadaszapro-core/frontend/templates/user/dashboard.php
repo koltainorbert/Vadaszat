@@ -33,6 +33,8 @@ $plan_check   = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::can_post_listin
 $boost_nonce  = wp_create_nonce( 'va_user_nonce' );
 $ajax_url     = admin_url( 'admin-ajax.php' );
 $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
+$avatar_id    = (int) get_user_meta( $user->ID, 'va_profile_avatar_id', true );
+$avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail' ) : '';
 ?>
 <div class="va-wrap">
     <?php va_display_flash(); ?>
@@ -41,6 +43,16 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
 
         <!-- Bal navigáció -->
         <nav class="va-dashboard__nav">
+            <div class="va-dash-user-head">
+                <div class="va-dash-user-head__avatar">
+                    <?php if ( $avatar_url ): ?>
+                        <img src="<?php echo esc_url( $avatar_url ); ?>" alt="Profilkép">
+                    <?php else: ?>
+                        <?php echo esc_html( strtoupper( mb_substr( $user->display_name ?: $user->user_login, 0, 1 ) ) ); ?>
+                    <?php endif; ?>
+                </div>
+                <div class="va-dash-user-head__name"><?php echo esc_html( $user->display_name ?: $user->user_login ); ?></div>
+            </div>
             <span class="va-dashboard__nav-item active" data-tab="listings"><span class="va-dashboard__nav-ico" aria-hidden="true">📋</span><span class="va-dashboard__nav-label">Hirdetéseim (<?php echo count( $listings ); ?>)</span></span>
             <?php if ( $auctions_enabled ): ?>
             <span class="va-dashboard__nav-item" data-tab="bids"><span class="va-dashboard__nav-ico" aria-hidden="true">🔨</span><span class="va-dashboard__nav-label">Licitjeim (<?php echo count( $bids ); ?>)</span></span>
@@ -236,7 +248,7 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
             <!-- Tab: Profilom -->
             <div id="va-tab-profile" class="va-dashboard__section">
                 <h2 class="va-dashboard__title">Profilom szerkesztése</h2>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <?php wp_nonce_field( 'va_profile', 'va_profile_nonce' ); ?>
                     <input type="hidden" name="va_action" value="profile">
 
@@ -260,6 +272,27 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
                     <div class="va-form-group">
                         <label>Telefonszám</label>
                         <input type="tel" name="profile_phone" class="va-input" value="<?php echo esc_attr( $phone ); ?>">
+                    </div>
+
+                    <div class="va-form-group">
+                        <label>Profilkép</label>
+                        <div class="va-profile-avatar-editor">
+                            <div class="va-profile-avatar-editor__preview">
+                                <?php if ( $avatar_url ): ?>
+                                    <img src="<?php echo esc_url( $avatar_url ); ?>" alt="Profilkép előnézet">
+                                <?php else: ?>
+                                    <?php echo esc_html( strtoupper( mb_substr( $user->display_name ?: $user->user_login, 0, 1 ) ) ); ?>
+                                <?php endif; ?>
+                            </div>
+                            <div class="va-profile-avatar-editor__fields">
+                                <input type="file" name="profile_avatar" class="va-input" accept="image/jpeg,image/png,image/webp">
+                                <?php if ( $avatar_url ): ?>
+                                    <label class="va-profile-avatar-editor__remove">
+                                        <input type="checkbox" name="profile_avatar_remove" value="1"> Profilkép törlése
+                                    </label>
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="va-form-group">
@@ -300,6 +333,29 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
 </div>
 
 <style>
+.va-dash-user-head {
+    padding:14px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.va-dash-user-head__avatar {
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    overflow:hidden;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.14);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#fff;
+    font-weight:800;
+}
+.va-dash-user-head__avatar img { width:100%;height:100%;object-fit:cover;display:block; }
+.va-dash-user-head__name { color:#fff;font-size:13px;font-weight:700; }
+
 /* ── Plan badge a navban ── */
 .va-dash-plan-badge {
     margin-top:auto;padding:12px 14px;
@@ -352,6 +408,17 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
     transition:.2s ease;
 }
 .va-dash-plan-label-form__btn:hover { background:rgba(255,42,42,.24); }
+
+.va-profile-avatar-editor { display:flex;align-items:center;gap:12px; }
+.va-profile-avatar-editor__preview {
+    width:64px;height:64px;border-radius:50%;overflow:hidden;
+    border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;font-size:20px;font-weight:800;flex-shrink:0;
+}
+.va-profile-avatar-editor__preview img { width:100%;height:100%;object-fit:cover;display:block; }
+.va-profile-avatar-editor__fields { flex:1;display:flex;flex-direction:column;gap:8px; }
+.va-profile-avatar-editor__remove { font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:7px; }
 
 /* ── Boost gomb ── */
 .va-boost-btn { cursor:pointer;font-size:12px; }
