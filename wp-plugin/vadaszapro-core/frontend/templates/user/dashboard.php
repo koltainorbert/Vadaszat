@@ -183,8 +183,10 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                         <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#3a2800,#1e1400);color:#ffc840;border:1px solid rgba(255,180,0,.5);box-shadow:0 0 8px rgba(255,160,0,.2);padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
                                     <?php endif; ?>
                                     <div style="margin-top:3px;font-size:11px;">
-                                    <?php if ( $is_suspended && $suspended_at ): ?>
-                                        <span style="color:#ff9900;">⏸ Felfüggesztve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
+                                    <?php if ( $suspended_by_plan ): ?>
+                                        <span style="color:#ff4444;">Limit felett – kredit szükséges</span>
+                                    <?php elseif ( $is_suspended && $suspended_at ): ?>
+                                        <span style="color:#ff9900;">⏸ Szüneteltetve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
                                     <?php else: ?>
                                         <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) ) . ' napja' ); ?></span>
                                     <?php endif; ?>
@@ -228,6 +230,17 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 ? add_query_arg( 'edit', $l->ID, get_permalink( $edit_page ) )
                                 : get_edit_post_link( $l->ID );
                             ?>
+                            <?php if ( $suspended_by_plan ): ?>
+                            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
+                                <a href="<?php echo esc_url( $buy_url ); ?>" class="va-btn va-btn--sm" style="background:linear-gradient(135deg,rgba(255,60,60,.25),rgba(200,0,0,.25));border:1px solid rgba(255,60,60,.5);color:#ff6060;white-space:nowrap;font-weight:600;">Kredit vásárlás →</a>
+                                <form method="post" style="margin:0;" onsubmit="return confirm('Biztosan törlöd ezt a hirdetést?');">
+                                    <?php wp_nonce_field( 'va_delete_listing', 'va_delete_listing_nonce' ); ?>
+                                    <input type="hidden" name="va_action" value="delete_listing">
+                                    <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
+                                    <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,42,42,.12);border:1px solid rgba(255,42,42,.4);color:#ff6060;white-space:nowrap;">Törlés</button>
+                                </form>
+                            </div>
+                            <?php else: ?>
                             <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
                                 <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--sm" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;white-space:nowrap;">Szerkesztés</a>
                                 <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
@@ -249,6 +262,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                     <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,42,42,.12);border:1px solid rgba(255,42,42,.4);color:#ff6060;white-space:nowrap;">Törlés</button>
                                 </form>
                             </div>
+                            <?php endif; ?>
                         </td>
                     </tr>
                     <?php endforeach; ?>
