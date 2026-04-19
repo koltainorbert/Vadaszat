@@ -81,6 +81,22 @@ class VA_User_Roles {
 
         // Boost sorrendezés a va_listing archívum/taxonómia oldalain
         add_filter( 'posts_clauses', [ __CLASS__, 'filter_posts_clauses' ], 10, 2 );
+
+        // Automatikus limit-érvényesítés bejelentkezett usereknél (naponta egyszer/user)
+        add_action( 'wp', [ __CLASS__, 'maybe_enforce_current_user_limits' ] );
+    }
+
+    /**
+     * Ha az aktuális bejelentkezett user limitje módosult (pl. terv manuálisan állítva
+     * még mielőtt ez a kód létezett volna), naponta egyszer lefuttatja a enforce-t.
+     */
+    public static function maybe_enforce_current_user_limits(): void {
+        if ( ! is_user_logged_in() || is_admin() ) return;
+        $uid = get_current_user_id();
+        $key = 'va_enforce_ok_' . $uid;
+        if ( get_transient( $key ) ) return;
+        self::enforce_plan_limits( $uid );
+        set_transient( $key, 1, DAY_IN_SECONDS );
     }
 
     /* ══ Plan config – options overlay ════════════════════════ */
