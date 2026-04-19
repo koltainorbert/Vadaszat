@@ -62,6 +62,7 @@ class VA_Settings_Page {
             'va_card_meta_show_views'      => '0',
             'va_card_meta_show_author'     => '0',
             'va_card_meta_show_date'       => '1',
+            'va_card_show_boost_badge'     => '1',
             'va_card_meta_row_category'    => '1',
             'va_card_meta_row_county'      => '1',
             'va_card_meta_row_location'    => '1',
@@ -718,6 +719,7 @@ class VA_Settings_Page {
                     <?php self::field_select('va_card_meta_row_author', 'Feladó sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
                     <?php self::field_toggle('va_card_meta_show_date', 'Mutassa: dátum' ); ?>
                     <?php self::field_select('va_card_meta_row_date', 'Dátum sora', [ '1' => '1. sor', '2' => '2. sor', '3' => '3. sor' ] ); ?>
+                    <?php self::field_toggle('va_card_show_boost_badge', 'Kiemelés (előre téve) badge megjelenjen a kártyákon' ); ?>
 
                     <?php self::field_text(  'va_home_hero_badge_text',         'Főoldal hero badge szöveg' ); ?>
                     <?php self::field_text(  'va_home_hero_title_top',          'Főoldal hero cím 1. sor' ); ?>
@@ -3608,6 +3610,13 @@ class VA_Settings_Page {
                                 <?php self::field_color( 'va_single_accent', 'Accent szín' ); ?>
                                 <?php self::field_text( 'va_single_glass', 'Üveg háttér (rgba)' ); ?>
                                 <?php self::field_text( 'va_single_border', 'Üveg keret (rgba)' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🏅 Feladó panel</div>
+                            <table class="form-table">
+                                <?php self::field_toggle( 'va_single_show_plan_badge', 'Feladó rang/csomag badge megjelenjen' ); ?>
                             </table>
                         </div>
 

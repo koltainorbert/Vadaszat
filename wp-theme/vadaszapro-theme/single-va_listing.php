@@ -318,6 +318,18 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
                         <div class="sl__seller-name"><?php echo esc_html($author ? $author->display_name : 'Ismeretlen'); ?></div>
                         <?php if ($author): ?>
                         <div class="sl__seller-since">Tag <?php echo esc_html(date('Y', strtotime($author->user_registered))); ?> &oacute;ta</div>
+                        <?php
+                        if ( get_option( 'va_single_show_plan_badge', '1' ) === '1' && class_exists( 'VA_User_Roles' ) ):
+                            $author_plan  = VA_User_Roles::get_user_plan( $author->ID );
+                            $plan_labels  = [ 'basic' => 'Alap', 'silver' => 'Ezüst', 'gold' => 'Arany', 'platinum' => 'Platina' ];
+                            $plan_label   = $plan_labels[ $author_plan ] ?? ucfirst( $author_plan );
+                            $plan_icons   = [ 'basic' => '', 'silver' => '✦', 'gold' => '★', 'platinum' => '◆' ];
+                            $plan_icon    = $plan_icons[ $author_plan ] ?? '';
+                        ?>
+                        <div class="sl__plan-badge sl__plan-badge--<?php echo esc_attr( $author_plan ); ?>">
+                            <?php if ( $plan_icon ) echo esc_html( $plan_icon ) . ' '; ?><?php echo esc_html( $plan_label ); ?> tag
+                        </div>
+                        <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 </div>

@@ -208,7 +208,7 @@
 }
 .va-card__badge { position: absolute; top: 10px; left: 10px; background: var(--va-accent); color: #fff; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
 .va-card__badge--featured { background: #ffaa00; color: #000; }
-.va-card__badge--boost { background: rgba(255,200,0,.18); color: #ffcc00; border: 1px solid rgba(255,200,0,.4); }
+.va-card__badge--boost { background: rgba(255,42,42,.18); color: #ff2a2a; border: 1px solid rgba(255,42,42,.4); }
 .va-card__watchlist {
   position: static;
   background: rgba(0, 0, 0, 0.62);
@@ -333,6 +333,13 @@
 .va-grid--list .va-card__price { font-size: 20px; margin-bottom: 8px; }
 .va-grid--list .va-card__meta  { flex-wrap: wrap; gap: 10px; }
 .va-grid--list .va-card__badge { top: 10px; left: 10px; }
+
+/* Plan rang badge – single listing feladó blokkban */
+.sl__plan-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; letter-spacing: .04em; margin-top: 5px; }
+.sl__plan-badge--basic    { background: rgba(255,255,255,.08); color: rgba(255,255,255,.55); border: 1px solid rgba(255,255,255,.15); }
+.sl__plan-badge--silver   { background: rgba(180,210,240,.14); color: #a8ccee; border: 1px solid rgba(180,210,240,.3); }
+.sl__plan-badge--gold     { background: rgba(255,170,0,.15);   color: #ffaa00; border: 1px solid rgba(255,170,0,.35); }
+.sl__plan-badge--platinum { background: rgba(160,100,255,.18); color: #c8a8ff; border: 1px solid rgba(160,100,255,.35); }
 .va-grid--list .va-card__watchlist { position: static; }
 @media (max-width: 600px) {
   .va-grid--list .va-card { flex-direction: column; }
