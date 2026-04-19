@@ -373,6 +373,57 @@ class VA_User_Roles {
 
     /* ══ AJAX: Admin állítja a tervet ══════════════════════════ */
 
+    /**
+     * Csomaghoz illesztés: ha a felhasználónak több aktív hirdetése van mint a limit,
+     * a legrégebbieket felfüggeszti (private), NEM törli.
+     * A felfüggesztett hirdetéseken va_suspended_by_plan=1 meta van,
+     * hogy visszaállítható legyen ha újra megfelelő csomagot vesz.
+     *
+     * @return int Felfüggesztett hirdetések száma
+     */
+    public static function enforce_plan_limits( int $user_id ): int {
+        $plan = self::get_user_plan( $user_id );
+        $cfg  = self::get_plan_config( $plan, $user_id );
+
+        // Korlátlan plan → nincs mit felfüggeszteni
+        if ( $cfg['monthly_limit'] <= 0 ) {
+            return 0;
+        }
+
+        $limit = $cfg['monthly_limit'];
+
+        // Active listings legújabbtól legrégebbig
+        $posts = get_posts( [
+            'post_type'      => 'va_listing',
+            'post_author'    => $user_id,
+            'post_status'    => [ 'publish', 'pending' ],
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+            'posts_per_page' => 200,
+            'no_found_rows'  => true,
+        ] );
+
+        $suspended = 0;
+        foreach ( $posts as $i => $post ) {
+            if ( $i < $limit ) {
+                // Belül a limitben – ha korábban felfüggesztettük, visszaállítjuk
+                if ( get_post_meta( $post->ID, 'va_suspended_by_plan', true ) === '1' ) {
+                    wp_update_post( [ 'ID' => $post->ID, 'post_status' => 'publish' ] );
+                    delete_post_meta( $post->ID, 'va_suspended_by_plan' );
+                }
+            } else {
+                // Limit felett → felfüggesztés
+                if ( $post->post_status !== 'private' ) {
+                    wp_update_post( [ 'ID' => $post->ID, 'post_status' => 'private' ] );
+                    update_post_meta( $post->ID, 'va_suspended_by_plan', '1' );
+                    $suspended++;
+                }
+            }
+        }
+
+        return $suspended;
+    }
+
     public static function ajax_admin_set_plan(): void {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );

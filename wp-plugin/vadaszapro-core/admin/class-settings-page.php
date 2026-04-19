@@ -1999,15 +1999,13 @@ class VA_Settings_Page {
                     .then(function(res){
                         btn.disabled = false;
                         if(res.success){
-                            if(status) { status.textContent = '✅ Mentve!'; status.style.color = '#00c850'; }
-                            // Badge frissítés
-                            var row   = btn.closest('tr.va-upm-row');
-                            var badge = row ? row.querySelector('.va-upm-plan-badge') : null;
-                            if(badge && res.data){
-                                badge.textContent = res.data.icon + ' ' + res.data.label;
-                                badge.style.setProperty('--pc', res.data.color);
+                            var msg = '✅ Mentve!';
+                            if(res.data && res.data.suspended > 0){
+                                msg += ' – ' + res.data.suspended + ' hirdetés felfüggesztve (limit felett).';
                             }
-                            setTimeout(function(){ if(ed) ed.style.display = 'none'; }, 1200);
+                            if(status) { status.textContent = msg; status.style.color = '#00c850'; }
+                            // Oldal újratöltés 1.5mp után – azonnal látszik minden változás
+                            setTimeout(function(){ window.location.reload(); }, 1500);
                         } else {
                             if(status) { status.textContent = '❌ ' + (res.data ? res.data.message : 'Hiba'); status.style.color = '#ff4444'; }
                         }
