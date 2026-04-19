@@ -781,7 +781,7 @@ class VA_Listing_Edit {
             });
             var existing = document.getElementById('va-admin-desc-hidden');
             if (existing && existing.value.trim()) {
-                quillAdmin.clipboard.dangerouslyPasteHTML(0, existing.value);
+                quillAdmin.clipboard.dangerouslyPasteHTML(existing.value);
             }
 
             /* Kép resize */
@@ -805,32 +805,43 @@ class VA_Listing_Edit {
             var _postId = '<?php echo esc_js( (string) ( (int) ( $_GET['id'] ?? 0 ) ) ); ?>';
 
             window.vaAdminDoSubmit = function(form) {
-                var imgs     = quillAdmin.root.querySelectorAll('img[src^="data:"]');
-                var textarea = document.getElementById('va-admin-desc-hidden');
-                if (!imgs.length) {
-                    textarea.value = quillAdmin.root.innerHTML;
+                var textarea  = document.getElementById('va-admin-desc-hidden');
+                var baseHtml  = quillAdmin.root.innerHTML;
+                var imgNodes  = quillAdmin.root.querySelectorAll('img[src^="data:"]');
+
+                if (!imgNodes.length) {
+                    textarea.value = baseHtml;
                     form.submit();
                     return;
                 }
-                var promises = Array.from(imgs).map(function(img) {
+
+                // A DOM-t NEM módosítjuk – string-cserével dolgozunk,
+                // hogy a Quill MutationObserver ne írja vissza a base64-et.
+                var promises = Array.from(imgNodes).map(function(img) {
+                    var b64 = img.getAttribute('src');
                     return fetch(_ajax, {
                         method: 'POST',
+                        credentials: 'same-origin',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({ action: 'va_upload_editor_image', nonce: _nonce, post_id: _postId, data_url: img.src })
+                        body: new URLSearchParams({ action: 'va_upload_editor_image', nonce: _nonce, post_id: _postId, data_url: b64 })
                     })
                     .then(function(r) { return r.json(); })
-                    .then(function(res) { if (res.success) img.src = res.data.url; })
-                    .catch(function() { /* hálózati hiba: kép base64-ben marad */ });
-                });
-                Promise.all(promises)
-                    .then(function() {
-                        textarea.value = quillAdmin.root.innerHTML;
-                        form.submit();
+                    .then(function(res) {
+                        if (res.success && res.data && res.data.url) {
+                            // Csere a HTML string-ben (nem a DOM-ban)
+                            baseHtml = baseHtml.split(b64).join(res.data.url);
+                        }
                     })
-                    .catch(function() {
-                        textarea.value = quillAdmin.root.innerHTML;
-                        form.submit();
-                    });
+                    .catch(function() {});
+                });
+
+                Promise.all(promises).then(function() {
+                    textarea.value = baseHtml;
+                    form.submit();
+                }).catch(function() {
+                    textarea.value = baseHtml;
+                    form.submit();
+                });
             };
 
             document.getElementById('va-listing-form').addEventListener('submit', function(e) {
