@@ -954,6 +954,15 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
 .va-pkg-card--gold     { border-color: rgba(255,211,79,.28); }
 .va-pkg-card--platinum { border-color: rgba(212,166,255,.28); }
 
+/* Aktív csomag kiemelés */
+.va-pkg-card--active {
+  border-color: rgba(0,220,120,.45) !important;
+  box-shadow: 0 18px 40px rgba(0,0,0,.35), 0 0 0 2px rgba(0,220,120,.25), inset 0 1px 0 rgba(255,255,255,.09);
+}
+.va-pkg-card--active:hover {
+  box-shadow: 0 28px 56px rgba(0,0,0,.5), 0 0 0 2px rgba(0,220,120,.35), 0 0 24px rgba(0,220,120,.18);
+}
+
 /* ── Ikon fejléc ── */
 .va-pkg-header {
   padding: 26px 22px 18px;
@@ -1101,6 +1110,33 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
   letter-spacing: .08em;
   border-radius: 0 0 10px 10px;
   padding: 5px 12px 4px;
+}
+.va-pkg-badge--active {
+  background: rgba(0,200,110,.95);
+  border-color: rgba(0,255,140,.4);
+}
+
+/* Ingyenes ár */
+.va-pkg-price--free {
+  font-size: 28px;
+  background: linear-gradient(135deg, #4ade80, #22d3ee);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Aktív / ingyenes gomb */
+.va-pkg-buy-btn--current,
+.va-pkg-buy-btn--free {
+  background: rgba(255,255,255,.04) !important;
+  color: rgba(255,255,255,.35) !important;
+  border-color: rgba(255,255,255,.07) !important;
+  cursor: default !important;
+}
+.va-pkg-buy-btn--current {
+  background: rgba(0,200,110,.12) !important;
+  color: rgba(0,220,120,.65) !important;
+  border-color: rgba(0,200,110,.25) !important;
 }
 
 /* ── Reszponzív ── */

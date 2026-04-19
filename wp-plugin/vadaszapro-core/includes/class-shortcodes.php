@@ -100,7 +100,8 @@ class VA_Shortcodes {
             }
         }
 
-        $all_plan_cfg = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
+        $all_plan_cfg  = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
+        $user_plan    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_user_plan( $user_id ) : 'basic';
         $rank_cards = [
             [ 'slug' => 'basic',    'qty' => 1,  'theme' => 'basic',    'tag' => 'Belépő',  'icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>' ],
             [ 'slug' => 'silver',   'qty' => 3,  'theme' => 'silver',   'tag' => 'Népszerű','icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>' ],
@@ -147,9 +148,15 @@ class VA_Shortcodes {
                     $plan_limit    = (int) ( $cfg['monthly_limit'] ?? 0 );
                     $plan_basis    = (string) ( $cfg['basis'] ?? 'monthly' );
                     $plan_boost_cd = (int) ( $cfg['boost_cooldown'] ?? 0 );
+                    $is_free       = ( $slug === 'basic' );
+                    $is_active     = ( $slug === $user_plan );
                 ?>
-                <div class="va-pkg-card va-pkg-card--<?php echo esc_attr( $card['theme'] ); ?>" data-qty="<?php echo esc_attr( (string) $qty ); ?>">
+                <div class="va-pkg-card va-pkg-card--<?php echo esc_attr( $card['theme'] ); ?><?php echo $is_active ? ' va-pkg-card--active' : ''; ?>" data-qty="<?php echo esc_attr( (string) $qty ); ?>">
+                    <?php if ( $is_active ): ?>
+                    <div class="va-pkg-badge va-pkg-badge--active">✓ Jelenlegi</div>
+                    <?php else: ?>
                     <div class="va-pkg-badge"><?php echo esc_html( $card['tag'] ); ?></div>
+                    <?php endif; ?>
                     <div class="va-pkg-header">
                         <div class="va-pkg-icon-wrap"><?php echo $card['icon']; // SVG, no user input ?></div>
                         <div class="va-pkg-header-text">
@@ -158,8 +165,13 @@ class VA_Shortcodes {
                         </div>
                     </div>
                     <div class="va-pkg-price-block">
+                        <?php if ( $is_free ): ?>
+                        <div class="va-pkg-price va-pkg-price--free">Ingyenes</div>
+                        <div class="va-pkg-unit">regisztrációval</div>
+                        <?php else: ?>
                         <div class="va-pkg-price"><?php echo number_format( (int) $pkg['total'], 0, ',', ' ' ); ?><span>Ft</span></div>
                         <div class="va-pkg-unit"><?php echo number_format( (int) $pkg['unit_price'], 0, ',', ' ' ); ?> Ft / kredit</div>
+                        <?php endif; ?>
                     </div>
                     <ul class="va-pkg-meta">
                         <li><?php echo esc_html( $plan_desc ); ?></li>
@@ -170,9 +182,19 @@ class VA_Shortcodes {
                         <?php endif; ?>
                         <li>Boost újratöltés: <?php echo esc_html( (string) max( 0, $plan_boost_cd ) ); ?> nap</li>
                     </ul>
+                    <?php if ( $is_active ): ?>
+                    <button type="button" class="va-pkg-buy-btn va-pkg-buy-btn--current" disabled>
+                        Aktív csomag
+                    </button>
+                    <?php elseif ( $is_free ): ?>
+                    <button type="button" class="va-pkg-buy-btn va-pkg-buy-btn--free" disabled>
+                        Mindenki számára elérhető
+                    </button>
+                    <?php else: ?>
                     <button type="button" class="va-pkg-buy-btn" data-qty="<?php echo esc_attr( (string) $qty ); ?>" data-total="<?php echo esc_attr( (string) $pkg['total'] ); ?>">
                         Vásárlás →
                     </button>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             </div>
