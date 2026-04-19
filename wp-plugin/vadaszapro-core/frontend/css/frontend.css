@@ -581,15 +581,19 @@
 /* ── Hirdetés képkezelő (sorrend + főkép) ───────────── */
 .va-img-picker { margin-top: 6px; }
 .va-img-drop {
-  border: 2px dashed rgba(255,255,255,.2);
-  border-radius: var(--va-radius);
-  background: rgba(255,255,255,.03);
-  padding: 18px;
-  text-align: center;
+  border: 1px dashed rgba(255,255,255,.18);
+  border-radius: 10px;
+  background: rgba(255,255,255,.02);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   transition: border-color .2s ease, background .2s ease;
+  cursor: pointer;
 }
-.va-img-drop--hover { border-color: #ff0000; background: rgba(255,0,0,.08); }
-.va-img-browse-lbl { color: #ff4040; cursor: pointer; text-decoration: underline; }
+.va-img-drop--hover { border-color: #ff0000; background: rgba(255,0,0,.06); }
+.va-img-drop__text { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.75); line-height: 1.4; }
+.va-img-browse-lbl { color: #ff4040; cursor: pointer; text-decoration: underline; font-weight: 700; }
 
 .va-img-grid {
   margin-top: 12px;

@@ -73,9 +73,8 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 ?>
                 <div class="va-img-picker" id="va-img-picker">
                     <div class="va-img-drop" id="va-img-drop">
-                        <span style="font-size:32px;">🖼️</span>
-                        <p style="margin:8px 0 4px;font-weight:600;">Húzd ide a képeket, vagy <label for="va-img-file-input" class="va-img-browse-lbl">kattints a tallózáshoz</label></p>
-                        <p style="font-size:12px;color:rgba(255,255,255,.45);">Max. <?php echo esc_html( (string) $max_img ); ?> kép &bull; JPG, PNG, WEBP &bull; 5 MB/kép</p>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" style="opacity:.5;flex-shrink:0;"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                        <span class="va-img-drop__text">Húzd ide a képeket, vagy <label for="va-img-file-input" class="va-img-browse-lbl">tallózz</label> &bull; <span style="color:rgba(255,255,255,.4);font-weight:400;">Max. <?php echo esc_html( (string) $max_img ); ?> kép &bull; JPG PNG WEBP &bull; 5 MB/kép</span></span>
                     </div>
                     <input type="file" id="va-img-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-max="<?php echo esc_attr( (string) $max_img ); ?>">
                     <input type="hidden" name="featured_image_index" id="va-featured-index" value="0">
