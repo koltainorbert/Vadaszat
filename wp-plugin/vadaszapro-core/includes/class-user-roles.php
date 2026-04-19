@@ -414,13 +414,17 @@ class VA_User_Roles {
             }
         }
 
+        // Csomagváltás utáni limit érvényesítés (felesleges hirdetések felfüggesztése)
+        $suspended = self::enforce_plan_limits( $target_uid );
+
         $cfg = self::get_plan_config( $plan, $target_uid );
         wp_send_json_success( [
-            'message' => 'Terv sikeresen frissítve!',
-            'plan'    => $plan,
-            'label'   => $cfg['label'],
-            'icon'    => $cfg['icon'],
-            'color'   => $cfg['color'],
+            'message'   => 'Terv sikeresen frissítve!',
+            'plan'      => $plan,
+            'label'     => $cfg['label'],
+            'icon'      => $cfg['icon'],
+            'color'     => $cfg['color'],
+            'suspended' => $suspended,
         ] );
     }
 
