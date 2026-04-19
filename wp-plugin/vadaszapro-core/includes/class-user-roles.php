@@ -278,11 +278,12 @@ class VA_User_Roles {
         if ( is_admin() ) return $clauses;
         if ( ! $query->is_main_query() ) return $clauses;
 
-        // Csak va_listing típusnál, VAGY va_category/va_county/va_condition taxonómia archívumnál
+        // Csak va_listing típusnál, VAGY va_category/va_county/va_condition taxonómia archívumnál, VAGY va_listing CPT archívumnál
         $pt     = $query->get( 'post_type' );
         $pt_arr = is_array( $pt ) ? $pt : ( $pt ? [ $pt ] : [] );
         $is_va_listing_query = in_array( 'va_listing', $pt_arr, true )
-            || $query->is_tax( [ 'va_category', 'va_county', 'va_condition' ] );
+            || $query->is_tax( [ 'va_category', 'va_county', 'va_condition' ] )
+            || $query->is_post_type_archive( 'va_listing' );
 
         if ( ! $is_va_listing_query ) {
             return $clauses;

@@ -104,7 +104,7 @@
   0%   { stroke-dasharray: 18; stroke-dashoffset: 18; opacity: 0; }
   100% { stroke-dasharray: 18; stroke-dashoffset: 0;  opacity: 1; }
 }
-.va-btn--sm { padding: 6px 14px; font-size: 12px; }
+.va-btn--sm { padding: 6px 14px; font-size: 12px; height: 34px; box-sizing: border-box; line-height: 1; }
 .va-btn--block { width: 100%; justify-content: center; }
 
 /* ── Form elemek ──────────────────────────────────── */
