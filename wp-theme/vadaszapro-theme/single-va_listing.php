@@ -397,6 +397,9 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     var dragging = false;
     var sx = 0;
     var sy = 0;
+    var touchStartX = 0;
+    var touchStartY = 0;
+    var touchMoved = false;
 
     function applyTransform() {
         if (!viewerImg) return;
@@ -507,6 +510,64 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
             dragging = false;
             stage.classList.remove('is-dragging');
         });
+
+        stage.addEventListener('touchstart', function(e){
+            if (!e.touches || e.touches.length !== 1) return;
+            var t = e.touches[0];
+            if (scale > 1) {
+                dragging = true;
+                sx = t.clientX - tx;
+                sy = t.clientY - ty;
+                stage.classList.add('is-dragging');
+                return;
+            }
+            touchStartX = t.clientX;
+            touchStartY = t.clientY;
+            touchMoved = false;
+        }, { passive: true });
+
+        stage.addEventListener('touchmove', function(e){
+            if (!e.touches || e.touches.length !== 1) return;
+            var t = e.touches[0];
+            if (scale > 1 && dragging) {
+                tx = t.clientX - sx;
+                ty = t.clientY - sy;
+                applyTransform();
+                e.preventDefault();
+                return;
+            }
+            if (!touchStartX && !touchStartY) return;
+            if (Math.abs(t.clientX - touchStartX) > 10 || Math.abs(t.clientY - touchStartY) > 10) {
+                touchMoved = true;
+            }
+        }, { passive: false });
+
+        stage.addEventListener('touchend', function(e){
+            if (scale > 1) {
+                dragging = false;
+                stage.classList.remove('is-dragging');
+                return;
+            }
+            if (!touchMoved) {
+                touchStartX = 0;
+                touchStartY = 0;
+                return;
+            }
+            var t = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0] : null;
+            if (!t) return;
+            var dx = t.clientX - touchStartX;
+            var dy = t.clientY - touchStartY;
+            if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) {
+                if (dx < 0) {
+                    showImage(currentIndex + 1, true);
+                } else {
+                    showImage(currentIndex - 1, true);
+                }
+            }
+            touchStartX = 0;
+            touchStartY = 0;
+            touchMoved = false;
+        }, { passive: true });
     }
 
     // Telefonszam
