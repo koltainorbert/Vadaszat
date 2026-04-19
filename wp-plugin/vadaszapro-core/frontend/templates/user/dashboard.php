@@ -153,13 +153,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                         <td style="padding:10px 8px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
-                        <td style="padding:10px 8px;text-align:right;">
-                            <?php
-                            $edit_page = get_page_by_path('va-hirdetes-feladas');
-                            $edit_url  = $edit_page
-                                ? add_query_arg( 'edit', $l->ID, get_permalink( $edit_page ) )
-                                : get_edit_post_link( $l->ID );
-                            ?>
+                        <td style="padding:10px 8px;">
                             <?php
                             // Boost gomb
                             if ( class_exists( 'VA_User_Roles' ) ) :
@@ -171,14 +165,14 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                     data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
                                     data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
                                     style="background:rgba(255,200,0,.15);border:1px solid #ffcc00;color:#ffcc00;">
-                                ⚡ Előre
+                                &#9889; El&#337;re
                             </button>
                             <?php else:
                                 $hrs = (int) ceil( $boost_info['seconds_remaining'] / 3600 );
-                                $days_left = round( $boost_info['seconds_remaining'] / 86400, 1 );
+                                $days_left = (int) ceil( $boost_info['seconds_remaining'] / 86400 );
                             ?>
                             <span class="va-boost-cd" style="font-size:11px;color:rgba(255,255,255,.35);" title="<?php echo esc_attr( $boost_info['cooldown_days'] . ' naponként emelhető' ); ?>">
-                                ⚡ <?php echo $boost_info['seconds_remaining'] >= 86400 ? esc_html( $days_left . ' nap' ) : esc_html( $hrs . 'ó' ); ?>
+                                &#9889; <?php echo $boost_info['seconds_remaining'] >= 86400 ? esc_html( $days_left . ' nap' ) : esc_html( $hrs . 'ó' ); ?>
                             </span>
                             <?php
                                 endif;
