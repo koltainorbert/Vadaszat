@@ -46,6 +46,31 @@ class VA_Ajax {
         add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
     }
 
+    /* ── Rate limiting helper ──────────────────────────── */
+    /**
+     * IP-alapú rate limiting transient-tel.
+     * @param string $action  Egyedi azonosító (pl. 'live_search')
+     * @param int    $limit   Max kérés száma az időablakon belül
+     * @param int    $window  Időablak másodpercben
+     */
+    private static function is_rate_limited( string $action, int $limit = 30, int $window = 60 ): bool {
+        $ip  = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0' ) );
+        $key = 'va_rl_' . $action . '_' . md5( $ip );
+
+        $count = (int) get_transient( $key );
+        if ( $count >= $limit ) {
+            return true;
+        }
+        if ( $count === 0 ) {
+            set_transient( $key, 1, $window );
+        } else {
+            // Növelés – maradék TTL megőrzése nem lehetséges transient-tel, de
+            // a window újraindul csak ha a transient lejár. Ez elfogadható.
+            set_transient( $key, $count + 1, $window );
+        }
+        return false;
+    }
+
     /* ── Hirdetés szerkesztés (frontend) ──────────────── */
     public static function update_listing() {
         check_ajax_referer( 'va_update_listing', 'nonce' );
@@ -772,6 +797,10 @@ class VA_Ajax {
      * meta_query / EAV helyett – 3M hirdetésnél is gyors marad.
      * Transient cache: 5 perc, automatikusan törlődik új hirdetésnél.     */
     public static function filter_listings() {
+        if ( self::is_rate_limited( 'filter_listings', 60, 60 ) ) {
+            wp_send_json_error( [ 'message' => 'Túl sok kérés. Kérjük várjon egy percet.' ], 429 );
+        }
+
         global $wpdb;
 
         $paged     = max( 1, intval( $_POST['paged']     ?? 1 ) );
@@ -913,6 +942,10 @@ class VA_Ajax {
 
     /* ── Élő keresés (header dropdown) ─────────────────── */
     public static function live_search() {
+        if ( self::is_rate_limited( 'live_search', 60, 60 ) ) {
+            wp_send_json_error( [ 'message' => 'Túl sok kérés. Kérjük várjon egy percet.' ], 429 );
+        }
+
         $q = sanitize_text_field( wp_unslash( $_POST['q'] ?? '' ) );
         if ( strlen( $q ) < 2 ) {
             wp_send_json_success( [] );
