@@ -357,9 +357,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Biztosítjuk hogy _featured valid
         if (_files.length > 0 && _featured >= _files.length) _featured = 0;
         $featIdx.val(_featured);
+        updateKeepImages();
 
         _files.forEach((item, idx) => {
-            const url = URL.createObjectURL(item.file);
+            const url = item.url ? item.url : URL.createObjectURL(item.file);
             const isFeat = idx === _featured;
             const starSvg = '<svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
             const xSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
@@ -444,16 +445,32 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
         e.preventDefault();
-        var $btn = $('#va-submit-btn');
+        var $btn    = $('#va-submit-btn');
+        var editMode = !! VA_Data.edit_mode;
         $btn.prop('disabled', true).text('Feltöltés...');
 
         var formData = new FormData(this);
 
-        // Képek hozzáadása a correct sorrendben
+        // Csak az új (File objektumos) képek feltöltése
         _files.forEach(function(item){
-            formData.append('listing_images[]', item.file, item.file.name);
+            if (item.file) {
+                formData.append('listing_images[]', item.file, item.file.name);
+            }
         });
-        formData.set('featured_image_index', _featured);
+
+        // Featured kép: meglévő ID vagy index az új képek között
+        var featItem = _files[_featured];
+        if (featItem && featItem.existing_id) {
+            formData.set('featured_existing_id', featItem.existing_id);
+            formData.set('featured_image_index', -1);
+        } else {
+            // Hány meglévő kép van előtte?
+            var newIdx = 0;
+            for (var i = 0; i < _featured; i++) {
+                if (!_files[i].existing_id) newIdx++;
+            }
+            formData.set('featured_image_index', newIdx);
+        }
 
         $.ajax({
             url:         VA_Data.ajax_url,
@@ -462,7 +479,7 @@ document.addEventListener('DOMContentLoaded', function() {
             processData: false,
             contentType: false,
             success: function(res){
-                $btn.prop('disabled', false).text('📤 Hirdetés feladása');
+                $btn.prop('disabled', false).text(editMode ? '💾 Változások mentése' : '📤 Hirdetés feladása');
                 if(res.success){
                     $('#va-submit-notice').html('<div class="va-notice va-notice--success">' + res.data.message + '</div>');
                     if(res.data.permalink){

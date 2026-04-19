@@ -10,6 +10,8 @@ class VA_Ajax {
     public static function init() {
         // Hirdetés feladás
         add_action( 'wp_ajax_va_submit_listing',  [ __CLASS__, 'submit_listing' ] );
+        // Hirdetés szerkesztés (frontend)
+        add_action( 'wp_ajax_va_update_listing',  [ __CLASS__, 'update_listing' ] );
         add_action( 'template_redirect', [ __CLASS__, 'handle_listing_payment_callback' ] );
 
         // Kredit csomag vásárlás
