@@ -71,49 +71,52 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '</select>';
                 break;
             case 'description':
-                wp_editor(
-                    wp_kses_post( (string) $val ),
-                    'va_desc_editor',
-                    [
-                        'textarea_name' => 'description',
-                        'textarea_rows' => 12,
-                        'media_buttons' => true,
-                        'teeny'         => false,
-                        'quicktags'     => true,
-                        'tinymce'       => [
-                            'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | media | undo redo',
-                            'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
-                            'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
-                            'resize'        => true,
-                            'content_style' => 'body { background:#111; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; padding:12px; } a { color:#ff4444; } img { max-width:100%; height:auto; border-radius:6px; }',
-                        ],
-                    ]
-                );
-                echo '<style>
-#wp-va_desc_editor-wrap .wp-editor-tools{background:#141414!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-wrap .wp-media-buttons .button{background:#1e1e1e!important;color:#ccc!important;border-color:rgba(255,255,255,.2)!important;box-shadow:none!important;text-shadow:none!important;}
-#wp-va_desc_editor-wrap .wp-editor-tabs button{background:#141414!important;color:#888!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important;}
-#wp-va_desc_editor-wrap .wp-editor-tabs button:hover,
-#wp-va_desc_editor-wrap .wp-editor-tabs button.active{background:#1e1e1e!important;color:#e8e8e8!important;}
-#wp-va_desc_editor-editor-container .mce-tinymce{box-shadow:none!important;border:1px solid rgba(255,255,255,.12)!important;}
-#wp-va_desc_editor-editor-container .mce-top-part,
-#wp-va_desc_editor-editor-container .mce-toolbar-grp,
-#wp-va_desc_editor-editor-container .mce-panel,
-#wp-va_desc_editor-editor-container .mce-toolbar,
-#wp-va_desc_editor-editor-container .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-editor-container .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-editor-container .mce-btn button,
-#wp-va_desc_editor-editor-container .mce-btn{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
-#wp-va_desc_editor-editor-container .mce-btn:hover button,
-#wp-va_desc_editor-editor-container .mce-btn.mce-active button{background:#2a2a2a!important;}
-#wp-va_desc_editor-editor-container .mce-ico{color:#bbb!important;}
-#wp-va_desc_editor-editor-container .mce-txt,
-#wp-va_desc_editor-editor-container .mce-caret{color:#ccc!important;}
-#wp-va_desc_editor-editor-container .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
-#wp-va_desc_editor-editor-container .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-editor-container .mce-path-item,
-#wp-va_desc_editor-editor-container .mce-wordcount{color:#555!important;}
-</style>';
+                $desc_val = wp_kses_post( (string) $val );
+                echo '<div id="wp-va_desc_editor-wrap" style="border:1px solid rgba(255,255,255,.15);border-radius:6px;overflow:hidden;">';
+                echo '<textarea id="va_desc_editor" name="description" rows="12" style="width:100%;display:none;">' . esc_textarea( $desc_val ) . '</textarea>';
+                echo '</div>';
+                add_action( 'wp_footer', function() {
+                    static $va_mce_done = false;
+                    if ( $va_mce_done ) return;
+                    $va_mce_done = true;
+                    ?>
+                    <style>
+                    #wp-va_desc_editor-wrap .mce-tinymce{box-shadow:none!important;border:none!important;}
+                    #wp-va_desc_editor-wrap .mce-top-part,
+                    #wp-va_desc_editor-wrap .mce-toolbar-grp,
+                    #wp-va_desc_editor-wrap .mce-panel,
+                    #wp-va_desc_editor-wrap .mce-toolbar,
+                    #wp-va_desc_editor-wrap .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
+                    #wp-va_desc_editor-wrap .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
+                    #wp-va_desc_editor-wrap .mce-btn,
+                    #wp-va_desc_editor-wrap .mce-btn button{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
+                    #wp-va_desc_editor-wrap .mce-btn:hover button{background:#2a2a2a!important;}
+                    #wp-va_desc_editor-wrap .mce-ico{color:#bbb!important;}
+                    #wp-va_desc_editor-wrap .mce-txt,
+                    #wp-va_desc_editor-wrap .mce-caret{color:#ccc!important;}
+                    #wp-va_desc_editor-wrap .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
+                    #wp-va_desc_editor-wrap .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+                    #wp-va_desc_editor-wrap .mce-path-item,
+                    #wp-va_desc_editor-wrap .mce-wordcount{color:#555!important;}
+                    </style>
+                    <script>
+                    (function tryInitVaMCE(){
+                        if (typeof tinymce === 'undefined') { setTimeout(tryInitVaMCE, 150); return; }
+                        tinymce.init({
+                            selector: '#va_desc_editor',
+                            skin: 'lightgray',
+                            plugins: 'lists link paste hr fullscreen media',
+                            toolbar1: 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | undo redo',
+                            resize: true,
+                            content_style: 'body{background:#111;color:#e8e8e8;font-family:system-ui,sans-serif;font-size:15px;padding:12px;}a{color:#ff4444;}img{max-width:100%;height:auto;}',
+                            setup: function(ed){
+                                ed.on('change keyup', function(){ ed.save(); });
+                            }
+                        });
+                    })();
+                    </script>
+                    <?php
+                }, 99 );
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
