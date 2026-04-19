@@ -213,20 +213,13 @@ function va_get_user_listings( int $user_id, string $status = 'any', int $per_pa
 
     // Direkt wpdb ID-lekérdezés – megkerüli a WP capability-szűrőt,
     // hogy a felhasználó saját privát (felfüggesztett) hirdetéseit is lássa.
-    $type_placeholders   = implode( ',', array_fill( 0, count( $post_types ), "'%s'" ) );
-    $statuses            = ( $status === 'any' ) ? [ 'publish', 'pending', 'draft', 'private' ] : ( is_array( $status ) ? $status : [ $status ] );
-    $status_placeholders = implode( ',', array_fill( 0, count( $statuses ), "'%s'" ) );
+    $statuses = ( $status === 'any' ) ? [ 'publish', 'pending', 'draft', 'private' ] : ( is_array( $status ) ? $status : [ $status ] );
+    $limit    = absint( $per_page );
+    $offset   = absint( ( $page - 1 ) * $per_page );
 
-    $limit  = absint( $per_page );
-    $offset = absint( ( $page - 1 ) * $per_page );
-
-    // Direkt SQL \u2013 t\u00edpusok \u00e9s st\u00e1tuszok string\u00e9rt\u00e9kek, ezeket esc_sql()-lel v\u00e9dj\u00fck.
-    $type_in   = implode( ',', array_map( function( $t ) use ( $wpdb ) {
-        return "'" . esc_sql( $t ) . "'";
-    }, $post_types ) );
-    $status_in = implode( ',', array_map( function( $s ) use ( $wpdb ) {
-        return "'" . esc_sql( $s ) . "'";
-    }, $statuses ) );
+    // Típusok és státuszok esc_sql()-lel védve, user_id és limit %d-vel
+    $type_in   = implode( ',', array_map( function( $t ) { return "'" . esc_sql( $t ) . "'"; }, $post_types ) );
+    $status_in = implode( ',', array_map( function( $s ) { return "'" . esc_sql( $s ) . "'"; }, $statuses ) );
 
     // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
     $ids = $wpdb->get_col( $wpdb->prepare(
