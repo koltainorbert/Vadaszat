@@ -11,6 +11,53 @@ class VA_Admin {
         add_action( "admin_enqueue_scripts", [ __CLASS__, "enqueue" ] );
         add_filter( "admin_body_class",      [ __CLASS__, "body_class" ] );
         add_action( "in_admin_header",       [ __CLASS__, "render_shell" ] );
+        add_action( "admin_head",            [ __CLASS__, "inject_admin_css" ] );
+    }
+
+    /* ── Dinamikus CSS változók injektálása ─────────────────── */
+    public static function inject_admin_css(): void {
+        if ( ! self::is_va_page() ) return;
+
+        $font_stacks = [
+            'system'        => 'system-ui,-apple-system,sans-serif',
+            'inter'         => '"Inter",system-ui,sans-serif',
+            'roboto'        => '"Roboto",system-ui,sans-serif',
+            'montserrat'    => '"Montserrat",system-ui,sans-serif',
+            'nunito'        => '"Nunito",system-ui,sans-serif',
+            'poppins'       => '"Poppins",system-ui,sans-serif',
+            'raleway'       => '"Raleway",system-ui,sans-serif',
+            'dm-sans'       => '"DM Sans",system-ui,sans-serif',
+            'manrope'       => '"Manrope",system-ui,sans-serif',
+            'work-sans'     => '"Work Sans",system-ui,sans-serif',
+            'rubik'         => '"Rubik",system-ui,sans-serif',
+            'source-sans-3' => '"Source Sans 3",system-ui,sans-serif',
+            'fira-sans'     => '"Fira Sans",system-ui,sans-serif',
+            'oswald'        => '"Oswald",system-ui,sans-serif',
+        ];
+
+        $g = static fn( string $k, string $d ) => (string) ( get_option( $k, $d ) ?: $d );
+        $font_slug  = $g( 'va_ap_font', 'montserrat' );
+        $font_stack = $font_stacks[ $font_slug ] ?? $font_stacks['montserrat'];
+
+        $vars  = ':root{';
+        $vars .= '--va-bg:'        . esc_attr( $g( 'va_ap_color_bg',      '#070709' ) ) . ';';
+        $vars .= '--va-bg2:'       . esc_attr( $g( 'va_ap_color_bg2',     '#0d0d11' ) ) . ';';
+        $vars .= '--va-bg3:'       . esc_attr( $g( 'va_ap_color_bg3',     '#111118' ) ) . ';';
+        $vars .= '--va-bg4:'       . esc_attr( $g( 'va_ap_color_bg4',     '#161620' ) ) . ';';
+        $vars .= '--va-text:'      . esc_attr( $g( 'va_ap_color_text',    '#e8e8f0' ) ) . ';';
+        $vars .= '--va-muted:'     . $g( 'va_ap_color_muted',  'rgba(255,255,255,.45)' ) . ';';
+        $vars .= '--va-accent:'    . esc_attr( $g( 'va_ap_color_accent',  '#ff2020' ) ) . ';';
+        $vars .= '--va-accent2:'   . esc_attr( $g( 'va_ap_color_accent2', '#ff5050' ) ) . ';';
+        $vars .= '--va-border:'    . $g( 'va_ap_color_border',  'rgba(255,255,255,.07)' ) . ';';
+        $vars .= '--va-border2:'   . $g( 'va_ap_color_border2', 'rgba(255,255,255,.12)' ) . ';';
+        $vars .= '--va-sidebar-w:' . (int) $g( 'va_ap_sidebar_width', '230' ) . 'px;';
+        $vars .= '--va-topbar-h:'  . (int) $g( 'va_ap_topbar_height', '60' )  . 'px;';
+        $vars .= '--va-radius:'    . (int) $g( 'va_ap_radius',    '12' ) . 'px;';
+        $vars .= '--va-radius-sm:' . (int) $g( 'va_ap_radius_sm', '8' )  . 'px;';
+        $vars .= '--va-font:'      . $font_stack . ';';
+        $vars .= '}';
+
+        echo '<style id="va-admin-theme-vars">' . $vars . '</style>' . "\n";
     }
 
     /* ── Body class ─────────────────────────────────────────── */
@@ -40,9 +87,13 @@ class VA_Admin {
     public static function render_shell(): void {
         if ( ! self::is_va_page() ) return;
 
-        $current_user = wp_get_current_user();
-        $avatar       = get_avatar( $current_user->ID, 32 );
-        $logout_url   = wp_logout_url( admin_url() );
+        $current_user   = wp_get_current_user();
+        $avatar         = get_avatar( $current_user->ID, 32 );
+        $logout_url     = wp_logout_url( admin_url() );
+        $ap_panel_name  = (string) ( get_option( 'va_ap_panel_name', 'VadászApró' ) ?: 'VadászApró' );
+        $ap_panel_icon  = (string) ( get_option( 'va_ap_panel_icon', '🎯' ) ?: '🎯' );
+        $ap_logo_url    = (string) get_option( 'va_ap_logo_url', '' );
+        $ap_logo_height = (int) ( get_option( 'va_ap_logo_height', 32 ) ?: 32 );
 
         $page    = sanitize_key( $_GET["page"] ?? "" );
         $pt      = sanitize_key( $_GET["post_type"] ?? "" );
@@ -65,6 +116,7 @@ class VA_Admin {
             "vadaszapro-aukcio"       => "Aukció beállítások",
             "vadaszapro-users"        => "Felhasználók",
             "va-form-builder"         => "Form Szerkesztő",
+            "vadaszapro-adminpanel"   => "Admin Panel beállítások",
             "vadaszapro-stats"        => "Statisztika",
         ];
         $titles["vadaszapro-listings"]     = "Hirdetések";
@@ -82,9 +134,9 @@ class VA_Admin {
         ?>
         <div id="va-sidebar">
             <a href="<?php echo esc_url( admin_url( "admin.php?page=vadaszapro-dashboard" ) ); ?>" class="va-sb-logo">
-                <div class="va-sb-logo__icon">🎯</div>
+                <div class="va-sb-logo__icon"><?php if ( $ap_logo_url ): ?><img src="<?php echo esc_url( $ap_logo_url ); ?>" style="height:<?php echo $ap_logo_height; ?>px;max-width:100%;object-fit:contain;display:block;" alt=""><?php else: echo esc_html( $ap_panel_icon ); ?><?php endif; ?></div>
                 <div class="va-sb-logo__name">
-                    VadászApró
+                    <?php echo esc_html( $ap_panel_name ); ?>
                     <small>Admin Panel</small>
                 </div>
             </a>
@@ -108,6 +160,7 @@ class VA_Admin {
                 <?php self::sb_item( "📐", "Layout Állító", admin_url( "admin.php?page=vadaszapro-layout" ), $page === "vadaszapro-layout" ); ?>
                 <?php self::sb_item( "🗂️", "Fejléc & Lábléc", admin_url( "admin.php?page=vadaszapro-header-footer" ), $page === "vadaszapro-header-footer" ); ?>
                 <?php self::sb_item( "🧩", "Form szerkesztő", admin_url( "admin.php?page=va-form-builder" ), $page === "va-form-builder" ); ?>
+                <?php self::sb_item( "🖥️", "Admin Panel", admin_url( "admin.php?page=vadaszapro-adminpanel" ), $page === "vadaszapro-adminpanel" ); ?>
 
                 <span class="va-sb-sep">Tartalom</span>
 
@@ -189,6 +242,7 @@ class VA_Admin {
         }
         add_submenu_page( "vadaszapro", "Felhasználók",           "Felhasználók",      "manage_options", "vadaszapro-users",          [ VA_Settings_Page::class, "render_users"            ] );
         add_submenu_page( "vadaszapro", "Form szerkesztő",        "🧩 Form szerkesztő","manage_options", "va-form-builder",           [ VA_Form_Builder::class,  "render"                 ] );
+        add_submenu_page( "vadaszapro", "Admin Panel beállítások", "Admin Panel",       "manage_options", "vadaszapro-adminpanel",     [ VA_Settings_Page::class, "render_adminpanel"      ] );
         add_submenu_page( "vadaszapro", "Statisztika",            "Statisztika",       "manage_options", "vadaszapro-stats",          [ VA_Settings_Page::class, "render_stats"            ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
