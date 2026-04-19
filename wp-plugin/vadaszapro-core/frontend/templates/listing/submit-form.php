@@ -72,73 +72,36 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 break;
             case 'description':
                 $desc_val = wp_kses_post( (string) $val );
-                // getUserSetting override: mielőtt a wp-editor.js olvasna, mindig 'tmce'-t ad vissza
-                echo '<script>
-(function(){
-    var _orig = window.getUserSetting;
-    window.getUserSetting = function(n) {
-        if (n === "editor") return "tmce";
-        return _orig ? _orig.apply(this, arguments) : "";
-    };
-    if (typeof setUserSetting === "function") setUserSetting("editor", "tmce");
-})();
-</script>';
-                wp_editor(
-                    $desc_val,
-                    'va_desc_editor',
-                    [
-                        'textarea_name' => 'description',
-                        'textarea_rows' => 12,
-                        'media_buttons' => true,
-                        'teeny'         => false,
-                        'quicktags'     => true,
-                        'tinymce'       => [
-                            'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | image media | undo redo',
-                            'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
-                            'block_formats' => 'Bekezdes=p;Cim 2=h2;Cim 3=h3',
-                            'resize'        => true,
-                            'content_style' => 'body { background:#111; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; line-height:1.7; padding:12px; } a { color:#ff4444; } img { max-width:100%; height:auto; border-radius:6px; }',
-                        ],
-                    ]
-                );
-                echo '<style>
-#wp-va_desc_editor-wrap .wp-editor-tools{background:#141414!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-wrap .wp-media-buttons .button{background:#1e1e1e!important;color:#ccc!important;border-color:rgba(255,255,255,.2)!important;box-shadow:none!important;text-shadow:none!important;}
-#wp-va_desc_editor-wrap .wp-editor-tabs button{background:#141414!important;color:#888!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important;}
-#wp-va_desc_editor-wrap .wp-editor-tabs button:hover,
-#wp-va_desc_editor-wrap .wp-editor-tabs button.active{background:#1e1e1e!important;color:#e8e8e8!important;}
-#wp-va_desc_editor-wrap .mce-tinymce{box-shadow:none!important;border:1px solid rgba(255,255,255,.15)!important;}
-#wp-va_desc_editor-wrap .mce-top-part,
-#wp-va_desc_editor-wrap .mce-toolbar-grp,
-#wp-va_desc_editor-wrap .mce-panel,
-#wp-va_desc_editor-wrap .mce-toolbar,
-#wp-va_desc_editor-wrap .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-wrap .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-wrap .mce-btn,
-#wp-va_desc_editor-wrap .mce-btn button{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
-#wp-va_desc_editor-wrap .mce-btn:hover button,
-#wp-va_desc_editor-wrap .mce-btn.mce-active button{background:#2a2a2a!important;}
-#wp-va_desc_editor-wrap .mce-ico{color:#bbb!important;}
-#wp-va_desc_editor-wrap .mce-txt,
-#wp-va_desc_editor-wrap .mce-caret{color:#ccc!important;}
-#wp-va_desc_editor-wrap .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
-#wp-va_desc_editor-wrap .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-wrap .mce-path-item,
-#wp-va_desc_editor-wrap .mce-wordcount{color:#555!important;}
-#wp-va_desc_editor-wrap .tox-tinymce{border:1px solid rgba(255,255,255,.15)!important;border-radius:6px!important;}
-#wp-va_desc_editor-wrap .tox-editor-header,
-#wp-va_desc_editor-wrap .tox-toolbar-overlord,
-#wp-va_desc_editor-wrap .tox-toolbar__primary,
-#wp-va_desc_editor-wrap .tox-toolbar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-wrap .tox-toolbar__group{border-right-color:rgba(255,255,255,.1)!important;}
-#wp-va_desc_editor-wrap .tox-tbtn{color:#ccc!important;background:transparent!important;}
-#wp-va_desc_editor-wrap .tox-tbtn svg{fill:#aaa!important;}
-#wp-va_desc_editor-wrap .tox-tbtn:hover,
-#wp-va_desc_editor-wrap .tox-tbtn:focus{background:#2a2a2a!important;}
-#wp-va_desc_editor-wrap .tox-tbtn--active{background:#333!important;}
-#wp-va_desc_editor-wrap .tox-tbtn__select-label{color:#ccc!important;}
-#wp-va_desc_editor-wrap .tox-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
-</style>';
+                ?>
+                <div id="va-quill-editor"></div>
+                <textarea name="description" id="va-desc-hidden" style="display:none"><?php echo esc_textarea( $desc_val ); ?></textarea>
+                <style>
+                .ql-toolbar.ql-snow{background:#1e1e1e;border:1px solid rgba(255,255,255,.15)!important;border-bottom:none!important;border-radius:6px 6px 0 0;}
+                .ql-container.ql-snow{background:#111;border:1px solid rgba(255,255,255,.15)!important;border-radius:0 0 6px 6px;font-size:15px;}
+                .ql-editor{color:#e8e8e8;min-height:200px;line-height:1.7;font-family:system-ui,sans-serif;}
+                .ql-editor.ql-blank::before{color:rgba(255,255,255,.3);font-style:normal;}
+                .ql-snow .ql-stroke{stroke:#aaa!important;}
+                .ql-snow .ql-fill,.ql-snow .ql-stroke.ql-fill{fill:#aaa!important;}
+                .ql-snow .ql-picker{color:#bbb!important;}
+                .ql-snow .ql-picker-label{border-color:rgba(255,255,255,.15)!important;}
+                .ql-snow .ql-picker-options{background:#1e1e1e!important;border-color:rgba(255,255,255,.15)!important;}
+                .ql-snow .ql-picker-item{color:#bbb!important;}
+                .ql-snow .ql-picker-item:hover,.ql-snow .ql-picker-item.ql-selected{color:#fff!important;}
+                .ql-snow.ql-toolbar button:hover .ql-stroke,.ql-snow .ql-toolbar button:hover .ql-stroke{stroke:#ff4444!important;}
+                .ql-snow.ql-toolbar button.ql-active .ql-stroke,.ql-snow .ql-toolbar button.ql-active .ql-stroke{stroke:#ff4444!important;}
+                .ql-snow.ql-toolbar button:hover .ql-fill,.ql-snow .ql-toolbar button:hover .ql-fill{fill:#ff4444!important;}
+                .ql-snow.ql-toolbar button.ql-active .ql-fill{fill:#ff4444!important;}
+                .ql-snow .ql-picker.ql-header .ql-picker-label::before,.ql-snow .ql-picker.ql-header .ql-picker-item::before{color:#bbb!important;}
+                .ql-editor a{color:#ff4444;}
+                .ql-editor img{max-width:100%;border-radius:6px;}
+                .ql-editor blockquote{border-left:3px solid #ff4444;padding-left:12px;color:#aaa;margin:8px 0;}
+                .ql-editor h2,.ql-editor h3{color:#e8e8e8;}
+                .ql-editor ol,.ql-editor ul{color:#e8e8e8;}
+                .ql-snow .ql-tooltip{background:#1e1e1e!important;border-color:rgba(255,255,255,.15)!important;color:#e8e8e8!important;box-shadow:0 4px 20px rgba(0,0,0,.5)!important;}
+                .ql-snow .ql-tooltip input[type=text]{background:#111!important;border-color:rgba(255,255,255,.2)!important;color:#e8e8e8!important;}
+                .ql-snow .ql-tooltip a.ql-action,.ql-snow .ql-tooltip a.ql-remove{color:#ff4444!important;}
+                </style>
+                <?php
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
@@ -431,6 +394,8 @@ wp_localize_script( 'va-submit', 'VA_Data', [
     </form>
 </div>
 
+<link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 (function($){
