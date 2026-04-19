@@ -555,6 +555,20 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ── Fájl input ──────────────────────────────────── */
     $input.on('change', function(){ addFiles(this.files); this.value = ''; });
 
+    /* ══ TinyMCE alapból vizuális mód ══════════════════════════ */
+    $(document).ready(function(){
+        // Ha a Kód fül aktív, automatikusan Vizuálisra vált
+        function switchToVisual() {
+            var $tmce = $('#wp-va_desc_editor-wrap');
+            if ($tmce.length && $tmce.hasClass('html-active')) {
+                $tmce.find('.switch-tmce').trigger('click');
+            }
+        }
+        // Azonnal + 500ms késleltetéssel (ha late-load)
+        switchToVisual();
+        setTimeout(switchToVisual, 500);
+    });
+
     /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
         e.preventDefault();
