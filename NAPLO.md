@@ -2,6 +2,17 @@
 
 ---
 
+## 2026. 04. 19. – Session #99 (Viewer lapozas javitas: elozo/kovetkezo kep)
+
+### Mit csinaltunk [x]
+- [x] `wp-theme/vadaszapro-theme/single-va_listing.php` – fullscreen viewerbe elozo/kovetkezo gombok (`sl-viewer-prev`, `sl-viewer-next`)
+- [x] Billentyuzet navigacio: nyil balra/jobbra kepvaltas, ESC bezaras
+- [x] Main kep + thumb aktiv allapot szinkronizalas lapozas kozben
+- [x] `wp-theme/vadaszapro-theme/style.css` – viewer nav gomb stilusok (desktop + mobil)
+- [x] Deploy Theme: exit 0 ✅
+
+---
+
 ## 2026. 04. 19. – Session #98 (Single product full-frame galeria + profi zoom kepnezegeto)
 
 ### Mit csinaltunk [x]
