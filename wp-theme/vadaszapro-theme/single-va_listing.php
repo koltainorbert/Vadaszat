@@ -310,9 +310,17 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
             <!-- Felado + kapcsolat -->
             <div class="sl__card sl__contact">
                 <div class="sl__card-title">Felad&oacute;</div>
+                <?php
+                $author_avatar_id  = $author ? (int) get_user_meta( $author->ID, 'va_profile_avatar_id', true ) : 0;
+                $author_avatar_url = $author_avatar_id ? wp_get_attachment_image_url( $author_avatar_id, 'thumbnail' ) : '';
+                ?>
                 <div class="sl__seller">
                     <div class="sl__seller-av">
-                        <?php echo strtoupper( substr( $author ? $author->display_name : 'X', 0, 1 ) ); ?>
+                        <?php if ( $author_avatar_url ): ?>
+                            <img src="<?php echo esc_url( $author_avatar_url ); ?>" alt="Feladó profilképe">
+                        <?php else: ?>
+                            <?php echo strtoupper( substr( $author ? $author->display_name : 'X', 0, 1 ) ); ?>
+                        <?php endif; ?>
                     </div>
                     <div>
                         <div class="sl__seller-name"><?php echo esc_html($author ? $author->display_name : 'Ismeretlen'); ?></div>
