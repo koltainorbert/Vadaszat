@@ -222,50 +222,57 @@ class VA_Auctions {
         if ( ! $prev ) return;
 
         $user    = get_userdata( $prev->user_id );
-        $subject = 'Túllicitáltak – ' . get_the_title( $auction_id );
-        $amount_fmt = number_format( $new_amount, 0, ',', ' ' );
+        $amount_fmt = number_format( $new_amount, 0, ',', '\u00a0' );
+        $title   = get_the_title( $auction_id );
+        $vars    = [
+            '{name}'   => esc_html( $user->display_name ),
+            '{title}'  => esc_html( $title ),
+            '{amount}' => esc_html( $amount_fmt ),
+        ];
         VA_Mailer::send(
             $user->user_email,
-            $subject,
-            'Túllicitáltak téged!',
-            '<p>Kedves <strong>' . esc_html( $user->display_name ) . '</strong>,</p>'
-            . '<p>Túllicitáltak a <strong>' . esc_html( get_the_title( $auction_id ) ) . '</strong> aukción.</p>'
-            . '<p>Aktuális licit: <strong>' . esc_html( $amount_fmt ) . ' Ft</strong></p>',
-            [ 'label' => 'Licitáljon újra', 'url' => get_permalink( $auction_id ) ]
+            strtr( get_option( 'va_email_outbid_subject', 'T\u00falllicit\u00e1ltak \u2013 {title}' ), $vars ),
+            strtr( get_option( 'va_email_outbid_heading', 'T\u00falllicit\u00e1ltak t\u00e9ged!' ), $vars ),
+            strtr( get_option( 'va_email_outbid_body',    '' ), $vars ),
+            [ 'label' => strtr( get_option( 'va_email_outbid_btn', 'Licit\u00e1ljon \u00fajra' ), $vars ), 'url' => get_permalink( $auction_id ) ]
         );
     }
 
     private static function notify_winner( $auction_id, $user_id, $amount ) {
         $user       = get_userdata( $user_id );
-        $amount_fmt = number_format( $amount, 0, ',', ' ' );
+        $amount_fmt = number_format( $amount, 0, ',', '\u00a0' );
+        $title      = get_the_title( $auction_id );
+        $vars_w = [
+            '{name}'   => esc_html( $user->display_name ),
+            '{title}'  => esc_html( $title ),
+            '{amount}' => esc_html( $amount_fmt ),
+        ];
 
         // Nyertesnek
         VA_Mailer::send(
             $user->user_email,
-            'Nyertél az aukción! – ' . get_the_title( $auction_id ),
-            '🏆 Nyertél az aukción!',
-            '<p>Kedves <strong>' . esc_html( $user->display_name ) . '</strong>,</p>'
-            . '<p>Gratulálunk! Nyertél a <strong>' . esc_html( get_the_title( $auction_id ) ) . '</strong> aukción.</p>'
-            . '<p>Nyerő licit: <strong>' . esc_html( $amount_fmt ) . ' Ft</strong></p>'
-            . '<p>A hirdetés feladójával hamarosan felveszi Önnel a kapcsolatot.</p>',
-            [ 'label' => 'Aukció megtekintése', 'url' => get_permalink( $auction_id ) ]
+            strtr( get_option( 'va_email_winner_subject', 'Nyertél az aukción! – {title}' ), $vars_w ),
+            strtr( get_option( 'va_email_winner_heading', '🏆 Nyertél az aukción!' ), $vars_w ),
+            strtr( get_option( 'va_email_winner_body', '' ), $vars_w ),
+            [ 'label' => strtr( get_option( 'va_email_winner_btn', 'Aukció megtekintése' ), $vars_w ), 'url' => get_permalink( $auction_id ) ]
         );
 
         // Eladónak is értesítés
         $post   = get_post( $auction_id );
         $seller = get_userdata( $post->post_author );
+        $vars_s = [
+            '{seller_name}'  => esc_html( $seller->display_name ),
+            '{title}'        => esc_html( $title ),
+            '{amount}'       => esc_html( $amount_fmt ),
+            '{winner_name}'  => esc_html( $user->display_name ),
+            '{winner_email}' => esc_attr( $user->user_email ),
+        ];
         VA_Mailer::send(
             $seller->user_email,
-            'Aukciód lezárult – ' . get_the_title( $auction_id ),
-            'Aukciód lezárult!',
-            '<p>Kedves <strong>' . esc_html( $seller->display_name ) . '</strong>,</p>'
-            . '<p>Lezárult a <strong>' . esc_html( get_the_title( $auction_id ) ) . '</strong> aukciód.</p>'
-            . '<p>Nyerő licit: <strong>' . esc_html( $amount_fmt ) . ' Ft</strong></p>'
-            . '<p>Nyertes: <strong>' . esc_html( $user->display_name ) . '</strong>'
-            . ' (<a href="mailto:' . esc_attr( $user->user_email ) . '" style="color:#cc0000;">'
-            . esc_html( $user->user_email ) . '</a>)</p>'
-            . '<p>Kérjük, vegye fel a kapcsolatot a nyertessel.</p>',
-            [ 'label' => 'Aukció megtekintése', 'url' => get_permalink( $auction_id ) ]
+            strtr( get_option( 'va_email_seller_subject', 'Aukciód lezárult – {title}' ), $vars_s ),
+            strtr( get_option( 'va_email_seller_heading', 'Aukciód lezárult!' ), $vars_s ),
+            strtr( get_option( 'va_email_seller_body', '' ), $vars_s ),
+            [ 'label' => strtr( get_option( 'va_email_seller_btn', 'Aukció megtekintése' ), $vars_s ), 'url' => get_permalink( $auction_id ) ]
         );
     }
 }
