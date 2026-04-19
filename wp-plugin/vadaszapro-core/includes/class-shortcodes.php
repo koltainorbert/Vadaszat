@@ -50,11 +50,7 @@ class VA_Shortcodes {
             return '<p class="va-notice va-notice--info">Hirdetés feladásához <a href="' . esc_url( wp_login_url( get_permalink() ) ) . '">jelentkezz be</a>.</p>';
         }
         wp_enqueue_script( 'jquery-ui-sortable' );
-        wp_enqueue_editor();
         wp_enqueue_media();
-        // Cookie-ban tárolt "html" preferencia törlése + filter — mindig vizuális
-        delete_user_setting( 'editor' );
-        add_filter( 'wp_default_editor', function() { return 'tinymce'; }, 99 );
         ob_start();
         va_template( 'listing/submit-form' );
         return ob_get_clean();

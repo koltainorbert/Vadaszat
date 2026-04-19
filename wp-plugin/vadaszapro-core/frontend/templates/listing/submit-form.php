@@ -579,10 +579,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var editMode = !! VA_Data.edit_mode;
         $btn.prop('disabled', true).text('Feltöltés...');
 
-        // TinyMCE tartalom szinkronizálása a textarea-ba submit előtt
-        if (typeof tinymce !== 'undefined' && tinymce.get('va_desc_editor')) {
-            tinymce.get('va_desc_editor').save();
-        }
+        // Quill tartalom szinkronizálása a hidden textarea-ba submit előtt
+        $('#va-desc-hidden').val(quill.root.innerHTML);
 
         var formData = new FormData(this);
 
