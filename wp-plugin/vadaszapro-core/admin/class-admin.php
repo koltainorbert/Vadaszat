@@ -280,6 +280,7 @@ class VA_Admin {
         if ( $auctions_enabled ) {
             add_submenu_page( "vadaszapro", "Aukció beállítások", "Aukciók",           "manage_options", "vadaszapro-aukcio",         [ VA_Settings_Page::class, "render_auctions"         ] );
         }
+        add_submenu_page( "vadaszapro", "Email sablonok",         "📧 Email sablonok", "manage_options", "vadaszapro-emails",         [ VA_Settings_Page::class, "render_emails"           ] );
         add_submenu_page( "vadaszapro", "Felhasználók",           "Felhasználók",      "manage_options", "vadaszapro-users",          [ VA_Settings_Page::class, "render_users"            ] );
         add_submenu_page( "vadaszapro", "Form szerkesztő",        "🧩 Form szerkesztő","manage_options", "va-form-builder",           [ VA_Form_Builder::class,  "render"                 ] );
         add_submenu_page( "vadaszapro", "Admin Panel beállítások", "Admin Panel",       "manage_options", "vadaszapro-adminpanel",     [ VA_Settings_Page::class, "render_adminpanel"      ] );

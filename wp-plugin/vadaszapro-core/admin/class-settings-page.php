@@ -579,6 +579,35 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        /* Rendszer emailek */
+        $email_opts = [
+            'va_email_reg_enabled'        => '1',
+            'va_email_reg_subject'        => 'Üdvözlünk a {site_name} oldalon!',
+            'va_email_reg_heading'        => 'Sikeres regisztráció!',
+            'va_email_reg_body'           => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Sikeresen regisztráltál a <strong>{site_name}</strong> oldalra.</p>\n<p>Felhasználóneved: <strong>{username}</strong></p>\n<p>Jó hirdetezést!</p>",
+            'va_email_reg_btn'            => 'Fiókja megtekintése',
+            'va_email_listing_enabled'    => '1',
+            'va_email_listing_subject'    => 'Hirdetésed megjelent – {title}',
+            'va_email_listing_heading'    => 'Hirdetésed él!',
+            'va_email_listing_body'       => "<p>Kedves <strong>{name}</strong>,</p>\n<p>A <strong>{title}</strong> hirdetésed jóváhagyásra került és most élőben elérhető.</p>",
+            'va_email_listing_btn'        => 'Hirdetés megtekintése',
+            'va_email_del_listing_enabled'=> '1',
+            'va_email_del_listing_subject'=> 'Hirdetésed törölve – {title}',
+            'va_email_del_listing_heading'=> 'Hirdetésed törölve lett',
+            'va_email_del_listing_body'   => "<p>Kedves <strong>{name}</strong>,</p>\n<p>A <strong>{title}</strong> hirdetésedet sikeresen törölted.</p>",
+            'va_email_del_listing_btn'    => '',
+            'va_email_del_account_enabled'=> '1',
+            'va_email_del_account_subject'=> 'Fiókod törölve – {site_name}',
+            'va_email_del_account_heading'=> 'Fiókod törölve lett',
+            'va_email_del_account_body'   => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Fiókod és összes adatod törölve lett a <strong>{site_name}</strong> rendszerből.</p>\n<p>Reméljük, hogy visszatérsz hozzánk!</p>",
+            'va_email_del_account_btn'    => '',
+        ];
+        foreach ( $email_opts as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_email_settings', $key, [ 'sanitize_callback' => 'wp_kses_post' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
         /* Social Media linkek */
         $social_keys = [
             'va_social_facebook'   => '',
