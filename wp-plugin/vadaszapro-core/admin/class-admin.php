@@ -157,6 +157,7 @@ class VA_Admin {
             "vadaszapro-stats"        => "Statisztika",
             "vadaszapro-plans"        => "Csomag beállítások",
             "vadaszapro-arkartyak"    => "Árkártyák szerkesztő",
+            "vadaszapro-oldalak"      => "Oldalszerkesztő",
         ];
         $titles["vadaszapro-listings"]     = "Hirdetések";
         $titles["vadaszapro-listing-edit"] = "Hirdetés szerkesztése";
@@ -209,6 +210,8 @@ class VA_Admin {
                 <?php self::sb_item( "🔨", "Aukció beállítások", admin_url( "admin.php?page=vadaszapro-aukcio" ), $page === "vadaszapro-aukcio" ); ?>
                 <?php endif; ?>
                 <?php self::sb_item( "📧", "Email sablonok", admin_url( "admin.php?page=vadaszapro-emails" ), $page === "vadaszapro-emails" ); ?>
+
+                <?php self::sb_item( "📄", "Oldalak", admin_url( "admin.php?page=vadaszapro-oldalak" ), $page === "vadaszapro-oldalak" ); ?>
 
                 <span class="va-sb-sep">Tartalom</span>
 
@@ -297,6 +300,7 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Csomag beállítások",     "💼 Csomagok",       "manage_options", "vadaszapro-plans",          [ VA_Settings_Page::class, "render_plans"            ] );
         add_submenu_page( "vadaszapro", "Árkártyák szerkesztő",   "💳 Árkártyák",      "manage_options", "vadaszapro-arkartyak",      [ VA_Settings_Page::class, "render_price_cards"      ] );
         add_submenu_page( "vadaszapro", "Statisztika",            "Statisztika",       "manage_options", "vadaszapro-stats",          [ VA_Settings_Page::class, "render_stats"            ] );
+        add_submenu_page( "vadaszapro", "Oldalszerkesztő",        "📄 Oldalak",        "manage_options", "vadaszapro-oldalak",        [ VA_Page_Builder::class,  "render"                  ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
         add_submenu_page( "vadaszapro", "Hirdetés szerkesztő", "", "edit_posts", "vadaszapro-listing-edit", [ VA_Listing_Edit::class, "render_edit" ] );

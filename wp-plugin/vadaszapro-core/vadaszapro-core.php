@@ -35,11 +35,13 @@ require_once VA_PLUGIN_DIR . 'includes/class-ad-zones.php';
 require_once VA_PLUGIN_DIR . 'includes/class-ajax.php';
 require_once VA_PLUGIN_DIR . 'includes/class-shortcodes.php';
 require_once VA_PLUGIN_DIR . 'includes/class-updater.php';
+require_once VA_PLUGIN_DIR . 'includes/class-page-renderer.php';
 require_once VA_PLUGIN_DIR . 'includes/helpers.php';
 
 require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php'; // frontend is használja (VA_Form_Builder::get_fields)
 
 if ( is_admin() ) {
+    require_once VA_PLUGIN_DIR . 'admin/class-page-builder.php';
     require_once VA_PLUGIN_DIR . 'admin/class-dashboard.php';
     require_once VA_PLUGIN_DIR . 'admin/class-listing-edit.php';
     require_once VA_PLUGIN_DIR . 'admin/class-admin.php';
@@ -59,8 +61,10 @@ add_action( 'plugins_loaded', function () {
     VA_Ajax::init();
     VA_Shortcodes::init();
     VA_Updater::init();
+    VA_Page_Renderer::init();
 
     if ( is_admin() ) {
+        VA_Page_Builder::init();
         VA_Admin::init();
         VA_Settings_Page::init();
         VA_Listing_Columns::init();
