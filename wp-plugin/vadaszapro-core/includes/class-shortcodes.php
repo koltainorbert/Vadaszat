@@ -114,14 +114,38 @@ class VA_Shortcodes {
             }
         }
 
-        $all_plan_cfg  = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
-        $user_plan    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_user_plan( $user_id ) : 'basic';
-        $rank_cards = [
-            [ 'slug' => 'basic',    'qty' => 1,  'theme' => 'basic',    'tag' => 'Belépő',  'icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>' ],
-            [ 'slug' => 'silver',   'qty' => 3,  'theme' => 'silver',   'tag' => 'Népszerű','icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>' ],
-            [ 'slug' => 'gold',     'qty' => 5,  'theme' => 'gold',     'tag' => 'Profi',   'icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' ],
-            [ 'slug' => 'platinum', 'qty' => 10, 'theme' => 'platinum', 'tag' => 'Prémium', 'icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 8h12l4-8"/><path d="M6 12v8h12v-8"/><path d="M12 12v8"/></svg>' ],
-        ];
+        // Hero szövegek DB-ből
+        $hero_eyebrow = (string) get_option( 'va_pc_eyebrow',  'Átlátható csomagok' );
+        $hero_title   = (string) get_option( 'va_pc_title',    'Rang Alapú Vásárlás' );
+        $hero_sub     = (string) get_option( 'va_pc_subtitle', 'Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.' );
+
+        // Kártyák DB-ből
+        $default_qtys   = [ 1 => 1, 2 => 3, 3 => 5, 4 => 10 ];
+        $default_labels = [ 1 => 'Basic', 2 => 'Silver', 3 => 'Gold', 4 => 'Platinum' ];
+        $default_slugs  = [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ];
+        $default_tags   = [ 1 => 'Belépő', 2 => 'Népszerű', 3 => 'Profi', 4 => 'Prémium' ];
+        $default_themes = [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ];
+        $default_btns   = [ 1 => 'Mindenki számára elérhető', 2 => 'Vásárlás →', 3 => 'Vásárlás →', 4 => 'Vásárlás →' ];
+
+        $rank_cards = [];
+        for ( $n = 1; $n <= 4; $n++ ) {
+            $enabled = get_option( "va_pc_{$n}_enabled", '1' ) === '1';
+            if ( ! $enabled ) continue;
+            $rank_cards[] = [
+                'n'        => $n,
+                'slug'     => (string) get_option( "va_pc_{$n}_plan_slug", $default_slugs[$n] ),
+                'qty'      => max( 1, (int) get_option( "va_pc_{$n}_qty",  $default_qtys[$n] ) ),
+                'theme'    => (string) get_option( "va_pc_{$n}_theme",     $default_themes[$n] ),
+                'tag'      => (string) get_option( "va_pc_{$n}_tag",       $default_tags[$n] ),
+                'label'    => (string) get_option( "va_pc_{$n}_label",     $default_labels[$n] ),
+                'desc'     => (string) get_option( "va_pc_{$n}_desc",      'Hirdetési csomag' ),
+                'badge'    => (string) get_option( "va_pc_{$n}_badge",     '' ),
+                'featured' => get_option( "va_pc_{$n}_featured", '0' ) === '1',
+                'free'     => get_option( "va_pc_{$n}_free", $n === 1 ? '1' : '0' ) === '1',
+                'btn_text' => (string) get_option( "va_pc_{$n}_btn_text",  $default_btns[$n] ),
+                'icon'     => self::get_plan_icon( (string) get_option( "va_pc_{$n}_plan_slug", $default_slugs[$n] ) ),
+            ];
+        }
 
         ob_start();
         wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
