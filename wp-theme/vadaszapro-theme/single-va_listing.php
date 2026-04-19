@@ -2,6 +2,66 @@
 /**
  * single-va_listing.php - Hirdetes reszletes oldal (v2 - modern 2026)
  */
+
+// ── Open Graph / Twitter Card meta tagok ────────────────
+add_action( 'wp_head', function() {
+    if ( ! is_singular( 'va_listing' ) ) return;
+
+    $post_id = get_the_ID();
+
+    // Cím
+    $og_title = get_the_title( $post_id );
+
+    // Leírás: post excerpt vagy description meta, 160 karakterre vágva
+    $desc = get_post_meta( $post_id, 'va_description', true );
+    if ( $desc === '' ) $desc = get_the_excerpt();
+    $og_desc = wp_strip_all_tags( $desc );
+    $og_desc = preg_replace( '/\s+/', ' ', $og_desc );
+    $og_desc = trim( mb_substr( $og_desc, 0, 160 ) );
+
+    // Kép: kiemelt kép (borítókép)
+    $og_image     = '';
+    $og_img_w     = '';
+    $og_img_h     = '';
+    $thumb_id = get_post_thumbnail_id( $post_id );
+    if ( $thumb_id ) {
+        $img_data = wp_get_attachment_image_src( $thumb_id, 'large' );
+        if ( $img_data ) {
+            $og_image = $img_data[0];
+            $og_img_w = $img_data[1];
+            $og_img_h = $img_data[2];
+        }
+    }
+
+    // URL
+    $og_url = get_permalink( $post_id );
+
+    // Site neve
+    $site_name = get_option( 'va_site_name', get_bloginfo('name') );
+
+    echo "\n<!-- Open Graph / Social Share -->\n";
+    echo '<meta property="og:type" content="product">' . "\n";
+    echo '<meta property="og:site_name" content="' . esc_attr( $site_name ) . '">' . "\n";
+    echo '<meta property="og:url" content="' . esc_url( $og_url ) . '">' . "\n";
+    echo '<meta property="og:title" content="' . esc_attr( $og_title ) . '">' . "\n";
+    if ( $og_desc !== '' ) {
+        echo '<meta property="og:description" content="' . esc_attr( $og_desc ) . '">' . "\n";
+        echo '<meta name="description" content="' . esc_attr( $og_desc ) . '">' . "\n";
+    }
+    if ( $og_image !== '' ) {
+        echo '<meta property="og:image" content="' . esc_url( $og_image ) . '">' . "\n";
+        if ( $og_img_w ) echo '<meta property="og:image:width" content="' . esc_attr( (string) $og_img_w ) . '">' . "\n";
+        if ( $og_img_h ) echo '<meta property="og:image:height" content="' . esc_attr( (string) $og_img_h ) . '">' . "\n";
+        echo '<meta property="og:image:alt" content="' . esc_attr( $og_title ) . '">' . "\n";
+    }
+    // Twitter Card
+    echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+    echo '<meta name="twitter:title" content="' . esc_attr( $og_title ) . '">' . "\n";
+    if ( $og_desc !== '' ) echo '<meta name="twitter:description" content="' . esc_attr( $og_desc ) . '">' . "\n";
+    if ( $og_image !== '' ) echo '<meta name="twitter:image" content="' . esc_url( $og_image ) . '">' . "\n";
+    echo "<!-- /Open Graph -->\n\n";
+}, 1 ); // priority 1 = wp_head legeleje
+
 get_header();
 
 if ( ! have_posts() ) { get_footer(); return; }
