@@ -276,12 +276,12 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 // Mező 1
                 echo '<div class="va-form-group">';
                 echo "<label>{$label}{$req_html}</label>";
-                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions );
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $edit_meta );
                 echo '</div>';
                 // Mező 2
                 echo '<div class="va-form-group">';
                 echo "<label>{$p2_label}{$p2_req_html}</label>";
-                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions );
+                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions, $edit_meta );
                 echo '</div>';
                 echo '</div>';
             else:
@@ -289,14 +289,14 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 // Teljes soros mező
                 echo '<div class="va-form-group">';
                 echo "<label>{$label}{$req_html}</label>";
-                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions );
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $edit_meta );
                 echo '</div>';
             endif;
         endforeach;
         ?>
 
         <button type="submit" class="va-btn va-btn--primary va-btn--block" id="va-submit-btn">
-            📤 Hirdetés feladása
+            <?php echo $edit_mode ? '💾 Változások mentése' : '📤 Hirdetés feladása'; ?>
         </button>
 
         <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;text-align:center;">
@@ -311,16 +311,27 @@ wp_localize_script( 'va-submit', 'VA_Data', [
 document.addEventListener('DOMContentLoaded', function() {
 (function($){
     /* ══ Képkezelő ═══════════════════════════════════════ */
-    let _files = [];   // { file: File, id: string }[]
-    let _maxImg = 10;
+    let _files   = [];   // { file: File|null, id: string, existing_id: int|null, url: string|null }[]
+    let _maxImg  = 10;
     let _featured = 0;
 
-    const $picker  = $('#va-img-picker');
-    const $grid    = $('#va-img-grid');
-    const $input   = $('#va-img-file-input');
-    const $featIdx = $('#va-featured-index');
+    const $picker    = $('#va-img-picker');
+    const $grid      = $('#va-img-grid');
+    const $input     = $('#va-img-file-input');
+    const $featIdx   = $('#va-featured-index');
+    const $keepInput = $('#va-keep-images');
 
     _maxImg = parseInt( $input.data('max') || 10 );
+
+    // Edit mód: meglévő képek betöltése
+    var editImages = VA_Data.edit_images || [];
+    var editThumb  = parseInt( VA_Data.edit_thumb ) || 0;
+    editImages.forEach(function(img, idx) {
+        if (!img.url) return;
+        _files.push({ file: null, id: 'existing_' + img.id, existing_id: img.id, url: img.url });
+        if (img.id === editThumb) _featured = idx;
+    });
+    if (_files.length) renderGrid();
 
     /* ── Fájl hozzáadása ─────────────────────────────── */
     function addFiles(newFiles) {
@@ -328,9 +339,15 @@ document.addEventListener('DOMContentLoaded', function() {
             if (_files.length >= _maxImg) break;
             if (!['image/jpeg','image/png','image/webp'].includes(f.type)) continue;
             if (f.size > 5 * 1024 * 1024) { alert(f.name + ' – túl nagy (max 5 MB)!'); continue; }
-            _files.push({ file: f, id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2) });
+            _files.push({ file: f, id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2), existing_id: null, url: null });
         }
         renderGrid();
+    }
+
+    /* ── Megtartandó meglévő képek frissítése ─────────── */
+    function updateKeepImages() {
+        var keep = _files.filter(function(f){ return f.existing_id; }).map(function(f){ return f.existing_id; });
+        $keepInput.val(keep.join(','));
     }
 
     /* ── Grid renderelése ────────────────────────────── */
