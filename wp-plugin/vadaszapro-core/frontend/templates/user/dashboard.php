@@ -53,17 +53,23 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                 </div>
                 <div class="va-dash-user-head__name"><?php echo esc_html( $user->display_name ?: $user->user_login ); ?></div>
             </div>
-            <form method="post" enctype="multipart/form-data" class="va-dash-avatar-form">
+            <form method="post" enctype="multipart/form-data" class="va-dash-avatar-form" id="va-avatar-form">
                 <?php wp_nonce_field( 'va_profile_avatar', 'va_profile_avatar_nonce' ); ?>
                 <input type="hidden" name="va_action" value="profile_avatar">
-                <label class="va-dash-avatar-form__label">Profilkép feltöltés</label>
-                <input type="file" name="profile_avatar" class="va-dash-avatar-form__file" accept="image/jpeg,image/png,image/webp">
+                <input type="file" name="profile_avatar" id="va-avatar-input" class="va-dash-avatar-form__file" accept="image/jpeg,image/png,image/webp">
+                <label for="va-avatar-input" class="va-dash-avatar-drop" id="va-avatar-drop">
+                    <span class="va-dash-avatar-drop__icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.5"/><path d="M20.8 13a9 9 0 1 1-1.4-4.8"/><path d="M17 3l3 3-3 3"/><line x1="20" y1="6" x2="14" y2="6"/></svg>
+                    </span>
+                    <span class="va-dash-avatar-drop__text" id="va-avatar-label">Kép kiválasztása</span>
+                    <span class="va-dash-avatar-drop__hint">JPG, PNG, WEBP</span>
+                </label>
                 <?php if ( $avatar_url ): ?>
                 <label class="va-dash-avatar-form__remove">
                     <input type="checkbox" name="profile_avatar_remove" value="1"> Profilkép törlése
                 </label>
                 <?php endif; ?>
-                <button type="submit" class="va-dash-avatar-form__btn">Profilkép mentése</button>
+                <button type="submit" class="va-dash-avatar-form__btn">Mentés</button>
             </form>
             <span class="va-dashboard__nav-item active" data-tab="listings"><span class="va-dashboard__nav-ico" aria-hidden="true">📋</span><span class="va-dashboard__nav-label">Hirdetéseim (<?php echo count( $listings ); ?>)</span></span>
             <?php if ( $auctions_enabled ): ?>
@@ -445,12 +451,31 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
     flex-direction:column;
     gap:8px;
 }
-.va-dash-avatar-form__label { color:#fff;font-size:11px;font-weight:700; }
-.va-dash-avatar-form__file {
-    width:100%;
-    font-size:11px;
-    color:rgba(255,255,255,.78);
+.va-dash-avatar-form__file { display:none; }
+.va-dash-avatar-drop {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    padding:12px 8px;
+    border:1px dashed rgba(255,255,255,.2);
+    border-radius:10px;
+    background:rgba(255,255,255,.04);
+    cursor:pointer;
+    transition:.2s ease;
+    text-align:center;
 }
+.va-dash-avatar-drop:hover,
+.va-dash-avatar-drop.drag-over {
+    border-color:#ff0000;
+    background:rgba(255,0,0,.07);
+}
+.va-dash-avatar-drop__icon { color:rgba(255,255,255,.45);line-height:1; }
+.va-dash-avatar-drop:hover .va-dash-avatar-drop__icon,
+.va-dash-avatar-drop.drag-over .va-dash-avatar-drop__icon { color:#ff4444; }
+.va-dash-avatar-drop__text { font-size:11px;font-weight:700;color:#fff; }
+.va-dash-avatar-drop__hint { font-size:10px;color:rgba(255,255,255,.35); }
 .va-dash-avatar-form__remove { font-size:11px;color:rgba(255,255,255,.66);display:flex;gap:6px;align-items:center; }
 .va-dash-avatar-form__btn {
     width:100%;
@@ -604,5 +629,26 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
             });
         });
     });
+
+    // Avatar upload zone
+    var avatarInput = document.getElementById('va-avatar-input');
+    var avatarDrop  = document.getElementById('va-avatar-drop');
+    var avatarLabel = document.getElementById('va-avatar-label');
+    if (avatarInput && avatarDrop) {
+        avatarInput.addEventListener('change', function(){
+            var name = this.files && this.files[0] ? this.files[0].name : 'Kép kiválasztása';
+            avatarLabel.textContent = name.length > 20 ? name.substring(0,18)+'…' : name;
+        });
+        avatarDrop.addEventListener('dragover', function(e){ e.preventDefault(); this.classList.add('drag-over'); });
+        avatarDrop.addEventListener('dragleave', function(){ this.classList.remove('drag-over'); });
+        avatarDrop.addEventListener('drop', function(e){
+            e.preventDefault(); this.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) {
+                avatarInput.files = e.dataTransfer.files;
+                var name = e.dataTransfer.files[0].name;
+                avatarLabel.textContent = name.length > 20 ? name.substring(0,18)+'…' : name;
+            }
+        });
+    }
 })();
 </script>
