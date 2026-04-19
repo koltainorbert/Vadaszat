@@ -736,7 +736,6 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 <div class="va-hnaptar__legend" id="va-hn-legend"></div>
 <div class="va-hnaptar__meta">
   <span class="va-hnaptar__hint" id="va-hn-hint">Húzd oldalra a naptárat</span>
-  <span class="va-hnaptar__month-ind" id="va-hn-month-ind">Január</span>
 </div>
 <div class="va-hnaptar__scroll">
   <div class="va-hnaptar__chart" id="va-hn-chart"></div>
@@ -762,8 +761,11 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 .va-hnaptar__hint{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.42);opacity:0;transform:translateX(-6px);transition:all .25s ease;}
 .va-hnaptar.has-overflow .va-hnaptar__hint{opacity:1;transform:none;}
 .va-hnaptar.is-scrolled .va-hnaptar__hint{opacity:.2;}
-.va-hnaptar__month-ind{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#ffb4b4;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.25);padding:2px 8px;border-radius:999px;white-space:nowrap;}
-.va-hnaptar__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.va-hnaptar__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#171717 #060606;}
+.va-hnaptar__scroll::-webkit-scrollbar{height:12px;}
+.va-hnaptar__scroll::-webkit-scrollbar-track{background:#060606;}
+.va-hnaptar__scroll::-webkit-scrollbar-thumb{background:#171717;border:1px solid #2a2a2a;border-radius:999px;}
+.va-hnaptar__scroll::-webkit-scrollbar-thumb:hover{background:#232323;}
 .va-hnaptar__chart{min-width:980px;}
 /* month header */
 .va-hn-mh{display:flex;position:sticky;top:0;z-index:10;background:rgb(12,12,12);border-bottom:1px solid rgba(255,255,255,.08);}
@@ -850,7 +852,6 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
   .va-hn-name{font-size:.58rem;}
   .va-hn-name .sub{display:none;}
   .va-hnaptar__hint{font-size:.56rem;}
-  .va-hnaptar__month-ind{font-size:.56rem;padding:2px 7px;}
 }
 </style>
 
@@ -1077,28 +1078,18 @@ if(!chart)return;
 var _acdList=[];
 var hnWrap=document.getElementById('va-hnaptar-wrap');
 var hnScroll=document.querySelector('#va-hnaptar-wrap .va-hnaptar__scroll');
-var hnMonthInd=document.getElementById('va-hn-month-ind');
 
 function updateHnOverflowState(){
   if(!hnScroll||!hnWrap)return;
   var overflow=hnScroll.scrollWidth>hnScroll.clientWidth+4;
   hnWrap.classList.toggle('has-overflow',overflow);
 }
-function updateHnMonthIndicator(){
-  if(!hnScroll||!hnMonthInd)return;
-  var max=Math.max(1,hnScroll.scrollWidth-hnScroll.clientWidth);
-  var ratio=hnScroll.scrollLeft/max;
-  var idx=Math.max(0,Math.min(11,Math.round(ratio*11)));
-  hnMonthInd.textContent=MF[idx];
-}
 if(hnScroll){
   hnScroll.addEventListener('scroll',function(){
     if(hnWrap)hnWrap.classList.add('is-scrolled');
-    updateHnMonthIndicator();
   },{passive:true});
   window.addEventListener('resize',function(){
     updateHnOverflowState();
-    updateHnMonthIndicator();
   });
 }
 
@@ -1212,7 +1203,6 @@ function updateCDs(){
 updateCDs();
 setInterval(updateCDs,1000);
 updateHnOverflowState();
-updateHnMonthIndicator();
 })();
 </script>
 <?php endif; ?>
