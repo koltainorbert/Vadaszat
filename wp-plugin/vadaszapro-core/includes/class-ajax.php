@@ -1037,7 +1037,8 @@ class VA_Ajax {
     public static function delete_editor_images_on_listing_delete( int $post_id ): void {
         if ( get_post_type( $post_id ) !== 'va_listing' ) return;
 
-        $attachments = get_posts( [
+        // Editor képek törlése (_va_editor_img meta alapján)
+        $editor_imgs = get_posts( [
             'post_type'      => 'attachment',
             'post_parent'    => $post_id,
             'post_status'    => 'inherit',
@@ -1047,9 +1048,22 @@ class VA_Ajax {
             'meta_value'     => '1',
             'fields'         => 'ids',
         ] );
-
-        foreach ( $attachments as $att_id ) {
+        foreach ( $editor_imgs as $att_id ) {
             wp_delete_attachment( $att_id, true );
+        }
+
+        // Galéria képek törlése (va_gallery_ids meta alapján)
+        $gallery_str = get_post_meta( $post_id, 'va_gallery_ids', true );
+        if ( $gallery_str ) {
+            $gallery_ids = array_filter( array_map( 'intval', explode( ',', $gallery_str ) ) );
+            foreach ( $gallery_ids as $att_id ) {
+                wp_delete_attachment( $att_id, true );
+            }
+        }
+        // Kiemelt kép törlése
+        $thumb_id = (int) get_post_thumbnail_id( $post_id );
+        if ( $thumb_id ) {
+            wp_delete_attachment( $thumb_id, true );
         }
     }
 }

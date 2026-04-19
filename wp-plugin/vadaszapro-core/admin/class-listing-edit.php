@@ -175,8 +175,8 @@ class VA_Listing_Edit {
         $id = (int)( $_GET['id'] ?? 0 );
         check_admin_referer( 'va_listing_delete_' . $id );
         if ( ! current_user_can( 'delete_post', $id ) ) wp_die( 'Nincs jogosultság.' );
-        wp_trash_post( $id );
-        wp_safe_redirect( admin_url( 'admin.php?page=vadaszapro-listings&va_trashed=1' ) );
+        wp_delete_post( $id, true ); // valódi törlés (képek is törlődnek a hookból)
+        wp_safe_redirect( admin_url( 'admin.php?page=vadaszapro-listings&va_deleted=1' ) );
         exit;
     }
 
