@@ -1662,103 +1662,362 @@ class VA_Settings_Page {
         <?php
     }
 
-    /* ══ Felhasználók oldal ═══════════════════════════════ */
+    /* ══ Felhasználók + Plan kezelő oldal ═══════════════════════ */
     public static function render_users() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
-        if ( isset( $_POST['va_user_role_nonce'], $_POST['va_user_id'], $_POST['va_user_role'] )
-            && wp_verify_nonce( sanitize_text_field( wp_unslash( (string) $_POST['va_user_role_nonce'] ) ), 'va_update_user_role' ) ) {
+        $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
+        $plans = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::PLANS : [];
 
-            $user_id = absint( wp_unslash( (string) $_POST['va_user_id'] ) );
-            $new_role = sanitize_key( wp_unslash( (string) $_POST['va_user_role'] ) );
+        // Keresés + szűrés
+        $search   = sanitize_text_field( wp_unslash( $_GET['s'] ?? '' ) );
+        $filter_plan = sanitize_key( $_GET['filter_plan'] ?? '' );
+        $paged    = max( 1, absint( $_GET['paged'] ?? 1 ) );
+        $per_page = 40;
+        $offset   = ( $paged - 1 ) * $per_page;
 
-            $roles = wp_roles()->roles;
-            $allowed_roles = array_diff( array_keys( $roles ), [ 'administrator' ] );
-
-            if ( $user_id > 0 && in_array( $new_role, $allowed_roles, true ) ) {
-                $target_user = get_user_by( 'id', $user_id );
-                if ( $target_user instanceof WP_User ) {
-                    $target_user->set_role( $new_role );
-                    add_settings_error( 'va_users', 'va_users_role_ok', 'Szerepkör sikeresen frissítve.', 'updated' );
-                }
-            } else {
-                add_settings_error( 'va_users', 'va_users_role_err', 'Érvénytelen szerepkör vagy felhasználó.', 'error' );
-            }
+        $user_args = [
+            'role__not_in' => [ 'administrator' ],
+            'number'       => $per_page,
+            'offset'       => $offset,
+            'orderby'      => 'registered',
+            'order'        => 'DESC',
+        ];
+        if ( $search !== '' ) {
+            $user_args['search']         = '*' . $search . '*';
+            $user_args['search_columns'] = [ 'user_login', 'user_email', 'display_name' ];
+        }
+        if ( $filter_plan !== '' && isset( $plans[ $filter_plan ] ) ) {
+            $user_args['meta_query'] = [[
+                'key'     => 'va_plan',
+                'value'   => $filter_plan,
+                'compare' => '=',
+            ]];
         }
 
-        $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
-        $roles = wp_roles()->roles;
-        $allowed_roles = array_diff( array_keys( $roles ), [ 'administrator' ] );
+        $users       = get_users( $user_args );
+        $total_users = (int) ( new WP_User_Query( array_merge( $user_args, [ 'number' => -1, 'offset' => 0, 'count_total' => true ] ) ) )->get_total();
+        $total_pages = max( 1, (int) ceil( $total_users / $per_page ) );
 
-        $users = get_users([
-            'role__not_in' => [ 'administrator' ],
-            'number'     => 50,
-            'orderby'    => 'registered',
-            'order'      => 'DESC',
-        ]);
+        $admin_nonce = wp_create_nonce( 'va_admin_user_plan' );
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>👤 VadászApró – Felhasználók</h1>
-            <?php settings_errors( 'va_users' ); ?>
-            <table class="wp-list-table widefat striped va-users-table">
+            <h1>👥 VadászApró – Felhasználók &amp; Csomagok</h1>
+
+            <!-- ── Plan összefoglaló kártyák ── -->
+            <?php if ( $plans ): ?>
+            <div class="va-upm-plan-cards">
+                <?php foreach ( $plans as $pk => $pcfg ): ?>
+                    <?php
+                    $cnt_q = new WP_User_Query([
+                        'role__not_in' => [ 'administrator' ],
+                        'meta_query'   => [[ 'key' => 'va_plan', 'value' => $pk ]],
+                        'count_total'  => true,
+                        'number'       => 0,
+                    ]);
+                    $cnt = ( $pk === 'basic' )
+                        ? (int) count_users()['total_users'] // basic = mindenki alapból
+                        : (int) $cnt_q->get_total();
+                    ?>
+                    <div class="va-upm-plan-card" style="--pc:<?php echo esc_attr( $pcfg['color'] ); ?>">
+                        <span class="va-upm-pc-icon"><?php echo esc_html( $pcfg['icon'] ); ?></span>
+                        <span class="va-upm-pc-label"><?php echo esc_html( $pcfg['label'] ); ?></span>
+                        <span class="va-upm-pc-count"><?php echo esc_html( $cnt ); ?></span>
+                        <span class="va-upm-pc-desc"><?php echo esc_html( $pcfg['description'] ); ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+            <?php endif; ?>
+
+            <!-- ── Szűrősáv ── -->
+            <div class="va-upm-toolbar">
+                <form method="get" action="" class="va-upm-search-form">
+                    <input type="hidden" name="page" value="vadaszapro-users">
+                    <input type="search" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="Keresés névben, e-mailben…" class="va-upm-search">
+                    <select name="filter_plan" class="va-upm-filter-sel">
+                        <option value="">– Minden csomag –</option>
+                        <?php foreach ( $plans as $pk => $pcfg ): ?>
+                            <option value="<?php echo esc_attr( $pk ); ?>" <?php selected( $filter_plan, $pk ); ?>>
+                                <?php echo esc_html( $pcfg['icon'] . ' ' . $pcfg['label'] ); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="button">Szűrés</button>
+                    <?php if ( $search || $filter_plan ): ?>
+                        <a href="<?php echo esc_url( admin_url( 'admin.php?page=vadaszapro-users' ) ); ?>" class="button">✕ Törlés</a>
+                    <?php endif; ?>
+                </form>
+                <span class="va-upm-count"><?php echo esc_html( $total_users ); ?> felhasználó</span>
+            </div>
+
+            <!-- ── Felhasználók táblázat ── -->
+            <table class="va-upm-table">
                 <thead>
                     <tr>
-                        <th>Felhasználónév</th>
-                        <th>Név</th>
+                        <th>Felhasználó</th>
                         <th>E-mail</th>
-                        <th>Szerepkör</th>
-                        <th>Telefon</th>
-                        <th>Regisztráció</th>
+                        <th>Csomag</th>
+                        <th>Kiemelési cooldown</th>
                         <th>Hirdetések</th>
+                        <th>Regisztráció</th>
                         <th>Műveletek</th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php foreach ( $users as $user ):
-                    $phone     = get_user_meta( $user->ID, 'va_phone', true );
-                    $listings  = count_user_posts( $user->ID, 'va_listing' );
-                    $auctions  = $auctions_enabled ? count_user_posts( $user->ID, 'va_auction' ) : 0;
+                    $phone       = get_user_meta( $user->ID, 'va_phone', true );
+                    $listings    = count_user_posts( $user->ID, 'va_listing' );
+                    $auctions    = $auctions_enabled ? count_user_posts( $user->ID, 'va_auction' ) : 0;
+                    $plan        = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_user_plan( $user->ID ) : 'basic';
+                    $pcfg        = $plans[ $plan ] ?? $plans['basic'];
+                    $plat_limit  = (int) get_user_meta( $user->ID, 'va_plan_listing_limit', true );
+                    $plat_cd     = (int) get_user_meta( $user->ID, 'va_plan_boost_cooldown', true );
+                    $plan_note   = (string) get_user_meta( $user->ID, 'va_plan_note', true );
+
+                    if ( class_exists( 'VA_User_Roles' ) ) {
+                        $eff_cfg = VA_User_Roles::get_plan_config( $plan, $user->ID );
+                    } else {
+                        $eff_cfg = $pcfg;
+                    }
                 ?>
-                    <tr>
-                        <td><?php echo esc_html( $user->user_login ); ?></td>
-                        <td><?php echo esc_html( $user->display_name ); ?></td>
+                    <tr class="va-upm-row" data-uid="<?php echo esc_attr( (string) $user->ID ); ?>">
+                        <td class="va-upm-td-user">
+                            <?php echo get_avatar( $user->ID, 28, '', '', [ 'class' => 'va-upm-avatar' ] ); ?>
+                            <div>
+                                <strong><?php echo esc_html( $user->display_name ); ?></strong>
+                                <span class="va-upm-login">@<?php echo esc_html( $user->user_login ); ?></span>
+                                <?php if ( $phone ): ?><span class="va-upm-phone">📞 <?php echo esc_html( $phone ); ?></span><?php endif; ?>
+                            </div>
+                        </td>
                         <td><?php echo esc_html( $user->user_email ); ?></td>
-                        <td>
-                            <form method="post" style="margin:0;">
-                                <?php wp_nonce_field( 'va_update_user_role', 'va_user_role_nonce' ); ?>
-                                <input type="hidden" name="va_user_id" value="<?php echo esc_attr( (string) $user->ID ); ?>">
-                                <div style="overflow:hidden;width:100%;box-sizing:border-box;">
-                                <select name="va_user_role" onchange="this.form.submit()" style="cursor:pointer;width:100%;box-sizing:border-box;">
-                                    <?php
-                                    $current_role = ! empty( $user->roles ) ? (string) $user->roles[0] : 'subscriber';
-                                    foreach ( $allowed_roles as $role_key ):
-                                        $role_name = isset( $roles[ $role_key ]['name'] ) ? (string) $roles[ $role_key ]['name'] : $role_key;
-                                    ?>
-                                        <option value="<?php echo esc_attr( $role_key ); ?>" <?php selected( $current_role, $role_key ); ?>>
-                                            <?php echo esc_html( $role_name ); ?>
+                        <td class="va-upm-td-plan">
+                            <!-- Plan badge + inline váltó -->
+                            <span class="va-upm-plan-badge va-upm-badge-<?php echo esc_attr( $plan ); ?>"
+                                  style="--pc:<?php echo esc_attr( $pcfg['color'] ); ?>;--pb:<?php echo esc_attr( $pcfg['bg'] ); ?>">
+                                <?php echo esc_html( $pcfg['icon'] . ' ' . $pcfg['label'] ); ?>
+                            </span>
+
+                            <!-- Plan szerkesztő (összezárva, toggle) -->
+                            <div class="va-upm-plan-editor" id="va-upm-editor-<?php echo esc_attr( (string) $user->ID ); ?>" style="display:none;">
+                                <select class="va-upm-plan-sel" data-uid="<?php echo esc_attr( (string) $user->ID ); ?>">
+                                    <?php foreach ( $plans as $pk => $pcfg2 ): ?>
+                                        <option value="<?php echo esc_attr( $pk ); ?>" <?php selected( $plan, $pk ); ?>>
+                                            <?php echo esc_html( $pcfg2['icon'] . ' ' . $pcfg2['label'] ); ?>
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
+
+                                <!-- Platinum extra mezők -->
+                                <div class="va-upm-plat-extra" style="<?php echo $plan === 'platinum' ? '' : 'display:none;'; ?>">
+                                    <label>Havi limit:
+                                        <input type="number" class="va-upm-plat-limit" min="1" max="9999"
+                                               value="<?php echo esc_attr( (string) ( $plat_limit ?: $eff_cfg['monthly_limit'] ) ); ?>" style="width:70px;">
+                                    </label>
+                                    <label>Cooldown (nap):
+                                        <input type="number" class="va-upm-plat-cd" min="1" max="365"
+                                               value="<?php echo esc_attr( (string) ( $plat_cd ?: $eff_cfg['boost_cooldown'] ) ); ?>" style="width:60px;">
+                                    </label>
+                                    <label>Megjegyzés:
+                                        <input type="text" class="va-upm-plat-note" maxlength="200"
+                                               value="<?php echo esc_attr( $plan_note ); ?>" style="width:200px;">
+                                    </label>
                                 </div>
-                            </form>
+
+                                <button class="button button-primary va-upm-save-btn"
+                                        data-uid="<?php echo esc_attr( (string) $user->ID ); ?>"
+                                        data-nonce="<?php echo esc_attr( $admin_nonce ); ?>">Mentés</button>
+                                <button class="button va-upm-cancel-btn" data-uid="<?php echo esc_attr( (string) $user->ID ); ?>">Mégse</button>
+                                <span class="va-upm-save-status"></span>
+                            </div>
                         </td>
-                        <td><?php echo esc_html( $phone ?: '–' ); ?></td>
-                        <td><?php echo esc_html( date_i18n( 'Y.m.d', strtotime( $user->user_registered ) ) ); ?></td>
+                        <td class="va-upm-td-cd">
+                            <span title="<?php echo esc_attr( (string) $eff_cfg['boost_cooldown'] ); ?> nap cooldown">
+                                ⚡ <?php echo esc_html( (string) $eff_cfg['boost_cooldown'] ); ?> nap
+                            </span>
+                        </td>
                         <td>
                             <?php if ( $auctions_enabled ): ?>
                                 <?php echo esc_html( $listings ); ?> hird. / <?php echo esc_html( $auctions ); ?> aukció
                             <?php else: ?>
                                 <?php echo esc_html( $listings ); ?> hirdetés
                             <?php endif; ?>
+                            <?php
+                            // Havi limit használat megjelenítése
+                            if ( class_exists( 'VA_User_Roles' ) ) {
+                                $plan_check = VA_User_Roles::can_post_listing( $user->ID );
+                                $used  = $plan_check['used'];
+                                $limit = $plan_check['limit'];
+                                if ( $limit > 0 ) {
+                                    $pct = min( 100, (int) round( $used / $limit * 100 ) );
+                                    $col = $pct >= 100 ? '#ff4444' : ( $pct >= 80 ? '#ffaa00' : '#00c850' );
+                                    echo '<div style="margin-top:4px;font-size:11px;color:rgba(255,255,255,.5);">Havi: ' . esc_html( $used ) . '/' . esc_html( $limit ) . '</div>';
+                                    echo '<div style="height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:2px;"><div style="height:3px;width:' . esc_attr( $pct ) . '%;background:' . esc_attr( $col ) . ';border-radius:2px;"></div></div>';
+                                }
+                            }
+                            ?>
                         </td>
-                        <td>
-                            <a href="<?php echo esc_url( get_edit_user_link( $user->ID ) ); ?>">Szerkesztés</a>
+                        <td style="color:rgba(255,255,255,.5);font-size:12px;">
+                            <?php echo esc_html( date_i18n( 'Y.m.d', strtotime( $user->user_registered ) ) ); ?>
+                        </td>
+                        <td class="va-upm-td-actions">
+                            <button class="button button-small va-upm-edit-btn" data-uid="<?php echo esc_attr( (string) $user->ID ); ?>">✏️ Csomag</button>
+                            <a href="<?php echo esc_url( get_edit_user_link( $user->ID ) ); ?>" class="button button-small">WP profil</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <!-- Lapozó -->
+            <?php if ( $total_pages > 1 ): ?>
+            <div class="va-upm-pagination">
+                <?php for ( $p = 1; $p <= $total_pages; $p++ ): ?>
+                    <a href="<?php echo esc_url( add_query_arg( [ 'page' => 'vadaszapro-users', 'paged' => $p, 's' => $search, 'filter_plan' => $filter_plan ], admin_url( 'admin.php' ) ) ); ?>"
+                       class="va-upm-page<?php echo $p === $paged ? ' active' : ''; ?>"><?php echo esc_html( (string) $p ); ?></a>
+                <?php endfor; ?>
+            </div>
+            <?php endif; ?>
         </div>
+
+        <style>
+        /* ── User Plan Manager styles ── */
+        .va-upm-plan-cards { display:flex;flex-wrap:wrap;gap:12px;margin:16px 0 20px; }
+        .va-upm-plan-card {
+            background:var(--va-bg2);border:1px solid var(--pc,#888);border-radius:var(--va-radius);
+            padding:14px 18px;min-width:180px;display:flex;flex-direction:column;gap:3px;
+        }
+        .va-upm-pc-icon  { font-size:22px; }
+        .va-upm-pc-label { font-weight:700;font-size:14px;color:var(--pc,#fff); }
+        .va-upm-pc-count { font-size:28px;font-weight:800;color:var(--va-text);line-height:1; }
+        .va-upm-pc-desc  { font-size:11px;color:var(--va-muted); }
+
+        .va-upm-toolbar { display:flex;align-items:center;gap:10px;margin-bottom:14px; }
+        .va-upm-search-form { display:flex;align-items:center;gap:8px;flex:1; }
+        .va-upm-search { background:var(--va-bg3) !important;border:1px solid var(--va-border2) !important;color:var(--va-text) !important;border-radius:var(--va-radius-sm);padding:6px 12px;min-width:260px; }
+        .va-upm-filter-sel { background:var(--va-bg3);border:1px solid var(--va-border2);color:var(--va-text);border-radius:var(--va-radius-sm);padding:6px 10px; }
+        .va-upm-count { margin-left:auto;font-size:12px;color:var(--va-muted); }
+
+        .va-upm-table { width:100%;border-collapse:collapse;background:var(--va-bg2);border-radius:var(--va-radius);overflow:hidden;border:1px solid var(--va-border); }
+        .va-upm-table th { background:var(--va-bg3);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--va-muted);border-bottom:1px solid var(--va-border); }
+        .va-upm-table td { padding:12px 14px;border-bottom:1px solid var(--va-border);vertical-align:middle; }
+        .va-upm-row:last-child td { border-bottom:none; }
+        .va-upm-row:hover { background:var(--va-bg3); }
+
+        .va-upm-td-user { display:flex;align-items:center;gap:10px; }
+        .va-upm-avatar { border-radius:50%;flex-shrink:0; }
+        .va-upm-login { font-size:11px;color:var(--va-muted);display:block; }
+        .va-upm-phone { font-size:11px;color:var(--va-muted);display:block; }
+
+        .va-upm-plan-badge {
+            display:inline-flex;align-items:center;gap:5px;
+            background:var(--pb,rgba(136,136,136,.15));color:var(--pc,#888);
+            border:1px solid var(--pc,#888);border-radius:999px;
+            padding:3px 10px;font-size:12px;font-weight:700;
+        }
+        .va-upm-plan-editor { margin-top:8px;padding:10px;background:var(--va-bg3);border-radius:var(--va-radius-sm);border:1px solid var(--va-border2); }
+        .va-upm-plan-editor select,
+        .va-upm-plan-editor input[type=number],
+        .va-upm-plan-editor input[type=text] {
+            background:var(--va-bg2);border:1px solid var(--va-border2);color:var(--va-text);
+            border-radius:var(--va-radius-sm);padding:5px 8px;font-size:12px;
+        }
+        .va-upm-plat-extra { display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;padding:8px;background:rgba(226,198,255,.06);border-radius:var(--va-radius-sm); }
+        .va-upm-plat-extra label { display:flex;align-items:center;gap:5px;font-size:12px; }
+        .va-upm-save-status { font-size:12px;margin-left:8px; }
+
+        .va-upm-td-actions { white-space:nowrap; }
+        .va-upm-td-actions a, .va-upm-td-actions button { margin-right:4px; }
+
+        .va-upm-pagination { display:flex;gap:6px;margin-top:16px;flex-wrap:wrap; }
+        .va-upm-page { background:var(--va-bg2);border:1px solid var(--va-border);border-radius:var(--va-radius-sm);padding:4px 10px;font-size:13px;color:var(--va-text);text-decoration:none; }
+        .va-upm-page.active { background:var(--va-accent);border-color:var(--va-accent);color:#fff; }
+        .va-upm-page:hover:not(.active) { border-color:var(--va-accent);color:var(--va-accent); }
+        </style>
+
+        <script>
+        (function(){
+            // Toggle szerkesztő
+            document.querySelectorAll('.va-upm-edit-btn').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var uid = this.dataset.uid;
+                    var ed  = document.getElementById('va-upm-editor-' + uid);
+                    if(ed) ed.style.display = ed.style.display === 'none' ? 'block' : 'none';
+                });
+            });
+
+            document.querySelectorAll('.va-upm-cancel-btn').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var uid = this.dataset.uid;
+                    var ed  = document.getElementById('va-upm-editor-' + uid);
+                    if(ed) ed.style.display = 'none';
+                });
+            });
+
+            // Plan dropdown változáskor platinum extra mezők mutatása
+            document.querySelectorAll('.va-upm-plan-sel').forEach(function(sel){
+                sel.addEventListener('change', function(){
+                    var extra = this.closest('.va-upm-plan-editor').querySelector('.va-upm-plat-extra');
+                    if(extra) extra.style.display = this.value === 'platinum' ? 'flex' : 'none';
+                });
+            });
+
+            // Mentés gomb
+            document.querySelectorAll('.va-upm-save-btn').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var uid    = this.dataset.uid;
+                    var nonce  = this.dataset.nonce;
+                    var ed     = document.getElementById('va-upm-editor-' + uid);
+                    var status = ed ? ed.querySelector('.va-upm-save-status') : null;
+                    var sel    = ed ? ed.querySelector('.va-upm-plan-sel') : null;
+                    var plan   = sel ? sel.value : 'basic';
+
+                    var limEl = ed ? ed.querySelector('.va-upm-plat-limit') : null;
+                    var cdEl  = ed ? ed.querySelector('.va-upm-plat-cd')    : null;
+                    var noteEl= ed ? ed.querySelector('.va-upm-plat-note')  : null;
+
+                    var data = new URLSearchParams({
+                        action : 'va_admin_set_user_plan',
+                        nonce  : nonce,
+                        user_id: uid,
+                        plan   : plan,
+                        custom_limit         : limEl  ? limEl.value  : 0,
+                        custom_boost_cooldown: cdEl   ? cdEl.value   : 0,
+                        plan_note            : noteEl ? noteEl.value : ''
+                    });
+
+                    if(status) status.textContent = 'Mentés…';
+                    btn.disabled = true;
+
+                    fetch('<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>', {
+                        method  : 'POST',
+                        headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body    : data.toString()
+                    })
+                    .then(function(r){ return r.json(); })
+                    .then(function(res){
+                        btn.disabled = false;
+                        if(res.success){
+                            if(status) { status.textContent = '✅ Mentve!'; status.style.color = '#00c850'; }
+                            // Badge frissítés
+                            var row   = btn.closest('tr.va-upm-row');
+                            var badge = row ? row.querySelector('.va-upm-plan-badge') : null;
+                            if(badge && res.data){
+                                badge.textContent = res.data.icon + ' ' + res.data.label;
+                                badge.style.setProperty('--pc', res.data.color);
+                            }
+                            setTimeout(function(){ if(ed) ed.style.display = 'none'; }, 1200);
+                        } else {
+                            if(status) { status.textContent = '❌ ' + (res.data ? res.data.message : 'Hiba'); status.style.color = '#ff4444'; }
+                        }
+                    })
+                    .catch(function(){
+                        btn.disabled = false;
+                        if(status) { status.textContent = '❌ Hálózati hiba'; status.style.color = '#ff4444'; }
+                    });
+                });
+            });
+        })();
+        </script>
         <?php
     }
 
