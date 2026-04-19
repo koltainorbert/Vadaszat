@@ -330,28 +330,29 @@ document.addEventListener('DOMContentLoaded', function() {
             $grid.append($addBtn);
         }
 
-        // Sortable (SortableJS CDN-ből, fallback natív)
+        // Sortable (SortableJS CDN-ből) – minden render után újra init
         const listEl = $grid[0];
-        if (typeof Sortable !== 'undefined') {
-            if (!listEl._sortable) {
-                listEl._sortable = Sortable.create(listEl, {
-                    animation: 150,
-                    filter: '.va-img-add',
-                    onEnd: function(evt) {
-                        const moved = _files.splice(evt.oldIndex, 1)[0];
-                        _files.splice(evt.newIndex, 0, moved);
-                        // featured index követése
-                        if (_featured === evt.oldIndex) {
-                            _featured = evt.newIndex;
-                        } else if (_featured > evt.oldIndex && _featured <= evt.newIndex) {
-                            _featured--;
-                        } else if (_featured < evt.oldIndex && _featured >= evt.newIndex) {
-                            _featured++;
-                        }
-                        renderGrid();
+        if (typeof Sortable !== 'undefined' && _files.length > 1) {
+            if (listEl._sortable) { listEl._sortable.destroy(); listEl._sortable = null; }
+            listEl._sortable = Sortable.create(listEl, {
+                animation: 150,
+                filter: '.va-img-add',
+                preventOnFilter: true,
+                onEnd: function(evt) {
+                    if (evt.oldIndex === evt.newIndex) return;
+                    const moved = _files.splice(evt.oldIndex, 1)[0];
+                    _files.splice(evt.newIndex, 0, moved);
+                    // featured index követése
+                    if (_featured === evt.oldIndex) {
+                        _featured = evt.newIndex;
+                    } else if (_featured > evt.oldIndex && _featured <= evt.newIndex) {
+                        _featured--;
+                    } else if (_featured < evt.oldIndex && _featured >= evt.newIndex) {
+                        _featured++;
                     }
-                });
-            }
+                    renderGrid();
+                }
+            });
         }
     }
 
