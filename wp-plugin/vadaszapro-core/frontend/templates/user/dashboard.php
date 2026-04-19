@@ -53,6 +53,18 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                 </div>
                 <div class="va-dash-user-head__name"><?php echo esc_html( $user->display_name ?: $user->user_login ); ?></div>
             </div>
+            <form method="post" enctype="multipart/form-data" class="va-dash-avatar-form">
+                <?php wp_nonce_field( 'va_profile_avatar', 'va_profile_avatar_nonce' ); ?>
+                <input type="hidden" name="va_action" value="profile_avatar">
+                <label class="va-dash-avatar-form__label">Profilkép feltöltés</label>
+                <input type="file" name="profile_avatar" class="va-dash-avatar-form__file" accept="image/jpeg,image/png,image/webp">
+                <?php if ( $avatar_url ): ?>
+                <label class="va-dash-avatar-form__remove">
+                    <input type="checkbox" name="profile_avatar_remove" value="1"> Profilkép törlése
+                </label>
+                <?php endif; ?>
+                <button type="submit" class="va-dash-avatar-form__btn">Profilkép mentése</button>
+            </form>
             <span class="va-dashboard__nav-item active" data-tab="listings"><span class="va-dashboard__nav-ico" aria-hidden="true">📋</span><span class="va-dashboard__nav-label">Hirdetéseim (<?php echo count( $listings ); ?>)</span></span>
             <?php if ( $auctions_enabled ): ?>
             <span class="va-dashboard__nav-item" data-tab="bids"><span class="va-dashboard__nav-ico" aria-hidden="true">🔨</span><span class="va-dashboard__nav-label">Licitjeim (<?php echo count( $bids ); ?>)</span></span>
@@ -355,6 +367,34 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
 }
 .va-dash-user-head__avatar img { width:100%;height:100%;object-fit:cover;display:block; }
 .va-dash-user-head__name { color:#fff;font-size:13px;font-weight:700; }
+
+.va-dash-avatar-form {
+    padding:10px 14px 12px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.va-dash-avatar-form__label { color:#fff;font-size:11px;font-weight:700; }
+.va-dash-avatar-form__file {
+    width:100%;
+    font-size:11px;
+    color:rgba(255,255,255,.78);
+}
+.va-dash-avatar-form__remove { font-size:11px;color:rgba(255,255,255,.66);display:flex;gap:6px;align-items:center; }
+.va-dash-avatar-form__btn {
+    width:100%;
+    height:32px;
+    border-radius:999px;
+    border:1px solid rgba(255,42,42,.45);
+    background:rgba(255,42,42,.14);
+    color:#fff;
+    font-weight:700;
+    font-size:12px;
+    cursor:pointer;
+    transition:.2s ease;
+}
+.va-dash-avatar-form__btn:hover { background:rgba(255,42,42,.24); }
 
 /* ── Plan badge a navban ── */
 .va-dash-plan-badge {

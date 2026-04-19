@@ -142,6 +142,7 @@ class VA_User_System {
             if ( $action === 'resetpass'    ) self::process_resetpass();
             if ( $action === 'logout'   ) self::process_logout();
             if ( $action === 'profile'  ) self::process_profile();
+            if ( $action === 'profile_avatar' ) self::process_profile_avatar();
             if ( $action === 'profile_label' ) self::process_profile_label();
         }
     }
@@ -454,6 +455,66 @@ class VA_User_System {
         }
 
         va_set_flash( 'success', 'Profil sikeresen frissítve.' );
+        wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+        exit;
+    }
+
+    /* ── Platinum: gyors címke frissítés ───────────────── */
+    private static function process_profile_avatar() {
+        if ( ! is_user_logged_in() ) return;
+        if ( ! isset( $_POST['va_profile_avatar_nonce'] ) ||
+             ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_profile_avatar_nonce'] ) ), 'va_profile_avatar' ) ) {
+            va_set_flash( 'error', 'Érvénytelen kérés.' );
+            return;
+        }
+
+        $user_id = get_current_user_id();
+
+        if ( ! empty( $_POST['profile_avatar_remove'] ) ) {
+            delete_user_meta( $user_id, 'va_profile_avatar_id' );
+        }
+
+        if ( ! empty( $_FILES['profile_avatar']['name'] ) ) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            $uploaded = wp_handle_upload( $_FILES['profile_avatar'], [
+                'test_form' => false,
+                'mimes'     => [
+                    'jpg|jpeg' => 'image/jpeg',
+                    'png'      => 'image/png',
+                    'webp'     => 'image/webp',
+                ],
+            ] );
+
+            if ( ! empty( $uploaded['error'] ) ) {
+                va_set_flash( 'error', 'A profilkép feltöltése sikertelen: ' . sanitize_text_field( $uploaded['error'] ) );
+                wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+                exit;
+            }
+
+            $file_path = $uploaded['file'] ?? '';
+            $file_url  = $uploaded['url'] ?? '';
+            if ( $file_path && $file_url ) {
+                $filetype = wp_check_filetype( wp_basename( $file_path ), null );
+                $attach_id = wp_insert_attachment( [
+                    'guid'           => $file_url,
+                    'post_mime_type' => $filetype['type'] ?? 'image/jpeg',
+                    'post_title'     => sanitize_file_name( pathinfo( $file_path, PATHINFO_FILENAME ) ),
+                    'post_content'   => '',
+                    'post_status'    => 'inherit',
+                    'post_author'    => $user_id,
+                ], $file_path );
+
+                if ( ! is_wp_error( $attach_id ) && $attach_id > 0 ) {
+                    $attach_data = wp_generate_attachment_metadata( $attach_id, $file_path );
+                    wp_update_attachment_metadata( $attach_id, $attach_data );
+                    update_user_meta( $user_id, 'va_profile_avatar_id', (int) $attach_id );
+                }
+            }
+        }
+
+        va_set_flash( 'success', 'Profilkép frissítve.' );
         wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
         exit;
     }
