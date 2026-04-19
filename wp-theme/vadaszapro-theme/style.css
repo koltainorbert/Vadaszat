@@ -1092,12 +1092,16 @@ body.sl-viewer-open { overflow: hidden; }
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: max(10px, env(safe-area-inset-top));
+  padding-right: max(10px, env(safe-area-inset-right));
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  padding-left: max(10px, env(safe-area-inset-left));
 }
 .sl-viewer[hidden] { display: none; }
 .sl-viewer__close {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -1116,8 +1120,8 @@ body.sl-viewer-open { overflow: hidden; }
 }
 .sl-viewer__toolbar {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: max(20px, env(safe-area-inset-top));
+  left: max(20px, env(safe-area-inset-left));
   display: inline-flex;
   gap: 8px;
 }
@@ -1156,8 +1160,8 @@ body.sl-viewer-open { overflow: hidden; }
   z-index: 2;
   transition: all .2s ease;
 }
-.sl-viewer__nav--prev { left: 24px; }
-.sl-viewer__nav--next { right: 24px; }
+.sl-viewer__nav--prev { left: max(24px, env(safe-area-inset-left)); }
+.sl-viewer__nav--next { right: max(24px, env(safe-area-inset-right)); }
 .sl-viewer__nav:hover {
   border-color: rgba(255,0,0,.6);
   background: rgba(255,0,0,.18);
@@ -1170,6 +1174,7 @@ body.sl-viewer-open { overflow: hidden; }
   align-items: center;
   justify-content: center;
   cursor: grab;
+  touch-action: none;
 }
 .sl-viewer__stage.is-dragging { cursor: grabbing; }
 .sl-viewer__img {
@@ -1184,12 +1189,17 @@ body.sl-viewer-open { overflow: hidden; }
 @media (max-width: 760px) {
   .sl__main-wrap { aspect-ratio: 1 / 1; }
   .sl__zoom-trigger { right: 10px; bottom: 10px; padding: 7px 10px; }
-  .sl-viewer__toolbar { top: 12px; left: 12px; }
-  .sl-viewer__close { top: 12px; right: 12px; }
+  .sl-viewer__toolbar { top: max(12px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left)); }
+  .sl-viewer__close { top: max(12px, env(safe-area-inset-top)); right: max(12px, env(safe-area-inset-right)); }
   .sl-viewer__nav { width: 44px; height: 44px; }
-  .sl-viewer__nav--prev { left: 10px; }
-  .sl-viewer__nav--next { right: 10px; }
+  .sl-viewer__nav--prev { left: max(10px, env(safe-area-inset-left)); }
+  .sl-viewer__nav--next { right: max(10px, env(safe-area-inset-right)); }
   .sl-viewer__stage { width: 100vw; height: 100vh; }
+}
+@media (max-width: 420px) {
+  .sl-viewer__btn { min-width: 44px; height: 34px; font-size: 12px; padding: 0 10px; }
+  .sl-viewer__nav { width: 40px; height: 40px; }
+  .sl__zoom-trigger span { display: none; }
 }
 
 /* ── Fejléc kártya ── */

@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 04. 19. – Session #100 (Viewer responsive hardening + touch gesztusok)
+
+### Mit csinaltunk [x]
+- [x] `wp-theme/vadaszapro-theme/single-va_listing.php` – erinteses gesztusok a fullscreen viewerben:
+- [x] swipe balra/jobbra kepvaltas (zoom=1 allapotban)
+- [x] touch drag mozgatás nagyitasnal (zoom>1)
+- [x] `wp-theme/vadaszapro-theme/style.css` – safe-area hardening (`env(safe-area-inset-*)`) toolbar/close/nav elemekre
+- [x] Extra responsive finomhangolas 420px alatt (kontroll meretek, zoom trigger felirat elrejtese)
+- [x] `touch-action: none` a stage-en a stabil mobil interakcioert
+- [x] Deploy Theme: exit 0 ✅
+
+---
+
 ## 2026. 04. 19. – Session #99 (Viewer lapozas javitas: elozo/kovetkezo kep)
 
 ### Mit csinaltunk [x]
