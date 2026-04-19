@@ -118,6 +118,7 @@ class VA_Admin {
             "va-form-builder"         => "Form Szerkesztő",
             "vadaszapro-adminpanel"   => "Admin Panel beállítások",
             "vadaszapro-single-designer" => "Termékoldal Designer",
+            "vadaszapro-social"        => "Social Media beállítások",
             "vadaszapro-stats"        => "Statisztika",
         ];
         $titles["vadaszapro-listings"]     = "Hirdetések";
@@ -163,6 +164,7 @@ class VA_Admin {
                 <?php self::sb_item( "🧩", "Form szerkesztő", admin_url( "admin.php?page=va-form-builder" ), $page === "va-form-builder" ); ?>
                 <?php self::sb_item( "🖥️", "Admin Panel", admin_url( "admin.php?page=vadaszapro-adminpanel" ), $page === "vadaszapro-adminpanel" ); ?>
                 <?php self::sb_item( "🧱", "Termékoldal", admin_url( "admin.php?page=vadaszapro-single-designer" ), $page === "vadaszapro-single-designer" ); ?>
+                <?php self::sb_item( "📱", "Social Media", admin_url( "admin.php?page=vadaszapro-social" ), $page === "vadaszapro-social" ); ?>
 
                 <span class="va-sb-sep">Tartalom</span>
 
