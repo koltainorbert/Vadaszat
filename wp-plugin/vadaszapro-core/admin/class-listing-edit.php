@@ -443,25 +443,6 @@ class VA_Listing_Edit {
                         <!-- Leírás -->
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">📝 Leírás</div>
-                            <style>
-                            #wp-va_listing_description-editor-container .tox-tinymce,
-                            #wp-va_listing_description-editor-container .tox-editor-header,
-                            #wp-va_listing_description-editor-container .tox-toolbar-overlord,
-                            #wp-va_listing_description-editor-container .tox-toolbar__primary,
-                            #wp-va_listing_description-editor-container .tox-toolbar { background: #1c1c1c !important; border-color: rgba(255,255,255,.12) !important; }
-                            #wp-va_listing_description-editor-container .tox-tbtn { color: #ccc !important; background: transparent !important; }
-                            #wp-va_listing_description-editor-container .tox-tbtn svg { fill: #bbb !important; }
-                            #wp-va_listing_description-editor-container .tox-tbtn:hover { background: #2a2a2a !important; }
-                            #wp-va_listing_description-editor-container .tox-tbtn--active { background: #333 !important; }
-                            #wp-va_listing_description-editor-container .tox-toolbar__group { border-right-color: rgba(255,255,255,.1) !important; }
-                            #wp-va_listing_description-editor-container .tox-tbtn__select-label,
-                            #wp-va_listing_description-editor-container .tox-split-button__chevron svg { color: #ccc !important; fill: #bbb !important; }
-                            #wp-va_listing_description-editor-container .tox-statusbar { background: #1c1c1c !important; border-top: 1px solid rgba(255,255,255,.1) !important; color: #555 !important; }
-                            #wp-va_listing_description-editor-container .tox-statusbar__text-container,
-                            #wp-va_listing_description-editor-container .tox-statusbar__path-item,
-                            #wp-va_listing_description-editor-container .tox-statusbar__wordcount { color: #555 !important; }
-                            #wp-va_listing_description-editor-container .tox-tinymce { border: 1px solid rgba(255,255,255,.12) !important; border-radius: 4px !important; }
-                            </style>
                             <?php
                             wp_editor(
                                 $post ? $post->post_content : '',

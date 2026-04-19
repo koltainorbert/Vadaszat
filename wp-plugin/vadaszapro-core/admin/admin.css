@@ -547,6 +547,33 @@ body.va-admin-page .va-fb-row:hover { border-color: var(--va-border2) !important
 .va-le-desc { width: 100%; background: var(--va-bg2); border: 1px solid var(--va-border); color: var(--va-text); border-radius: 9px; padding: 12px 14px; font-size: 13px; font-family: inherit; resize: vertical; outline: none; transition: border-color .15s; box-sizing: border-box; line-height: 1.6; }
 .va-le-desc:focus { border-color: rgba(255,0,0,.4); }
 
+/* TinyMCE sötét editor az admin listing edit oldalon */
+#wp-va_listing_description-wrap { border: none !important; }
+#wp-va_listing_description-wrap .wp-editor-tools { background: #141414 !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
+#wp-va_listing_description-wrap .wp-media-buttons .button { background: #1e1e1e !important; color: #ccc !important; border-color: rgba(255,255,255,.2) !important; box-shadow: none !important; }
+#wp-va_listing_description-wrap .wp-editor-tabs button { background: #141414 !important; color: #888 !important; border-color: rgba(255,255,255,.12) !important; box-shadow: none !important; }
+#wp-va_listing_description-wrap .wp-editor-tabs button.active { background: #1e1e1e !important; color: #e8e8e8 !important; }
+#wp-va_listing_description-editor-container { border: 1px solid rgba(255,255,255,.12) !important; border-radius: 0 0 6px 6px; overflow: hidden; }
+#wp-va_listing_description-editor-container .tox-tinymce { border: none !important; }
+#wp-va_listing_description-editor-container .tox-editor-header { background: #1e1e1e !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
+#wp-va_listing_description-editor-container .tox-toolbar-overlord { background: #1e1e1e !important; }
+#wp-va_listing_description-editor-container .tox-toolbar__primary { background: #1e1e1e !important; border-bottom: none !important; }
+#wp-va_listing_description-editor-container .tox-toolbar { background: #1e1e1e !important; }
+#wp-va_listing_description-editor-container .tox-toolbar__group { border-right: 1px solid rgba(255,255,255,.1) !important; }
+#wp-va_listing_description-editor-container .tox-tbtn { color: #ccc !important; }
+#wp-va_listing_description-editor-container .tox-tbtn svg { fill: #aaa !important; }
+#wp-va_listing_description-editor-container .tox-tbtn:hover,
+#wp-va_listing_description-editor-container .tox-tbtn:focus { background: #2a2a2a !important; }
+#wp-va_listing_description-editor-container .tox-tbtn--active { background: #333 !important; }
+#wp-va_listing_description-editor-container .tox-tbtn__select-label { color: #ccc !important; }
+#wp-va_listing_description-editor-container .tox-split-button .tox-tbtn { border-color: transparent !important; }
+#wp-va_listing_description-editor-container .tox-statusbar { background: #1e1e1e !important; border-top: 1px solid rgba(255,255,255,.1) !important; }
+#wp-va_listing_description-editor-container .tox-statusbar__text-container span,
+#wp-va_listing_description-editor-container .tox-statusbar__path-item,
+#wp-va_listing_description-editor-container .tox-statusbar__wordcount { color: #555 !important; }
+#wp-va_listing_description-editor-container .tox-statusbar__resize-handle svg { fill: #444 !important; }
+#wp-va_listing_description-editor-container .mce-content-body { background: #1a1a1a !important; }
+
 /* Kép terület */
 .va-le-img-area { background: var(--va-bg2); border: 2px dashed rgba(255,255,255,.12); border-radius: 12px; min-height: 160px; display: flex; align-items: center; justify-content: center; overflow: hidden; margin-bottom: 10px; transition: border-color .15s; }
 .va-le-img-area:hover { border-color: rgba(255,0,0,.35); }
