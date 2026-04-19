@@ -556,6 +556,23 @@ body.va-admin-page .va-fb-row:hover { border-color: var(--va-border2) !important
 .va-le-img-ph p { font-size: 12px; color: var(--va-muted); margin: 0; }
 .va-le-img-btns { display: flex; gap: 8px; }
 
+/* Galéria */
+.va-gal-grid { display: flex; flex-wrap: wrap; gap: 10px; min-height: 90px; padding: 2px 0 6px; }
+.va-gal-item { position: relative; width: 88px; height: 88px; border-radius: 10px; overflow: hidden; border: 2px solid var(--va-border2); flex-shrink: 0; cursor: grab; transition: border-color .18s, box-shadow .18s; }
+.va-gal-item:active { cursor: grabbing; }
+.va-gal-item--cover { border-color: var(--va-accent); box-shadow: 0 0 0 2px rgba(255,32,32,.22); }
+.va-gal-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; user-select: none; }
+.va-gal-over { position: absolute; inset: 0; background: rgba(0,0,0,.62); opacity: 0; transition: opacity .16s; display: flex; align-items: flex-start; justify-content: space-between; padding: 6px; pointer-events: none; }
+.va-gal-item:hover .va-gal-over { opacity: 1; pointer-events: auto; }
+.va-gal-star, .va-gal-del { width: 26px; height: 26px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,.15); color: rgba(255,255,255,.8); transition: background .14s; flex-shrink: 0; }
+.va-gal-star:hover, .va-gal-item--cover .va-gal-star { background: var(--va-accent); color: #fff; }
+.va-gal-del:hover { background: #b72b2b; color: #fff; }
+.va-gal-badge { position: absolute; bottom: 0; left: 0; right: 0; background: var(--va-accent); color: #fff; font-size: 9px; font-weight: 700; text-align: center; padding: 3px 0; text-transform: uppercase; letter-spacing: .4px; pointer-events: none; }
+.va-gal-add { width: 88px; height: 88px; border: 2px dashed rgba(255,255,255,.13); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: rgba(255,255,255,.32); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; background: transparent; transition: border-color .16s, color .16s; flex-shrink: 0; }
+.va-gal-add:hover { border-color: var(--va-accent); color: var(--va-accent); }
+.va-gal-ph { width: 88px; height: 88px; border-radius: 10px; background: rgba(255,255,255,.04); border: 2px dashed rgba(255,255,255,.08); box-sizing: border-box; }
+.ui-sortable-helper.va-gal-item { z-index: 99999 !important; opacity: .85; box-shadow: 0 8px 28px rgba(0,0,0,.55); }
+
 /* Mezők */
 .va-le-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .va-le-field { display: flex; flex-direction: column; gap: 5px; }
