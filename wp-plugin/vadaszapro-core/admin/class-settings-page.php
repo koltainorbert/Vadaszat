@@ -608,6 +608,52 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        /* Árkártyák (kredit vásárlás oldal) */
+        $card_int_keys = [];
+        for ( $n = 1; $n <= 4; $n++ ) {
+            $card_int_keys[] = "va_pc_{$n}_qty";
+            $card_int_keys[] = "va_pc_{$n}_price";
+        }
+        $default_card_qtys  = [ 1 => 1, 2 => 3, 3 => 5, 4 => 10 ];
+        $default_card_labels= [ 1 => 'Basic', 2 => 'Silver', 3 => 'Gold', 4 => 'Platinum' ];
+        $default_card_slugs = [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ];
+        $default_card_tags  = [ 1 => 'Belépő', 2 => 'Népszerű', 3 => 'Profi', 4 => 'Prémium' ];
+        $default_card_descs = [
+            1 => 'Ingyenes alap csomag minden regisztrált felhasználónak.',
+            2 => '3 hirdetési kredit kedvezményes áron.',
+            3 => '5 kredit – legjobb érték a profik számára.',
+            4 => '10 kredit – maximális értékcsomag vadász profiknak.',
+        ];
+        $default_card_prices = [ 1 => 0, 2 => 1791, 3 => 1592, 4 => 1393 ];
+        $default_card_badges = [ 1 => '', 2 => '–10%', 3 => '–20%', 4 => '–30%' ];
+        $default_card_themes = [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ];
+
+        $price_card_opts = [
+            'va_pc_eyebrow'  => 'Átlátható csomagok',
+            'va_pc_title'    => 'Rang Alapú Vásárlás',
+            'va_pc_subtitle' => 'Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.',
+        ];
+        for ( $n = 1; $n <= 4; $n++ ) {
+            $price_card_opts[ "va_pc_{$n}_enabled"   ] = '1';
+            $price_card_opts[ "va_pc_{$n}_label"     ] = $default_card_labels[ $n ];
+            $price_card_opts[ "va_pc_{$n}_plan_slug" ] = $default_card_slugs[ $n ];
+            $price_card_opts[ "va_pc_{$n}_tag"       ] = $default_card_tags[ $n ];
+            $price_card_opts[ "va_pc_{$n}_desc"      ] = $default_card_descs[ $n ];
+            $price_card_opts[ "va_pc_{$n}_qty"       ] = (string) $default_card_qtys[ $n ];
+            $price_card_opts[ "va_pc_{$n}_price"     ] = (string) $default_card_prices[ $n ];
+            $price_card_opts[ "va_pc_{$n}_badge"     ] = $default_card_badges[ $n ];
+            $price_card_opts[ "va_pc_{$n}_featured"  ] = ( $n === 3 ) ? '1' : '0';
+            $price_card_opts[ "va_pc_{$n}_free"      ] = ( $n === 1 ) ? '1' : '0';
+            $price_card_opts[ "va_pc_{$n}_btn_text"  ] = ( $n === 1 ) ? 'Mindenki számára elérhető' : 'Vásárlás →';
+            $price_card_opts[ "va_pc_{$n}_theme"     ] = $default_card_themes[ $n ];
+        }
+        foreach ( $price_card_opts as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            $sanitize = in_array( $key, $card_int_keys, true ) ? 'absint' : 'sanitize_text_field';
+            register_setting( 'va_price_cards_settings', $key, [ 'sanitize_callback' => $sanitize ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
         /* Social Media linkek */
         $social_keys = [
             'va_social_facebook'   => '',
