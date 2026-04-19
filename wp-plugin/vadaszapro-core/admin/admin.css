@@ -415,15 +415,114 @@ body.va-admin-page .va-fb-row:hover { border-color: var(--va-border2) !important
 .va-d-line--price { width: 50%; background: rgba(255,0,0,.4); }
 .va-d-line--meta  { width: 70%; margin-bottom: 0; }
 
+/* ══════════════════════════════════════════════════════════════
+   Statisztika oldal – va-st-* osztályok
+   ══════════════════════════════════════════════════════════════ */
+
+.va-stats-page { padding: 24px 32px; }
+.va-stats-page h1 { margin-bottom: 24px !important; }
+
+/* KPI grid */
+.va-st-kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 20px; }
+.va-st-kpi {
+    background: var(--va-bg3); border: 1px solid var(--va-border);
+    border-radius: 14px; padding: 18px 16px; position: relative; overflow: hidden;
+    transition: transform .18s, box-shadow .18s;
+}
+.va-st-kpi:hover { transform: translateY(-2px); box-shadow: var(--va-shadow-lg); }
+.va-st-kpi__icon { font-size: 20px; margin-bottom: 10px; }
+.va-st-kpi__num  { font-size: 28px; font-weight: 900; line-height: 1; margin-bottom: 4px; letter-spacing: -1px; }
+.va-st-kpi__label{ font-size: 12px; font-weight: 600; color: rgba(255,255,255,.7); margin-bottom: 4px; }
+.va-st-kpi__sub  { font-size: 10px; color: var(--va-muted); line-height: 1.4; }
+
+.va-st-kpi--red    .va-st-kpi__num { color: #ff4444; }
+.va-st-kpi--orange .va-st-kpi__num { color: #ff8c42; }
+.va-st-kpi--blue   .va-st-kpi__num { color: #4da6ff; }
+.va-st-kpi--purple .va-st-kpi__num { color: #c084fc; }
+.va-st-kpi--pink   .va-st-kpi__num { color: #f472b6; }
+.va-st-kpi--green  .va-st-kpi__num { color: #4ade80; }
+
+/* Price strip */
+.va-st-price-strip {
+    display: flex; align-items: center; gap: 20px;
+    background: var(--va-bg3); border: 1px solid var(--va-border);
+    border-radius: 12px; padding: 14px 22px; margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.va-st-price-item { display: flex; flex-direction: column; gap: 2px; }
+.va-st-price-lbl  { font-size: 10px; text-transform: uppercase; letter-spacing: .8px; color: var(--va-muted); font-weight: 700; }
+.va-st-price-val  { font-size: 18px; font-weight: 800; color: #fff; }
+.va-st-price-val--hi { color: #4ade80; }
+.va-st-price-sep  { color: rgba(255,255,255,.15); font-size: 24px; line-height: 1; }
+
+/* Chart cards */
+.va-st-charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+.va-st-charts-row--sm { grid-template-columns: 1fr 1fr; }
+.va-st-chart-card { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: 14px; overflow: hidden; }
+.va-st-chart-card--wide { } /* placeholder */
+.va-st-chart-hdr { display: flex; align-items: flex-start; justify-content: space-between; padding: 16px 18px 10px; border-bottom: 1px solid var(--va-border); }
+.va-st-chart-hdr h3 { margin: 0; font-size: 13px; font-weight: 700; color: #fff; }
+.va-st-chart-hdr p  { margin: 3px 0 0; font-size: 11px; color: var(--va-muted); }
+.va-st-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(255,0,0,.12); border: 1px solid rgba(255,0,0,.25); color: #ff7070; white-space: nowrap; flex-shrink: 0; }
+.va-st-chart-body { padding: 14px 16px; position: relative; }
+.va-st-chart-body--donut { display: flex; align-items: center; gap: 16px; padding: 14px 18px 16px; flex-wrap: wrap; }
+.va-st-chart-body--donut canvas { width: 130px !important; height: 130px !important; flex-shrink: 0; }
+.va-st-donut-legend { flex: 1; min-width: 90px; }
+.va-st-leg-row  { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; font-size: 11px; }
+.va-st-leg-dot  { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.va-st-leg-name { flex: 1; color: rgba(255,255,255,.65); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.va-st-leg-val  { color: #fff; font-weight: 700; }
+
+/* Táblázat panelek */
+.va-st-tables-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px; }
+.va-st-panel { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: 14px; overflow: hidden; margin-bottom: 0; }
+.va-st-panel--full { margin-bottom: 16px; }
+.va-st-panel__hdr { padding: 14px 18px; border-bottom: 1px solid var(--va-border); }
+.va-st-panel__hdr h3 { margin: 0; font-size: 13px; font-weight: 700; color: #fff; }
+
+.va-st-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.va-st-table thead th {
+    padding: 9px 14px; text-align: left; font-size: 10px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .7px;
+    color: var(--va-muted); background: rgba(255,255,255,.025);
+    border-bottom: 1px solid var(--va-border); white-space: nowrap;
+}
+.va-st-table tbody tr { border-bottom: 1px solid rgba(255,255,255,.04); transition: background .12s; }
+.va-st-table tbody tr:last-child { border-bottom: none; }
+.va-st-table tbody tr:hover { background: rgba(255,255,255,.03); }
+.va-st-table tbody td { padding: 10px 14px; color: var(--va-text); vertical-align: middle; }
+
+.va-st-table a { color: rgba(255,255,255,.8) !important; text-decoration: none !important; }
+.va-st-table a:hover { color: #fff !important; text-decoration: underline !important; }
+
+.va-st-rank  { font-size: 11px; font-weight: 800; color: var(--va-muted); width: 28px; text-align: center; }
+.va-st-accent{ color: var(--va-accent2) !important; font-weight: 700; font-size: 13px; }
+.va-st-muted { color: var(--va-muted) !important; font-size: 11px; }
+.va-st-tag   { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; background: rgba(255,255,255,.07); color: rgba(255,255,255,.6); border: 1px solid var(--va-border); white-space: nowrap; }
+.va-st-price { color: #ff8c42; font-weight: 700; }
+.va-st-status-dot { font-size: 11px; font-weight: 600; }
+.va-st-edit-btn {
+    font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 5px;
+    background: rgba(255,255,255,.07); border: 1px solid var(--va-border);
+    color: rgba(255,255,255,.65) !important; text-decoration: none !important;
+    transition: background .12s;
+}
+.va-st-edit-btn:hover { background: rgba(255,0,0,.15); color: #fff !important; border-color: rgba(255,0,0,.3); }
+
 /* ── Responsive ────────────────────────────────────────────────── */
 @media (max-width: 1400px) {
-    .va-kpi-grid    { grid-template-columns: repeat(2, 1fr); }
-    .va-db-bottom   { grid-template-columns: 1fr; }
-    .va-db-side     { flex-direction: row; }
+    .va-kpi-grid         { grid-template-columns: repeat(2, 1fr); }
+    .va-db-bottom        { grid-template-columns: 1fr; }
+    .va-db-side          { flex-direction: row; }
+    .va-st-kpi-grid      { grid-template-columns: repeat(3, 1fr); }
+    .va-st-tables-row    { grid-template-columns: 1fr; }
 }
 @media (max-width: 1100px) {
-    .va-charts-row  { grid-template-columns: 1fr; }
-    .va-db-side     { flex-direction: column; }
+    .va-charts-row       { grid-template-columns: 1fr; }
+    .va-db-side          { flex-direction: column; }
+    .va-st-charts-row    { grid-template-columns: 1fr; }
+    .va-st-charts-row--sm{ grid-template-columns: 1fr; }
+    .va-st-kpi-grid      { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 780px) {
     :root { --va-sidebar-w: 0px; }
