@@ -613,6 +613,29 @@ class VA_Ajax {
         exit;
     }
 
+    /* ── Kép tömörítés + átméretezés ─────────────────────
+     * Átméretezi ha szélesebb a max értéknél, és beállítja a JPEG minőséget.
+     * A fájlt felülírja helyben (az attachment URL nem változik).
+     * ─────────────────────────────────────────────────────── */
+    private static function compress_image( string $file_path ): void {
+        $quality   = (int) get_option( 'va_img_quality',   82 );
+        $max_width = (int) get_option( 'va_img_max_width', 1920 );
+        if ( $quality  < 10 )  $quality  = 10;
+        if ( $quality  > 100 ) $quality  = 100;
+        if ( $max_width < 400 ) $max_width = 400;
+
+        $editor = wp_get_image_editor( $file_path );
+        if ( is_wp_error( $editor ) ) return;
+
+        $size = $editor->get_size();
+        if ( ! empty( $size['width'] ) && $size['width'] > $max_width ) {
+            $editor->resize( $max_width, null, false );
+        }
+
+        $editor->set_quality( $quality );
+        $editor->save( $file_path ); // helyben felülírja
+    }
+
     /* ── Képfeltöltés ──────────────────────────────────── */
     private static function handle_images( $post_id, $files, int $featured_idx = 0 ): array {
         require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -674,6 +697,13 @@ class VA_Ajax {
             if ( is_wp_error( $attachment_id ) ) {
                 $errors[] = $attachment_id->get_error_message();
             } else {
+                // Tömörítés + átméretezés
+                $file_path = get_attached_file( $attachment_id );
+                if ( $file_path ) {
+                    self::compress_image( $file_path );
+                    // Thumbnail-ek újragenerálása a módosított fájlból
+                    wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $file_path ) );
+                }
                 $attachment_ids[] = $attachment_id;
                 $count++;
             }
@@ -1031,6 +1061,9 @@ class VA_Ajax {
         if ( $upload['error'] ) {
             wp_send_json_error( [ 'message' => $upload['error'] ] );
         }
+
+        // Tömörítés + átméretezés
+        self::compress_image( $upload['file'] );
 
         $attachment_id = wp_insert_attachment( [
             'post_mime_type' => $mime,

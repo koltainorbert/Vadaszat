@@ -43,6 +43,8 @@ class VA_Settings_Page {
             'va_auto_publish_listings' => '0',  // 0=jóváhagyás szükséges, 1=azonnal él
             'va_listing_validity_days' => 60,   // hirdetés lejárata (nap) feladáskor
             'va_max_images_per_listing' => 10,
+            'va_img_quality'            => 82,
+            'va_img_max_width'          => 1920,
             'va_require_phone'       => '1',
             'va_maintenance_mode'    => '0',
             'va_maintenance_msg'     => 'Az oldal karbantartás alatt van.',
@@ -692,6 +694,8 @@ class VA_Settings_Page {
                     <?php self::field_num(   'va_listings_per_page',    'Hirdetés / oldal', 5, 100 ); ?>
                     <?php self::field_num(   'va_listing_validity_days','Hirdetés érvényessége (nap)', 1, 365 ); ?>
                     <?php self::field_num(   'va_max_images_per_listing','Max. képek száma hirdetésenként', 1, 20 ); ?>
+                    <?php self::field_num(   'va_img_quality',           'Kép JPEG minőség (10–100, ajnl.: 82)', 10, 100 ); ?>
+                    <?php self::field_num(   'va_img_max_width',         'Kép max szélesség px (ajnl.: 1920)', 400, 4000 ); ?>
                     <?php self::field_toggle('va_auto_publish_listings', 'Hirdetések azonnali megjelenés (jóváhagyás nélkül)' ); ?>
                     <?php self::field_toggle('va_require_phone',         'Telefonszám kötelező' ); ?>
                     <?php self::field_toggle('va_maintenance_mode',      'Karbantartási mód' ); ?>
