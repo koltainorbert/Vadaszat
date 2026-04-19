@@ -2,6 +2,46 @@
 
 ---
 
+## 2026. 04. 19. – Session #95 (Admin Panel teljes személyre szabás – presetek + live preview + CSS injektálás)
+
+### Mit csinaltunk [x]
+- [x] `class-settings-page.php` – `render_adminpanel()` megírva (~400 sor): teljes UI szerkesztőoldal
+  - 6 szekció: Márka/logó, Háttér rétegek, Szöveg+szegély, Accent szín, Layout méretek, Betűtípus
+  - 10 db egy kattintásos preset (Dark Crimson, Midnight Navy, Forest Command, Obsidian Gold, Graphite Purple, Carbon Steel, Copper Dark, Steel Ember, Arctic White, Royal Plum)
+  - Beágyazott live preview (topbar + sidebar + KPI kártyák + tábla szkeletonnal)
+  - JS: form input → preview CSS változók real-time frissítése
+- [x] `class-settings-page.php` – `handle_apply_ap_preset()`: nonce-védett preset alkalmazás, `update_option` loop, redirect `?va_ap_preset=ok/invalid`
+- [x] `class-settings-page.php` – `get_adminpanel_presets()`: 10 preset tömb, minden preset tartalmaz bg/bg2/accent/accent2 swatchokat + teljes options[] map-et
+- [x] `class-settings-page.php` – `register_settings()`: 19 db `va_ap_*` option regisztrálva (`va_ap_settings` csoport)
+  - Branding: panel_name, panel_icon, logo_url, logo_height
+  - Színek: color_bg, color_bg2, color_bg3, color_bg4, color_text, color_muted, color_accent, color_accent2, color_border, color_border2
+  - Méretek: sidebar_width, topbar_height, radius, radius_sm
+  - Font: font (14 lehetséges betűtípus slug)
+- [x] `class-settings-page.php` – `init()`: `admin_post_va_apply_ap_preset` hook hozzáadva
+- [x] `class-admin.php` – `inject_admin_css()`: dinamikus CSS vars injektálás `<style id="va-admin-theme-vars">:root{...}</style>` formában, admin_head hookra, csak VA oldalakon
+  - rgba() értékek NEM esc_attr()-rel, hanem natívan kerülnek ki (komma/zárójel nem escape-elendő CSS-ben)
+  - Font slug → teljes CSS font-stack mapping (14 font)
+- [x] `class-admin.php` – `init()`: `admin_head` → `inject_admin_css` hozzáadva
+- [x] `class-admin.php` – `render_shell()`: dinamikus `$ap_panel_name`, `$ap_panel_icon`, `$ap_logo_url`, `$ap_logo_height` változók, sidebar logo feltételes (kép vs emoji)
+- [x] `class-admin.php` – `register_menus()`: `vadaszapro-adminpanel` submenu regisztrálva → `VA_Settings_Page::render_adminpanel`
+- [x] `class-admin.php` – sidebar nav: "🖥️ Admin Panel" menüpont hozzáadva Beállítások szekció végére
+- [x] `class-admin.php` – titles map: `"vadaszapro-adminpanel" => "Admin Panel beállítások"` bejegyezve
+- [x] Deploy Plugin: exit 0 ✅
+
+### Korábbi session (Session #94 – Form Builder: va_admin_listing_edit form)
+- [x] `class-form-builder.php` – `va_admin_listing_edit` form hozzáadva 13 default mezővel (va_price, va_price_type, va_brand, va_model, va_caliber, va_year, va_phone, va_location, va_email_show, va_featured, va_verified, va_license_req, va_expires)
+- [x] `class-form-builder.php` – `date` típus ikon (📅) hozzáadva, `va_admin_listing_edit` az $allowed listában, tab renderelve "🛠️ Admin hirdetés szerkesztő" névvel
+- [x] `class-listing-edit.php` – `render_edit()`: Form Builder config betöltés, mezők ki/be kapcsolható, egyéni label/placeholder szerkeszthető, custom_* mezők "Egyéb mezők" kártyán dinamikusan jelennek meg
+- [x] `class-listing-edit.php` – `handle_save()`: custom_* mezők DB mentése va_sync_listing_meta() után
+- [x] Deploy Plugin: exit 0 ✅
+
+### Fontos technikai döntések
+- rgba() értékek CSS-be: NEM esc_attr() (az nem bántja a zárójeleket), de jobb ha direkten adjuk ki → muted, border, border2 fields text inputon jönnek, color picker helyett
+- CSS vars override: admin.css :root{} → inject_admin_css() <style> tag felülírja, sorrend garantált (admin_head jön a CSS enqueue után)
+- Font Google Fonts: NEM töltjük be külső forrásból az admin panelen (performance), csak a system-ui alapú stacket adjuk meg
+
+---
+
 ## 2026. 04. 18. – Session #93 (Form Builder: fekete szöveg CSS + egyedi mező hozzáadás/törlés)
 
 ### Mit csinaltunk [x]
