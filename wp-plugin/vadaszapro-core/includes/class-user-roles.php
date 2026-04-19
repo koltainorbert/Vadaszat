@@ -251,9 +251,13 @@ class VA_User_Roles {
 
     /**
      * Hirdetés boostednak számít-e (kategória badge megjelenítéshez)?
-     * 14 napig mutatja a badge-t a utolsó boost után.
+     * Az ablak mérete a globális konfigból jön (alapba 14 nap).
      */
-    public static function is_boosted( int $post_id, int $window_days = 14 ): bool {
+    public static function is_boosted( int $post_id, int $window_days = 0 ): bool {
+        if ( $window_days <= 0 ) {
+            $cfg = self::get_all_plan_configs();
+            $window_days = (int) ( $cfg['_global']['boost_badge_window'] ?? 14 );
+        }
         $bt = (int) get_post_meta( $post_id, 'va_boost_time', true );
         if ( $bt <= 0 ) return false;
         return ( time() - $bt ) < ( $window_days * DAY_IN_SECONDS );
@@ -297,6 +301,59 @@ class VA_User_Roles {
         return $clauses;
     }
 
+    /* ══ AJAX: Plan beállítások mentése (admin) ═══════════════ */
+
+    public static function ajax_save_plan_settings(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+        check_ajax_referer( 'va_admin_plan_cfg', 'nonce' );
+
+        $raw   = isset( $_POST['plans'] ) ? wp_unslash( (string) $_POST['plans'] ) : '{}';
+        $input = json_decode( $raw, true );
+        if ( ! is_array( $input ) ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen adatformátum.' ] );
+        }
+
+        $current       = get_option( 'va_plans_config', [] );
+        if ( ! is_array( $current ) ) $current = [];
+
+        $allowed_slugs = array_keys( self::PLANS );
+
+        foreach ( $allowed_slugs as $slug ) {
+            if ( ! isset( $input[ $slug ] ) || ! is_array( $input[ $slug ] ) ) continue;
+            $d = $input[ $slug ];
+
+            $current[ $slug ] = [
+                'label'          => sanitize_text_field( $d['label']         ?? '' ),
+                'icon'           => sanitize_text_field( $d['icon']          ?? '' ),
+                'color'          => sanitize_hex_color( $d['color']          ?? '' ) ?? self::PLANS[ $slug ]['color'],
+                'bg'             => sanitize_text_field( $d['bg']            ?? '' ),
+                'monthly_limit'  => max( 0, (int) ( $d['monthly_limit']     ?? 0 ) ),
+                'boost_cooldown' => max( 1, (int) ( $d['boost_cooldown']    ?? 1 ) ),
+                'basis'          => in_array( $d['basis'] ?? '', [ 'active', 'monthly' ], true ) ? $d['basis'] : self::PLANS[ $slug ]['basis'],
+                'description'    => sanitize_textarea_field( $d['description']   ?? '' ),
+                'price_monthly'  => sanitize_text_field( $d['price_monthly']     ?? '' ),
+                'price_yearly'   => sanitize_text_field( $d['price_yearly']      ?? '' ),
+                'badge_text'     => sanitize_text_field( $d['badge_text']        ?? '' ),
+            ];
+        }
+
+        if ( isset( $input['_global'] ) && is_array( $input['_global'] ) ) {
+            $g = $input['_global'];
+            $current['_global'] = [
+                'boost_badge_window' => max( 1, (int) ( $g['boost_badge_window'] ?? 14 ) ),
+                'boost_badge_text'   => sanitize_text_field( $g['boost_badge_text']  ?? '⚡ Előre téve' ),
+                'boost_enabled'      => ! empty( $g['boost_enabled'] ),
+            ];
+        }
+
+        update_option( 'va_plans_config', $current );
+        self::flush_plan_cache();
+
+        wp_send_json_success( [ 'message' => 'Csomag beállítások sikeresen mentve!' ] );
+    }
+
     /* ══ AJAX: Admin állítja a tervet ══════════════════════════ */
 
     public static function ajax_admin_set_plan(): void {
@@ -312,7 +369,7 @@ class VA_User_Roles {
         $custom_cd   = absint( $_POST['custom_boost_cooldown'] ?? 0 );
         $plan_note   = sanitize_textarea_field( wp_unslash( (string) ( $_POST['plan_note'] ?? '' ) ) );
 
-        if ( ! $target_uid || ! isset( self::PLANS[ $plan ] ) ) {
+        if ( ! $target_uid || ! isset( self::get_all_plan_configs()[ $plan ] ) || $plan === '_global' ) {
             wp_send_json_error( [ 'message' => 'Érvénytelen adat.' ] );
         }
 
