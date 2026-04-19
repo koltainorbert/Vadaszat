@@ -2933,6 +2933,7 @@ class VA_Settings_Page {
     }
 
     public static function handle_apply_hf_preset() {
+        if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( 'Nincs jogosultság.' );
         }
         check_admin_referer( 'va_apply_hf_preset' );
