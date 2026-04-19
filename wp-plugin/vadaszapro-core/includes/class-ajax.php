@@ -488,12 +488,47 @@ class VA_Ajax {
     /* ── Kredit csomagok definíciója ───────────────────── */
     public static function get_credit_packages(): array {
         $base = (int) get_option( 'va_listing_price_after_free', 1990 );
-        return [
-            [ 'qty' => 1,  'label' => '1 hirdetés',   'unit_price' => $base,               'total' => $base,        'badge' => '' ],
-            [ 'qty' => 3,  'label' => '3 hirdetés',   'unit_price' => (int)round($base*.9), 'total' => (int)round($base*3*.9),  'badge' => '–10%' ],
-            [ 'qty' => 5,  'label' => '5 hirdetés',   'unit_price' => (int)round($base*.8), 'total' => (int)round($base*5*.8),  'badge' => '–20%' ],
-            [ 'qty' => 10, 'label' => '10 hirdetés',  'unit_price' => (int)round($base*.7), 'total' => (int)round($base*10*.7), 'badge' => '–30%' ],
-        ];
+
+        $default_qtys   = [ 1 => 1, 2 => 3, 3 => 5, 4 => 10 ];
+        $default_labels = [ 1 => 'Basic', 2 => 'Silver', 3 => 'Gold', 4 => 'Platinum' ];
+        $default_prices = [ 1 => 0, 2 => (int) round( $base * .9 ), 3 => (int) round( $base * .8 ), 4 => (int) round( $base * .7 ) ];
+        $default_badges = [ 1 => '', 2 => '–10%', 3 => '–20%', 4 => '–30%' ];
+
+        $packages = [];
+        for ( $n = 1; $n <= 4; $n++ ) {
+            $enabled = get_option( "va_pc_{$n}_enabled", '1' ) === '1';
+            if ( ! $enabled ) continue;
+
+            $qty   = max( 1, (int) get_option( "va_pc_{$n}_qty",   $default_qtys[$n] ) );
+            $price = (int) get_option( "va_pc_{$n}_price", $default_prices[$n] );
+            // Fallback: ha az ár 0 és nem ingyenes kártya, alapár
+            $free  = get_option( "va_pc_{$n}_free", $n === 1 ? '1' : '0' ) === '1';
+            if ( ! $free && $price <= 0 ) $price = $base;
+            $total = $qty * $price;
+            $label = (string) get_option( "va_pc_{$n}_label", $default_labels[$n] );
+            $badge = (string) get_option( "va_pc_{$n}_badge", $default_badges[$n] );
+
+            $packages[] = [
+                'qty'        => $qty,
+                'label'      => $qty . ' kredit',
+                'unit_price' => $price,
+                'total'      => $total,
+                'badge'      => $badge,
+            ];
+        }
+
+        usort( $packages, static fn( $a, $b ) => $a['qty'] <=> $b['qty'] );
+
+        if ( empty( $packages ) ) {
+            return [
+                [ 'qty' => 1,  'label' => '1 hirdetés',   'unit_price' => $base,               'total' => $base,                      'badge' => '' ],
+                [ 'qty' => 3,  'label' => '3 hirdetés',   'unit_price' => (int) round($base*.9),'total' => (int) round($base*3*.9),   'badge' => '–10%' ],
+                [ 'qty' => 5,  'label' => '5 hirdetés',   'unit_price' => (int) round($base*.8),'total' => (int) round($base*5*.8),   'badge' => '–20%' ],
+                [ 'qty' => 10, 'label' => '10 hirdetés',  'unit_price' => (int) round($base*.7),'total' => (int) round($base*10*.7),  'badge' => '–30%' ],
+            ];
+        }
+
+        return $packages;
     }
 
     private static function generate_invoice( int $post_id ): string {
