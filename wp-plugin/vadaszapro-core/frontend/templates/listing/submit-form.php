@@ -533,42 +533,44 @@ document.addEventListener('DOMContentLoaded', function() {
     $input.on('change', function(){ addFiles(this.files); this.value = ''; });
 
     /* ══ Quill editor init ═══════════════════════════════════════ */
-    Quill.register('modules/imageResize', ImageResize);
-    var quill = new Quill('#va-quill-editor', {
-        theme: 'snow',
-        placeholder: 'Írja le a hirdetett terméket részletesen...',
-        modules: {
-            imageResize: { parchment: Quill.import('parchment') },
-            toolbar: {
-                container: [
-                    [{ header: [2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['blockquote'],
-                    [{ align: [] }],
-                    ['link', 'image'],
-                    ['clean']
-                ],
-                handlers: {
-                    image: function() {
-                        var input = document.createElement('input');
-                        input.setAttribute('type', 'file');
-                        input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
-                        input.click();
-                        input.addEventListener('change', function() {
-                            var file = input.files[0];
-                            if (!file) return;
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                                var range = quill.getSelection(true);
-                                quill.insertEmbed(range ? range.index : quill.getLength(), 'image', e.target.result);
-                            };
-                            reader.readAsDataURL(file);
-                        });
-                    }
+    var quillModules = {
+        toolbar: {
+            container: [
+                [{ header: [2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote'],
+                [{ align: [] }],
+                ['link', 'image'],
+                ['clean']
+            ],
+            handlers: {
+                image: function() {
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                    input.click();
+                    input.addEventListener('change', function() {
+                        var file = input.files[0];
+                        if (!file) return;
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            var range = quill.getSelection(true);
+                            quill.insertEmbed(range ? range.index : quill.getLength(), 'image', e.target.result);
+                        };
+                        reader.readAsDataURL(file);
+                    });
                 }
             }
         }
+    };
+    if (typeof ImageResize !== 'undefined') {
+        try { Quill.register('modules/imageResize', ImageResize); quillModules.imageResize = { parchment: Quill.import('parchment') }; } catch(e) {}
+    }
+    var quill = new Quill('#va-quill-editor', {
+        theme: 'snow',
+        placeholder: 'Írja le a hirdetett terméket részletesen...',
+        modules: quillModules
     });
 
     // Edit módban meglévő tartalom betöltése
