@@ -148,6 +148,7 @@ class VA_Admin {
             "vadaszapro-reklam"       => "Reklámzónák",
             "vadaszapro-hirdetes"     => "Hirdetés beállítások",
             "vadaszapro-aukcio"       => "Aukció beállítások",
+            "vadaszapro-emails"       => "Email sablonok",
             "vadaszapro-users"        => "Felhasználók",
             "va-form-builder"         => "Form Szerkesztő",
             "vadaszapro-adminpanel"   => "Admin Panel beállítások",
@@ -201,6 +202,11 @@ class VA_Admin {
                 <?php self::sb_item( "🧱", "Termékoldal", admin_url( "admin.php?page=vadaszapro-single-designer" ), $page === "vadaszapro-single-designer" ); ?>
                 <?php self::sb_item( "📱", "Social Media", admin_url( "admin.php?page=vadaszapro-social" ), $page === "vadaszapro-social" ); ?>
                 <?php self::sb_item( "💼", "Csomagok", admin_url( "admin.php?page=vadaszapro-plans" ), $page === "vadaszapro-plans" ); ?>
+
+                <?php if ( $auctions_enabled ): ?>
+                <?php self::sb_item( "🔨", "Aukció beállítások", admin_url( "admin.php?page=vadaszapro-aukcio" ), $page === "vadaszapro-aukcio" ); ?>
+                <?php endif; ?>
+                <?php self::sb_item( "📧", "Email sablonok", admin_url( "admin.php?page=vadaszapro-emails" ), $page === "vadaszapro-emails" ); ?>
 
                 <span class="va-sb-sep">Tartalom</span>
 
