@@ -2,6 +2,35 @@
 
 ---
 
+## 2026. 04. 19. – Session #107 (Rang-alapu csomagvasarlas UI + teljes vasarlasi flow)
+
+### Mit csinaltunk [x]
+- [x] `wp-plugin/vadaszapro-core/includes/class-shortcodes.php` – `render_buy_credits()` teljesen ujraepitve
+  - rang-alapu (Basic / Silver / Gold / Platinum) kartyas csomagvalaszto
+  - kedvezmeny toggle es egyedi mennyiseg blokk kiveve
+  - `va_return` kezeles (`buy` / `submit`) es ennek tovabbitasa checkoutra
+- [x] `wp-plugin/vadaszapro-core/frontend/css/frontend.css` – uj premium pricing design rendszer
+  - dot-grid + glow hero, modern kartyak, rank temak, responsive racs
+- [x] `wp-plugin/vadaszapro-core/includes/class-ajax.php`
+  - `buy_credits()` bovites: `return_to` fogadas + tokenben tarolas
+  - callback iranyitas: siker/cancel utan megfelelo oldalra vissza (`submit` vagy csomag oldal)
+  - uj helper-ek: buy page URL + redirect
+- [x] `wp-theme/vadaszapro-theme/header.php` – uj `Vásárlás` header gomb
+  - bejelentkezett user: direkt csomagoldal
+  - vendeg user: loginra iranyit, majd csomagoldal
+- [x] `wp-plugin/vadaszapro-core/frontend/templates/listing/submit-form.php`
+  - csomagvasarlas link dinamikussa teve
+  - hirdetes-feladasi flow `va_return=submit` paramrel a csomagoldalra visz
+- [x] Hibavizsgalat: erintett fajlok hibamentesek
+- [x] Deploy All: kesz ✅
+
+### Eredmeny
+- Headerbol a `Vásárlás` gomb vegre tenylegesen a csomagvalaszto oldalra visz.
+- A csomagoldalon rangok szerinti modern UI-bol indul a bankkartyas fizetes.
+- Ha a hirdetes feladas kozben kell csomag, ugyaninnen valaszt/fizet a user, es fizetes utan visszakerul a feladashoz.
+
+---
+
 ## 2026. 04. 19. – Session #106 (Csomag beallitasok admin UI teljes ujrarendezes)
 
 ### Mit csinaltunk [x]
