@@ -256,14 +256,15 @@ wp_localize_script( 'va-submit', 'VA_Data', [
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
 (function($){
+document.addEventListener('DOMContentLoaded', function() {
     /* ══ Képkezelő ═══════════════════════════════════════ */
     let _files = [];   // { file: File, id: string }[]
     let _maxImg = 10;
     let _featured = 0; // index a _files tömbben
+    let _sortable = null;
 
     const $picker  = $('#va-img-picker');
     const $grid    = $('#va-img-grid');
@@ -330,11 +331,10 @@ document.addEventListener('DOMContentLoaded', function() {
             $grid.append($addBtn);
         }
 
-        // Sortable (SortableJS CDN-ből) – minden render után újra init
-        const listEl = $grid[0];
+        // Sortable init (module-szintű példány)
+        if (_sortable) { _sortable.destroy(); _sortable = null; }
         if (typeof Sortable !== 'undefined' && _files.length > 1) {
-            if (listEl._sortable) { listEl._sortable.destroy(); listEl._sortable = null; }
-            listEl._sortable = Sortable.create(listEl, {
+            _sortable = Sortable.create($grid[0], {
                 animation: 150,
                 filter: '.va-img-add',
                 preventOnFilter: true,
@@ -342,7 +342,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (evt.oldIndex === evt.newIndex) return;
                     const moved = _files.splice(evt.oldIndex, 1)[0];
                     _files.splice(evt.newIndex, 0, moved);
-                    // featured index követése
                     if (_featured === evt.oldIndex) {
                         _featured = evt.newIndex;
                     } else if (_featured > evt.oldIndex && _featured <= evt.newIndex) {
@@ -350,7 +349,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (_featured < evt.oldIndex && _featured >= evt.newIndex) {
                         _featured++;
                     }
-                    renderGrid();
+                    setTimeout(renderGrid, 0); // defer – ne a callback belsejéből destroy-oljuk
                 }
             });
         }
@@ -428,6 +427,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-})(jQuery);
 }); // DOMContentLoaded
+})(jQuery);
 </script>
