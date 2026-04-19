@@ -378,8 +378,8 @@ body.va-admin-page .va-users-table td { background: transparent !important; colo
 body.va-admin-page .va-users-table tr,
 body.va-admin-page .va-users-table.striped > tbody > tr:nth-child(odd) { background: transparent !important; }
 body.va-admin-page .va-users-table { table-layout: auto !important; }
-body.va-admin-page .va-users-table td:nth-child(4) { width: 130px !important; min-width: 130px !important; max-width: 130px !important; overflow: hidden !important; }
-body.va-admin-page .va-users-table td:nth-child(4) select { width: 100% !important; max-width: 100% !important; box-sizing: border-box !important; font-size: 12px !important; padding: 3px 4px !important; }
+body.va-admin-page .va-users-table td:nth-child(4) { width: 130px !important; min-width: 130px !important; max-width: 130px !important; overflow: visible !important; padding-right: 4px !important; }
+body.va-admin-page .va-users-table td:nth-child(4) select { width: 100% !important; max-width: 118px !important; box-sizing: border-box !important; font-size: 12px !important; padding: 3px 4px !important; }
 body.va-admin-page .va-users-table td:nth-child(5),
 body.va-admin-page .va-users-table td:nth-child(6),
 body.va-admin-page .va-users-table td:nth-child(8) { white-space: nowrap; }
