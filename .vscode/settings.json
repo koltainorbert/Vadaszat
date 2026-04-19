@@ -1,1 +1,6 @@
-﻿{"task.allowAutomaticTasks": "on"}
+{
+    "task.allowAutomaticTasks": "on",
+    "chat.tools.terminal.autoApprove": {
+        "&": true
+    }
+}
