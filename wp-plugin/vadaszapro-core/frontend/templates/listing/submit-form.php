@@ -72,51 +72,43 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 break;
             case 'description':
                 $desc_val = wp_kses_post( (string) $val );
-                echo '<div id="wp-va_desc_editor-wrap" style="border:1px solid rgba(255,255,255,.15);border-radius:6px;overflow:hidden;">';
-                echo '<textarea id="va_desc_editor" name="description" rows="12" style="width:100%;display:none;">' . esc_textarea( $desc_val ) . '</textarea>';
-                echo '</div>';
-                add_action( 'wp_footer', function() {
-                    static $va_mce_done = false;
-                    if ( $va_mce_done ) return;
-                    $va_mce_done = true;
-                    ?>
-                    <style>
-                    #wp-va_desc_editor-wrap .mce-tinymce{box-shadow:none!important;border:none!important;}
-                    #wp-va_desc_editor-wrap .mce-top-part,
-                    #wp-va_desc_editor-wrap .mce-toolbar-grp,
-                    #wp-va_desc_editor-wrap .mce-panel,
-                    #wp-va_desc_editor-wrap .mce-toolbar,
-                    #wp-va_desc_editor-wrap .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
-                    #wp-va_desc_editor-wrap .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
-                    #wp-va_desc_editor-wrap .mce-btn,
-                    #wp-va_desc_editor-wrap .mce-btn button{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
-                    #wp-va_desc_editor-wrap .mce-btn:hover button{background:#2a2a2a!important;}
-                    #wp-va_desc_editor-wrap .mce-ico{color:#bbb!important;}
-                    #wp-va_desc_editor-wrap .mce-txt,
-                    #wp-va_desc_editor-wrap .mce-caret{color:#ccc!important;}
-                    #wp-va_desc_editor-wrap .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
-                    #wp-va_desc_editor-wrap .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
-                    #wp-va_desc_editor-wrap .mce-path-item,
-                    #wp-va_desc_editor-wrap .mce-wordcount{color:#555!important;}
-                    </style>
-                    <script>
-                    (function tryInitVaMCE(){
-                        if (typeof tinymce === 'undefined') { setTimeout(tryInitVaMCE, 150); return; }
-                        tinymce.init({
-                            selector: '#va_desc_editor',
-                            skin: 'lightgray',
-                            plugins: 'lists link paste hr fullscreen media',
-                            toolbar1: 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | undo redo',
-                            resize: true,
-                            content_style: 'body{background:#111;color:#e8e8e8;font-family:system-ui,sans-serif;font-size:15px;padding:12px;}a{color:#ff4444;}img{max-width:100%;height:auto;}',
-                            setup: function(ed){
-                                ed.on('change keyup', function(){ ed.save(); });
-                            }
-                        });
-                    })();
-                    </script>
-                    <?php
-                }, 99 );
+                ?>
+                <textarea id="va_desc_editor" name="description" rows="12" style="width:100%;"><?php echo esc_textarea( $desc_val ); ?></textarea>
+                <style>
+                #va_desc_editor-wrap .mce-tinymce{box-shadow:none!important;border:1px solid rgba(255,255,255,.15)!important;}
+                #va_desc_editor-wrap .mce-top-part,
+                #va_desc_editor-wrap .mce-toolbar-grp,
+                #va_desc_editor-wrap .mce-panel,
+                #va_desc_editor-wrap .mce-toolbar,
+                #va_desc_editor-wrap .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
+                #va_desc_editor-wrap .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
+                #va_desc_editor-wrap .mce-btn,
+                #va_desc_editor-wrap .mce-btn button{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
+                #va_desc_editor-wrap .mce-btn:hover button,
+                #va_desc_editor-wrap .mce-btn.mce-active button{background:#2a2a2a!important;}
+                #va_desc_editor-wrap .mce-ico{color:#bbb!important;}
+                #va_desc_editor-wrap .mce-txt,
+                #va_desc_editor-wrap .mce-caret{color:#ccc!important;}
+                #va_desc_editor-wrap .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
+                #va_desc_editor-wrap .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+                #va_desc_editor-wrap .mce-path-item,
+                #va_desc_editor-wrap .mce-wordcount{color:#555!important;}
+                </style>
+                <script>
+                (function tryVaMCE(){
+                    if (typeof tinymce === 'undefined') { setTimeout(tryVaMCE, 200); return; }
+                    if (tinymce.get('va_desc_editor')) return;
+                    tinymce.init({
+                        selector: '#va_desc_editor',
+                        plugins: 'lists link paste hr fullscreen',
+                        toolbar: 'formatselect | bold italic underline | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | undo redo',
+                        resize: true,
+                        content_style: 'body{background:#111;color:#e8e8e8;font-family:system-ui,sans-serif;font-size:15px;padding:12px;}a{color:#ff4444;}img{max-width:100%;height:auto;}',
+                        setup: function(ed){ ed.on('change keyup', function(){ ed.save(); }); }
+                    });
+                })();
+                </script>
+                <?php
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
