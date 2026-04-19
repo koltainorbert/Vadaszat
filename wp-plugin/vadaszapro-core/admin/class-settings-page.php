@@ -16,6 +16,7 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_import_settings', [ __CLASS__, 'handle_import_settings' ] );
         add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );
         add_action( 'admin_post_va_apply_hf_preset', [ __CLASS__, 'handle_apply_hf_preset' ] );
+        add_action( 'admin_post_va_apply_ap_preset',  [ __CLASS__, 'handle_apply_ap_preset'  ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
@@ -553,11 +554,39 @@ class VA_Settings_Page {
         /* Aukciók */
         $auction_opts = [
             'va_default_min_bid_step' => 500,
-            'va_auction_fee_pct'      => 0,   // % jutalék (jövőre)
+            'va_auction_fee_pct'      => 0,
         ];
         foreach ( $auction_opts as $key => $default ) {
             self::$defaults[ $key ] = $default;
             register_setting( 'va_auction_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* Admin Panel megjelenés (va_ap_*) */
+        $adminpanel = [
+            'va_ap_panel_name'    => 'VadászApró',
+            'va_ap_panel_icon'    => '🎯',
+            'va_ap_logo_url'      => '',
+            'va_ap_logo_height'   => 32,
+            'va_ap_color_bg'      => '#070709',
+            'va_ap_color_bg2'     => '#0d0d11',
+            'va_ap_color_bg3'     => '#111118',
+            'va_ap_color_bg4'     => '#161620',
+            'va_ap_color_text'    => '#e8e8f0',
+            'va_ap_color_muted'   => 'rgba(255,255,255,.45)',
+            'va_ap_color_accent'  => '#ff2020',
+            'va_ap_color_accent2' => '#ff5050',
+            'va_ap_color_border'  => 'rgba(255,255,255,.07)',
+            'va_ap_color_border2' => 'rgba(255,255,255,.12)',
+            'va_ap_sidebar_width' => 230,
+            'va_ap_topbar_height' => 60,
+            'va_ap_radius'        => 12,
+            'va_ap_radius_sm'     => 8,
+            'va_ap_font'          => 'montserrat',
+        ];
+        foreach ( $adminpanel as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_ap_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
     }
