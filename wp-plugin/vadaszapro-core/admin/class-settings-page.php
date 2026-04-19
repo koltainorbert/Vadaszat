@@ -2906,8 +2906,33 @@ class VA_Settings_Page {
         exit;
     }
 
+    public static function handle_save_nav_items(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
+        check_admin_referer( 'va_save_nav_items', 'va_nav_nonce' );
+
+        $raw = wp_unslash( $_POST['va_nav_json'] ?? '' );
+        $decoded = json_decode( $raw, true );
+        if ( ! is_array( $decoded ) ) $decoded = [];
+
+        $clean = [];
+        foreach ( $decoded as $item ) {
+            if ( ! is_array( $item ) ) continue;
+            $label = sanitize_text_field( (string) ( $item['label'] ?? '' ) );
+            $url   = sanitize_text_field( (string) ( $item['url']   ?? '' ) );
+            if ( $label === '' ) continue;
+            $clean[] = [
+                'label'   => $label,
+                'url'     => $url,
+                'enabled' => ! empty( $item['enabled'] ),
+            ];
+        }
+
+        update_option( 'va_nav_items_json', wp_json_encode( $clean, JSON_UNESCAPED_UNICODE ) );
+        wp_safe_redirect( add_query_arg( 'va_nav_saved', '1', admin_url( 'admin.php?page=vadaszapro-header-footer' ) ) );
+        exit;
+    }
+
     public static function handle_apply_hf_preset() {
-        if ( ! current_user_can( 'manage_options' ) ) {
             wp_die( 'Nincs jogosultság.' );
         }
         check_admin_referer( 'va_apply_hf_preset' );

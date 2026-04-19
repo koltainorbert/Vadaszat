@@ -69,11 +69,27 @@
             <!-- Navigáció -->
             <nav class="va-nav" id="va-main-nav">
                 <?php
-                $nav_items = apply_filters('va_nav_items', [
-                    ['url' => home_url('/va-hirdetes-kereses'),  'label' => 'Hirdetések', 'class' => ''],
-                    ['url' => home_url('/kategoria'), 'label' => 'Kategóriák', 'class' => ''],
-                    ['url' => home_url('/kapcsolat'), 'label' => 'Kapcsolat',  'class' => ''],
-                ]);
+                $nav_items = apply_filters('va_nav_items', (function() {
+                    $default = [
+                        ['url' => home_url('/va-hirdetes-kereses'), 'label' => 'Hirdetések', 'class' => '', 'enabled' => true],
+                        ['url' => home_url('/kategoria'),           'label' => 'Kategóriák', 'class' => '', 'enabled' => true],
+                        ['url' => home_url('/kapcsolat'),           'label' => 'Kapcsolat',  'class' => '', 'enabled' => true],
+                    ];
+                    $json = get_option('va_nav_items_json', '');
+                    if (!$json) return $default;
+                    $saved = json_decode($json, true);
+                    if (!is_array($saved) || empty($saved)) return $default;
+                    $result = [];
+                    foreach ($saved as $item) {
+                        if (empty($item['enabled'])) continue;
+                        $url = $item['url'] ?? '';
+                        if ($url !== '' && !preg_match('#^https?://#', $url)) {
+                            $url = home_url($url);
+                        }
+                        $result[] = ['url' => $url, 'label' => $item['label'], 'class' => ''];
+                    }
+                    return $result ?: $default;
+                })());
                 if ( $auctions_enabled ) {
                     array_splice( $nav_items, 1, 0, [[
                         'url'   => home_url('/aukcio'),
