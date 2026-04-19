@@ -3806,9 +3806,14 @@ class VA_Settings_Page {
                     <?php echo va_social_bar( 'icons', 24 ); ?>
                     <p style="font-size:11px;color:var(--va-muted);margin:16px 0 8px;">Pill változat:</p>
                     <?php echo va_social_bar( 'pills', 20 ); ?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
 
-                    /* ══ Csomag beállítások oldal ═══════════════════════════════ */
-                    public static function render_plans(): void {
+    /* ══ Csomag beállítások oldal ═══════════════════════════════ */
+    public static function render_plans(): void {
                         if ( ! current_user_can( 'manage_options' ) ) return;
 
                         $plans    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
@@ -4338,10 +4343,4 @@ class VA_Settings_Page {
                         </script>
                         <?php
                     }
-                }
-                </div>
-            </div>
-        </div>
-        <?php
-    }
 }
