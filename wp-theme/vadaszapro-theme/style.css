@@ -1030,15 +1030,41 @@ textarea { min-height: 110px; resize: vertical; }
   border-radius: 12px; overflow: hidden;
   aspect-ratio: 4/3; display: flex;
   align-items: center; justify-content: center;
+  position: relative;
 }
 .sl__main-img {
   width: 100%; height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   transition: opacity .2s;
+  cursor: zoom-in;
 }
 .sl__main-empty {
   font-size: 72px; opacity: .3;
+}
+.sl__zoom-trigger {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(8,8,8,.62);
+  color: #fff;
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all .2s ease;
+}
+.sl__zoom-trigger:hover {
+  border-color: rgba(255,0,0,.52);
+  background: rgba(255,0,0,.18);
 }
 .sl__thumbs {
   display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;
@@ -1053,6 +1079,89 @@ textarea { min-height: 110px; resize: vertical; }
 .sl__thumb--active {
   border-color: var(--a); opacity: 1;
   box-shadow: 0 0 0 3px rgba(255,0,0,.25);
+}
+
+/* ── Fullscreen viewer ── */
+body.sl-viewer-open { overflow: hidden; }
+.sl-viewer {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  background: rgba(4,4,4,.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sl-viewer[hidden] { display: none; }
+.sl-viewer__close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.22);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.sl-viewer__close:hover {
+  border-color: rgba(255,0,0,.55);
+  background: rgba(255,0,0,.16);
+}
+.sl-viewer__toolbar {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  display: inline-flex;
+  gap: 8px;
+}
+.sl-viewer__btn {
+  min-width: 52px;
+  height: 38px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.2);
+  background: rgba(255,255,255,.08);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: .02em;
+  cursor: pointer;
+  padding: 0 12px;
+  transition: all .2s ease;
+}
+.sl-viewer__btn:hover {
+  border-color: rgba(255,0,0,.55);
+  background: rgba(255,0,0,.16);
+}
+.sl-viewer__stage {
+  width: min(94vw, 1520px);
+  height: min(88vh, 980px);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+}
+.sl-viewer__stage.is-dragging { cursor: grabbing; }
+.sl-viewer__img {
+  max-width: 100%;
+  max-height: 100%;
+  transform-origin: center center;
+  will-change: transform;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+@media (max-width: 760px) {
+  .sl__main-wrap { aspect-ratio: 1 / 1; }
+  .sl__zoom-trigger { right: 10px; bottom: 10px; padding: 7px 10px; }
+  .sl-viewer__toolbar { top: 12px; left: 12px; }
+  .sl-viewer__close { top: 12px; right: 12px; }
+  .sl-viewer__stage { width: 100vw; height: 100vh; }
 }
 
 /* ── Fejléc kártya ── */

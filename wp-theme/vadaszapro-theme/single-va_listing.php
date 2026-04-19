@@ -128,6 +128,10 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
                         <img src="<?php echo esc_url($main_url); ?>"
                              id="sl-main-img" class="sl__main-img"
                              alt="<?php the_title_attribute(); ?>">
+                        <button type="button" class="sl__zoom-trigger" id="sl-zoom-trigger" aria-label="Kép nagyítása">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="17" height="17" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                            <span>Nagyítás</span>
+                        </button>
                     <?php else: ?>
                         <div class="sl__main-img sl__main-empty">Nincs k&eacute;p</div>
                     <?php endif; ?>
@@ -330,17 +334,131 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     </div><!-- .sl__layout -->
 </div><!-- .sl -->
 
+<?php if ( ! empty( $attachment_ids ) ): ?>
+<div class="sl-viewer" id="sl-viewer" hidden>
+    <button type="button" class="sl-viewer__close" id="sl-viewer-close" aria-label="Bezárás">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" width="22" height="22" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="sl-viewer__toolbar">
+        <button type="button" class="sl-viewer__btn" id="sl-zoom-out" aria-label="Kicsinyítés">-</button>
+        <button type="button" class="sl-viewer__btn" id="sl-zoom-reset" aria-label="Méret visszaállítása">100%</button>
+        <button type="button" class="sl-viewer__btn" id="sl-zoom-in" aria-label="Nagyítás">+</button>
+    </div>
+    <div class="sl-viewer__stage" id="sl-viewer-stage">
+        <img src="<?php echo esc_url( $main_url ); ?>" alt="<?php the_title_attribute(); ?>" class="sl-viewer__img" id="sl-viewer-img">
+    </div>
+</div>
+<?php endif; ?>
+
 <script>
 (function(){
+    var thumbs = Array.prototype.slice.call(document.querySelectorAll('.sl__thumb'));
+    var mainImg = document.getElementById('sl-main-img');
+
+    function syncMainImage(src) {
+        if (!mainImg || !src) return;
+        mainImg.src = src;
+    }
+
     // Galeria
-    document.querySelectorAll('.sl__thumb').forEach(function(t){
+    thumbs.forEach(function(t){
         t.addEventListener('click',function(){
-            var mi = document.getElementById('sl-main-img');
-            if(mi) mi.src = this.dataset.src;
-            document.querySelectorAll('.sl__thumb').forEach(function(x){ x.classList.remove('sl__thumb--active'); });
+            syncMainImage(this.dataset.src);
+            thumbs.forEach(function(x){ x.classList.remove('sl__thumb--active'); });
             this.classList.add('sl__thumb--active');
         });
     });
+
+    // Profi kepnezegeto (zoom + drag)
+    var viewer = document.getElementById('sl-viewer');
+    var viewerImg = document.getElementById('sl-viewer-img');
+    var stage = document.getElementById('sl-viewer-stage');
+    var zoomTrigger = document.getElementById('sl-zoom-trigger');
+    var zoomIn = document.getElementById('sl-zoom-in');
+    var zoomOut = document.getElementById('sl-zoom-out');
+    var zoomReset = document.getElementById('sl-zoom-reset');
+    var closeBtn = document.getElementById('sl-viewer-close');
+    var scale = 1;
+    var tx = 0;
+    var ty = 0;
+    var dragging = false;
+    var sx = 0;
+    var sy = 0;
+
+    function applyTransform() {
+        if (!viewerImg) return;
+        viewerImg.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+    }
+
+    function setScale(nextScale) {
+        scale = Math.max(1, Math.min(4, nextScale));
+        if (scale === 1) { tx = 0; ty = 0; }
+        applyTransform();
+        if (zoomReset) zoomReset.textContent = Math.round(scale * 100) + '%';
+    }
+
+    function openViewer() {
+        if (!viewer || !viewerImg || !mainImg) return;
+        viewerImg.src = mainImg.src;
+        viewer.hidden = false;
+        document.body.classList.add('sl-viewer-open');
+        setScale(1);
+    }
+
+    function closeViewer() {
+        if (!viewer) return;
+        viewer.hidden = true;
+        document.body.classList.remove('sl-viewer-open');
+    }
+
+    if (zoomTrigger) {
+        zoomTrigger.addEventListener('click', openViewer);
+    }
+    if (mainImg) {
+        mainImg.addEventListener('click', openViewer);
+    }
+
+    if (closeBtn) closeBtn.addEventListener('click', closeViewer);
+    if (viewer) {
+        viewer.addEventListener('click', function(e){
+            if (e.target === viewer) closeViewer();
+        });
+    }
+    document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape') closeViewer();
+    });
+
+    if (zoomIn) zoomIn.addEventListener('click', function(){ setScale(scale + 0.25); });
+    if (zoomOut) zoomOut.addEventListener('click', function(){ setScale(scale - 0.25); });
+    if (zoomReset) zoomReset.addEventListener('click', function(){ setScale(1); });
+
+    if (stage) {
+        stage.addEventListener('wheel', function(e){
+            e.preventDefault();
+            setScale(scale + (e.deltaY < 0 ? 0.2 : -0.2));
+        }, { passive: false });
+
+        stage.addEventListener('mousedown', function(e){
+            if (scale <= 1) return;
+            dragging = true;
+            sx = e.clientX - tx;
+            sy = e.clientY - ty;
+            stage.classList.add('is-dragging');
+        });
+
+        document.addEventListener('mousemove', function(e){
+            if (!dragging) return;
+            tx = e.clientX - sx;
+            ty = e.clientY - sy;
+            applyTransform();
+        });
+
+        document.addEventListener('mouseup', function(){
+            dragging = false;
+            stage.classList.remove('is-dragging');
+        });
+    }
+
     // Telefonszam
     var pb = document.querySelector('.sl__btn--phone');
     if(pb) pb.addEventListener('click',function(){
