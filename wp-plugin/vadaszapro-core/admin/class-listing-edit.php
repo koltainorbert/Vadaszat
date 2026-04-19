@@ -458,6 +458,7 @@ class VA_Listing_Edit {
                                         'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
                                         'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
                                         'resize'        => true,
+                                        'content_style' => 'body { background:#1a1a1a; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; padding:12px 16px; } a { color:#ff4444; } h2,h3,h4 { color:#fff; } img { max-width:100%; height:auto; border-radius:4px; }',
                                     ],
                                 ]
                             );

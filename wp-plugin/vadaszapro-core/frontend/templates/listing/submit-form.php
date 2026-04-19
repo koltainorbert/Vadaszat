@@ -87,6 +87,7 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                             'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
                             'resize'        => true,
                             'skin'          => 'oxide-dark',
+                            'skin_url'      => includes_url( 'js/tinymce/skins/ui/oxide-dark' ),
                             'content_style' => 'body { background:#111; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; padding:12px; } a { color:#ff4444; } img { max-width:100%; height:auto; border-radius:6px; }',
                         ],
                     ]
