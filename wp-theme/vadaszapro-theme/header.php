@@ -164,7 +164,8 @@
                         <a href="<?php echo esc_url( get_permalink($submit_page) ); ?>" class="va-header__submit-btn"><?php echo esc_html( $header_submit_text ); ?></a>
                     <?php endif; ?>
                     <a href="<?php echo esc_url( $dashboard ? get_permalink($dashboard) : home_url() ); ?>" class="va-header__user">
-                        👤 <?php echo esc_html( $user->display_name ); ?>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                        <?php echo esc_html( $user->display_name ); ?>
                     </a>
                 <?php else:
                     $login_page    = get_page_by_path('va-bejelentkezes');
