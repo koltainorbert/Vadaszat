@@ -557,16 +557,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /* ══ TinyMCE alapból vizuális mód ══════════════════════════ */
     $(document).ready(function(){
-        // Ha a Kód fül aktív, automatikusan Vizuálisra vált
-        function switchToVisual() {
-            var $tmce = $('#wp-va_desc_editor-wrap');
-            if ($tmce.length && $tmce.hasClass('html-active')) {
-                $tmce.find('.switch-tmce').trigger('click');
+        function ensureVisual() {
+            var $wrap = $('#wp-va_desc_editor-wrap');
+            if ($wrap.length && !$wrap.hasClass('tmce-active')) {
+                $wrap.find('.switch-tmce').trigger('click');
             }
         }
-        // Azonnal + 500ms késleltetéssel (ha late-load)
-        switchToVisual();
-        setTimeout(switchToVisual, 500);
+        ensureVisual();
+        setTimeout(ensureVisual, 300);
+        setTimeout(ensureVisual, 800);
     });
 
     /* ══ Form submit ═════════════════════════════════════ */
