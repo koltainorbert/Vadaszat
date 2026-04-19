@@ -144,18 +144,22 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                         $price    = get_post_meta( $l->ID, 'va_price', true );
                         $p_type   = get_post_meta( $l->ID, 'va_price_type', true ) ?: 'fixed';
                         $is_suspended    = get_post_meta( $l->ID, 'va_is_suspended', true ) === '1';
+                        $suspended_by_plan = get_post_meta( $l->ID, 'va_suspended_by_plan', true ) === '1';
                         $suspended_at    = (int) get_post_meta( $l->ID, 'va_suspended_at', true );
                         $active_since_ts = (int) get_post_meta( $l->ID, 'va_active_since', true );
                         if ( ! $active_since_ts ) $active_since_ts = strtotime( $l->post_date );
                         $now             = current_time( 'timestamp' );
                         $can_suspend     = in_array( $user_plan, [ 'gold', 'platinum' ], true );
+                        $buy_url         = home_url( '/va-kredit-vasarlas/' );
                         $statuses = [
                             'publish' => '<span style="color:#00c850">● Aktív</span>',
                             'pending' => '<span style="color:#ffb400">● Jóváhagyásra vár</span>',
                             'draft'   => '<span style="color:#888">● Piszkozat</span>',
-                            'private' => $is_suspended
-                                ? '<span style="color:#ff9900">⏸ Felfüggesztve</span>'
-                                : '<span style="color:#888">● Privát</span>',
+                            'private' => $suspended_by_plan
+                                ? '<span style="color:#ff4444;font-weight:600;">⏹ Leállítva</span>'
+                                : ( $is_suspended
+                                    ? '<span style="color:#ff9900">⏸ Szüneteltetve</span>'
+                                    : '<span style="color:#888">● Privát</span>' ),
                         ];
                     ?>
                     <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
