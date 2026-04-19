@@ -1852,6 +1852,95 @@ class VA_Settings_Page {
         <?php
     }
 
+    /* ══ Rendszer email sablonok ════════════════════════════════ */
+    public static function render_emails(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>📧 VadászApró – Email sablonok</h1>
+            <?php settings_errors( 'va_email_settings' ); ?>
+            <p style="color:#aaa;margin-bottom:4px;">
+                HTML használható a törzsben. A <code>{változók}</code> automatikusan behelyettesítésre kerülnek.
+                Ha a CTA gomb feliratát üresen hagyod, nem jelenik meg gomb.
+            </p>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_email_settings' ); ?>
+
+                <!-- Regisztráció -->
+                <h2 style="margin-top:28px; display:flex; align-items:center; gap:10px;">
+                    Regisztrációs levél
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_reg_enabled" value="0">
+                        <input type="checkbox" name="va_email_reg_enabled" value="1" <?php checked( get_option('va_email_reg_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {username}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_reg_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_reg_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_reg_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_reg_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
+                <!-- Hirdetés megjelent -->
+                <h2 style="margin-top:32px; display:flex; align-items:center; gap:10px;">
+                    Hirdetés megjelent értesítő
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_listing_enabled" value="0">
+                        <input type="checkbox" name="va_email_listing_enabled" value="1" <?php checked( get_option('va_email_listing_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {title}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_listing_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_listing_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_listing_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_listing_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
+                <!-- Hirdetés törölve -->
+                <h2 style="margin-top:32px; display:flex; align-items:center; gap:10px;">
+                    Hirdetés törlése értesítő
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_del_listing_enabled" value="0">
+                        <input type="checkbox" name="va_email_del_listing_enabled" value="1" <?php checked( get_option('va_email_del_listing_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {title}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_del_listing_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_del_listing_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_del_listing_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_del_listing_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
+                <!-- Fiók törölve -->
+                <h2 style="margin-top:32px; display:flex; align-items:center; gap:10px;">
+                    Fiók törlése értesítő
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_del_account_enabled" value="0">
+                        <input type="checkbox" name="va_email_del_account_enabled" value="1" <?php checked( get_option('va_email_del_account_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {username}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_del_account_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_del_account_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_del_account_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_del_account_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
+                <?php submit_button( 'Mentés' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
     /* ══ Felhasználók + Plan kezelő oldal ═══════════════════════ */
     public static function render_users() {
         if ( ! current_user_can( 'manage_options' ) ) return;

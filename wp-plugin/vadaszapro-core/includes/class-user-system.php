@@ -40,6 +40,7 @@ class VA_User_System {
         add_action( 'wp_enqueue_scripts',  [ __CLASS__, 'enqueue' ] );
         add_action( 'admin_init',          [ __CLASS__, 'restrict_wp_admin_for_non_admins' ] );
         add_filter( 'login_url',           [ __CLASS__, 'custom_login_url' ], 10, 3 );
+        add_action( 'transition_post_status', [ __CLASS__, 'notify_listing_published' ], 10, 3 );
         add_filter( 'register_url',        [ __CLASS__, 'custom_register_url' ] );
         add_filter( 'lostpassword_url',    [ __CLASS__, 'custom_lostpassword_url' ], 10, 2 );
         add_filter( 'show_admin_bar',      [ __CLASS__, 'filter_admin_bar_visibility' ] );
@@ -320,6 +321,26 @@ class VA_User_System {
             delete_user_meta( $user_id, 'va_company_seat' );
         }
 
+        // Regisztrációs email
+        if ( get_option( 'va_email_reg_enabled', '1' ) === '1' && class_exists( 'VA_Mailer' ) ) {
+            $user_obj  = get_userdata( $user_id );
+            $site_name = get_option( 'va_site_name', get_bloginfo( 'name' ) );
+            $vars = [
+                '{name}'      => esc_html( $user_obj->display_name ?: $firstname . ' ' . $lastname ),
+                '{username}'  => esc_html( $username ),
+                '{site_name}' => esc_html( $site_name ),
+            ];
+            $btn_lbl = strtr( get_option( 'va_email_reg_btn', 'Fiókja megtekintése' ), $vars );
+            $btn_url = get_permalink( get_page_by_path( 'va-fiok' ) ) ?: home_url( '/' );
+            VA_Mailer::send(
+                $email,
+                strtr( get_option( 'va_email_reg_subject', 'Üdvözlünk a {site_name} oldalon!' ), $vars ),
+                strtr( get_option( 'va_email_reg_heading', 'Sikeres regisztráció!' ), $vars ),
+                strtr( get_option( 'va_email_reg_body', '' ), $vars ),
+                $btn_lbl ? [ 'label' => $btn_lbl, 'url' => $btn_url ] : []
+            );
+        }
+
         // Automatikus bejelentkezés regisztráció után
         wp_set_auth_cookie( $user_id );
 
@@ -594,6 +615,25 @@ class VA_User_System {
             exit;
         }
 
+        // Hirdetés törlés email
+        if ( get_option( 'va_email_del_listing_enabled', '1' ) === '1' && class_exists( 'VA_Mailer' ) ) {
+            $u    = get_userdata( $user_id );
+            $site = get_option( 'va_site_name', get_bloginfo( 'name' ) );
+            $vars = [
+                '{name}'      => esc_html( $u->display_name ),
+                '{title}'     => esc_html( $post->post_title ),
+                '{site_name}' => esc_html( $site ),
+            ];
+            $btn_lbl = strtr( get_option( 'va_email_del_listing_btn', '' ), $vars );
+            VA_Mailer::send(
+                $u->user_email,
+                strtr( get_option( 'va_email_del_listing_subject', 'Hirdetésed törölve – {title}' ), $vars ),
+                strtr( get_option( 'va_email_del_listing_heading', 'Hirdetésed törölve lett' ), $vars ),
+                strtr( get_option( 'va_email_del_listing_body', '' ), $vars ),
+                $btn_lbl ? [ 'label' => $btn_lbl, 'url' => home_url( '/' ) ] : []
+            );
+        }
+
         self::delete_listing_with_images( $post_id );
 
         va_set_flash( 'success', 'A hirdetés sikeresen törölve.' );
@@ -703,6 +743,25 @@ class VA_User_System {
         $wpdb->delete( $wpdb->prefix . 'va_bids',      [ 'user_id' => $user_id ], [ '%d' ] );
         $wpdb->delete( $wpdb->prefix . 'va_watchlist', [ 'user_id' => $user_id ], [ '%d' ] );
 
+        // Fiók törlés email (logout előtt, user még létezik)
+        if ( get_option( 'va_email_del_account_enabled', '1' ) === '1' && class_exists( 'VA_Mailer' ) ) {
+            $u    = get_userdata( $user_id );
+            $site = get_option( 'va_site_name', get_bloginfo( 'name' ) );
+            $vars = [
+                '{name}'      => esc_html( $u->display_name ),
+                '{username}'  => esc_html( $u->user_login ),
+                '{site_name}' => esc_html( $site ),
+            ];
+            $btn_lbl = strtr( get_option( 'va_email_del_account_btn', '' ), $vars );
+            VA_Mailer::send(
+                $u->user_email,
+                strtr( get_option( 'va_email_del_account_subject', 'Fiókod törölve – {site_name}' ), $vars ),
+                strtr( get_option( 'va_email_del_account_heading', 'Fiókod törölve lett' ), $vars ),
+                strtr( get_option( 'va_email_del_account_body', '' ), $vars ),
+                $btn_lbl ? [ 'label' => $btn_lbl, 'url' => home_url( '/' ) ] : []
+            );
+        }
+
         // Kijelentkezés, majd felhasználó törlése
         wp_logout();
         require_once ABSPATH . 'wp-admin/includes/user.php';
@@ -710,6 +769,32 @@ class VA_User_System {
 
         wp_safe_redirect( add_query_arg( 'va_deleted', '1', home_url( '/' ) ) );
         exit;
+    }
+
+    /* ── Email: hirdetés megjelent (admin jóváhagyáskor) ────── */
+    public static function notify_listing_published( string $new_status, string $old_status, \WP_Post $post ): void {
+        if ( $new_status !== 'publish' || $old_status === 'publish' ) return;
+        if ( $post->post_type !== 'va_listing' ) return;
+        if ( get_option( 'va_email_listing_enabled', '1' ) !== '1' ) return;
+        if ( ! class_exists( 'VA_Mailer' ) ) return;
+
+        $user = get_userdata( (int) $post->post_author );
+        if ( ! $user ) return;
+
+        $site = get_option( 'va_site_name', get_bloginfo( 'name' ) );
+        $vars = [
+            '{name}'      => esc_html( $user->display_name ),
+            '{title}'     => esc_html( $post->post_title ),
+            '{site_name}' => esc_html( $site ),
+        ];
+        $btn_lbl = strtr( get_option( 'va_email_listing_btn', 'Hirdetés megtekintése' ), $vars );
+        VA_Mailer::send(
+            $user->user_email,
+            strtr( get_option( 'va_email_listing_subject', 'Hirdetésed megjelent – {title}' ), $vars ),
+            strtr( get_option( 'va_email_listing_heading', 'Hirdetésed él!' ), $vars ),
+            strtr( get_option( 'va_email_listing_body', '' ), $vars ),
+            $btn_lbl ? [ 'label' => $btn_lbl, 'url' => get_permalink( $post->ID ) ] : []
+        );
     }
 
     /* ── Hirdetés felfüggesztés / újraindítás (Gold, Platinum) ── */
