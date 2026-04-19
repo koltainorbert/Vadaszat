@@ -2,6 +2,54 @@
 
 ---
 
+## 2026. 04. 19. – Session #113 (Árkártyák admin, Toggle fix, Oldalszerkesztő)
+
+### Elvégzett feladatok
+
+#### Árkártyák admin oldal (DB-vezérelt díjcsomagok)
+- **`admin/class-settings-page.php`**: `render_price_cards()` metódus – prémium dark admin UI
+  - Hero szekció: eyebrow/title/subtitle szerkeszthető
+  - 4 kártya × 12 mező: név, ár, ár-egység, leírás, badge, label, gomb szöveg, kiemelt/ingyenes toggle, icon slug
+  - Options group: `va_price_cards_settings`, prefix: `va_pc_*`
+- **`admin/class-admin.php`**: `vadaszapro-arkartyak` sidebar + submenu hozzáadva
+- **`includes/class-ajax.php`**: `get_credit_packages()` – hardkódolt fallback helyett DB-ből olvas (`va_pc_{n}_*`)
+- **`includes/class-shortcodes.php`**: `render_buy_credits()` – hero + kártyák DB-ből töltve
+  - `get_plan_icon()` helper: 4 SVG ikon (basic/silver/gold/platinum)
+
+#### Toggle CSS bug fix
+- Nested `<label>` (érvénytelen HTML) helyett: `<span class="pb-toggle-row">` + `.pb-toggle-text` span
+- CSS osztályok: `.va-pk-toggle-row`, `.va-pk-toggle-text`
+
+#### Oldalszerkesztő (drag-and-drop blokk alapú)
+- **`includes/class-page-renderer.php`** – ÚJ FÁJL
+  - Frontend blokk megjelenítő: JSON → HTML a WordPress oldalakhoz
+  - Hook: `the_content` (priority 1) + `wp_head` CSS injektálás
+  - 6 blokk típus render: hero, text, img_text, cta, cards, divider
+  - Biztonság: `esc_html`, `esc_url`, `wp_kses_post`, szín regex validáció
+- **`admin/class-page-builder.php`** – ÚJ FÁJL
+  - 3 oszlopos admin szerkesztő: paletta | vászon | beállítások
+  - SortableJS 1.15.2 (jsDelivr CDN) – drag-and-drop blokkok
+  - 6 blokk típus: Hero, Szöveg, Kép+szöveg, CTA, Kártyák, Elválasztó
+  - Live settings panel, repeater kártyákhoz, WP media picker
+  - AJAX: `va_pb_save`, `va_pb_get`, `va_pb_new_page`, `va_pb_delete_page`
+  - Tárolás: `va_page_blocks` post meta (JSON) a WP `page` post type-on
+  - Ctrl+S mentés, toast értesítők
+- **`vadaszapro-core.php`**: `require_once` + init bekötve (renderer + page builder)
+- **`admin/class-admin.php`**: „📄 Oldalak" sidebar item + `vadaszapro-oldalak` submenu
+
+### Admin útvonalak
+- Árkártyák: `admin.php?page=vadaszapro-arkartyak`
+- Oldalszerkesztő lista: `admin.php?page=vadaszapro-oldalak`
+- Szerkesztő: `admin.php?page=vadaszapro-oldalak&va_action=edit&post_id=X`
+
+### Állapot
+- Árkártyák: ✅ kész + deployed
+- Toggle fix: ✅ kész + deployed
+- Oldalszerkesztő: ✅ kész + deployed
+- Git push: ✅ kész
+
+---
+
 ## 2026. 04. 19. – Session #112 (Auto-update, Child theme, Rate limiting, Email rendszer)
 
 ### Elvégzett feladatok
