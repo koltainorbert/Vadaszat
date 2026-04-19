@@ -195,6 +195,15 @@ if ( is_user_logged_in() ) {
 
 $remaining_free = $free_limit === 0 ? 9999 : max( 0, $free_limit - $user_listings_count );
 
+// ── Azonnali átirányítás ha nincs szabad keret és nem szerkesztés ──
+if ( ! $edit_mode && is_user_logged_in() ) {
+    $has_any_allowance = $plan_has_allowance || $user_credit_balance > 0 || $remaining_free > 0;
+    if ( ! $has_any_allowance ) {
+        wp_redirect( $buy_url_submit );
+        exit;
+    }
+}
+
 wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 wp_enqueue_script( 'va-submit',   VA_PLUGIN_URL . 'frontend/js/frontend.js',  [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-submit', 'VA_Data', [
@@ -226,20 +235,23 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         <?php if ( ! $edit_mode ): ?>
         <div class="va-notice va-notice--info" style="margin-bottom:16px;">
             <?php if ( $plan_has_allowance || $user_credit_balance > 0 ): ?>
-                <?php if ( $user_credit_balance > 0 ): ?>
-                    Előfizetett egyenleged: <strong><?php echo esc_html( (string) $user_credit_balance ); ?> db kredit</strong>. Ebből még tudsz hirdetést feladni.
-                <?php elseif ( is_int( $plan_remaining ) ): ?>
-                    Előfizetett csomagkeretedből még <strong><?php echo esc_html( (string) $plan_remaining ); ?> db</strong> hirdetést tudsz feladni.
+                <?php if ( $user_credit_balance > 0 && is_int( $plan_remaining ) && $plan_remaining > 0 ): ?>
+                    Egyenleged: <strong><?php echo esc_html( (string) $plan_remaining ); ?> plan + <?php echo esc_html( (string) $user_credit_balance ); ?> vásárolt kredit</strong>.
+                <?php elseif ( $user_credit_balance > 0 ): ?>
+                    Rendelkezésre álló kreditjeid: <strong><?php echo esc_html( (string) $user_credit_balance ); ?> db</strong>.
+                <?php elseif ( is_int( $plan_remaining ) && $plan_remaining > 0 ): ?>
+                    Csomagkeretedből még <strong><?php echo esc_html( (string) $plan_remaining ); ?> db</strong> hirdetést adhatsz fel.
                 <?php else: ?>
                     Az előfizetésed alapján jelenleg tudsz hirdetést feladni.
                 <?php endif; ?>
-            <?php elseif ( $free_limit === 0 ): ?>
-                Jelenleg korlátlan számú ingyenes hirdetés adható fel.
-            <?php else: ?>
-                <?php if ( $remaining_free > 0 ): ?>
-                    Még <strong><?php echo esc_html( (string) $remaining_free ); ?> db</strong> ingyenes hirdetésed van. Utána minden új hirdetés díja: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> (bankkártya).
+            <?php elseif ( $remaining_free > 0 ): ?>
+                <?php if ( $remaining_free === 1 ): ?>
+                    Ez az <strong>utolsó ingyenes</strong> hirdetésed. Utána minden új hirdetés díja <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> –
+                    <a href="<?php echo esc_url( $buy_url ); ?>" style="color:#ff6060;font-weight:700;">vásárolj most csomagot!</a>
                 <?php else: ?>
-                    Az ingyenes hirdetési limit elfogyott. A következő hirdetés díja: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> (bankkártya).
+                    Még <strong><?php echo esc_html( (string) $remaining_free ); ?> db</strong> ingyenes hirdetésed van.
+                    Utána: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft / hirdetés</strong> –
+                    <a href="<?php echo esc_url( $buy_url ); ?>" style="color:#ff6060;font-weight:700;">csomagok megtekintése</a>
                 <?php endif; ?>
             <?php endif; ?>
         </div>
