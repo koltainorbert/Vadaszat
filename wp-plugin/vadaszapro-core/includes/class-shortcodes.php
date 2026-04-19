@@ -154,15 +154,17 @@ class VA_Shortcodes {
             'ajax_url' => admin_url( 'admin-ajax.php' ),
             'nonce'    => $nonce,
         ]);
+        $all_plan_cfg = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
+        $user_plan    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_user_plan( $user_id ) : 'basic';
         ?>
         <div class="va-wrap">
             <?php va_display_flash(); ?>
             <div id="va-buy-notice"></div>
 
             <div class="va-credits-hero va-credits-hero--ranks">
-                <div class="va-credits-eyebrow"><span class="va-credits-eyebrow-dot"></span>Átlátható csomagok</div>
-                <h2 class="va-credits-title">Rang Alapú Vásárlás</h2>
-                <p class="va-credits-sub">Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.</p>
+                <div class="va-credits-eyebrow"><span class="va-credits-eyebrow-dot"></span><?php echo esc_html( $hero_eyebrow ); ?></div>
+                <h2 class="va-credits-title"><?php echo esc_html( $hero_title ); ?></h2>
+                <p class="va-credits-sub"><?php echo esc_html( $hero_sub ); ?></p>
                 <p class="va-credits-sub">Jelenlegi elérhető hirdetési kereteid:
                     <?php if ( $plan_remaining < 0 ): ?>
                     <strong class="va-credits-count">Korlátlan (plan)</strong>
@@ -182,26 +184,23 @@ class VA_Shortcodes {
             </div>
 
             <div class="va-pkg-grid">
-                <?php foreach ( $rank_cards as $card ): ?>
-                <?php
-                    $slug = $card['slug'];
-                    $qty  = (int) $card['qty'];
-                    $cfg  = ( isset( $all_plan_cfg[ $slug ] ) && is_array( $all_plan_cfg[ $slug ] ) ) ? $all_plan_cfg[ $slug ] : [];
-                    $pkg  = $packages_by_qty[ $qty ] ?? [
+                <?php foreach ( $rank_cards as $card ):
+                    $slug      = $card['slug'];
+                    $qty       = (int) $card['qty'];
+                    $is_free   = $card['free'];
+                    $is_active = ( $slug === $user_plan );
+                    $cfg       = ( isset( $all_plan_cfg[ $slug ] ) && is_array( $all_plan_cfg[ $slug ] ) ) ? $all_plan_cfg[ $slug ] : [];
+                    $plan_limit    = (int)    ( $cfg['monthly_limit'] ?? 0 );
+                    $plan_basis    = (string) ( $cfg['basis'] ?? 'monthly' );
+                    $plan_boost_cd = (int)    ( $cfg['boost_cooldown'] ?? 0 );
+                    $pkg = $packages_by_qty[ $qty ] ?? [
                         'qty'        => $qty,
                         'label'      => $qty . ' kredit',
                         'unit_price' => $base_price,
                         'total'      => $base_price * $qty,
                     ];
-                    $plan_label    = (string) ( $cfg['label'] ?? ucfirst( $slug ) );
-                    $plan_desc     = (string) ( $cfg['description'] ?? 'Hirdetési csomag' );
-                    $plan_limit    = (int) ( $cfg['monthly_limit'] ?? 0 );
-                    $plan_basis    = (string) ( $cfg['basis'] ?? 'monthly' );
-                    $plan_boost_cd = (int) ( $cfg['boost_cooldown'] ?? 0 );
-                    $is_free       = ( $slug === 'basic' );
-                    $is_active     = ( $slug === $user_plan );
                 ?>
-                <div class="va-pkg-card va-pkg-card--<?php echo esc_attr( $card['theme'] ); ?><?php echo $is_active ? ' va-pkg-card--active' : ''; ?>" data-qty="<?php echo esc_attr( (string) $qty ); ?>">
+                <div class="va-pkg-card va-pkg-card--<?php echo esc_attr( $card['theme'] ); ?><?php echo $is_active ? ' va-pkg-card--active' : ''; ?><?php echo $card['featured'] ? ' va-pkg-card--featured' : ''; ?>" data-qty="<?php echo esc_attr( (string) $qty ); ?>">
                     <?php if ( $is_active ): ?>
                     <div class="va-pkg-badge va-pkg-badge--active">✓ Jelenlegi</div>
                     <?php else: ?>
@@ -210,7 +209,7 @@ class VA_Shortcodes {
                     <div class="va-pkg-header">
                         <div class="va-pkg-icon-wrap"><?php echo $card['icon']; // SVG, no user input ?></div>
                         <div class="va-pkg-header-text">
-                            <div class="va-pkg-rank"><?php echo esc_html( strtoupper( $plan_label ) ); ?></div>
+                            <div class="va-pkg-rank"><?php echo esc_html( strtoupper( $card['label'] ) ); ?></div>
                             <div class="va-pkg-qty"><?php echo esc_html( (string) $pkg['label'] ); ?></div>
                         </div>
                     </div>
@@ -218,31 +217,32 @@ class VA_Shortcodes {
                         <?php if ( $is_free ): ?>
                         <div class="va-pkg-price va-pkg-price--free">Ingyenes</div>
                         <div class="va-pkg-unit">regisztrációval</div>
+                        <?php elseif ( $card['badge'] ): ?>
+                        <div class="va-pkg-price"><?php echo number_format( (int) $pkg['total'], 0, ',', ' ' ); ?><span>Ft</span></div>
+                        <div class="va-pkg-unit"><?php echo number_format( (int) $pkg['unit_price'], 0, ',', ' ' ); ?> Ft / kredit <span class="va-pkg-discount"><?php echo esc_html( $card['badge'] ); ?></span></div>
                         <?php else: ?>
                         <div class="va-pkg-price"><?php echo number_format( (int) $pkg['total'], 0, ',', ' ' ); ?><span>Ft</span></div>
                         <div class="va-pkg-unit"><?php echo number_format( (int) $pkg['unit_price'], 0, ',', ' ' ); ?> Ft / kredit</div>
                         <?php endif; ?>
                     </div>
                     <ul class="va-pkg-meta">
-                        <li><?php echo esc_html( $plan_desc ); ?></li>
+                        <li><?php echo esc_html( $card['desc'] ); ?></li>
                         <?php if ( $plan_limit > 0 ): ?>
                         <li><?php echo $plan_basis === 'active' ? 'Max ' . esc_html( (string) $plan_limit ) . ' aktív hirdetés' : esc_html( (string) $plan_limit ) . ' hirdetés / hó'; ?></li>
                         <?php else: ?>
                         <li>Korlátlan hirdetés</li>
                         <?php endif; ?>
-                        <li>Boost újratöltés: <?php echo esc_html( (string) max( 0, $plan_boost_cd ) ); ?> nap</li>
+                        <?php if ( $plan_boost_cd > 0 ): ?>
+                        <li>Boost újratöltés: <?php echo esc_html( (string) $plan_boost_cd ); ?> nap</li>
+                        <?php endif; ?>
                     </ul>
                     <?php if ( $is_active ): ?>
-                    <button type="button" class="va-pkg-buy-btn va-pkg-buy-btn--current" disabled>
-                        Aktív csomag
-                    </button>
+                    <button type="button" class="va-pkg-buy-btn va-pkg-buy-btn--current" disabled>Aktív csomag</button>
                     <?php elseif ( $is_free ): ?>
-                    <button type="button" class="va-pkg-buy-btn va-pkg-buy-btn--free" disabled>
-                        Mindenki számára elérhető
-                    </button>
+                    <button type="button" class="va-pkg-buy-btn va-pkg-buy-btn--free" disabled><?php echo esc_html( $card['btn_text'] ); ?></button>
                     <?php else: ?>
                     <button type="button" class="va-pkg-buy-btn" data-qty="<?php echo esc_attr( (string) $qty ); ?>" data-total="<?php echo esc_attr( (string) $pkg['total'] ); ?>">
-                        Vásárlás →
+                        <?php echo esc_html( $card['btn_text'] ); ?>
                     </button>
                     <?php endif; ?>
                 </div>
@@ -275,5 +275,16 @@ class VA_Shortcodes {
         </script>
         <?php
         return ob_get_clean();
+    }
+
+    /* ── Plan SVG ikon ──────────────────────────────────────── */
+    private static function get_plan_icon( string $slug ): string {
+        $icons = [
+            'basic'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>',
+            'silver'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>',
+            'gold'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
+            'platinum' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 8h12l4-8"/><path d="M6 12v8h12v-8"/><path d="M12 12v8"/></svg>',
+        ];
+        return $icons[ $slug ] ?? $icons['basic'];
     }
 }
