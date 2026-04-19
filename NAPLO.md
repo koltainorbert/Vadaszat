@@ -2,6 +2,54 @@
 
 ---
 
+## 2026. 04. 19. – Session #112 (Auto-update, Child theme, Rate limiting, Email rendszer)
+
+### Elvégzett feladatok
+
+#### Auto-update rendszer (GitHub Releases alapján)
+- **`includes/class-updater.php`** – új fájl, független, 3rd party library nélkül
+  - GitHub Releases API polling (6 óránkénti transient cache)
+  - WP natív `pre_set_site_transient_update_plugins` + `plugins_api` hook
+  - Zip letöltés: Release asset `.zip` → fallback GitHub auto-zip
+  - `fix_folder_name()`: GitHub archive mappa → `vadaszapro-core/` átnevezés
+- **`vadaszapro-core.php`** bővítve:
+  - `VA_GITHUB_REPO` és `VA_GITHUB_TOKEN` konstansok (wp-config.php-ban állítható)
+  - `require_once class-updater.php` + `VA_Updater::init()` a boot blokkban
+
+#### Child theme
+- **`wp-theme/vadaszapro-child/style.css`** – `Template: vadaszapro-theme` fejléccel
+- **`wp-theme/vadaszapro-child/functions.php`** – szülő CSS enqueue, placeholder hook-okhoz
+
+#### Rate limiting (publikus AJAX)
+- **`class-ajax.php`**: `is_rate_limited()` privát helper – IP-alapú, transient-tel
+  - `live_search`: 60 kérés/perc/IP limit
+  - `filter_listings`: 60 kérés/perc/IP limit
+  - 429-es JSON hibaválasz túllépés esetén
+
+#### Email rendszer (előző session, most lezárva)
+- `VA_Mailer` HTML email osztály – branded template, inline CSS
+- 4 rendszer email (regisztráció, listing published, listing deleted, account deleted)
+- Admin-editable sablonok: `vadaszapro-emails` panel
+- Aukció emailek szintén admin-szerkeszthetők
+- Sidebar fix: Aukció beállítások + Email sablonok menüpontok látszanak
+
+### Állapot
+- Auto-update: ✅ kész + deployed
+- Child theme: ✅ kész (telepítés: WP admin → Megjelenés → Témák → Aktiválás)
+- Rate limiting: ✅ kész + deployed
+- Email rendszer: ✅ kész + deployed
+
+### Beállítandó (deploy után)
+- `VA_GITHUB_REPO` konstans: `wp-config.php`-ba → `define('VA_GITHUB_REPO', 'felhasznalonev/vadaszapro-core');`
+- Child theme aktiválása a WP adminban
+
+### Következő session lehetséges feladatok
+- [ ] Child theme LocalWP-be deploy + aktiválás
+- [ ] GitHub repo létrehozása az auto-update teszteléséhez
+- [ ] Rate limiting finomhangolás (objektum cache ha elérhető)
+
+---
+
 ## 2026. 04. 19. – Session #111 (Quill editor bugfix + képtörlés cleanup)
 
 ### Elvégzett feladatok
