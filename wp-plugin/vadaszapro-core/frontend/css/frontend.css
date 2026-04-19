@@ -602,6 +602,14 @@
   min-height: 90px;
   padding: 2px 0 6px;
 }
+.va-img-ph {
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  background: rgba(255,255,255,.05);
+  border: 2px dashed rgba(255,255,255,.15);
+  flex-shrink: 0;
+}
 .va-img-grid--hover { outline: 2px dashed #ff0000; outline-offset: 4px; border-radius: 10px; }
 .va-img-add {
   width: 88px;

@@ -256,15 +256,13 @@ wp_localize_script( 'va-submit', 'VA_Data', [
     </form>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 (function($){
     /* ══ Képkezelő ═══════════════════════════════════════ */
     let _files = [];   // { file: File, id: string }[]
     let _maxImg = 10;
-    let _featured = 0; // index a _files tömbben
-    let _sortable = null;
+    let _featured = 0;
 
     const $picker  = $('#va-img-picker');
     const $grid    = $('#va-img-grid');
@@ -331,25 +329,30 @@ document.addEventListener('DOMContentLoaded', function() {
             $grid.append($addBtn);
         }
 
-        // Sortable init (module-szintű példány)
-        if (_sortable) { _sortable.destroy(); _sortable = null; }
-        if (typeof Sortable !== 'undefined' && _files.length > 1) {
-            _sortable = Sortable.create($grid[0], {
-                animation: 150,
-                filter: '.va-img-add',
-                preventOnFilter: true,
-                onEnd: function(evt) {
-                    if (evt.oldIndex === evt.newIndex) return;
-                    const moved = _files.splice(evt.oldIndex, 1)[0];
-                    _files.splice(evt.newIndex, 0, moved);
-                    if (_featured === evt.oldIndex) {
-                        _featured = evt.newIndex;
-                    } else if (_featured > evt.oldIndex && _featured <= evt.newIndex) {
-                        _featured--;
-                    } else if (_featured < evt.oldIndex && _featured >= evt.newIndex) {
-                        _featured++;
+        // Sortable – jQuery UI (mint az admin)
+        if (_files.length > 1) {
+            $grid.sortable({
+                items: '.va-img-card',
+                tolerance: 'pointer',
+                cursor: 'grabbing',
+                placeholder: 'va-img-ph',
+                forcePlaceholderSize: true,
+                stop: function() {
+                    // Olvassuk vissza a DOM sorrendet _files-ba
+                    const newOrder = [];
+                    let newFeaturedId = _files[_featured] ? _files[_featured].id : null;
+                    $grid.find('.va-img-card').each(function() {
+                        const id = $(this).data('id');
+                        const found = _files.find(function(f){ return f.id === id; });
+                        if (found) newOrder.push(found);
+                    });
+                    _files = newOrder;
+                    if (newFeaturedId) {
+                        _featured = _files.findIndex(function(f){ return f.id === newFeaturedId; });
+                        if (_featured < 0) _featured = 0;
                     }
-                    setTimeout(renderGrid, 0); // defer – ne a callback belsejéből destroy-oljuk
+                    $featIdx.val(_featured);
+                    renderGrid();
                 }
             });
         }
