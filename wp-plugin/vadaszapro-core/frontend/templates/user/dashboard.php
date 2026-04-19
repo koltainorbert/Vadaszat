@@ -66,6 +66,20 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
                 </div>
                 <?php endif; ?>
                 <small>⭡ <?php echo esc_html( $plan_cfg['boost_cooldown'] ); ?> naponként emelhető</small>
+                <?php if ( $user_plan === 'platinum' ): ?>
+                <form method="post" class="va-dash-plan-label-form">
+                    <?php wp_nonce_field( 'va_profile_label', 'va_profile_label_nonce' ); ?>
+                    <input type="hidden" name="va_action" value="profile_label">
+                    <label class="va-dash-plan-label-form__label">Saját rang címke</label>
+                    <input type="text"
+                           name="profile_seller_label"
+                           class="va-dash-plan-label-form__input"
+                           value="<?php echo esc_attr( $seller_label ); ?>"
+                           placeholder="pl. Kereskedő, Viszonteladó"
+                           maxlength="40">
+                    <button type="submit" class="va-dash-plan-label-form__btn">Mentés</button>
+                </form>
+                <?php endif; ?>
             </div>
             <?php endif; ?>
         </nav>
@@ -302,6 +316,42 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
 }
 .va-dash-plan-bar > div { height:3px;border-radius:2px;transition:width .3s; }
 .va-dash-plan-badge small { font-size:10px;color:rgba(255,255,255,.3);display:block;margin-top:6px; }
+.va-dash-plan-label-form {
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid rgba(255,255,255,.08);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.va-dash-plan-label-form__label { font-size:11px;font-weight:700;color:#fff; }
+.va-dash-plan-label-form__input {
+    width:100%;
+    height:34px;
+    border-radius:9px;
+    border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.06);
+    color:#fff;
+    padding:0 10px;
+    font-size:12px;
+}
+.va-dash-plan-label-form__input:focus {
+    outline:none;
+    border-color:#ff2a2a;
+    box-shadow:0 0 0 3px rgba(255,42,42,.16);
+}
+.va-dash-plan-label-form__btn {
+    height:32px;
+    border-radius:999px;
+    border:1px solid rgba(255,42,42,.45);
+    background:rgba(255,42,42,.14);
+    color:#fff;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
+}
+.va-dash-plan-label-form__btn:hover { background:rgba(255,42,42,.24); }
 
 /* ── Boost gomb ── */
 .va-boost-btn { cursor:pointer;font-size:12px; }
