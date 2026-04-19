@@ -22,6 +22,7 @@ require_once VA_PLUGIN_DIR . 'includes/class-post-types.php';
 require_once VA_PLUGIN_DIR . 'includes/class-taxonomy.php';
 require_once VA_PLUGIN_DIR . 'includes/class-meta-fields.php';
 require_once VA_PLUGIN_DIR . 'includes/class-user-system.php';
+require_once VA_PLUGIN_DIR . 'includes/class-user-roles.php';
 require_once VA_PLUGIN_DIR . 'includes/class-auctions.php';
 require_once VA_PLUGIN_DIR . 'includes/class-ad-zones.php';
 require_once VA_PLUGIN_DIR . 'includes/class-ajax.php';
@@ -44,6 +45,7 @@ add_action( 'plugins_loaded', function () {
     VA_Taxonomy::init();
     VA_Meta_Fields::init();
     VA_User_System::init();
+    VA_User_Roles::init();
     VA_Auctions::init();
     VA_Ad_Zones::init();
     VA_Ajax::init();

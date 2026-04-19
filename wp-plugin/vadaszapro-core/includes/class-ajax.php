@@ -189,27 +189,15 @@ class VA_Ajax {
             wp_send_json_error( [ 'message' => 'A cím kötelező.' ] );
         }
 
-        $existing_count = (int) $wpdb->get_var( $wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->posts}
-             WHERE post_type = %s
-             AND post_author = %d
-             AND post_status IN ('publish','pending','draft','future','private')",
-            'va_listing',
-            $user_id
-        ) );
+        // Plan-alapú limit ellenőrzés (VA_User_Roles rendszer)
+        $plan_check    = VA_User_Roles::can_post_listing( $user_id );
+        $is_free_allowed = true; // plan rendszer engedélyez → nincs kredit levonás
 
-        $is_free_allowed = ( $free_limit === 0 ) || ( $existing_count < $free_limit );
-
-        // Ha nincs szabad hirdetése: ellenőriz kreditet
-        if ( ! $is_free_allowed ) {
-            $credits = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
-            if ( $credits < 1 ) {
-                wp_send_json_error([
-                    'message'       => 'Az ingyenes hirdetési keretед elfogyott. Vásárolj hirdetési csomagot a folytatáshoz.',
-                    'need_credits'  => true,
-                    'paid_price'    => $paid_price,
-                ]);
-            }
+        if ( ! $plan_check['can'] ) {
+            wp_send_json_error([
+                'message'      => $plan_check['reason'],
+                'need_upgrade' => true,
+            ]);
         }
 
         // WP beállítástól függ: auto-publish vagy pending review
