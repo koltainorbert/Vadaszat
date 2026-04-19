@@ -549,17 +549,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     var input = document.createElement('input');
                     input.setAttribute('type', 'file');
                     input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
-                    input.click();
+                    input.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+                    document.body.appendChild(input);
                     input.addEventListener('change', function() {
                         var file = input.files[0];
+                        document.body.removeChild(input);
                         if (!file) return;
                         var reader = new FileReader();
                         reader.onload = function(e) {
                             var range = quill.getSelection(true);
                             quill.insertEmbed(range ? range.index : quill.getLength(), 'image', e.target.result);
+                            quill.setSelection((range ? range.index : 0) + 1);
                         };
                         reader.readAsDataURL(file);
                     });
+                    input.click();
                 }
             }
         }
