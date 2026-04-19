@@ -21,7 +21,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class VA_User_Roles {
 
-    /* ── Plan definíciók ─────────────────────────────────────── */
+    /** Runtime cache a plans config-hoz (wp_options overlay) */
+    private static ?array $_cfg_cache = null;
+
+    /* ── Plan definíciók (alap értékek / fallback) ───────────── */
     const PLANS = [
         'basic'    => [
             'label'         => 'Basic',
