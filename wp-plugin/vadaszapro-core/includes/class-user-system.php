@@ -144,8 +144,9 @@ class VA_User_System {
             if ( $action === 'profile'  ) self::process_profile();
             if ( $action === 'profile_avatar' ) self::process_profile_avatar();
             if ( $action === 'profile_label'  ) self::process_profile_label();
-            if ( $action === 'delete_listing' ) self::process_delete_listing();
-            if ( $action === 'delete_profile' ) self::process_delete_profile();
+            if ( $action === 'delete_listing'   ) self::process_delete_listing();
+            if ( $action === 'delete_profile'   ) self::process_delete_profile();
+            if ( $action === 'suspend_listing'  ) self::process_suspend_listing();
         }
     }
 
