@@ -556,6 +556,27 @@ body.va-admin-page .va-fb-row:hover { border-color: var(--va-border2) !important
 .va-le-img-ph p { font-size: 12px; color: var(--va-muted); margin: 0; }
 .va-le-img-btns { display: flex; gap: 8px; }
 
+/* Galéria */
+.va-gallery-grid { display: flex; flex-wrap: wrap; gap: 10px; padding: 4px 0 8px; min-height: 90px; }
+.va-gallery-item { position: relative; width: 90px; height: 90px; border-radius: 10px; overflow: hidden; border: 2px solid var(--va-border2); cursor: grab; flex-shrink: 0; transition: border-color .2s, box-shadow .2s; }
+.va-gallery-item:active { cursor: grabbing; }
+.va-gallery-item.is-cover { border-color: var(--va-accent); box-shadow: 0 0 0 2px rgba(255,32,32,.25); }
+.va-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; user-select: none; }
+.va-gallery-item-overlay { position: absolute; inset: 0; background: rgba(0,0,0,.6); opacity: 0; transition: opacity .18s; display: flex; align-items: flex-start; justify-content: space-between; padding: 5px; pointer-events: none; }
+.va-gallery-item:hover .va-gallery-item-overlay { opacity: 1; pointer-events: auto; }
+.va-gallery-cover-btn, .va-gallery-rm-btn { width: 26px; height: 26px; border: none; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .15s; flex-shrink: 0; }
+.va-gallery-cover-btn { background: rgba(255,255,255,.15); color: rgba(255,255,255,.8); }
+.va-gallery-cover-btn:hover { background: var(--va-accent); color: #fff; }
+.va-gallery-rm-btn { background: rgba(255,255,255,.15); color: rgba(255,255,255,.8); }
+.va-gallery-rm-btn:hover { background: #c0392b; color: #fff; }
+.va-gallery-cover-badge { position: absolute; bottom: 0; left: 0; right: 0; background: var(--va-accent); color: #fff; font-size: 9px; font-weight: 700; text-align: center; padding: 3px 0; text-transform: uppercase; letter-spacing: .5px; pointer-events: none; }
+.va-gallery-add-btn { width: 90px; height: 90px; border: 2px dashed rgba(255,255,255,.15); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; color: rgba(255,255,255,.35); gap: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; transition: border-color .2s, color .2s; background: transparent; flex-shrink: 0; }
+.va-gallery-add-btn:hover { border-color: var(--va-accent); color: var(--va-accent); }
+.va-le-gallery-count { margin-left: auto; font-size: 11px; color: var(--va-muted); font-weight: 400; }
+.va-le-gallery-hint { font-size: 11px; color: rgba(255,255,255,.3); margin: 2px 0 0; }
+.ui-sortable-helper.va-gallery-item { z-index: 99999 !important; opacity: .88; box-shadow: 0 8px 28px rgba(0,0,0,.55); }
+.ui-sortable-placeholder { width: 90px !important; height: 90px !important; border-radius: 10px !important; background: rgba(255,255,255,.04) !important; border: 2px dashed rgba(255,255,255,.1) !important; visibility: visible !important; }
+
 /* Mezők */
 .va-le-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .va-le-field { display: flex; flex-direction: column; gap: 5px; }

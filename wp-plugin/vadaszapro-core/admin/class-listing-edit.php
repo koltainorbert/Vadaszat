@@ -699,35 +699,137 @@ class VA_Listing_Edit {
         </div><!-- .va-le-wrap -->
 
         <script>
-        (function () {
-            var frame, imgArea = document.getElementById('va-img-area'),
-                thumbInput = document.getElementById('va_thumbnail_id'),
-                imgBtn = document.getElementById('va-img-btn'),
-                rmBtn  = document.getElementById('va-img-rm');
+        (function ($) {
+            var mediaFrame,
+                grid        = document.getElementById('va-gallery-grid'),
+                addBtn      = document.getElementById('va-gallery-add'),
+                thumbInput  = document.getElementById('va_thumbnail_id'),
+                galleryInput= document.getElementById('va_gallery_ids'),
+                countEl     = document.getElementById('va-gallery-count');
 
-            function openMedia(e) {
-                if (e) e.preventDefault();
-                if (!window.wp || !wp.media) return;
-                if (frame) { frame.open(); return; }
-                frame = wp.media({ title: 'Kép kiválasztása', multiple: false, library: { type: 'image' }, button: { text: 'Kiválaszt' } });
-                frame.on('select', function () {
-                    var att = frame.state().get('selection').first().toJSON();
-                    thumbInput.value = att.id;
-                    imgArea.innerHTML = '<img src="' + (att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url) + '" id="va-img-preview" class="va-le-img-preview">';
-                    if (rmBtn) rmBtn.style.display = '';
+            /* ── Segédek ─────────────────────────────────── */
+            function getIds() {
+                return Array.from(grid.querySelectorAll('.va-gallery-item')).map(function(el){
+                    return parseInt(el.dataset.id, 10);
                 });
-                frame.open();
             }
 
-            if (imgBtn)  imgBtn.addEventListener('click', openMedia);
-            if (imgArea) imgArea.addEventListener('click', function(e){ if (!e.target.closest('#va-img-rm')) openMedia(e); });
-            if (rmBtn)   rmBtn.addEventListener('click', function(e){
-                e.preventDefault(); e.stopPropagation();
-                thumbInput.value = '0';
-                imgArea.innerHTML = '<div class="va-le-img-ph" id="va-img-ph"><span>📷</span><p>Kattints a kép kiválasztásához</p></div>';
-                rmBtn.style.display = 'none';
-            });
-        })();
+            function sync() {
+                var ids = getIds();
+                galleryInput.value = ids.join(',');
+                // Ha nincs cover, az első legyen az
+                if (!grid.querySelector('.va-gallery-item.is-cover') && grid.querySelector('.va-gallery-item')) {
+                    grid.querySelector('.va-gallery-item').classList.add('is-cover');
+                    updateCoverBadge();
+                }
+                var coverId = grid.querySelector('.va-gallery-item.is-cover');
+                thumbInput.value = coverId ? coverId.dataset.id : '0';
+                countEl.textContent = ids.length ? ids.length + ' kép' : '';
+            }
+
+            function updateCoverBadge() {
+                grid.querySelectorAll('.va-gallery-item').forEach(function(el){
+                    var badge = el.querySelector('.va-gallery-cover-badge');
+                    if (el.classList.contains('is-cover')) {
+                        if (!badge) {
+                            badge = document.createElement('div');
+                            badge.className = 'va-gallery-cover-badge';
+                            badge.textContent = 'Borítókép';
+                            el.appendChild(badge);
+                        }
+                    } else {
+                        if (badge) badge.remove();
+                    }
+                });
+            }
+
+            function makeItem(att) {
+                var url = (att.sizes && att.sizes.thumbnail) ? att.sizes.thumbnail.url : att.url;
+                var div = document.createElement('div');
+                div.className = 'va-gallery-item';
+                div.dataset.id = att.id;
+                div.innerHTML =
+                    '<img src="' + url + '" alt="">' +
+                    '<div class="va-gallery-item-overlay">' +
+                        '<button type="button" class="va-gallery-cover-btn" title="Beállítás borítóképnek">' +
+                            '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' +
+                        '</button>' +
+                        '<button type="button" class="va-gallery-rm-btn" title="Eltávolítás">' +
+                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+                        '</button>' +
+                    '</div>';
+                return div;
+            }
+
+            function bindItem(item) {
+                item.querySelector('.va-gallery-cover-btn').addEventListener('click', function(e){
+                    e.stopPropagation();
+                    grid.querySelectorAll('.va-gallery-item').forEach(function(el){ el.classList.remove('is-cover'); });
+                    item.classList.add('is-cover');
+                    thumbInput.value = item.dataset.id;
+                    updateCoverBadge();
+                });
+                item.querySelector('.va-gallery-rm-btn').addEventListener('click', function(e){
+                    e.stopPropagation();
+                    var wasCover = item.classList.contains('is-cover');
+                    item.remove();
+                    if (wasCover) {
+                        var first = grid.querySelector('.va-gallery-item');
+                        if (first) { first.classList.add('is-cover'); }
+                    }
+                    updateCoverBadge();
+                    sync();
+                });
+            }
+
+            /* ── Init: meglévő elemek ────────────────────── */
+            grid.querySelectorAll('.va-gallery-item').forEach(bindItem);
+
+            /* ── Médiatár megnyitó ───────────────────────── */
+            function openMedia() {
+                if (!window.wp || !wp.media) return;
+                if (mediaFrame) { mediaFrame.open(); return; }
+                mediaFrame = wp.media({
+                    title: 'Képek kiválasztása',
+                    multiple: 'add',
+                    library: { type: 'image' },
+                    button: { text: 'Hozzáadás a galériához' }
+                });
+                mediaFrame.on('select', function () {
+                    var existing = getIds();
+                    mediaFrame.state().get('selection').each(function(att){
+                        var data = att.toJSON();
+                        if (existing.indexOf(data.id) !== -1) return; // duplikát skip
+                        var item = makeItem(data);
+                        grid.insertBefore(item, addBtn);
+                        bindItem(item);
+                    });
+                    // Ha még nincs cover, az első legyen
+                    if (!grid.querySelector('.va-gallery-item.is-cover')) {
+                        var first = grid.querySelector('.va-gallery-item');
+                        if (first) first.classList.add('is-cover');
+                    }
+                    updateCoverBadge();
+                    sync();
+                });
+                mediaFrame.open();
+            }
+
+            if (addBtn) addBtn.addEventListener('click', openMedia);
+
+            /* ── Drag & drop sorrend (jQuery UI Sortable) ── */
+            if ($ && $.fn.sortable) {
+                $(grid).sortable({
+                    items: '.va-gallery-item',
+                    tolerance: 'pointer',
+                    cursor: 'grabbing',
+                    placeholder: 'ui-sortable-placeholder',
+                    forcePlaceholderSize: true,
+                    stop: function() { sync(); }
+                });
+            }
+
+        }(typeof jQuery !== 'undefined' ? jQuery : { fn: {} }));
         </script>
         <?php
     }
