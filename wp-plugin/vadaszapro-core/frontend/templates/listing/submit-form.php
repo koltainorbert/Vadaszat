@@ -86,12 +86,35 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                             'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
                             'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
                             'resize'        => true,
-                            'skin'          => 'oxide-dark',
-                            'skin_url'      => includes_url( 'js/tinymce/skins/ui/oxide-dark' ),
                             'content_style' => 'body { background:#111; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; padding:12px; } a { color:#ff4444; } img { max-width:100%; height:auto; border-radius:6px; }',
                         ],
                     ]
                 );
+                echo '<style>
+#wp-va_desc_editor-wrap .wp-editor-tools{background:#141414!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-wrap .wp-media-buttons .button{background:#1e1e1e!important;color:#ccc!important;border-color:rgba(255,255,255,.2)!important;box-shadow:none!important;text-shadow:none!important;}
+#wp-va_desc_editor-wrap .wp-editor-tabs button{background:#141414!important;color:#888!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important;}
+#wp-va_desc_editor-wrap .wp-editor-tabs button:hover,
+#wp-va_desc_editor-wrap .wp-editor-tabs button.active{background:#1e1e1e!important;color:#e8e8e8!important;}
+#wp-va_desc_editor-editor-container .mce-tinymce{box-shadow:none!important;border:1px solid rgba(255,255,255,.12)!important;}
+#wp-va_desc_editor-editor-container .mce-top-part,
+#wp-va_desc_editor-editor-container .mce-toolbar-grp,
+#wp-va_desc_editor-editor-container .mce-panel,
+#wp-va_desc_editor-editor-container .mce-toolbar,
+#wp-va_desc_editor-editor-container .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-editor-container .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-editor-container .mce-btn button,
+#wp-va_desc_editor-editor-container .mce-btn{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
+#wp-va_desc_editor-editor-container .mce-btn:hover button,
+#wp-va_desc_editor-editor-container .mce-btn.mce-active button{background:#2a2a2a!important;}
+#wp-va_desc_editor-editor-container .mce-ico{color:#bbb!important;}
+#wp-va_desc_editor-editor-container .mce-txt,
+#wp-va_desc_editor-editor-container .mce-caret{color:#ccc!important;}
+#wp-va_desc_editor-editor-container .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
+#wp-va_desc_editor-editor-container .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-editor-container .mce-path-item,
+#wp-va_desc_editor-editor-container .mce-wordcount{color:#555!important;}
+</style>';
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
