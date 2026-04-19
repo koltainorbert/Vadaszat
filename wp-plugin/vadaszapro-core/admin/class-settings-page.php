@@ -1669,10 +1669,10 @@ class VA_Settings_Page {
                         <td><?php echo esc_html( $user->display_name ); ?></td>
                         <td><?php echo esc_html( $user->user_email ); ?></td>
                         <td>
-                            <form method="post" style="display:flex;gap:8px;align-items:center;">
+                            <form method="post" style="margin:0;">
                                 <?php wp_nonce_field( 'va_update_user_role', 'va_user_role_nonce' ); ?>
                                 <input type="hidden" name="va_user_id" value="<?php echo esc_attr( (string) $user->ID ); ?>">
-                                <select name="va_user_role">
+                                <select name="va_user_role" onchange="this.form.submit()" style="cursor:pointer;">
                                     <?php
                                     $current_role = ! empty( $user->roles ) ? (string) $user->roles[0] : 'subscriber';
                                     foreach ( $allowed_roles as $role_key ):
@@ -1683,7 +1683,6 @@ class VA_Settings_Page {
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
-                                <button type="submit" class="button button-small">Mentés</button>
                             </form>
                         </td>
                         <td><?php echo esc_html( $phone ?: '–' ); ?></td>
