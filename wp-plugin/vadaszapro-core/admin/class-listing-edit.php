@@ -81,13 +81,18 @@ class VA_Listing_Edit {
             }
         }
 
-        // Kiemelt kép
+        // Kiemelt kép (borítókép)
         $thumbnail_id = (int)( $_POST['va_thumbnail_id'] ?? 0 );
         if ( $thumbnail_id > 0 ) {
             set_post_thumbnail( $post_id, $thumbnail_id );
-        } elseif ( isset( $_POST['va_remove_thumbnail'] ) ) {
+        } else {
             delete_post_thumbnail( $post_id );
         }
+
+        // Galéria képek mentése
+        $raw_gallery = sanitize_text_field( wp_unslash( $_POST['va_gallery_ids'] ?? '' ) );
+        $gids = array_values( array_unique( array_filter( array_map( 'intval', $raw_gallery !== '' ? explode( ',', $raw_gallery ) : [] ) ) ) );
+        update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $gids ) );
 
         // Taxonómiák
         $cat_id    = (int)( $_POST['va_category'] ?? 0 );
@@ -342,6 +347,7 @@ class VA_Listing_Edit {
     public static function render_edit(): void {
         if ( ! current_user_can( 'edit_posts' ) ) return;
         wp_enqueue_media();
+        wp_enqueue_script( 'jquery-ui-sortable' );
 
         $post_id = (int)( $_GET['id'] ?? 0 );
         $post    = $post_id ? get_post( $post_id ) : null;
@@ -354,9 +360,18 @@ class VA_Listing_Edit {
 
         $get_meta = static fn($k) => $post ? (string)get_post_meta( $post_id, $k, true ) : '';
 
-        // Thumbnail
-        $thumb_id  = $post ? (int)get_post_thumbnail_id( $post_id ) : 0;
-        $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'medium' ) : '';
+        // Galéria képek betöltése
+        $thumb_id    = $post ? (int)get_post_thumbnail_id( $post_id ) : 0;
+        $gallery_raw = $post ? (string)get_post_meta( $post_id, 'va_gallery_ids', true ) : '';
+        $gallery_ids = array_values( array_unique( array_filter( array_map( 'intval', $gallery_raw !== '' ? explode( ',', $gallery_raw ) : [] ) ) ) );
+        // Ha thumbnail nincs a galériában, tegyük az elejére
+        if ( $thumb_id && ! in_array( $thumb_id, $gallery_ids, true ) ) {
+            array_unshift( $gallery_ids, $thumb_id );
+        }
+        // Ha nincs thumbnail de van galéria, az első legyen a borítókép
+        if ( ! $thumb_id && $gallery_ids ) {
+            $thumb_id = $gallery_ids[0];
+        }
 
         // Taxonómiák
         $categories   = get_terms([ 'taxonomy' => 'va_category', 'hide_empty' => false, 'number' => 200 ]);
