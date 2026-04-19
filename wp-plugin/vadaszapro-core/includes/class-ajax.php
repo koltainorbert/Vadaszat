@@ -40,6 +40,122 @@ class VA_Ajax {
         add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
     }
 
+    /* ── Hirdetés szerkesztés (frontend) ──────────────── */
+    public static function update_listing() {
+        check_ajax_referer( 'va_update_listing', 'nonce' );
+
+        if ( ! is_user_logged_in() ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+
+        $post_id = absint( $_POST['post_id'] ?? 0 );
+        if ( ! $post_id ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés.' ] );
+        }
+
+        $post = get_post( $post_id );
+        if ( ! $post || $post->post_type !== 'va_listing' || (int) $post->post_author !== get_current_user_id() ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság ehhez a hirdetéshez.' ] );
+        }
+
+        $title       = sanitize_text_field( wp_unslash( $_POST['title']       ?? '' ) );
+        $description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
+        $price       = floatval( $_POST['price'] ?? 0 );
+        $price_type  = sanitize_key( $_POST['price_type'] ?? 'fixed' );
+        $phone       = sanitize_text_field( wp_unslash( $_POST['phone']    ?? '' ) );
+        $location    = sanitize_text_field( wp_unslash( $_POST['location'] ?? '' ) );
+        $brand       = sanitize_text_field( wp_unslash( $_POST['brand']    ?? '' ) );
+        $model       = sanitize_text_field( wp_unslash( $_POST['model']    ?? '' ) );
+        $caliber     = sanitize_text_field( wp_unslash( $_POST['caliber']  ?? '' ) );
+        $year        = intval( $_POST['year'] ?? 0 );
+        $license_req = ! empty( $_POST['license_req'] ) ? '1' : '0';
+        $category    = intval( $_POST['category'] ?? 0 );
+        $county      = intval( $_POST['county']   ?? 0 );
+        $condition   = intval( $_POST['condition'] ?? 0 );
+
+        if ( empty( $title ) ) {
+            wp_send_json_error( [ 'message' => 'A cím kötelező.' ] );
+        }
+
+        wp_update_post( [
+            'ID'           => $post_id,
+            'post_title'   => $title,
+            'post_content' => $description,
+        ] );
+
+        $metas = [
+            'va_price'       => $price,
+            'va_price_type'  => $price_type,
+            'va_phone'       => $phone,
+            'va_location'    => $location,
+            'va_brand'       => $brand,
+            'va_model'       => $model,
+            'va_caliber'     => $caliber,
+            'va_year'        => $year,
+            'va_license_req' => $license_req,
+        ];
+        foreach ( $metas as $k => $v ) {
+            update_post_meta( $post_id, $k, $v );
+        }
+
+        if ( $category ) wp_set_post_terms( $post_id, [ $category ], 'va_category' );
+        if ( $county   ) wp_set_post_terms( $post_id, [ $county ],   'va_county'   );
+        if ( $condition) wp_set_post_terms( $post_id, [ $condition ], 'va_condition' );
+
+        // Megtartandó meglévő képek
+        $keep_raw = sanitize_text_field( wp_unslash( $_POST['keep_images'] ?? '' ) );
+        $keep_ids = array_filter( array_map( 'absint', explode( ',', $keep_raw ) ) );
+
+        // Töröljük azokat a galériában lévő képeket amiket nem tartanak meg
+        $old_gallery_str = get_post_meta( $post_id, 'va_gallery_ids', true );
+        $old_gallery = array_filter( array_map( 'absint', explode( ',', (string) $old_gallery_str ) ) );
+        foreach ( $old_gallery as $old_id ) {
+            if ( $old_id && ! in_array( $old_id, $keep_ids, true ) ) {
+                wp_delete_attachment( $old_id, true );
+            }
+        }
+
+        // Borítókép / megtartandó galériakép beállítása
+        $feat_existing = absint( $_POST['featured_existing_id'] ?? 0 );
+
+        // Új képek feltöltése
+        $img_errors = [];
+        if ( ! empty( $_FILES['listing_images'] ) && ! empty( $_FILES['listing_images']['name'][0] ) ) {
+            $featured_idx = isset( $_POST['featured_image_index'] ) ? intval( $_POST['featured_image_index'] ) : 0;
+            $img_errors = self::handle_images( $post_id, $_FILES['listing_images'], max( 0, $featured_idx ) );
+
+            // handle_images beírta az új képeket va_gallery_ids-be; hozzáfűzzük a keep_ids-t elé
+            $new_gallery_str = get_post_meta( $post_id, 'va_gallery_ids', true );
+            $new_ids = array_filter( array_map( 'absint', explode( ',', (string) $new_gallery_str ) ) );
+            $final = array_merge( $keep_ids, $new_ids );
+            update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $final ) );
+
+            // Ha meglévő kép a borítókép
+            if ( $feat_existing && in_array( $feat_existing, $keep_ids, true ) ) {
+                set_post_thumbnail( $post_id, $feat_existing );
+            }
+        } else {
+            // Nincs új kép – csak keep_ids marad
+            update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $keep_ids ) );
+            if ( $feat_existing && in_array( $feat_existing, $keep_ids, true ) ) {
+                set_post_thumbnail( $post_id, $feat_existing );
+            } elseif ( ! empty( $keep_ids ) ) {
+                set_post_thumbnail( $post_id, $keep_ids[0] );
+            }
+        }
+
+        // listing_meta szinkronizálás
+        if ( function_exists( 'va_sync_listing_meta' ) ) {
+            va_sync_listing_meta( $post_id );
+        }
+
+        wp_send_json_success( [
+            'message'   => 'Hirdetés sikeresen frissítve!',
+            'post_id'   => $post_id,
+            'permalink' => get_permalink( $post_id ),
+        ] );
+    }
+
     /* ── Hirdetés feladás ──────────────────────────────── */
     public static function submit_listing() {
         check_ajax_referer( 'va_submit_listing', 'nonce' );
