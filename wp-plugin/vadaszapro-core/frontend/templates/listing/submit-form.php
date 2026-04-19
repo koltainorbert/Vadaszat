@@ -643,10 +643,24 @@ document.addEventListener('DOMContentLoaded', function() {
         var editMode = !! VA_Data.edit_mode;
         $btn.prop('disabled', true).text('Feltöltés...');
 
-        // Quill tartalom szinkronizálása a hidden textarea-ba submit előtt
-        $('#va-desc-hidden').val(quill.root.innerHTML);
+        // Base64 képek feltöltése médiatárba, majd submit
+        var imgs = quill.root.querySelectorAll('img[src^="data:"]');
+        var uploads = [];
+        imgs.forEach(function(img) {
+            uploads.push($.ajax({
+                url: VA_Data.ajax_url,
+                type: 'POST',
+                data: { action: 'va_upload_editor_image', nonce: VA_Data.nonce_editor_img, data_url: img.src },
+                success: function(res) { if (res.success) img.src = res.data.url; }
+            }));
+        });
 
-        var formData = new FormData(this);
+        $.when.apply($, uploads.length ? uploads : [$.Deferred().resolve()]).always(function(){
+            // Quill tartalom szinkronizálása a hidden textarea-ba submit előtt
+            $('#va-desc-hidden').val(quill.root.innerHTML);
+
+        var $form = $('#va-submit-form');
+        var formData = new FormData($form[0]);
 
         // Csak az új (File objektumos) képek feltöltése
         _files.forEach(function(item){
@@ -725,8 +739,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.va_toast('Hálózati hiba. Próbálja újra.', 'error');
                 }
             }
-        });
-    });
+        }); // $.ajax end
+        }); // $.when end
+    }); // submit end
 })(jQuery);
 }); // DOMContentLoaded
 </script>

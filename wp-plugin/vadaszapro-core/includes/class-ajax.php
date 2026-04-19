@@ -964,4 +964,42 @@ class VA_Ajax {
 
         wp_send_json_success( $results );
     }
+
+    /* ── Base64 kép feltöltése médiatárba ───────────────────── */
+    public static function upload_editor_image(): void {
+        if ( ! is_user_logged_in() ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+        check_ajax_referer( 'va_upload_editor_image', 'nonce' );
+
+        $data_url = wp_unslash( $_POST['data_url'] ?? '' );
+        if ( ! preg_match( '/^data:(image\/(jpeg|png|webp|gif));base64,(.+)$/s', $data_url, $m ) ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen képadat.' ] );
+        }
+
+        $mime      = $m[1];
+        $ext_map   = [ 'jpeg' => 'jpg', 'png' => 'png', 'webp' => 'webp', 'gif' => 'gif' ];
+        $ext       = $ext_map[ $m[2] ] ?? 'jpg';
+        $img_data  = base64_decode( $m[3] );
+
+        if ( ! $img_data || strlen( $img_data ) > 10 * 1024 * 1024 ) {
+            wp_send_json_error( [ 'message' => 'Túl nagy kép (max 10 MB).' ] );
+        }
+
+        $upload = wp_upload_bits( 'editor-img-' . time() . '.' . $ext, null, $img_data );
+        if ( $upload['error'] ) {
+            wp_send_json_error( [ 'message' => $upload['error'] ] );
+        }
+
+        $attachment_id = wp_insert_attachment( [
+            'post_mime_type' => $mime,
+            'post_title'     => sanitize_file_name( basename( $upload['file'] ) ),
+            'post_status'    => 'inherit',
+        ], $upload['file'] );
+
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
+
+        wp_send_json_success( [ 'url' => $upload['url'] ] );
+    }
 }
