@@ -562,6 +562,29 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        /* Social Media linkek */
+        $social_keys = [
+            'va_social_facebook'   => '',
+            'va_social_instagram'  => '',
+            'va_social_youtube'    => '',
+            'va_social_tiktok'     => '',
+            'va_social_twitter'    => '',
+            'va_social_pinterest'  => '',
+            'va_social_linkedin'   => '',
+            'va_social_whatsapp'   => '',
+            'va_social_telegram'   => '',
+            'va_social_header_show' => '1',
+            'va_social_footer_show' => '1',
+            'va_social_header_style' => 'icons',   // icons | pills
+            'va_social_footer_style' => 'icons',   // icons | pills | full
+            'va_social_icon_size'    => '20',
+        ];
+        foreach ( $social_keys as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_social_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
         /* Admin Panel megjelenés (va_ap_*) */
         $adminpanel = [
             'va_ap_panel_name'    => 'VadászApró',
