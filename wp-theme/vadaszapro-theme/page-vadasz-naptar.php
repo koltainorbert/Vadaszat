@@ -117,6 +117,11 @@ get_header();
 .vn-tp-cd{font-size:.65rem;font-weight:700;color:#ff9900;margin-top:5px;letter-spacing:.04em;text-shadow:0 0 8px rgba(255,150,0,.5);}
 
 /* ── GANTT CHART ── */
+.vn-chart-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 8px;padding:0 4px;}
+.vn-chart-hint{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.42);opacity:0;transform:translateX(-6px);transition:all .25s ease;}
+.vn-wrap.has-overflow .vn-chart-hint{opacity:1;transform:none;}
+.vn-wrap.is-scrolled .vn-chart-hint{opacity:.2;}
+.vn-chart-month-ind{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#ffb4b4;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.25);padding:2px 8px;border-radius:999px;white-space:nowrap;}
 .vn-chart-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .vn-chart{
   max-width:1200px;margin:0 auto;
@@ -129,6 +134,11 @@ get_header();
   box-shadow:0 2px 12px rgba(0,0,0,.7);
 }
 .vn-mh-name{width:var(--vn-name-w);min-width:var(--vn-name-w);flex-shrink:0;padding:8px 14px;font-size:.68rem;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.08);}
+.vn-mh-name,.vn-group-label,.vn-animal-name{position:sticky;left:0;z-index:6;}
+.vn-mh-name{z-index:20;background:rgb(10,10,10);}
+.vn-group-label{z-index:13;background:rgb(20,10,10);}
+.vn-animal-name{z-index:12;background:rgb(10,10,10);}
+.vn-mh-name::after,.vn-group-label::after,.vn-animal-name::after{content:'';position:absolute;top:0;right:-12px;width:12px;height:100%;pointer-events:none;background:linear-gradient(90deg,rgba(255,0,0,.18),rgba(255,0,0,0));}
 .vn-mh-months{flex:1;display:flex;position:relative;}
 .vn-mh-month{flex:1;text-align:center;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.06em;padding:8px 0;border-left:1px solid rgba(255,255,255,.08);}
 .vn-mh-month.current{color:#ff0000}
@@ -250,6 +260,7 @@ get_header();
   .vn-today{margin-bottom:14px;}
   .vn-op-box,.vn-cl-box{padding:24px 18px 20px;}
   .vn-chart{min-width:760px;}
+  .vn-chart-month-ind{font-size:.58rem;padding:2px 7px;}
 }
 @media(max-width:400px){
   .vn-tp-grid{grid-template-columns:1fr;}
@@ -257,6 +268,7 @@ get_header();
   .vn-mh-name,.vn-animal-name,.vn-group-label{font-size:.56rem;}
   .vn-animal-name .sub{display:none;}
   .vn-chart{min-width:620px;}
+  .vn-chart-hint{font-size:.56rem;}
 }
 </style>
 
@@ -338,6 +350,10 @@ get_header();
   <div id="vn-today-panel" class="vn-today"></div>
 
   <!-- ── GANTT CHART ── -->
+  <div class="vn-chart-meta">
+    <span class="vn-chart-hint" id="vn-chart-hint">Húzd oldalra a naptárat</span>
+    <span class="vn-chart-month-ind" id="vn-chart-month-ind">Január</span>
+  </div>
   <div class="vn-chart-scroll">
     <div class="vn-chart" id="vn-chart"></div>
   </div>

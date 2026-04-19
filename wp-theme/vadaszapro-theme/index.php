@@ -760,8 +760,8 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 .va-hn-leg-dot{width:13px;height:8px;border-radius:2px;flex-shrink:0;}
 .va-hnaptar__meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
 .va-hnaptar__hint{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.42);opacity:0;transform:translateX(-6px);transition:all .25s ease;}
-.va-hnaptar__scroll.has-overflow .va-hnaptar__hint{opacity:1;transform:none;}
-.va-hnaptar__scroll.is-scrolled .va-hnaptar__hint{opacity:.2;}
+.va-hnaptar.has-overflow .va-hnaptar__hint{opacity:1;transform:none;}
+.va-hnaptar.is-scrolled .va-hnaptar__hint{opacity:.2;}
 .va-hnaptar__month-ind{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#ffb4b4;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.25);padding:2px 8px;border-radius:999px;white-space:nowrap;}
 .va-hnaptar__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .va-hnaptar__chart{min-width:980px;}
@@ -1075,13 +1075,14 @@ if(legEl){groups.forEach(function(g){var d=document.createElement('div');d.class
 var chart=document.getElementById('va-hn-chart');
 if(!chart)return;
 var _acdList=[];
+var hnWrap=document.getElementById('va-hnaptar-wrap');
 var hnScroll=document.querySelector('#va-hnaptar-wrap .va-hnaptar__scroll');
 var hnMonthInd=document.getElementById('va-hn-month-ind');
 
 function updateHnOverflowState(){
-  if(!hnScroll)return;
+  if(!hnScroll||!hnWrap)return;
   var overflow=hnScroll.scrollWidth>hnScroll.clientWidth+4;
-  hnScroll.classList.toggle('has-overflow',overflow);
+  hnWrap.classList.toggle('has-overflow',overflow);
 }
 function updateHnMonthIndicator(){
   if(!hnScroll||!hnMonthInd)return;
@@ -1092,7 +1093,7 @@ function updateHnMonthIndicator(){
 }
 if(hnScroll){
   hnScroll.addEventListener('scroll',function(){
-    hnScroll.classList.add('is-scrolled');
+    if(hnWrap)hnWrap.classList.add('is-scrolled');
     updateHnMonthIndicator();
   },{passive:true});
   window.addEventListener('resize',function(){
