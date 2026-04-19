@@ -449,21 +449,40 @@ class VA_Listing_Edit {
                                       placeholder="Részletes leírás a hirdetett termékről…"><?php echo esc_textarea($post ? $post->post_content : ''); ?></textarea>
                         </div>
 
-                        <!-- Kiemelt kép -->
+                        <!-- Képek galéria -->
                         <div class="va-le-card">
-                            <div class="va-le-card-hdr">📷 Kiemelt kép</div>
-                            <div class="va-le-img-area" id="va-img-area" style="cursor:pointer" title="Kép kiválasztása">
-                                <?php if ($thumb_url): ?>
-                                <img src="<?php echo esc_url($thumb_url); ?>" id="va-img-preview" class="va-le-img-preview">
-                                <?php else: ?>
-                                <div class="va-le-img-ph" id="va-img-ph"><span>📷</span><p>Kattints a kép kiválasztásához</p></div>
-                                <?php endif; ?>
+                            <div class="va-le-card-hdr" style="display:flex;align-items:center;gap:8px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                                Képek
+                                <span class="va-le-gallery-count" id="va-gallery-count"><?php echo count($gallery_ids) ? count($gallery_ids) . ' kép' : ''; ?></span>
+                            </div>
+                            <div class="va-gallery-grid" id="va-gallery-grid">
+                                <?php foreach ( $gallery_ids as $gid ):
+                                    $gurl = wp_get_attachment_image_url( $gid, 'thumbnail' );
+                                    if ( ! $gurl ) continue;
+                                    $is_cover = ( $gid === $thumb_id );
+                                ?>
+                                <div class="va-gallery-item<?php echo $is_cover ? ' is-cover' : ''; ?>" data-id="<?php echo (int)$gid; ?>">
+                                    <img src="<?php echo esc_url( $gurl ); ?>" alt="">
+                                    <div class="va-gallery-item-overlay">
+                                        <button type="button" class="va-gallery-cover-btn" title="Beállítás borítóképnek">
+                                            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                                        </button>
+                                        <button type="button" class="va-gallery-rm-btn" title="Eltávolítás">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                                        </button>
+                                    </div>
+                                    <?php if ( $is_cover ): ?><div class="va-gallery-cover-badge">Borítókép</div><?php endif; ?>
+                                </div>
+                                <?php endforeach; ?>
+                                <button type="button" class="va-gallery-add-btn" id="va-gallery-add">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="28" height="28"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                    <span>Képek hozzáadása</span>
+                                </button>
                             </div>
                             <input type="hidden" name="va_thumbnail_id" id="va_thumbnail_id" value="<?php echo (int)$thumb_id; ?>">
-                            <div class="va-le-img-btns">
-                                <button type="button" id="va-img-btn" class="va-btn va-btn--sm">📂 Kép kiválasztása</button>
-                                <button type="button" id="va-img-rm" class="va-btn va-btn--sm va-btn--danger"<?php echo $thumb_id ? '' : ' style="display:none"'; ?>>✕ Eltávolítás</button>
-                            </div>
+                            <input type="hidden" name="va_gallery_ids"  id="va_gallery_ids"  value="<?php echo esc_attr( implode( ',', $gallery_ids ) ); ?>">
+                            <p class="va-le-gallery-hint">Húzd a képeket az átrendezéshez &bull; Kattints a ★ gombra a borítókép beállításához</p>
                         </div>
 
                         <!-- Árazás -->
