@@ -258,8 +258,8 @@ wp_localize_script( 'va-submit', 'VA_Data', [
 
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
-(function($){
 document.addEventListener('DOMContentLoaded', function() {
+(function($){
     /* ══ Képkezelő ═══════════════════════════════════════ */
     let _files = [];   // { file: File, id: string }[]
     let _maxImg = 10;
@@ -427,6 +427,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-}); // DOMContentLoaded
 })(jQuery);
+}); // DOMContentLoaded
 </script>
