@@ -2,7 +2,37 @@
 
 ---
 
-## 2026. 04. 19. – Session #104 (Vadásznaptár desktop: alsó fekete csúszka + felső hónap-indikátor eltávolítás)
+## 2026. 04. 20. – Session #105 (Felhasználói terv rendszer + Boost kiemelés)
+
+### Mit csinaltunk [x]
+- [x] `includes/class-user-roles.php` – ÚJ FÁJL: VA_User_Roles class létrehozva
+  - 4 csomag (Basic / Silver / Gold / Platinum) PLANS konstanssal
+  - `get_user_plan()`, `get_plan_config()`, `can_post_listing()` hirdetési limit logika
+  - `can_boost()`, `do_boost()`, `is_boosted()` kiemelés rendszer
+  - `filter_posts_clauses()` – boost sort a listákban (wp_postmeta LEFT JOIN + ORDER BY boost_time)
+  - `ajax_admin_set_plan()` – admin AJAX plan váltás
+  - `ajax_boost_listing()` – felhasználói AJAX boost
+- [x] `vadaszapro-core.php` – bekötve: require + VA_User_Roles::init()
+- [x] `includes/class-ajax.php` – submit_listing: kredit alapú limit → plan alapú limit csere
+- [x] `admin/class-settings-page.php` – render_users() teljes újraírás:
+  - Plan összefoglaló kártyák (4 db felhasználószámmal)
+  - User tábla: avatar, plan badge, boost cooldown, havi progress bar
+  - Inline plan editor (AJAX, platinum extra mezők: custom limit/cooldown/note)
+  - Lapozó (40/oldal), keresés + plan szűrő
+- [x] `admin/class-admin.php` – Social Media sidebar elem hozzáadva
+- [x] `frontend/templates/user/dashboard.php` – Plan badge a navban + boost gomb per-hirdetés
+- [x] `frontend/templates/listing/card.php` – boost badge (⚡ Előre téve, 14 napos ablak)
+- [x] `frontend/css/frontend.css` – .va-card__badge--boost CSS hozzáadva
+- [x] Deploy Plugin: kész ✅
+
+### Eredmeny
+- 4 tervszint (Basic/Silver/Gold/Platinum) teljes backend + admin + frontend integráció
+- Admin bármely felhasználó csomagját módosíthatja (Platinum: egyedi limit + cooldown + note)
+- Felhasználók a dashboardon ⚡ Előre gombbal kiemelhetik saját hirdetéseiket
+- Kiemelési cooldown csomagonként: Basic=7n, Silver=5n, Gold/Platinum=3n
+- Kiemelt hirdetések a kategória-listában elöl jelennek meg (boost_time ORDER BY)
+
+ (Vadásznaptár desktop: alsó fekete csúszka + felső hónap-indikátor eltávolítás)
 
 ### Mit csinaltunk [x]
 - [x] `wp-theme/vadaszapro-theme/index.php` – nyitooldali vadásznaptárból kiveve a felső, scroll közbeni hónap-indikátor (`va-hn-month-ind`)
