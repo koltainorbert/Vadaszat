@@ -752,6 +752,10 @@ class VA_Listing_Edit {
                         ],
                         handlers: {
                             image: function() {
+                                if (quillAdmin.root.querySelectorAll('img').length >= 2) {
+                                    alert('Maximum 2 kép engedélyezett a leírásban.');
+                                    return;
+                                }
                                 var input = document.createElement('input');
                                 input.setAttribute('type', 'file');
                                 input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
@@ -804,11 +808,12 @@ class VA_Listing_Edit {
                 var form = this;
                 var nonce = '<?php echo esc_js( wp_create_nonce( 'va_upload_editor_image' ) ); ?>';
                 var ajaxUrl = '<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>';
+                var postId = '<?php echo esc_js( (string) ( (int) ( $_GET['id'] ?? 0 ) ) ); ?>';
                 var promises = Array.from(imgs).map(function(img){
                     return fetch(ajaxUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({ action: 'va_upload_editor_image', nonce: nonce, data_url: img.src })
+                        body: new URLSearchParams({ action: 'va_upload_editor_image', nonce: nonce, post_id: postId, data_url: img.src })
                     }).then(function(r){ return r.json(); }).then(function(res){
                         if (res.success) img.src = res.data.url;
                     });
