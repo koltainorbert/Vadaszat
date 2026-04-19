@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 04. 19. – Session #106 (Csomag beallitasok admin UI teljes ujrarendezes)
+
+### Mit csinaltunk [x]
+- [x] `wp-plugin/vadaszapro-core/admin/class-settings-page.php` – a `render_plans()` teljesen ujraepitve
+- [x] a bent ragadt, duplikalt regi csomagbeallito markup teljes torlese
+- [x] uj admin informacios architektura: bal oldali csomag navigacio + jobb oldali reszletes szerkeszto panel
+- [x] uj osszefoglalo blokkok: limit, basis, cooldown, badge szin gyors attekintessel
+- [x] panelenkenti elo badge preview es azonnali sidebar/meta frissites input valtozasra
+- [x] kulon globalis panel a boost badge rendszerkozpontu beallitasaihoz
+- [x] hibavizsgalat: `class-settings-page.php` hibamentes
+- [x] Deploy Plugin: kesz ✅
+
+### Eredmeny
+- A csomagkezelo oldal mar nem szeteso kartyahalom, hanem egy attekintheto, professzionalis admin szerkeszto felulet.
+- Gyorsabb lett a csomagok kozotti valtas, jobban elkulonul a megjelenes, a limitlogika, a boost es a marketing adat.
+- A korabbi duplikalt markup kikerult, igy a `render_plans()` szerkezete is tiszta maradt.
+
+---
+
 ## 2026. 04. 20. – Session #105 (Felhasználói terv rendszer + Boost kiemelés)
 
 ### Mit csinaltunk [x]

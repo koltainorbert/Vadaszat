@@ -3914,7 +3914,7 @@ class VA_Settings_Page {
                                 <span class="va-pc-mini-card__label">Badge nap</span>
                             </div>
                             <div class="va-pc-mini-card">
-                                <span class="va-pc-mini-card__value"><?php echo esc_html( mb_strtoupper( (string) $first_slug ) ); ?></span>
+                                <span class="va-pc-mini-card__value"><?php echo esc_html( strtoupper( (string) $first_slug ) ); ?></span>
                                 <span class="va-pc-mini-card__label">Nyito panel</span>
                             </div>
                         </div>
