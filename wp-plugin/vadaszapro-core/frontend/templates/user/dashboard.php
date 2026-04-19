@@ -273,3 +273,71 @@ $ajax_url     = admin_url( 'admin-ajax.php' );
         </div><!-- .va-dashboard__content -->
     </div><!-- .va-dashboard -->
 </div>
+
+<style>
+/* ── Plan badge a navban ── */
+.va-dash-plan-badge {
+    margin-top:auto;padding:12px 14px;
+    background:rgba(255,255,255,.05);
+    border-top:1px solid rgba(255,255,255,.08);
+    border-radius:0 0 0 10px;
+}
+.va-dash-plan-icon  { font-size:20px;display:block;margin-bottom:4px; }
+.va-dash-plan-label { font-size:12px;font-weight:700;color:var(--pc,#fff);display:block; }
+.va-dash-plan-usage { margin-top:6px; }
+.va-dash-plan-usage > span { font-size:11px;color:rgba(255,255,255,.5); }
+.va-dash-plan-bar {
+    height:3px;background:rgba(255,255,255,.1);border-radius:2px;margin-top:3px;
+}
+.va-dash-plan-bar > div { height:3px;border-radius:2px;transition:width .3s; }
+.va-dash-plan-badge small { font-size:10px;color:rgba(255,255,255,.3);display:block;margin-top:6px; }
+
+/* ── Boost gomb ── */
+.va-boost-btn { cursor:pointer;font-size:12px; }
+.va-boost-btn:disabled { opacity:.5;cursor:not-allowed; }
+</style>
+
+<script>
+(function(){
+    document.querySelectorAll('.va-boost-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId   = this.dataset.postId;
+            var nonce    = this.dataset.nonce;
+            var ajaxUrl  = this.dataset.ajaxUrl;
+            var self     = this;
+
+            self.disabled = true;
+            self.textContent = '⏳ Kiemelés...';
+
+            var data = new URLSearchParams({
+                action  : 'va_boost_listing',
+                nonce   : nonce,
+                post_id : postId
+            });
+
+            fetch(ajaxUrl, {
+                method  : 'POST',
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body    : data.toString()
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                if(res.success){
+                    self.textContent = '✅ Kiemelt!';
+                    self.style.borderColor   = '#00c850';
+                    self.style.color         = '#00c850';
+                    self.style.background    = 'rgba(0,200,80,.12)';
+                } else {
+                    self.disabled    = false;
+                    self.textContent = '⚡ Előre';
+                    alert(res.data && res.data.message ? res.data.message : 'Hiba történt.');
+                }
+            })
+            .catch(function(){
+                self.disabled    = false;
+                self.textContent = '⚡ Előre';
+            });
+        });
+    });
+})();
+</script>

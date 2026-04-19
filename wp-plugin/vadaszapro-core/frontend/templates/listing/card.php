@@ -12,6 +12,7 @@ $price_type= get_post_meta( $post_id, 'va_price_type', true ) ?: 'fixed';
 $location  = get_post_meta( $post_id, 'va_location', true );
 $views      = va_display_views( $post_id );
 $featured  = get_post_meta( $post_id, 'va_featured', true ) === '1';
+$is_boosted = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_boosted( $post_id, 14 ) : false;
 $is_auction= $post->post_type === 'va_auction';
 $categories= get_the_terms( $post_id, 'va_category' );
 $county    = get_the_terms( $post_id, 'va_county' );
@@ -118,6 +119,9 @@ if ( has_post_thumbnail( $post_id ) ) {
         <span class="va-card__badge va-card__badge--featured">⭐ Kiemelt</span>
     <?php elseif ( $is_auction ): ?>
         <span class="va-card__badge">🔨 Aukció</span>
+    <?php endif; ?>
+    <?php if ( $is_boosted ): ?>
+        <span class="va-card__badge va-card__badge--boost">⚡ Előre téve</span>
     <?php endif; ?>
 
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
