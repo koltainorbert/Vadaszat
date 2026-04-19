@@ -52,7 +52,8 @@
   if (typeof VA_Data !== 'undefined' && VA_Data.post_id) {
     $.post(VA_Data.ajax_url, {
       action: 'va_increment_views',
-      post_id: VA_Data.post_id
+      post_id: VA_Data.post_id,
+      nonce: VA_Data.nonce
     });
   }
 

@@ -355,7 +355,11 @@ class VA_User_System {
             return;
         }
 
-        wp_safe_redirect( $_POST['redirect_to'] ?? home_url() );
+        $redirect = wp_validate_redirect(
+            wp_unslash( $_POST['redirect_to'] ?? '' ),
+            home_url()
+        );
+        wp_safe_redirect( $redirect );
         exit;
     }
 

@@ -715,8 +715,16 @@ class VA_Ajax {
 
     /* ── Megtekintés számláló ──────────────────────────── */
     public static function increment_views() {
+        check_ajax_referer( 'va_nonce', 'nonce' );
+
         $post_id = intval( $_POST['post_id'] ?? 0 );
         if ( ! $post_id ) wp_send_json_error();
+
+        // Csak va_listing és va_auction post típusra engedett
+        $allowed_types = [ 'va_listing', 'va_auction' ];
+        if ( ! in_array( get_post_type( $post_id ), $allowed_types, true ) ) {
+            wp_send_json_error();
+        }
 
         $views = intval( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
         update_post_meta( $post_id, 'va_views', $views + 1 );
@@ -928,25 +936,27 @@ class VA_Ajax {
 
         wp_reset_postdata();
 
-        // Felhasználó találatok
-        $users = get_users([
-            'search'         => '*' . $q . '*',
-            'search_columns' => [ 'user_login', 'display_name' ],
-            'number'         => 3,
-            'fields'         => [ 'ID', 'display_name', 'user_login' ],
-        ]);
-        $search_page_for_user = get_page_by_path( 'va-hirdetes-kereses' );
-        $search_url_for_user  = $search_page_for_user ? get_permalink( $search_page_for_user ) : home_url( '/va-hirdetes-kereses/' );
-        foreach ( $users as $u ) {
-            $avatar  = get_avatar_url( $u->ID, [ 'size' => 80 ] );
-            $results[] = [
-                'id'    => $u->ID,
-                'title' => $u->display_name,
-                'url'   => add_query_arg( 'author_id', $u->ID, $search_url_for_user ),
-                'price' => '@' . $u->user_login,
-                'thumb' => $avatar,
-                'type'  => 'user',
-            ];
+        // Felhasználó találatok – csak bejelentkezett felhasználóknak
+        if ( is_user_logged_in() ) {
+            $users = get_users([
+                'search'         => '*' . $q . '*',
+                'search_columns' => [ 'user_login', 'display_name' ],
+                'number'         => 3,
+                'fields'         => [ 'ID', 'display_name', 'user_login' ],
+            ]);
+            $search_page_for_user = get_page_by_path( 'va-hirdetes-kereses' );
+            $search_url_for_user  = $search_page_for_user ? get_permalink( $search_page_for_user ) : home_url( '/va-hirdetes-kereses/' );
+            foreach ( $users as $u ) {
+                $avatar  = get_avatar_url( $u->ID, [ 'size' => 80 ] );
+                $results[] = [
+                    'id'    => $u->ID,
+                    'title' => $u->display_name,
+                    'url'   => add_query_arg( 'author_id', $u->ID, $search_url_for_user ),
+                    'price' => '@' . $u->user_login,
+                    'thumb' => $avatar,
+                    'type'  => 'user',
+                ];
+            }
         }
 
         wp_send_json_success( $results );
