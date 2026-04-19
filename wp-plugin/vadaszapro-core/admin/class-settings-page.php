@@ -3814,13 +3814,13 @@ class VA_Settings_Page {
 
     /* ══ Csomag beállítások oldal ═══════════════════════════════ */
     public static function render_plans(): void {
-                        if ( ! current_user_can( 'manage_options' ) ) return;
+        if ( ! current_user_can( 'manage_options' ) ) return;
 
-                        $plans    = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
-                        $global   = $plans['_global'] ?? [ 'boost_badge_window' => 14, 'boost_badge_text' => '⚡ Előre téve', 'boost_enabled' => true ];
-                        $defaults = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::PLANS : [];
-                        $nonce    = wp_create_nonce( 'va_admin_plan_cfg' );
-                        $plan_slugs = array_keys( $defaults );
+        $plans      = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
+        $global     = $plans['_global'] ?? [ 'boost_badge_window' => 14, 'boost_badge_text' => '⚡ Előre téve', 'boost_enabled' => true ];
+        $defaults   = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::PLANS : [];
+        $nonce      = wp_create_nonce( 'va_admin_plan_cfg' );
+        $plan_slugs = array_keys( $defaults );
                         ?>
                         <div class="wrap va-admin-wrap">
                             <h1>💼 Csomag Beállítások</h1>
