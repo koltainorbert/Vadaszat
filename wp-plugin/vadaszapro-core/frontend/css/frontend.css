@@ -596,70 +596,81 @@
 .va-img-browse-lbl { color: #ff4040; cursor: pointer; text-decoration: underline; font-weight: 700; }
 
 .va-img-grid {
-  margin-top: 12px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
+  min-height: 0;
 }
 .va-img-card {
   position: relative;
-  border: 1px solid rgba(255,255,255,.14);
+  width: 88px;
+  height: 88px;
   border-radius: 10px;
   overflow: hidden;
-  background: #111;
-  cursor: move;
+  border: 2px solid rgba(255,255,255,.12);
+  flex-shrink: 0;
+  cursor: grab;
+  transition: border-color .18s, box-shadow .18s;
 }
+.va-img-card:active { cursor: grabbing; }
 .va-img-card--featured {
   border-color: #ff0000;
-  box-shadow: 0 0 0 2px rgba(255,0,0,.25);
+  box-shadow: 0 0 0 2px rgba(255,32,32,.22);
 }
 .va-img-card__thumb {
   width: 100%;
-  aspect-ratio: 1 / 1;
+  height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none;
+  user-select: none;
 }
 .va-img-card__overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.05));
+  background: rgba(0,0,0,.62);
+  opacity: 0;
+  transition: opacity .16s;
   display: flex;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   padding: 6px;
+  pointer-events: none;
 }
-.va-img-card__num {
-  font-size: 11px;
-  font-weight: 700;
-  color: #fff;
-  background: rgba(0,0,0,.5);
-  border-radius: 999px;
-  padding: 2px 7px;
-}
+.va-img-card:hover .va-img-card__overlay { opacity: 1; pointer-events: auto; }
+.va-img-card--featured .va-img-card__overlay { opacity: 1; pointer-events: auto; }
 .va-img-feat-btn,
 .va-img-del-btn {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border: none;
-  border-radius: 50%;
+  border-radius: 6px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
   cursor: pointer;
+  background: rgba(255,255,255,.15);
+  color: rgba(255,255,255,.8);
+  transition: background .14s;
+  flex-shrink: 0;
 }
-.va-img-feat-btn { background: rgba(0,0,0,.55); color: #ffd44d; }
-.va-img-del-btn { background: rgba(255,0,0,.9); color: #fff; }
+.va-img-feat-btn:hover, .va-img-card--featured .va-img-feat-btn { background: #ff0000; color: #fff; }
+.va-img-del-btn:hover { background: #b72b2b; color: #fff; }
 .va-img-card__label {
   position: absolute;
-  top: 6px;
-  left: 6px;
-  font-size: 10px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-size: 9px;
   font-weight: 700;
   background: #ff0000;
   color: #fff;
-  border-radius: 999px;
-  padding: 3px 8px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+  padding: 3px 0;
+  pointer-events: none;
 }
 
 /* ── Dashboard ─────────────────────────────────── */

@@ -295,17 +295,16 @@ document.addEventListener('DOMContentLoaded', function() {
         _files.forEach((item, idx) => {
             const url = URL.createObjectURL(item.file);
             const isFeat = idx === _featured;
+            const starSvg = '<svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+            const xSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
             const $card = $(`
                 <div class="va-img-card${isFeat ? ' va-img-card--featured' : ''}" data-id="${item.id}">
                     <img src="${url}" class="va-img-card__thumb" draggable="false" alt="">
                     <div class="va-img-card__overlay">
-                        <button type="button" class="va-img-feat-btn" title="Főkép beállítása">
-                            ${isFeat ? '⭐' : '☆'}
-                        </button>
-                        <span class="va-img-card__num">${idx + 1}</span>
-                        <button type="button" class="va-img-del-btn" title="Törlés">✕</button>
+                        <button type="button" class="va-img-feat-btn" title="Borítókép beállítása">${starSvg}</button>
+                        <button type="button" class="va-img-del-btn" title="Törlés">${xSvg}</button>
                     </div>
-                    ${isFeat ? '<div class="va-img-card__label">Főkép</div>' : ''}
+                    ${isFeat ? '<div class="va-img-card__label">Borítókép</div>' : ''}
                 </div>
             `);
 
