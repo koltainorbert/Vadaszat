@@ -369,7 +369,8 @@ class VA_User_Roles {
         $custom_cd   = absint( $_POST['custom_boost_cooldown'] ?? 0 );
         $plan_note   = sanitize_textarea_field( wp_unslash( (string) ( $_POST['plan_note'] ?? '' ) ) );
 
-        if ( ! $target_uid || ! isset( self::get_all_plan_configs()[ $plan ] ) || $plan === '_global' ) {
+        $all_plans = self::get_all_plan_configs();
+        if ( ! $target_uid || ! isset( $all_plans[ $plan ] ) || $plan === '_global' ) {
             wp_send_json_error( [ 'message' => 'Érvénytelen adat.' ] );
         }
 
