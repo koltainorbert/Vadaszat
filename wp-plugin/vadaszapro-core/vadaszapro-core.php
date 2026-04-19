@@ -21,6 +21,7 @@ define( 'VA_TEXT_DOMAIN', 'vadaszapro' );
 require_once VA_PLUGIN_DIR . 'includes/class-post-types.php';
 require_once VA_PLUGIN_DIR . 'includes/class-taxonomy.php';
 require_once VA_PLUGIN_DIR . 'includes/class-meta-fields.php';
+require_once VA_PLUGIN_DIR . 'includes/class-mailer.php';
 require_once VA_PLUGIN_DIR . 'includes/class-user-system.php';
 require_once VA_PLUGIN_DIR . 'includes/class-user-roles.php';
 require_once VA_PLUGIN_DIR . 'includes/class-auctions.php';

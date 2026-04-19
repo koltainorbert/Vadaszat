@@ -223,38 +223,49 @@ class VA_Auctions {
 
         $user    = get_userdata( $prev->user_id );
         $subject = 'Túllicitáltak – ' . get_the_title( $auction_id );
-        $body    = sprintf(
-            "Kedves %s,\n\nTúllicitáltak a \"%s\" aukción.\nAktuális licit: %s Ft\n\nLicitáljon újra: %s",
-            $user->display_name,
-            get_the_title( $auction_id ),
-            number_format( $new_amount, 0, ',', ' ' ),
-            get_permalink( $auction_id )
+        $amount_fmt = number_format( $new_amount, 0, ',', ' ' );
+        VA_Mailer::send(
+            $user->user_email,
+            $subject,
+            'Túllicitáltak téged!',
+            '<p>Kedves <strong>' . esc_html( $user->display_name ) . '</strong>,</p>'
+            . '<p>Túllicitáltak a <strong>' . esc_html( get_the_title( $auction_id ) ) . '</strong> aukción.</p>'
+            . '<p>Aktuális licit: <strong>' . esc_html( $amount_fmt ) . ' Ft</strong></p>',
+            [ 'label' => 'Licitáljon újra', 'url' => get_permalink( $auction_id ) ]
         );
-        wp_mail( $user->user_email, $subject, $body );
     }
 
     private static function notify_winner( $auction_id, $user_id, $amount ) {
-        $user    = get_userdata( $user_id );
-        $subject = 'Nyert az aukción! – ' . get_the_title( $auction_id );
-        $body    = sprintf(
-            "Kedves %s,\n\nNyert a \"%s\" aukción!\nNyerő licit: %s Ft\n\nA hirdetés feladójával fel fogja venni Önnel a kapcsolatot.",
-            $user->display_name,
-            get_the_title( $auction_id ),
-            number_format( $amount, 0, ',', ' ' )
+        $user       = get_userdata( $user_id );
+        $amount_fmt = number_format( $amount, 0, ',', ' ' );
+
+        // Nyertesnek
+        VA_Mailer::send(
+            $user->user_email,
+            'Nyertél az aukción! – ' . get_the_title( $auction_id ),
+            '🏆 Nyertél az aukción!',
+            '<p>Kedves <strong>' . esc_html( $user->display_name ) . '</strong>,</p>'
+            . '<p>Gratulálunk! Nyertél a <strong>' . esc_html( get_the_title( $auction_id ) ) . '</strong> aukción.</p>'
+            . '<p>Nyerő licit: <strong>' . esc_html( $amount_fmt ) . ' Ft</strong></p>'
+            . '<p>A hirdetés feladójával hamarosan felveszi Önnel a kapcsolatot.</p>',
+            [ 'label' => 'Aukció megtekintése', 'url' => get_permalink( $auction_id ) ]
         );
-        wp_mail( $user->user_email, $subject, $body );
 
         // Eladónak is értesítés
-        $post      = get_post( $auction_id );
-        $seller    = get_userdata( $post->post_author );
-        $body2     = sprintf(
-            "Kedves %s,\n\nLezárult a \"%s\" aukciója.\nNyertes licit: %s Ft\nNyertes felhasználó: %s (%s)\n\nVegye fel a kapcsolatot a nyertessel.",
-            $seller->display_name,
-            get_the_title( $auction_id ),
-            number_format( $amount, 0, ',', ' ' ),
-            $user->display_name,
-            $user->user_email
+        $post   = get_post( $auction_id );
+        $seller = get_userdata( $post->post_author );
+        VA_Mailer::send(
+            $seller->user_email,
+            'Aukciód lezárult – ' . get_the_title( $auction_id ),
+            'Aukciód lezárult!',
+            '<p>Kedves <strong>' . esc_html( $seller->display_name ) . '</strong>,</p>'
+            . '<p>Lezárult a <strong>' . esc_html( get_the_title( $auction_id ) ) . '</strong> aukciód.</p>'
+            . '<p>Nyerő licit: <strong>' . esc_html( $amount_fmt ) . ' Ft</strong></p>'
+            . '<p>Nyertes: <strong>' . esc_html( $user->display_name ) . '</strong>'
+            . ' (<a href="mailto:' . esc_attr( $user->user_email ) . '" style="color:#cc0000;">'
+            . esc_html( $user->user_email ) . '</a>)</p>'
+            . '<p>Kérjük, vegye fel a kapcsolatot a nyertessel.</p>',
+            [ 'label' => 'Aukció megtekintése', 'url' => get_permalink( $auction_id ) ]
         );
-        wp_mail( $seller->user_email, 'Aukció lezárult – ' . get_the_title( $auction_id ), $body2 );
     }
 }
