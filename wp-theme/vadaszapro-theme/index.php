@@ -740,7 +740,7 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 </div>
 
 <style>
-.va-hnaptar{margin-bottom:24px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
+.va-hnaptar{--va-hn-name-w:160px;margin-bottom:24px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
 .va-hnaptar__hd{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;padding:12px 20px 10px;border-bottom:1px solid rgba(255,0,0,.12);}
 .va-hnaptar__title{font-size:.88rem;font-weight:800;letter-spacing:.06em;color:#fff;}
 .va-hnaptar__clock{font-size:.72rem;font-weight:700;color:rgba(255,180,0,.85);letter-spacing:.06em;font-variant-numeric:tabular-nums;white-space:nowrap;}
@@ -751,22 +751,21 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 .va-hnaptar__sun-ico--rise{color:#ffb347;}
 .va-hnaptar__sun-ico--set{color:#ff6a3d;}
 .va-hnaptar__sun-item--trophy{color:rgba(255,255,255,.88);}
-@media (max-width: 760px){.va-hnaptar__sun{order:2;width:100%;}}
 .va-hnaptar__legend{display:flex;flex-wrap:wrap;gap:5px 14px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
 .va-hn-leg{display:flex;align-items:center;gap:5px;font-size:.65rem;color:rgba(255,255,255,.6);}
 .va-hn-leg-dot{width:13px;height:8px;border-radius:2px;flex-shrink:0;}
 .va-hnaptar__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.va-hnaptar__chart{min-width:520px;}
+.va-hnaptar__chart{min-width:980px;}
 /* month header */
 .va-hn-mh{display:flex;position:sticky;top:0;z-index:10;background:rgb(12,12,12);border-bottom:1px solid rgba(255,255,255,.08);}
-.va-hn-mh-name{width:160px;min-width:160px;flex-shrink:0;padding:6px 10px;font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.07);}
+.va-hn-mh-name{width:var(--va-hn-name-w);min-width:var(--va-hn-name-w);flex-shrink:0;padding:6px 10px;font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.07);}
 .va-hn-mh-months{flex:1;display:flex;position:relative;}
 .va-hn-mh-month{flex:1;text-align:center;font-size:.6rem;font-weight:700;color:rgba(255,255,255,.45);padding:6px 0;border-left:1px solid rgba(255,255,255,.07);}
 .va-hn-mh-month.cur{color:#ff0000;}
 /* group header */
 .va-hn-gh{display:flex;align-items:center;background:rgba(255,0,0,.07);border-top:1px solid rgba(255,0,0,.15);cursor:pointer;user-select:none;transition:background .15s;}
 .va-hn-gh:hover{background:rgba(255,0,0,.13);}
-.va-hn-gl{width:160px;min-width:160px;flex-shrink:0;padding:7px 10px;font-size:.62rem;font-weight:700;color:#ff0000;letter-spacing:.09em;text-transform:uppercase;border-right:1px solid rgba(255,0,0,.15);display:flex;align-items:center;gap:5px;}
+.va-hn-gl{width:var(--va-hn-name-w);min-width:var(--va-hn-name-w);flex-shrink:0;padding:7px 10px;font-size:.62rem;font-weight:700;color:#ff0000;letter-spacing:.09em;text-transform:uppercase;border-right:1px solid rgba(255,0,0,.15);display:flex;align-items:center;gap:5px;}
 .va-hn-arr{font-size:.95rem;font-weight:900;line-height:1;transition:transform .2s;display:inline-block;}
 .va-hn-gl.collapsed .va-hn-arr{transform:rotate(-90deg);}
 .va-hn-gl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:#ff3030;box-shadow:0 0 5px rgba(255,48,48,.4);}
@@ -777,7 +776,7 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 /* animal row */
 .va-hn-row{display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.035);min-height:32px;transition:background .12s;}
 .va-hn-row:hover{background:rgba(255,255,255,.035);}
-.va-hn-name{width:160px;min-width:160px;flex-shrink:0;padding:4px 10px;font-size:.68rem;font-weight:600;color:#fff;border-right:1px solid rgba(255,255,255,.05);line-height:1.25;}
+.va-hn-name{width:var(--va-hn-name-w);min-width:var(--va-hn-name-w);flex-shrink:0;padding:4px 10px;font-size:.68rem;font-weight:600;color:#fff;border-right:1px solid rgba(255,255,255,.05);line-height:1.25;}
 .va-hn-name .sub{display:block;font-size:.56rem;font-weight:400;color:rgba(255,255,255,.3);margin-top:1px;font-style:italic;}
 .va-hn-acd{display:flex;align-items:center;gap:3px;margin-top:3px;font-size:.52rem;font-weight:700;}
 .va-hn-acd-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
@@ -801,6 +800,41 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 .sw-row--closing{background:rgba(255,30,30,.07)!important;box-shadow:0 0 10px rgba(255,0,0,.2),inset 0 0 16px rgba(255,0,0,.05);animation:sw-cl-pulse 1.5s ease-in-out infinite;}
 @keyframes sw-cl-pulse{0%,100%{box-shadow:0 0 8px rgba(255,0,0,.12);}50%{box-shadow:0 0 20px rgba(255,0,0,.38),inset 0 0 14px rgba(255,0,0,.1);}}
 .sw-closing-lbl{font-size:.56rem;font-weight:900;color:#ff3030;letter-spacing:.05em;margin-left:4px;vertical-align:middle;}
+
+@media (max-width: 1024px){
+  .va-hnaptar{--va-hn-name-w:136px;}
+  .va-hnaptar__chart{min-width:860px;}
+}
+@media (max-width: 760px){
+  .va-hnaptar{--va-hn-name-w:112px;}
+  .va-hnaptar__hd{padding:10px 12px 8px;gap:5px;}
+  .va-hnaptar__title{font-size:.78rem;letter-spacing:.05em;}
+  .va-hnaptar__clock{font-size:.65rem;}
+  .va-hnaptar__sub{font-size:.61rem;gap:8px;}
+  .va-hnaptar__sun{order:2;width:100%;font-size:.6rem;}
+  .va-hnaptar__legend{padding:7px 10px;gap:4px 10px;}
+  .va-hn-leg{font-size:.58rem;}
+  .va-hnaptar__chart{min-width:760px;}
+  .va-hn-mh-month{font-size:.54rem;padding:5px 0;}
+  .va-hn-mh-name,.va-hn-gl{font-size:.56rem;padding:6px 7px;}
+  .va-hn-name{font-size:.62rem;padding:4px 7px;}
+  .va-hn-name .sub{font-size:.52rem;}
+}
+@media (max-width: 560px){
+  .va-hnaptar{--va-hn-name-w:96px;}
+  .va-hnaptar__chart{min-width:680px;}
+  .va-hn-gh-status{right:8px;font-size:.54rem;}
+  .va-hn-sbar{height:12px;}
+  .va-hn-sbar:hover{height:16px;}
+}
+@media (max-width: 420px){
+  .va-hnaptar{--va-hn-name-w:82px;}
+  .va-hnaptar__chart{min-width:620px;}
+  .va-hn-mh-name,.va-hn-gl,.va-hn-name{padding-left:6px;padding-right:6px;}
+  .va-hn-gl{letter-spacing:.05em;}
+  .va-hn-name{font-size:.58rem;}
+  .va-hn-name .sub{display:none;}
+}
 </style>
 
 <script>
