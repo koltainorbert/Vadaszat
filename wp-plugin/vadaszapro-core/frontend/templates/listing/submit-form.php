@@ -556,17 +556,30 @@ document.addEventListener('DOMContentLoaded', function() {
     $input.on('change', function(){ addFiles(this.files); this.value = ''; });
 
     /* ══ TinyMCE alapból vizuális mód ══════════════════════════ */
-    $(document).ready(function(){
-        function ensureVisual() {
-            var $wrap = $('#wp-va_desc_editor-wrap');
-            if ($wrap.length && !$wrap.hasClass('tmce-active')) {
-                $wrap.find('.switch-tmce').trigger('click');
-            }
+    // Cookie beállítása AZONNAL, mielőtt a WP wp-editor.js olvasna
+    if (typeof setUserSetting === 'function') {
+        setUserSetting('editor', 'tmce');
+    }
+    function ensureVisual() {
+        var $wrap = $('#wp-va_desc_editor-wrap');
+        if (!$wrap.length) return;
+        // WP saját switchEditors API
+        if (typeof switchEditors !== 'undefined' && !$wrap.hasClass('tmce-active')) {
+            switchEditors.go('va_desc_editor', 'tmce');
+            return;
         }
+        // Fallback: gomb kattintás
+        if (!$wrap.hasClass('tmce-active')) {
+            $wrap.find('.switch-tmce').trigger('click');
+        }
+    }
+    $(document).ready(function(){
         ensureVisual();
-        setTimeout(ensureVisual, 300);
-        setTimeout(ensureVisual, 800);
+        setTimeout(ensureVisual, 200);
+        setTimeout(ensureVisual, 600);
+        setTimeout(ensureVisual, 1500);
     });
+    $(window).on('load', function(){ ensureVisual(); });
 
     /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
