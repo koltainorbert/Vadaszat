@@ -116,7 +116,9 @@ class VA_User_Roles {
             $override        = isset( $saved[ $slug ] ) && is_array( $saved[ $slug ] ) ? $saved[ $slug ] : [];
             $merged[ $slug ] = array_merge( $defaults, $override );
             // Típus kényszer
-            $merged[ $slug ]['monthly_limit']  = (int)  $merged[ $slug ]['monthly_limit'];
+            // Ha a mentett monthly_limit 0, de a default >0, a default marad (0 = "nem állítottam be")
+            $saved_limit = isset( $override['monthly_limit'] ) ? (int) $override['monthly_limit'] : -1;
+            $merged[ $slug ]['monthly_limit'] = ( $saved_limit > 0 ) ? $saved_limit : (int) $defaults['monthly_limit'];
             $merged[ $slug ]['boost_cooldown'] = (int)  $merged[ $slug ]['boost_cooldown'];
             $merged[ $slug ]['basis']          = in_array( $merged[ $slug ]['basis'], [ 'active', 'monthly' ], true )
                 ? $merged[ $slug ]['basis'] : $defaults['basis'];
