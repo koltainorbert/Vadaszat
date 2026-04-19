@@ -867,12 +867,10 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
 .va-credits-hero--ranks {
   position: relative;
   background:
-    linear-gradient(rgba(220,30,30,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(220,30,30,.06) 1px, transparent 1px),
-    radial-gradient(circle at 20% -10%, rgba(255,0,0,.22), transparent 45%),
-    radial-gradient(circle at 80% 120%, rgba(255,0,0,.16), transparent 45%),
+    radial-gradient(circle at 20% -10%, rgba(255,0,0,.18), transparent 45%),
+    radial-gradient(circle at 80% 110%, rgba(255,0,0,.12), transparent 45%),
     rgba(8,8,8,.96);
-  background-size: 42px 42px, 42px 42px, auto, auto, auto;
+  background-size: auto, auto, auto;
   border: 1px solid rgba(255,255,255,.12);
   border-radius: 20px;
   padding: 34px 24px 22px;
