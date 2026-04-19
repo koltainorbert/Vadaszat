@@ -211,36 +211,40 @@ function va_get_user_listings( int $user_id, string $status = 'any', int $per_pa
         $post_types[] = 'va_auction';
     }
 
-    // Közvetlen DB lekérdezés hogy a privát (felfüggesztett) hirdetések is
-    // mindig látszódjanak a saját dashboardon, WP jogosultság-szűrés nélkül.
-    $type_placeholders = implode( ',', array_fill( 0, count( $post_types ), '%s' ) );
-
-    if ( $status === 'any' ) {
-        $statuses = [ 'publish', 'pending', 'draft', 'private' ];
-    } else {
-        $statuses = is_array( $status ) ? $status : [ $status ];
-    }
-    $status_placeholders = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
+    // Direkt wpdb ID-lekérdezés – megkerüli a WP capability-szűrőt,
+    // hogy a felhasználó saját privát (felfüggesztett) hirdetéseit is lássa.
+    $type_placeholders   = implode( ',', array_fill( 0, count( $post_types ), "'%s'" ) );
+    $statuses            = ( $status === 'any' ) ? [ 'publish', 'pending', 'draft', 'private' ] : ( is_array( $status ) ? $status : [ $status ] );
+    $status_placeholders = implode( ',', array_fill( 0, count( $statuses ), "'%s'" ) );
 
     $limit  = absint( $per_page );
     $offset = absint( ( $page - 1 ) * $per_page );
 
-    $args = array_merge( $post_types, $statuses, [ $user_id, $limit, $offset ] );
+    // Direkt SQL \u2013 t\u00edpusok \u00e9s st\u00e1tuszok string\u00e9rt\u00e9kek, ezeket esc_sql()-lel v\u00e9dj\u00fck.
+    $type_in   = implode( ',', array_map( function( $t ) use ( $wpdb ) {
+        return "'" . esc_sql( $t ) . "'";
+    }, $post_types ) );
+    $status_in = implode( ',', array_map( function( $s ) use ( $wpdb ) {
+        return "'" . esc_sql( $s ) . "'";
+    }, $statuses ) );
 
     // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-    $rows = $wpdb->get_results(
-        $wpdb->prepare(
-            "SELECT * FROM {$wpdb->posts}
-             WHERE post_type IN ($type_placeholders)
-               AND post_status IN ($status_placeholders)
-               AND post_author = %d
-             ORDER BY post_date DESC
-             LIMIT %d OFFSET %d",
-            ...$args
-        )
-    );
+    $ids = $wpdb->get_col( $wpdb->prepare(
+        "SELECT ID FROM {$wpdb->posts}
+         WHERE post_type IN ($type_in)
+           AND post_status IN ($status_in)
+           AND post_author = %d
+         ORDER BY post_date DESC
+         LIMIT %d OFFSET %d",
+        $user_id,
+        $limit,
+        $offset
+    ) );
 
-    return $rows ?: [];
+    if ( empty( $ids ) ) return [];
+
+    // get_post() visszaad helyes WP_Post objektumot, amit a template vár
+    return array_values( array_filter( array_map( 'get_post', $ids ) ) );
 }
 
 /* ── Felhasználó watchlist-je ─────────────────────────── */

@@ -412,14 +412,16 @@ class VA_User_Roles {
         $purchased_credits = (int) get_user_meta( $user_id, 'va_listing_credits', true );
         $limit = $cfg['monthly_limit'] + $purchased_credits;
 
-        // Active listings legújabbtól legrégebbig (direktben, WP filter nélkül)
+        // Active listings legrégebbtől legújabbig (direktben, WP filter nélkül)
+        // A LEGRÉGEBBI (legelső) hirdetések maradnak aktívak – ezek a "valódi" hirdetések.
+        // Az újabbak (másolatok, teszt) lesznek felfüggesztve.
         global $wpdb;
         $posts = $wpdb->get_results( $wpdb->prepare(
             "SELECT ID, post_title, post_status FROM {$wpdb->posts}
              WHERE post_type = 'va_listing'
                AND post_author = %d
                AND post_status IN ('publish','pending')
-             ORDER BY post_date DESC
+             ORDER BY post_date ASC
              LIMIT 200",
             $user_id
         ) );
