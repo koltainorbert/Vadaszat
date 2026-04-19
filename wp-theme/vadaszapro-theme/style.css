@@ -1139,6 +1139,29 @@ body.sl-viewer-open { overflow: hidden; }
   border-color: rgba(255,0,0,.55);
   background: rgba(255,0,0,.16);
 }
+.sl-viewer__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.24);
+  background: rgba(0,0,0,.45);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  transition: all .2s ease;
+}
+.sl-viewer__nav--prev { left: 24px; }
+.sl-viewer__nav--next { right: 24px; }
+.sl-viewer__nav:hover {
+  border-color: rgba(255,0,0,.6);
+  background: rgba(255,0,0,.18);
+}
 .sl-viewer__stage {
   width: min(94vw, 1520px);
   height: min(88vh, 980px);
@@ -1163,6 +1186,9 @@ body.sl-viewer-open { overflow: hidden; }
   .sl__zoom-trigger { right: 10px; bottom: 10px; padding: 7px 10px; }
   .sl-viewer__toolbar { top: 12px; left: 12px; }
   .sl-viewer__close { top: 12px; right: 12px; }
+  .sl-viewer__nav { width: 44px; height: 44px; }
+  .sl-viewer__nav--prev { left: 10px; }
+  .sl-viewer__nav--next { right: 10px; }
   .sl-viewer__stage { width: 100vw; height: 100vh; }
 }
 

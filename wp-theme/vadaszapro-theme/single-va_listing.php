@@ -344,6 +344,12 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
         <button type="button" class="sl-viewer__btn" id="sl-zoom-reset" aria-label="Méret visszaállítása">100%</button>
         <button type="button" class="sl-viewer__btn" id="sl-zoom-in" aria-label="Nagyítás">+</button>
     </div>
+    <button type="button" class="sl-viewer__nav sl-viewer__nav--prev" id="sl-viewer-prev" aria-label="Előző kép">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button type="button" class="sl-viewer__nav sl-viewer__nav--next" id="sl-viewer-next" aria-label="Következő kép">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
     <div class="sl-viewer__stage" id="sl-viewer-stage">
         <img src="<?php echo esc_url( $main_url ); ?>" alt="<?php the_title_attribute(); ?>" class="sl-viewer__img" id="sl-viewer-img">
     </div>
@@ -373,11 +379,18 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     var viewer = document.getElementById('sl-viewer');
     var viewerImg = document.getElementById('sl-viewer-img');
     var stage = document.getElementById('sl-viewer-stage');
+    var prevBtn = document.getElementById('sl-viewer-prev');
+    var nextBtn = document.getElementById('sl-viewer-next');
     var zoomTrigger = document.getElementById('sl-zoom-trigger');
     var zoomIn = document.getElementById('sl-zoom-in');
     var zoomOut = document.getElementById('sl-zoom-out');
     var zoomReset = document.getElementById('sl-zoom-reset');
     var closeBtn = document.getElementById('sl-viewer-close');
+    var imageSources = thumbs.map(function(t){ return t.dataset.src; }).filter(Boolean);
+    if (!imageSources.length && mainImg && mainImg.src) {
+        imageSources = [mainImg.src];
+    }
+    var currentIndex = 0;
     var scale = 1;
     var tx = 0;
     var ty = 0;
@@ -397,12 +410,43 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
         if (zoomReset) zoomReset.textContent = Math.round(scale * 100) + '%';
     }
 
+    function setNavState() {
+        var many = imageSources.length > 1;
+        if (prevBtn) prevBtn.style.display = many ? 'inline-flex' : 'none';
+        if (nextBtn) nextBtn.style.display = many ? 'inline-flex' : 'none';
+    }
+
+    function setActiveThumb(index) {
+        if (!thumbs.length) return;
+        thumbs.forEach(function(x){ x.classList.remove('sl__thumb--active'); });
+        if (thumbs[index]) {
+            thumbs[index].classList.add('sl__thumb--active');
+        }
+    }
+
+    function showImage(index, syncMain) {
+        if (!imageSources.length || !viewerImg) return;
+        currentIndex = (index + imageSources.length) % imageSources.length;
+        viewerImg.src = imageSources[currentIndex];
+        setScale(1);
+        if (syncMain !== false) {
+            syncMainImage(imageSources[currentIndex]);
+            setActiveThumb(currentIndex);
+        }
+    }
+
     function openViewer() {
-        if (!viewer || !viewerImg || !mainImg) return;
-        viewerImg.src = mainImg.src;
+        if (!viewer || !viewerImg || !mainImg || !imageSources.length) return;
+        var activeThumb = document.querySelector('.sl__thumb.sl__thumb--active');
+        if (activeThumb) {
+            currentIndex = Math.max(0, imageSources.indexOf(activeThumb.dataset.src));
+        } else {
+            currentIndex = Math.max(0, imageSources.indexOf(mainImg.src));
+        }
+        showImage(currentIndex, false);
+        setNavState();
         viewer.hidden = false;
         document.body.classList.add('sl-viewer-open');
-        setScale(1);
     }
 
     function closeViewer() {
@@ -425,8 +469,14 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
         });
     }
     document.addEventListener('keydown', function(e){
+        if (!viewer || viewer.hidden) return;
         if (e.key === 'Escape') closeViewer();
+        if (e.key === 'ArrowLeft') showImage(currentIndex - 1, true);
+        if (e.key === 'ArrowRight') showImage(currentIndex + 1, true);
     });
+
+    if (prevBtn) prevBtn.addEventListener('click', function(){ showImage(currentIndex - 1, true); });
+    if (nextBtn) nextBtn.addEventListener('click', function(){ showImage(currentIndex + 1, true); });
 
     if (zoomIn) zoomIn.addEventListener('click', function(){ setScale(scale + 0.25); });
     if (zoomOut) zoomOut.addEventListener('click', function(){ setScale(scale - 0.25); });
