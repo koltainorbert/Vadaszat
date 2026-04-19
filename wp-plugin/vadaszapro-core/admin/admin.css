@@ -614,6 +614,311 @@ body.va-admin-page .va-fb-row:hover { border-color: var(--va-border2) !important
 
 /* Chart cards */
 .va-st-charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 14px; margin-bottom: 16px; }
+
+/* ================================================================
+   WP Media Modal – Dark Theme override
+   ================================================================ */
+
+/* Backdrop */
+body.va-admin-page .media-modal-backdrop {
+    background: rgba(0,0,0,.85) !important;
+    backdrop-filter: blur(4px);
+}
+
+/* Modal keret */
+body.va-admin-page .media-modal {
+    background: var(--va-bg2) !important;
+    border: 1px solid var(--va-border2) !important;
+    border-radius: var(--va-radius) !important;
+    box-shadow: 0 24px 80px rgba(0,0,0,.8) !important;
+    color: var(--va-text) !important;
+    overflow: hidden;
+}
+
+/* Fejléc: cím + bezár */
+body.va-admin-page .media-frame-title h1,
+body.va-admin-page .media-modal .media-frame-title {
+    background: var(--va-bg3) !important;
+    color: var(--va-text) !important;
+    border-bottom: 1px solid var(--va-border) !important;
+    font-family: var(--va-font) !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    padding: 14px 20px !important;
+}
+body.va-admin-page .media-modal-close,
+body.va-admin-page .media-modal-close .media-modal-icon {
+    background: transparent !important;
+    color: var(--va-muted) !important;
+    border: none !important;
+}
+body.va-admin-page .media-modal-close:hover {
+    color: var(--va-text) !important;
+}
+body.va-admin-page .media-modal-close::before {
+    color: var(--va-muted) !important;
+    font-size: 22px !important;
+}
+body.va-admin-page .media-modal-close:hover::before {
+    color: var(--va-text) !important;
+}
+
+/* Tab sor: Feltöltés / Médiatár */
+body.va-admin-page .media-menu {
+    background: var(--va-bg3) !important;
+    border-bottom: 1px solid var(--va-border) !important;
+    padding: 0 16px !important;
+}
+body.va-admin-page .media-menu-item,
+body.va-admin-page .media-router .media-menu-item {
+    background: transparent !important;
+    color: var(--va-muted) !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+    border-radius: 0 !important;
+    font-family: var(--va-font) !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    padding: 12px 16px !important;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    transition: color .15s, border-color .15s;
+    box-shadow: none !important;
+}
+body.va-admin-page .media-menu-item:hover {
+    color: var(--va-text) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+body.va-admin-page .media-menu-item.active,
+body.va-admin-page .media-menu-item.active:hover {
+    color: var(--va-accent) !important;
+    border-bottom-color: var(--va-accent) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Toolbar (szűrő + kereső) */
+body.va-admin-page .media-toolbar,
+body.va-admin-page .media-frame-toolbar .media-toolbar {
+    background: var(--va-bg2) !important;
+    border-top: 1px solid var(--va-border) !important;
+    border-bottom: 1px solid var(--va-border) !important;
+}
+body.va-admin-page .media-toolbar-primary,
+body.va-admin-page .media-toolbar-secondary {
+    background: transparent !important;
+}
+body.va-admin-page .media-toolbar select,
+body.va-admin-page .media-toolbar input,
+body.va-admin-page .media-search-input {
+    background: var(--va-bg3) !important;
+    color: var(--va-text) !important;
+    border: 1px solid var(--va-border2) !important;
+    border-radius: var(--va-radius-sm) !important;
+    font-family: var(--va-font) !important;
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+body.va-admin-page .media-toolbar select:focus,
+body.va-admin-page .media-toolbar input:focus {
+    border-color: var(--va-accent) !important;
+    box-shadow: 0 0 0 2px rgba(255,32,32,.18) !important;
+}
+
+/* Tartalom terület (képek grid) */
+body.va-admin-page .media-frame-content,
+body.va-admin-page .uploader-window,
+body.va-admin-page .uploader-inline-content {
+    background: var(--va-bg) !important;
+}
+body.va-admin-page .attachments-browser .attachments {
+    background: var(--va-bg) !important;
+    padding: 16px !important;
+    gap: 10px !important;
+}
+
+/* Egyedi kép kártya */
+body.va-admin-page .attachment {
+    background: var(--va-bg3) !important;
+    border: 1px solid var(--va-border) !important;
+    border-radius: var(--va-radius-sm) !important;
+    transition: border-color .15s, transform .15s !important;
+    overflow: hidden;
+}
+body.va-admin-page .attachment:hover {
+    border-color: var(--va-border2) !important;
+    transform: translateY(-2px) !important;
+}
+body.va-admin-page .attachment.selected,
+body.va-admin-page .attachment.selected:hover {
+    border-color: var(--va-accent) !important;
+    box-shadow: 0 0 0 2px rgba(255,32,32,.35), invert(0) !important;
+}
+body.va-admin-page .attachment.selected .attachment-preview::after {
+    background: rgba(255,32,32,.08) !important;
+    border: none !important;
+}
+body.va-admin-page .attachment .check {
+    background-color: var(--va-accent) !important;
+    border-color: var(--va-accent) !important;
+}
+body.va-admin-page .attachment-preview .thumbnail {
+    background: var(--va-bg4) !important;
+}
+
+/* Jobb oldali részletek panel */
+body.va-admin-page .media-sidebar,
+body.va-admin-page .attachment-details,
+body.va-admin-page .attachment-info {
+    background: var(--va-bg2) !important;
+    border-left: 1px solid var(--va-border) !important;
+    color: var(--va-text) !important;
+}
+body.va-admin-page .media-sidebar label,
+body.va-admin-page .attachment-details label,
+body.va-admin-page .setting span {
+    color: var(--va-muted) !important;
+    font-size: 10px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+body.va-admin-page .media-sidebar input[type=text],
+body.va-admin-page .media-sidebar textarea,
+body.va-admin-page .attachment-details input[type=text],
+body.va-admin-page .attachment-details textarea {
+    background: var(--va-bg3) !important;
+    color: var(--va-text) !important;
+    border: 1px solid var(--va-border2) !important;
+    border-radius: var(--va-radius-sm) !important;
+    font-family: var(--va-font) !important;
+    font-size: 12px !important;
+    box-shadow: none !important;
+}
+body.va-admin-page .media-sidebar input[type=text]:focus,
+body.va-admin-page .media-sidebar textarea:focus {
+    border-color: var(--va-accent) !important;
+    box-shadow: 0 0 0 2px rgba(255,32,32,.18) !important;
+    outline: none !important;
+}
+body.va-admin-page .attachment-info .filename,
+body.va-admin-page .attachment-info .uploaded,
+body.va-admin-page .attachment-info .file-size,
+body.va-admin-page .attachment-info .dimensions {
+    color: var(--va-muted) !important;
+    font-size: 11px !important;
+}
+body.va-admin-page .copy-to-clipboard-container .copy-attachment-url {
+    background: var(--va-bg4) !important;
+    color: var(--va-text) !important;
+    border: 1px solid var(--va-border2) !important;
+    border-radius: var(--va-radius-sm) !important;
+}
+
+/* Lapozó / darabszám szöveg */
+body.va-admin-page .media-frame-content .load-more-wrapper,
+body.va-admin-page .attachments-browser .media-attachments-count {
+    background: var(--va-bg) !important;
+    color: var(--va-muted) !important;
+    border-top: 1px solid var(--va-border) !important;
+    font-size: 11px !important;
+    font-family: var(--va-font) !important;
+}
+body.va-admin-page .load-more-jump-to-first,
+body.va-admin-page .load-more-count {
+    color: var(--va-muted) !important;
+    background: transparent !important;
+}
+
+/* Alsó lábléc: Kiválaszt gomb */
+body.va-admin-page .media-frame-toolbar,
+body.va-admin-page .media-toolbar.primary {
+    background: var(--va-bg3) !important;
+    border-top: 1px solid var(--va-border) !important;
+}
+body.va-admin-page .media-button-select,
+body.va-admin-page .media-button-insert,
+body.va-admin-page .media-button.button-primary {
+    background: var(--va-accent) !important;
+    border-color: var(--va-accent) !important;
+    color: #fff !important;
+    border-radius: var(--va-radius-sm) !important;
+    font-family: var(--va-font) !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    padding: 8px 20px !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: background .15s, transform .1s !important;
+    cursor: pointer !important;
+}
+body.va-admin-page .media-button-select:hover,
+body.va-admin-page .media-button-insert:hover {
+    background: var(--va-accent2) !important;
+    border-color: var(--va-accent2) !important;
+    transform: translateY(-1px) !important;
+}
+body.va-admin-page .media-button-select:disabled,
+body.va-admin-page .media-button-select[disabled] {
+    background: var(--va-bg4) !important;
+    border-color: var(--va-border2) !important;
+    color: var(--va-muted) !important;
+    transform: none !important;
+    cursor: default !important;
+}
+
+/* Feltöltés drag-drop area */
+body.va-admin-page .upload-ui .upload-drop-zone,
+body.va-admin-page .drag-drop-area {
+    background: var(--va-bg3) !important;
+    border: 2px dashed var(--va-border2) !important;
+    border-radius: var(--va-radius) !important;
+    color: var(--va-muted) !important;
+}
+body.va-admin-page .upload-ui .upload-drop-zone:hover,
+body.va-admin-page .drag-drop-area.drag-over {
+    border-color: var(--va-accent) !important;
+    background: rgba(255,32,32,.05) !important;
+}
+body.va-admin-page .upload-ui .upload-instructions {
+    color: var(--va-muted) !important;
+    font-family: var(--va-font) !important;
+}
+body.va-admin-page .upload-ui .upload-button,
+body.va-admin-page .browser.button {
+    background: var(--va-accent) !important;
+    border-color: var(--va-accent) !important;
+    color: #fff !important;
+    border-radius: var(--va-radius-sm) !important;
+    font-family: var(--va-font) !important;
+    font-weight: 700 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+}
+
+/* Spinner */
+body.va-admin-page .media-frame .spinner {
+    filter: invert(1) brightness(1.5);
+}
+
+/* Scrollbar dark */
+body.va-admin-page .attachments::-webkit-scrollbar,
+body.va-admin-page .media-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+body.va-admin-page .attachments::-webkit-scrollbar-track,
+body.va-admin-page .media-sidebar::-webkit-scrollbar-track {
+    background: var(--va-bg);
+}
+body.va-admin-page .attachments::-webkit-scrollbar-thumb,
+body.va-admin-page .media-sidebar::-webkit-scrollbar-thumb {
+    background: var(--va-border2);
+    border-radius: 3px;
+}
+/* ── Media modal vége ──────────────────────────────────────────── */
 .va-st-charts-row--sm { grid-template-columns: 1fr 1fr; }
 .va-st-chart-card { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: 14px; overflow: hidden; }
 .va-st-chart-card--wide { } /* placeholder */
