@@ -1769,16 +1769,54 @@ class VA_Settings_Page {
     /* ══ Aukció beállítások ═══════════════════════════════ */
     public static function render_auctions() {
         if ( ! current_user_can( 'manage_options' ) ) return;
+        $vars_outbid  = '{name}, {title}, {amount}';
+        $vars_winner  = '{name}, {title}, {amount}';
+        $vars_seller  = '{seller_name}, {title}, {amount}, {winner_name}, {winner_email}';
         ?>
         <div class="wrap va-admin-wrap">
             <h1>🔨 VadászApró – Aukció beállítások</h1>
             <?php settings_errors( 'va_auction_settings' ); ?>
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_auction_settings' ); ?>
+
+                <h2>Általános</h2>
                 <table class="form-table">
                     <?php self::field_num( 'va_default_min_bid_step', 'Alapértelmezett minimum licitlépés (Ft)', 1, 999999 ); ?>
                     <?php self::field_num( 'va_auction_fee_pct',       'Aukciós jutalék (%)', 0, 100 ); ?>
                 </table>
+
+                <h2 style="margin-top:32px;">📧 Email sablonok</h2>
+                <p style="color:#aaa;margin-bottom:24px;">
+                    A mezőkben HTML is használható. Az alábbi változókat a rendszer automatikusan behelyettesíti.
+                </p>
+
+                <h3>Túllicitálás értesítő (korábbi licitálónak)</h3>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code><?php echo esc_html( $vars_outbid ); ?></code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_outbid_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_outbid_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_outbid_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_outbid_btn',     'CTA gomb felirata' ); ?>
+                </table>
+
+                <h3 style="margin-top:24px;">Nyertes értesítő (nyertesnek)</h3>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code><?php echo esc_html( $vars_winner ); ?></code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_winner_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_winner_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_winner_body',    'Email törzs (HTML)', '', 7 ); ?>
+                    <?php self::field_text(    'va_email_winner_btn',     'CTA gomb felirata' ); ?>
+                </table>
+
+                <h3 style="margin-top:24px;">Aukció lezárult értesítő (eladónak)</h3>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code><?php echo esc_html( $vars_seller ); ?></code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_seller_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_seller_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_seller_body',    'Email törzs (HTML)', '', 8 ); ?>
+                    <?php self::field_text(    'va_email_seller_btn',     'CTA gomb felirata' ); ?>
+                </table>
+
                 <?php submit_button( 'Mentés' ); ?>
             </form>
         </div>
