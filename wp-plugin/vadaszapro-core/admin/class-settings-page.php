@@ -2639,15 +2639,24 @@ class VA_Settings_Page {
 
             <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
                 <h2>1) Export összes beállítás</h2>
-                <p>JSON fájl letöltése, amit másik oldalon vissza tudsz importálni. Opcionálisan teljes migrációs adatokkal (taxonómia + fix oldalak).</p>
+                <p>JSON fájl letöltése, amit friss WordPress telepítésen vissza tudsz importálni — <strong>mindent tartalmaz</strong>.</p>
+                <table class="widefat" style="margin-bottom:14px;">
+                    <thead><tr><th>Mit exportál</th><th>Mit jelent</th></tr></thead>
+                    <tbody>
+                        <tr><td>✅ Összes <code>va_*</code> opció</td><td>Plan limitek (Silver=5, Gold=10 stb.), admin panel színek, általános beállítások, hirdetési limitek, árak, minden</td></tr>
+                        <tr><td>✅ Taxonómiák (opcionális)</td><td>Kategóriák, megyék, állapot értékek — slug + szülő-gyerek kapcsolatok</td></tr>
+                        <tr><td>✅ Fix oldalak (opcionális)</td><td>Hirdetés feladás, bejelentkezés, regisztráció, fiók, kredit vásárlás, ASZF stb. oldalak tartalma</td></tr>
+                    </tbody>
+                </table>
+                <p style="color:#888;font-size:12px;">⚠ Nem exportál: hirdetések, felhasználók, feltöltött képek (ezek az adatbázisban vannak).</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
                     <input type="hidden" name="action" value="va_export_settings">
                     <?php wp_nonce_field( 'va_export_settings' ); ?>
                     <p>
-                        <label><input type="checkbox" name="va_export_taxonomies" value="1" checked> Taxonómiák exportálása is (kategória, megye, állapot)</label><br>
-                        <label><input type="checkbox" name="va_export_pages" value="1" checked> Fix oldalak exportálása is (slug + tartalom)</label>
+                        <label><input type="checkbox" name="va_export_taxonomies" value="1" checked> <strong>Taxonómiák exportálása is</strong> (kategória, megye, állapot)</label><br>
+                        <label><input type="checkbox" name="va_export_pages" value="1" checked> <strong>Fix oldalak exportálása is</strong> (slug + shortcode tartalom)</label>
                     </p>
-                    <?php submit_button( 'Összes beállítás exportálása', 'primary', 'submit', false ); ?>
+                    <?php submit_button( '⬇ Teljes konfiguráció exportálása (.json)', 'primary', 'submit', false ); ?>
                 </form>
             </div>
 
@@ -3343,6 +3352,7 @@ class VA_Settings_Page {
             'va-regisztracio',
             'va-fiok',
             'va-aukciok',
+            'va-kredit-vasarlas',
             'aszf',
             'adatvedelmi-nyilatkozat',
             'sugo',
