@@ -133,9 +133,10 @@ class VA_Ajax {
         if ( $condition) wp_set_post_terms( $post_id, [ $condition ], 'va_condition' );
 
         // Képfeltöltés kezelése
+        $img_errors = [];
         if ( ! empty( $_FILES['listing_images'] ) ) {
             $featured_idx = isset( $_POST['featured_image_index'] ) ? absint( (string) $_POST['featured_image_index'] ) : 0;
-            self::handle_images( $post_id, $_FILES['listing_images'], $featured_idx );
+            $img_errors = self::handle_images( $post_id, $_FILES['listing_images'], $featured_idx );
         }
 
         // Ha nem ingyenes: kredit levonás
@@ -152,6 +153,7 @@ class VA_Ajax {
             'message'    => $msg,
             'post_id'    => $post_id,
             'permalink'  => get_permalink( $post_id ),
+            'img_errors' => $img_errors,
         ]);
     }
 
