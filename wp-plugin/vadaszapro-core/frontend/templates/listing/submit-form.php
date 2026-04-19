@@ -75,30 +75,25 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 ?>
                 <textarea id="va_desc_editor" name="description" rows="12" style="width:100%;"><?php echo esc_textarea( $desc_val ); ?></textarea>
                 <style>
-                #va-submit-form .tox-tinymce{border:1px solid rgba(255,255,255,.15)!important;border-radius:6px!important;}
-                #va-submit-form .tox-editor-header,
-                #va-submit-form .tox-toolbar-overlord,
-                #va-submit-form .tox-toolbar__primary,
-                #va-submit-form .tox-toolbar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
-                #va-submit-form .tox-menubar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
-                #va-submit-form .tox-mbtn,
-                #va-submit-form .tox-mbtn__select-label{background:transparent!important;color:#ccc!important;}
-                #va-submit-form .tox-mbtn:hover{background:#2a2a2a!important;}
-                #va-submit-form .tox-toolbar__group{border-right-color:rgba(255,255,255,.1)!important;}
-                #va-submit-form .tox-tbtn{color:#ccc!important;background:transparent!important;}
-                #va-submit-form .tox-tbtn svg{fill:#aaa!important;}
-                #va-submit-form .tox-tbtn:hover,
-                #va-submit-form .tox-tbtn:focus{background:#2a2a2a!important;}
-                #va-submit-form .tox-tbtn--active{background:#333!important;}
-                #va-submit-form .tox-tbtn__select-label{color:#ccc!important;}
-                #va-submit-form .tox-split-button{border-color:transparent!important;}
-                #va-submit-form .tox-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
-                #va-submit-form .tox-statusbar__text-container span,
-                #va-submit-form .tox-statusbar__path-item,
-                #va-submit-form .tox-statusbar__branding,
-                #va-submit-form .tox-statusbar__wordcount{color:#444!important;}
-                #va-submit-form .tox-statusbar__branding a{color:#444!important;}
-                #va-submit-form .tox-statusbar__resize-handle svg{fill:#444!important;}
+                .va-dark-mce.tox-tinymce{border:1px solid rgba(255,255,255,.15)!important;border-radius:6px!important;}
+                .va-dark-mce .tox-editor-header,
+                .va-dark-mce .tox-toolbar-overlord,
+                .va-dark-mce .tox-toolbar__primary,
+                .va-dark-mce .tox-toolbar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
+                .va-dark-mce .tox-toolbar__group{border-right-color:rgba(255,255,255,.1)!important;}
+                .va-dark-mce .tox-tbtn{color:#ccc!important;background:transparent!important;}
+                .va-dark-mce .tox-tbtn svg{fill:#aaa!important;}
+                .va-dark-mce .tox-tbtn:hover,.va-dark-mce .tox-tbtn:focus{background:#2a2a2a!important;}
+                .va-dark-mce .tox-tbtn--active{background:#333!important;}
+                .va-dark-mce .tox-tbtn__select-label{color:#ccc!important;}
+                .va-dark-mce .tox-split-button{border-color:transparent!important;}
+                .va-dark-mce .tox-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+                .va-dark-mce .tox-statusbar__text-container span,
+                .va-dark-mce .tox-statusbar__path-item,
+                .va-dark-mce .tox-statusbar__branding,
+                .va-dark-mce .tox-statusbar__wordcount{color:#444!important;}
+                .va-dark-mce .tox-statusbar__branding a{color:#444!important;pointer-events:none;}
+                .va-dark-mce .tox-statusbar__resize-handle svg{fill:#444!important;}
                 </style>
                 <script>
                 (function tryVaMCE(){
@@ -113,8 +108,28 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                         resize: true,
                         image_advtab: true,
                         automatic_uploads: false,
+                        file_picker_types: 'image',
+                        file_picker_callback: function(cb, value, meta) {
+                            if (typeof wp === 'undefined' || typeof wp.media === 'undefined') return;
+                            var frame = wp.media({
+                                title: 'Kép kiválasztása',
+                                button: { text: 'Beillesztés' },
+                                multiple: false,
+                                library: { type: 'image' }
+                            });
+                            frame.on('select', function() {
+                                var attachment = frame.state().get('selection').first().toJSON();
+                                cb(attachment.url, { title: attachment.title, alt: attachment.alt });
+                            });
+                            frame.open();
+                        },
                         content_style: 'body{background:#111;color:#e8e8e8;font-family:system-ui,sans-serif;font-size:15px;padding:12px;}a{color:#ff4444;}img{max-width:100%;height:auto;border-radius:6px;}',
-                        setup: function(ed){ ed.on('change keyup', function(){ ed.save(); }); }
+                        setup: function(ed){
+                            ed.on('init', function(){
+                                ed.getContainer().classList.add('va-dark-mce');
+                            });
+                            ed.on('change keyup', function(){ ed.save(); });
+                        }
                     });
                 })();
                 </script>
