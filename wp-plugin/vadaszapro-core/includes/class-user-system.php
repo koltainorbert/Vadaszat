@@ -693,4 +693,59 @@ class VA_User_System {
         wp_safe_redirect( add_query_arg( 'va_deleted', '1', home_url( '/' ) ) );
         exit;
     }
+
+    /* ── Hirdetés felfüggesztés / újraindítás (Gold, Platinum) ── */
+    private static function process_suspend_listing(): void {
+        if ( ! is_user_logged_in() ) return;
+        if ( ! isset( $_POST['va_suspend_listing_nonce'] ) ||
+             ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_suspend_listing_nonce'] ) ), 'va_suspend_listing' ) ) {
+            va_set_flash( 'error', 'Érvénytelen kérés.' );
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        $post_id = (int) ( $_POST['listing_id'] ?? 0 );
+        if ( ! $post_id ) return;
+
+        // Csak gold / platinum jogosult
+        $plan = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_user_plan( $user_id ) : 'basic';
+        if ( ! in_array( $plan, [ 'gold', 'platinum' ], true ) ) {
+            va_set_flash( 'error', 'Ez a funkció Gold és Platinum csomagoknál érhető el.' );
+            wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+            exit;
+        }
+
+        $post = get_post( $post_id );
+        if ( ! $post || (int) $post->post_author !== $user_id || $post->post_type !== 'va_listing' ) {
+            va_set_flash( 'error', 'Nincs jogosultságod ehhez a hirdetéshez.' );
+            wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+            exit;
+        }
+
+        $is_suspended = get_post_meta( $post_id, 'va_is_suspended', true ) === '1';
+
+        if ( $is_suspended ) {
+            // Újraindítás
+            wp_update_post( [ 'ID' => $post_id, 'post_status' => 'publish' ] );
+            delete_post_meta( $post_id, 'va_is_suspended' );
+            delete_post_meta( $post_id, 'va_suspended_at' );
+            // active_since újraindul a jelenlegi időtől
+            update_post_meta( $post_id, 'va_active_since', current_time( 'timestamp' ) );
+            va_set_flash( 'success', 'A hirdetés újra aktív.' );
+        } else {
+            // Felfüggesztés – csak publish-ból
+            if ( $post->post_status !== 'publish' ) {
+                va_set_flash( 'error', 'Csak aktív hirdetést lehet felfüggeszteni.' );
+                wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+                exit;
+            }
+            wp_update_post( [ 'ID' => $post_id, 'post_status' => 'private' ] );
+            update_post_meta( $post_id, 'va_is_suspended', '1' );
+            update_post_meta( $post_id, 'va_suspended_at', current_time( 'timestamp' ) );
+            va_set_flash( 'success', 'A hirdetés felfüggesztve – bármikor újraindíthatod.' );
+        }
+
+        wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+        exit;
+    }
 }

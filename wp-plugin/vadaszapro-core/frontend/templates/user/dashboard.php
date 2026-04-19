@@ -137,10 +137,19 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                     <?php foreach ( $listings as $l ):
                         $price    = get_post_meta( $l->ID, 'va_price', true );
                         $p_type   = get_post_meta( $l->ID, 'va_price_type', true ) ?: 'fixed';
+                        $is_suspended    = get_post_meta( $l->ID, 'va_is_suspended', true ) === '1';
+                        $suspended_at    = (int) get_post_meta( $l->ID, 'va_suspended_at', true );
+                        $active_since_ts = (int) get_post_meta( $l->ID, 'va_active_since', true );
+                        if ( ! $active_since_ts ) $active_since_ts = strtotime( $l->post_date );
+                        $now             = current_time( 'timestamp' );
+                        $can_suspend     = in_array( $user_plan, [ 'gold', 'platinum' ], true );
                         $statuses = [
                             'publish' => '<span style="color:#00c850">● Aktív</span>',
                             'pending' => '<span style="color:#ffb400">● Jóváhagyásra vár</span>',
                             'draft'   => '<span style="color:#888">● Piszkozat</span>',
+                            'private' => $is_suspended
+                                ? '<span style="color:#ff9900">⏸ Felfüggesztve</span>'
+                                : '<span style="color:#888">● Privát</span>',
                         ];
                     ?>
                     <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
@@ -149,6 +158,13 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                             <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
                                 <span style="font-size:11px;background:#ffaa00;color:#000;padding:2px 6px;border-radius:3px;margin-left:6px;">Kiemelt</span>
                             <?php endif; ?>
+                            <div style="margin-top:3px;font-size:11px;">
+                            <?php if ( $is_suspended && $suspended_at ): ?>
+                                <span style="color:#ff9900;">⏸ Felfüggesztve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
+                            <?php else: ?>
+                                <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) ) . ' napja' ); ?></span>
+                            <?php endif; ?>
+                            </div>
                         </td>
                         <td style="padding:10px 8px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
@@ -187,6 +203,22 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 : get_edit_post_link( $l->ID );
                             ?>
                             <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--outline va-btn--sm">Szerk.</a>
+                            <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
+                            <form method="post" style="display:inline;">
+                                <?php wp_nonce_field( 'va_suspend_listing', 'va_suspend_listing_nonce' ); ?>
+                                <input type="hidden" name="va_action" value="suspend_listing">
+                                <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
+                                <?php if ( $is_suspended ): ?>
+                                    <button type="submit" class="va-btn va-btn--sm" style="background:rgba(0,200,80,.12);border:1px solid rgba(0,200,80,.4);color:#00c850;" title="Hirdetés újraindítása">
+                                        ▶ Indítás
+                                    </button>
+                                <?php else: ?>
+                                    <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,153,0,.12);border:1px solid rgba(255,153,0,.4);color:#ff9900;" title="Hirdetés felfüggesztése">
+                                        ⏸ Szünet
+                                    </button>
+                                <?php endif; ?>
+                            </form>
+                            <?php endif; ?>
                             <form method="post" class="va-listing-delete-form" style="display:inline;" onsubmit="return confirm('Biztosan törlöd ezt a hirdetést? A képekkel együtt végleg eltűnik!');">
                                 <?php wp_nonce_field( 'va_delete_listing', 'va_delete_listing_nonce' ); ?>
                                 <input type="hidden" name="va_action" value="delete_listing">
