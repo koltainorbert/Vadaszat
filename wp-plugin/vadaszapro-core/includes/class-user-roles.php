@@ -88,6 +88,9 @@ class VA_User_Roles {
         // Ha bármi (admin, webhook, WC) frissíti a va_plan metát → azonnal enforce
         add_action( 'update_user_meta', [ __CLASS__, 'on_plan_meta_updated' ], 10, 4 );
         add_action( 'added_user_meta',  [ __CLASS__, 'on_plan_meta_updated' ], 10, 4 );
+
+        // Ha kredit jóváírás történik → felfüggesztett hirdetések visszaállítása
+        add_action( 'update_user_meta', [ __CLASS__, 'on_credits_meta_updated' ], 10, 4 );
     }
 
     /**
@@ -112,7 +115,9 @@ class VA_User_Roles {
     }
 
     /**
-     * Automatikus limit-érvényesítés bejelentkezett usereknél (naponta egyszer/user)
+     * Automatikus limit-érvényesítés bejelentkezett usereknél (naponta egyszer/user).
+     */
+    public static function maybe_enforce_current_user_limits(): void {
         if ( ! is_user_logged_in() || is_admin() ) return;
         $uid = get_current_user_id();
         $key = 'va_enforce_ok_' . $uid;
