@@ -249,7 +249,7 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
                     </div>
 
                     <div class="va-form-group">
-                        <label>Bемutatkozás</label>
+                        <label>Bemutatkozás</label>
                         <textarea name="profile_bio" class="va-textarea"><?php echo esc_textarea( $user->description ); ?></textarea>
                     </div>
 
@@ -259,7 +259,7 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
                             <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,.45);margin-left:6px;">Platinum jogosultság</span>
                         </label>
                         <input type="text" name="profile_seller_label" class="va-input" value="<?php echo esc_attr( $seller_label ); ?>" placeholder="pl. Kereskedő, Viszonteladó – hagyd üresen ha nem kell" maxlength="40">
-                        <p style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Ez jelenik meg a feladó blokkban a hirdetéseimnél. Üresen hagyva az alapértelme zett csomagcímke látszik.</p>
+                        <p style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Ez jelenik meg a feladó blokkban a hirdetéseidnél. Üresen hagyva az alapértelmezett csomagcímke látszik.</p>
                     </div>
                     <?php endif; ?>
 
