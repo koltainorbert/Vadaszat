@@ -1,126 +1,85 @@
-/* jshint esversion: 6 */
-(function($){
-  'use strict';
+﻿/**
+ * VadászApró – Admin JS
+ * Color picker, media picker, sidebar interakció, toast
+ */
+(function ($) {
+    "use strict";
 
-  function getToastStack() {
-    var stack = document.querySelector('.va-admin-toast-stack');
-    if (!stack) {
-      stack = document.createElement('div');
-      stack.className = 'va-admin-toast-stack';
-      document.body.appendChild(stack);
-    }
-    return stack;
-  }
-
-  function pushToast(message, type, title) {
-    var stack = getToastStack();
-    var kind = type || 'info';
-    var ttl = title || (kind === 'success' ? 'Mentve' : (kind === 'error' ? 'Hiba' : 'Informacio'));
-
-    var toast = document.createElement('div');
-    toast.className = 'va-admin-toast va-admin-toast--' + kind;
-    toast.innerHTML = '<p class="va-admin-toast__title"></p><p class="va-admin-toast__msg"></p>';
-    toast.querySelector('.va-admin-toast__title').textContent = ttl;
-    toast.querySelector('.va-admin-toast__msg').textContent = message;
-    stack.appendChild(toast);
-
-    requestAnimationFrame(function() {
-      toast.classList.add('is-visible');
-    });
-
-    setTimeout(function() {
-      toast.classList.remove('is-visible');
-      setTimeout(function() {
-        if (toast.parentNode) {
-          toast.parentNode.removeChild(toast);
+    /* ── Color picker init ────────────────────────────────────── */
+    $(function () {
+        if ($.fn.wpColorPicker) {
+            $(".va-color-input").wpColorPicker();
         }
-      }, 260);
-    }, 5000);
-  }
 
-  function updatePreview(targetId, url) {
-    var $wrap = $('#' + targetId + '_preview');
-    if (!$wrap.length) return;
+        /* ── Media picker ─────────────────────────────────────── */
+        $(document).on("click", ".va-media-btn", function (e) {
+            e.preventDefault();
+            var btn     = $(this);
+            var target  = btn.data("target");
+            var preview = btn.data("preview");
 
-    if (url) {
-      $wrap.html('<img src="' + url + '" alt="" class="va-media-preview">');
-    } else {
-      $wrap.empty();
-    }
-  }
+            var frame = wp.media({
+                title:    "Kép kiválasztása",
+                button:   { text: "Kiválaszt" },
+                multiple: false,
+                library:  { type: "image" }
+            });
 
-  $(document).on('click', '.va-media-pick', function(e){
-    e.preventDefault();
-    var targetId = $(this).data('target');
-    var $input = $('#' + targetId);
-    if (!$input.length || typeof wp === 'undefined' || !wp.media) return;
+            frame.on("select", function () {
+                var att = frame.state().get("selection").first().toJSON();
+                $("#" + target).val(att.url);
+                if (preview) {
+                    var $p = $("#" + preview);
+                    if ($p.length) {
+                        $p.attr("src", att.url).show();
+                    } else {
+                        btn.closest(".va-media-field").find(".va-media-preview").attr("src", att.url).show();
+                    }
+                }
+            });
 
-    var frame = wp.media({
-      title: 'Kép kiválasztása',
-      library: { type: 'image' },
-      button: { text: 'Kiválasztás' },
-      multiple: false
+            frame.open();
+        });
+
+        /* ── Toast stack ──────────────────────────────────────── */
+        if (!$(".va-admin-toast-stack").length) {
+            $("body").append("<div class=\"va-admin-toast-stack\" id=\"va-toast-stack\"></div>");
+        }
+
+        /* ── Mentés után toast ────────────────────────────────── */
+        var $notice = $(".updated, .settings-error");
+        if ($notice.length) {
+            var msg  = $notice.find("p").text().trim() || "Beállítások mentve.";
+            var type = ($notice.hasClass("settings-error") && $notice.hasClass("error")) ? "error" : "success";
+            vaAdminToast(msg, type);
+        }
+
+        /* ── Sidebar aktív elem ───────────────────────────────── */
+        var currentPage    = new URLSearchParams(window.location.search).get("page") || "";
+        var currentPostType = new URLSearchParams(window.location.search).get("post_type") || "";
+        $("#va-sidebar .va-sb-item").each(function () {
+            var href      = $(this).attr("href") || "";
+            var urlParams = new URLSearchParams(href.split("?")[1] || "");
+            var itemPage  = urlParams.get("page") || "";
+            var itemPT    = urlParams.get("post_type") || "";
+            if ((itemPage && itemPage === currentPage) || (itemPT && itemPT === currentPostType)) {
+                $(this).addClass("active");
+            }
+        });
     });
 
-    frame.on('select', function(){
-      var selection = frame.state().get('selection').first();
-      if (!selection) return;
-      var attachment = selection.toJSON();
-      var url = attachment.url || '';
-      $input.val(url).trigger('change');
-      updatePreview(targetId, url);
-    });
+    /* ── Toast helper ─────────────────────────────────────────── */
+    window.vaAdminToast = function (msg, type) {
+        type = type || "success";
+        var $toast = $("<div class=\"va-admin-toast va-admin-toast--" + type + "\">" + msg + "</div>");
+        var $stack = $("#va-toast-stack");
+        if (!$stack.length) { $stack = $("<div id=\"va-toast-stack\" class=\"va-admin-toast-stack\"></div>").appendTo("body"); }
+        $stack.append($toast);
+        requestAnimationFrame(function () { $toast.addClass("show"); });
+        setTimeout(function () {
+            $toast.removeClass("show");
+            setTimeout(function () { $toast.remove(); }, 350);
+        }, 3500);
+    };
 
-    frame.open();
-  });
-
-  $(document).on('click', '.va-media-clear', function(e){
-    e.preventDefault();
-    var targetId = $(this).data('target');
-    var $input = $('#' + targetId);
-    if (!$input.length) return;
-
-    $input.val('').trigger('change');
-    updatePreview(targetId, '');
-  });
-
-  $(document).on('change', '.va-media-input', function(){
-    updatePreview($(this).attr('id'), $(this).val());
-  });
-
-  $(function(){
-    if ($.fn.wpColorPicker) {
-      $('.va-color-input').wpColorPicker();
-    }
-
-    // Mentes gombra kattintasnal azonnali visszajelzes.
-    $(document).on('submit', '.va-admin-wrap form', function() {
-      pushToast('Mentes folyamatban...', 'info', 'Vadaszapro Admin');
-    });
-
-    // Oldal ujratoltes utan WP notice -> push toast.
-    var hasPushedNotice = false;
-    $('.va-admin-wrap .notice, .va-admin-wrap .updated, .va-admin-wrap .error').each(function() {
-      var $n = $(this);
-      var text = $.trim($n.text().replace(/\s+/g, ' '));
-      if (!text) return;
-
-      var kind = 'info';
-      if ($n.hasClass('notice-error') || $n.hasClass('error')) {
-        kind = 'error';
-      } else if ($n.hasClass('notice-success') || $n.hasClass('updated')) {
-        kind = 'success';
-      }
-
-      pushToast(text, kind, kind === 'success' ? 'Sikeres mentes' : (kind === 'error' ? 'Mentési hiba' : 'Vadaszapro Admin'));
-      hasPushedNotice = true;
-    });
-
-    if (!hasPushedNotice) {
-      var params = new URLSearchParams(window.location.search);
-      if (params.get('settings-updated') === 'true') {
-        pushToast('Beallitasok sikeresen mentve.', 'success', 'Sikeres mentes');
-      }
-    }
-  });
-})(jQuery);
+}(jQuery));
