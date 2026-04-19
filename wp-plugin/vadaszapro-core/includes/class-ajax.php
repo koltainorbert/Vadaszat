@@ -35,6 +35,9 @@ class VA_Ajax {
             add_action( 'save_post_va_auction', [ __CLASS__, 'flush_filter_cache' ] );
         }
 
+        // Base64 kép feltöltése médiatárba
+        add_action( 'wp_ajax_va_upload_editor_image', [ __CLASS__, 'upload_editor_image' ] );
+
         // Élő keresés
         add_action( 'wp_ajax_va_live_search',        [ __CLASS__, 'live_search' ] );
         add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
