@@ -176,7 +176,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 <div style="min-width:0;">
                                     <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;"><?php echo esc_html( $l->post_title ); ?></a>
                                     <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
-                                        <span style="font-size:11px;background:#ffaa00;color:#000;padding:2px 6px;border-radius:3px;margin-left:6px;">Kiemelt</span>
+                                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,rgba(255,180,0,.15),rgba(255,120,0,.1));color:#ffaa00;border:1px solid rgba(255,160,0,.35);padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffaa00"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>Kiemelt</span>
                                     <?php endif; ?>
                                     <div style="margin-top:3px;font-size:11px;">
                                     <?php if ( $is_suspended && $suspended_at ): ?>
