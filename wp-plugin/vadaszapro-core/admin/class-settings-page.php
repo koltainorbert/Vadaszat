@@ -1128,6 +1128,388 @@ class VA_Settings_Page {
         <?php
     }
 
+    /* ══ Admin Panel személyre szabás ══════════════════════ */
+    public static function render_adminpanel(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        wp_enqueue_media();
+
+        $fonts = [
+            'system'        => 'System UI (natív, leggyorsabb)',
+            'inter'         => 'Inter',
+            'roboto'        => 'Roboto',
+            'montserrat'    => 'Montserrat (alapértelmezett)',
+            'nunito'        => 'Nunito',
+            'poppins'       => 'Poppins',
+            'raleway'       => 'Raleway',
+            'dm-sans'       => 'DM Sans',
+            'manrope'       => 'Manrope',
+            'work-sans'     => 'Work Sans',
+            'rubik'         => 'Rubik',
+            'source-sans-3' => 'Source Sans 3',
+            'fira-sans'     => 'Fira Sans',
+            'oswald'        => 'Oswald',
+        ];
+
+        $presets = self::get_adminpanel_presets();
+        $preset_msg = isset( $_GET['va_ap_preset'] ) ? sanitize_key( (string) $_GET['va_ap_preset'] ) : '';
+        $g = static fn( string $k, string $d = '' ) => (string) ( get_option( $k, $d ) ?: $d );
+        ?>
+        <div class="wrap va-admin-wrap va-aps-wrap">
+            <h1>🖥️ Admin Panel – Teljes személyre szabás</h1>
+            <p class="description" style="margin-bottom:20px;">Állítsd be az admin felület teljes megjelenését: szín, betűtípus, méretek, logó és branding. Minden azonnal él mentés után.</p>
+
+            <?php if ( $preset_msg === 'ok' ): ?>
+            <div class="notice notice-success is-dismissible"><p>✅ Preset alkalmazva és elmentve!</p></div>
+            <?php elseif ( $preset_msg === 'invalid' ): ?>
+            <div class="notice notice-error is-dismissible"><p>❌ Ismeretlen preset kulcs.</p></div>
+            <?php endif; ?>
+            <?php settings_errors( 'va_ap_settings' ); ?>
+
+            <!-- ══ Presetek ══════════════════════════════════════ -->
+            <div class="va-aps-presets-box">
+                <div class="va-aps-presets-hdr">
+                    <h2>🎨 Egy kattintásos presetek</h2>
+                    <p>10 előre összehangolt Admin Panel téma – választ után minden szín és beállítás azonnal frissül.</p>
+                </div>
+                <div class="va-aps-presets-grid">
+                    <?php foreach ( $presets as $pk => $pr ): ?>
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="va-aps-pf">
+                        <input type="hidden" name="action" value="va_apply_ap_preset">
+                        <input type="hidden" name="preset_key" value="<?php echo esc_attr( $pk ); ?>">
+                        <?php wp_nonce_field( 'va_apply_ap_preset' ); ?>
+                        <button type="submit" class="va-aps-preset">
+                            <span class="va-aps-swatches">
+                                <span style="background:<?php echo esc_attr( $pr['bg2'] ); ?>"></span>
+                                <span style="background:<?php echo esc_attr( $pr['bg'] ); ?>"></span>
+                                <span style="background:<?php echo esc_attr( $pr['accent'] ); ?>"></span>
+                                <span style="background:<?php echo esc_attr( $pr['accent2'] ); ?>"></span>
+                            </span>
+                            <strong><?php echo esc_html( $pr['label'] ); ?></strong>
+                            <small><?php echo esc_html( $pr['desc'] ); ?></small>
+                        </button>
+                    </form>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- ══ Fő layout: form + live preview ═══════════════ -->
+            <div class="va-aps-main">
+
+                <!-- Form -->
+                <div class="va-aps-form-col">
+                    <form method="post" action="options.php" id="va-aps-form">
+                        <?php settings_fields( 'va_ap_settings' ); ?>
+
+                        <!-- Márka -->
+                        <div class="va-aps-section">
+                            <div class="va-aps-section-hdr">
+                                <div class="va-aps-section-icon">🏷️</div>
+                                <div>
+                                    <strong>Márka és logó</strong>
+                                    <p>Panel neve, ikonja, sidebar logó</p>
+                                </div>
+                            </div>
+                            <table class="form-table">
+                                <?php self::field_text(  'va_ap_panel_name',  'Panel neve (sidebar fejléc)' ); ?>
+                                <?php self::field_text(  'va_ap_panel_icon',  'Panel ikon (emoji, pl. 🎯)' ); ?>
+                                <?php self::field_media( 'va_ap_logo_url',    'Sidebar logó kép (opcionális – ha van, az ikon helyére kerül)' ); ?>
+                                <?php self::field_num(   'va_ap_logo_height', 'Logó magasság (px)', 16, 80 ); ?>
+                            </table>
+                        </div>
+
+                        <!-- Háttér színek -->
+                        <div class="va-aps-section">
+                            <div class="va-aps-section-hdr">
+                                <div class="va-aps-section-icon">🌑</div>
+                                <div>
+                                    <strong>Háttér rétegek</strong>
+                                    <p>Főháttér, sidebar, kártyák, hover állapot</p>
+                                </div>
+                            </div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_ap_color_bg',  'Főháttér (--va-bg)' ); ?>
+                                <?php self::field_color( 'va_ap_color_bg2', 'Sidebar / topbar háttér (--va-bg2)' ); ?>
+                                <?php self::field_color( 'va_ap_color_bg3', 'Kártya / panel háttér (--va-bg3)' ); ?>
+                                <?php self::field_color( 'va_ap_color_bg4', 'Hover / aktív háttér (--va-bg4)' ); ?>
+                            </table>
+                        </div>
+
+                        <!-- Szöveg és szegélyek -->
+                        <div class="va-aps-section">
+                            <div class="va-aps-section-hdr">
+                                <div class="va-aps-section-icon">✍️</div>
+                                <div>
+                                    <strong>Szöveg és szegélyek</strong>
+                                    <p>Alap szöveg, halvány szöveg, keretek</p>
+                                </div>
+                            </div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_ap_color_text', 'Fő szövegszín (--va-text)' ); ?>
+                                <?php self::field_text(  'va_ap_color_muted', 'Halvány szöveg – rgba megengedett (--va-muted)' ); ?>
+                                <?php self::field_text(  'va_ap_color_border', 'Keret alap – rgba megengedett (--va-border)' ); ?>
+                                <?php self::field_text(  'va_ap_color_border2', 'Keret erős – rgba megengedett (--va-border2)' ); ?>
+                            </table>
+                        </div>
+
+                        <!-- Accent szín -->
+                        <div class="va-aps-section">
+                            <div class="va-aps-section-hdr">
+                                <div class="va-aps-section-icon">⚡</div>
+                                <div>
+                                    <strong>Accent (kiemelő) szín</strong>
+                                    <p>Az admin panel fő hangsúlyszíne – aktív elemek, gombok, indikátorok</p>
+                                </div>
+                            </div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_ap_color_accent',  'Accent szín (--va-accent)' ); ?>
+                                <?php self::field_color( 'va_ap_color_accent2', 'Accent hover / világosabb (--va-accent2)' ); ?>
+                            </table>
+                        </div>
+
+                        <!-- Layout méretek -->
+                        <div class="va-aps-section">
+                            <div class="va-aps-section-hdr">
+                                <div class="va-aps-section-icon">📐</div>
+                                <div>
+                                    <strong>Layout méretek</strong>
+                                    <p>Sidebar szélesség, topbar magasság, lekerekítések</p>
+                                </div>
+                            </div>
+                            <table class="form-table">
+                                <?php self::field_num( 'va_ap_sidebar_width', 'Sidebar szélesség (px)', 180, 340 ); ?>
+                                <?php self::field_num( 'va_ap_topbar_height', 'Topbar magasság (px)', 44, 80 ); ?>
+                                <?php self::field_num( 'va_ap_radius',     'Kártya / panel lekerekítés (px)', 0, 24 ); ?>
+                                <?php self::field_num( 'va_ap_radius_sm',  'Kisebb elem lekerekítés (px)', 0, 16 ); ?>
+                            </table>
+                        </div>
+
+                        <!-- Betűtípus -->
+                        <div class="va-aps-section">
+                            <div class="va-aps-section-hdr">
+                                <div class="va-aps-section-icon">🔤</div>
+                                <div>
+                                    <strong>Admin betűtípus</strong>
+                                    <p>Az admin panel globális betűcsaládja</p>
+                                </div>
+                            </div>
+                            <table class="form-table">
+                                <?php self::field_select( 'va_ap_font', 'Admin betűtípus', $fonts ); ?>
+                            </table>
+                        </div>
+
+                        <div style="margin-top:8px;">
+                            <?php submit_button( '💾 Admin Panel beállítások mentése', 'primary', 'submit', false ); ?>
+                        </div>
+                    </form>
+                </div><!-- .va-aps-form-col -->
+
+                <!-- Live Preview -->
+                <div class="va-aps-preview-col">
+                    <div class="va-aps-preview-sticky">
+                        <div class="va-aps-preview-label">👁 Élő előnézet</div>
+
+                        <!-- Topbar -->
+                        <div class="va-aps-prev-topbar" id="va-aps-prev-topbar"
+                             style="--pv-bg2:<?php echo esc_attr($g('va_ap_color_bg2','#0d0d11')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;">
+                            <span class="va-aps-topbar-title">Irányítópult <small>VadászApró</small></span>
+                            <span class="va-aps-topbar-btn">+ Új hirdetés</span>
+                        </div>
+
+                        <!-- Sidebar -->
+                        <div class="va-aps-prev-sidebar" id="va-aps-prev-sidebar"
+                             style="--pv-bg:<?php echo esc_attr($g('va_ap_color_bg','#070709')); ?>;--pv-bg2:<?php echo esc_attr($g('va_ap_color_bg2','#0d0d11')); ?>;--pv-bg3:<?php echo esc_attr($g('va_ap_color_bg3','#111118')); ?>;--pv-bg4:<?php echo esc_attr($g('va_ap_color_bg4','#161620')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-accent2:<?php echo esc_attr($g('va_ap_color_accent2','#ff5050')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;">
+                            <div class="va-aps-prev-logo">
+                                <div class="va-aps-prev-icon" id="va-aps-prev-icon"><?php echo esc_html( $g('va_ap_panel_icon','🎯') ); ?></div>
+                                <div>
+                                    <div class="va-aps-prev-name" id="va-aps-prev-name"><?php echo esc_html( $g('va_ap_panel_name','VadászApró') ); ?></div>
+                                    <div class="va-aps-prev-sub">Admin Panel</div>
+                                </div>
+                            </div>
+                            <nav class="va-aps-prev-nav">
+                                <a class="va-aps-prev-item va-aps-prev-item--active"><span>📊</span>Irányítópult</a>
+                                <a class="va-aps-prev-item"><span>📋</span>Hirdetések <span class="va-aps-prev-badge">3</span></a>
+                                <a class="va-aps-prev-item"><span>👥</span>Felhasználók</a>
+                                <div class="va-aps-prev-sep">Beállítások</div>
+                                <a class="va-aps-prev-item"><span>⚙️</span>Általános</a>
+                                <a class="va-aps-prev-item"><span>🎨</span>Design</a>
+                                <a class="va-aps-prev-item va-aps-prev-item--current"><span>🖥️</span>Admin Panel</a>
+                                <div class="va-aps-prev-sep">Tartalom</div>
+                                <a class="va-aps-prev-item"><span>📢</span>Reklámzónák</a>
+                                <a class="va-aps-prev-item"><span>📈</span>Statisztika</a>
+                            </nav>
+                        </div>
+
+                        <!-- Content area snippet -->
+                        <div class="va-aps-prev-content" id="va-aps-prev-content"
+                             style="--pv-bg:<?php echo esc_attr($g('va_ap_color_bg','#070709')); ?>;--pv-bg3:<?php echo esc_attr($g('va_ap_color_bg3','#111118')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;--pv-radius:<?php echo (int)$g('va_ap_radius','12'); ?>px;">
+                            <div class="va-aps-prev-kpi-row">
+                                <div class="va-aps-prev-kpi"><span>📋</span><strong>1 247</strong><small>Aktív hird.</small></div>
+                                <div class="va-aps-prev-kpi"><span>👥</span><strong>384</strong><small>Felhasználó</small></div>
+                                <div class="va-aps-prev-kpi"><span>👁</span><strong>42 k</strong><small>Megtekintés</small></div>
+                            </div>
+                            <div class="va-aps-prev-table-row">
+                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
+                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
+                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
+                            </div>
+                        </div>
+
+                        <div class="va-aps-preview-note">Az előnézet automatikusan frissül gépelés közben.</div>
+                    </div>
+                </div><!-- .va-aps-preview-col -->
+
+            </div><!-- .va-aps-main -->
+        </div><!-- .va-aps-wrap -->
+
+        <style>
+        /* ── Admin Panel Settings Page ── */
+        .va-aps-wrap { max-width:1400px; }
+
+        /* Presets */
+        .va-aps-presets-box { background:var(--va-bg2); border:1px solid var(--va-border); border-radius:var(--va-radius); padding:20px 24px; margin-bottom:24px; }
+        .va-aps-presets-hdr h2 { margin:0 0 2px; font-size:15px; color:var(--va-text); }
+        .va-aps-presets-hdr p  { margin:0 0 16px; font-size:12px; color:var(--va-muted); }
+        .va-aps-presets-grid { display:flex; flex-wrap:wrap; gap:8px; }
+        .va-aps-pf { display:contents; }
+        .va-aps-preset {
+            display:flex; flex-direction:column; gap:5px; align-items:flex-start;
+            background:var(--va-bg3); border:1px solid var(--va-border2);
+            border-radius:10px; padding:10px 14px; cursor:pointer; color:var(--va-text);
+            text-align:left; min-width:150px; transition:.15s;
+        }
+        .va-aps-preset:hover { border-color:var(--va-accent); transform:translateY(-1px); box-shadow:0 4px 18px rgba(0,0,0,.4); }
+        .va-aps-preset strong { font-size:12px; font-weight:700; }
+        .va-aps-preset small  { font-size:11px; color:var(--va-muted); }
+        .va-aps-swatches { display:flex; gap:4px; margin-bottom:2px; }
+        .va-aps-swatches span { width:14px; height:14px; border-radius:50%; border:1px solid rgba(255,255,255,.12); }
+
+        /* Main layout */
+        .va-aps-main { display:grid; grid-template-columns:1fr 260px; gap:24px; align-items:start; }
+
+        /* Sections */
+        .va-aps-section { background:var(--va-bg2); border:1px solid var(--va-border); border-radius:var(--va-radius); overflow:hidden; margin-bottom:16px; }
+        .va-aps-section-hdr { display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid var(--va-border); }
+        .va-aps-section-icon { font-size:20px; flex-shrink:0; }
+        .va-aps-section-hdr strong { font-size:13px; font-weight:700; color:var(--va-text); display:block; margin-bottom:2px; }
+        .va-aps-section-hdr p { margin:0; font-size:11px; color:var(--va-muted); }
+        .va-aps-section .form-table { margin:0; padding:8px 20px 14px; background:transparent; }
+        .va-aps-section .form-table th { font-size:12px; color:var(--va-muted); font-weight:600; text-transform:uppercase; letter-spacing:.5px; padding:10px 18px 10px 0; width:220px; }
+        .va-aps-section .form-table td { padding:10px 0; }
+        .va-aps-section .form-table input[type=text],
+        .va-aps-section .form-table input[type=number],
+        .va-aps-section .form-table select { background:var(--va-bg3) !important; border:1px solid var(--va-border2) !important; color:var(--va-text) !important; border-radius:var(--va-radius-sm) !important; padding:7px 10px !important; font-size:13px !important; }
+        .va-aps-section .form-table input[type=color] { width:44px; height:34px; border-radius:var(--va-radius-sm); border:1px solid var(--va-border2); background:transparent; cursor:pointer; padding:2px; }
+
+        /* Preview column */
+        .va-aps-preview-col { position:sticky; top:72px; }
+        .va-aps-preview-sticky { display:flex; flex-direction:column; gap:0; }
+        .va-aps-preview-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--va-muted); margin-bottom:6px; }
+        .va-aps-preview-note { font-size:10px; color:var(--va-muted); margin-top:8px; text-align:center; }
+
+        /* Topbar preview */
+        .va-aps-prev-topbar {
+            background:var(--pv-bg2); border:1px solid var(--pv-border,rgba(255,255,255,.07));
+            border-radius:8px 8px 0 0; padding:8px 12px;
+            display:flex; justify-content:space-between; align-items:center;
+            font-size:11px; color:var(--pv-text,#e8e8f0); gap:8px;
+            font-family:system-ui,sans-serif;
+        }
+        .va-aps-topbar-title { font-weight:600; }
+        .va-aps-topbar-title small { font-size:9px; color:var(--pv-muted,rgba(255,255,255,.45)); margin-left:4px; }
+        .va-aps-topbar-btn { background:var(--pv-accent,#ff2020); color:#fff; border-radius:5px; padding:3px 9px; font-size:10px; font-weight:700; }
+
+        /* Sidebar preview */
+        .va-aps-prev-sidebar {
+            background:var(--pv-bg2); border-left:1px solid var(--pv-border,rgba(255,255,255,.07));
+            border-right:1px solid var(--pv-border,rgba(255,255,255,.07));
+            font-family:system-ui,sans-serif; font-size:11px; color:var(--pv-text,#e8e8f0);
+            display:flex; flex-direction:column;
+        }
+        .va-aps-prev-logo { display:flex; align-items:center; gap:9px; padding:12px 12px 10px; border-bottom:1px solid var(--pv-border,rgba(255,255,255,.07)); }
+        .va-aps-prev-icon { width:26px; height:26px; background:var(--pv-accent,#ff2020); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+        .va-aps-prev-name { font-size:11px; font-weight:700; color:var(--pv-text,#e8e8f0); }
+        .va-aps-prev-sub  { font-size:9px; color:var(--pv-muted,rgba(255,255,255,.42)); }
+        .va-aps-prev-nav  { padding:6px 7px; display:flex; flex-direction:column; gap:1px; }
+        .va-aps-prev-item { display:flex; align-items:center; gap:7px; padding:5px 7px; border-radius:6px; color:var(--pv-text,#e8e8f0); font-size:10px; text-decoration:none; cursor:default; }
+        .va-aps-prev-item--active { background:var(--pv-accent,#ff2020); color:#fff !important; }
+        .va-aps-prev-item--current { background:var(--pv-bg4,#161620); }
+        .va-aps-prev-sep  { font-size:8px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:var(--pv-muted,rgba(255,255,255,.32)); padding:6px 7px 2px; }
+        .va-aps-prev-badge { margin-left:auto; background:var(--pv-accent,#ff2020); color:#fff; border-radius:999px; padding:0 5px; font-size:9px; font-weight:700; }
+
+        /* Content preview */
+        .va-aps-prev-content {
+            background:var(--pv-bg); padding:10px;
+            border:1px solid var(--pv-border,rgba(255,255,255,.07)); border-top:none;
+            border-radius:0 0 8px 8px; font-family:system-ui,sans-serif;
+        }
+        .va-aps-prev-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:8px; }
+        .va-aps-prev-kpi { background:var(--pv-bg3); border:1px solid var(--pv-border,rgba(255,255,255,.07)); border-radius:var(--pv-radius,8px); padding:6px 8px; display:flex; flex-direction:column; align-items:center; gap:1px; font-size:9px; color:var(--pv-muted,rgba(255,255,255,.45)); }
+        .va-aps-prev-kpi span { font-size:13px; }
+        .va-aps-prev-kpi strong { font-size:13px; font-weight:700; color:var(--pv-accent,#ff2020); }
+        .va-aps-prev-table-row { background:var(--pv-bg3); border:1px solid var(--pv-border,rgba(255,255,255,.07)); border-radius:var(--pv-radius,8px); overflow:hidden; }
+        .va-aps-prev-tr { display:flex; align-items:center; gap:6px; padding:5px 8px; border-bottom:1px solid var(--pv-border,rgba(255,255,255,.07)); }
+        .va-aps-prev-tr:last-child { border-bottom:none; }
+        .va-aps-prev-td--img { width:24px; height:24px; background:var(--pv-bg,#070709); border-radius:4px; flex-shrink:0; }
+        .va-aps-prev-td--title { flex:1; height:8px; background:var(--pv-border2,rgba(255,255,255,.12)); border-radius:3px; }
+        .va-aps-prev-td--price { width:36px; height:8px; background:var(--pv-accent,#ff2020); opacity:.6; border-radius:3px; }
+
+        @media (max-width:1100px) {
+            .va-aps-main { grid-template-columns:1fr; }
+            .va-aps-preview-col { position:static; }
+        }
+        @media (max-width:680px) {
+            .va-aps-presets-grid { gap:6px; }
+            .va-aps-preset { min-width:130px; }
+        }
+        </style>
+
+        <script>
+        (function () {
+            const form    = document.getElementById('va-aps-form');
+            const sidebar = document.getElementById('va-aps-prev-sidebar');
+            const topbar  = document.getElementById('va-aps-prev-topbar');
+            const content = document.getElementById('va-aps-prev-content');
+            const iconEl  = document.getElementById('va-aps-prev-icon');
+            const nameEl  = document.getElementById('va-aps-prev-name');
+            if (!form || !sidebar) return;
+
+            const colorMap = {
+                'va_ap_color_bg':      '--pv-bg',
+                'va_ap_color_bg2':     '--pv-bg2',
+                'va_ap_color_bg3':     '--pv-bg3',
+                'va_ap_color_bg4':     '--pv-bg4',
+                'va_ap_color_text':    '--pv-text',
+                'va_ap_color_muted':   '--pv-muted',
+                'va_ap_color_accent':  '--pv-accent',
+                'va_ap_color_accent2': '--pv-accent2',
+                'va_ap_color_border':  '--pv-border',
+                'va_ap_color_border2': '--pv-border2',
+            };
+            const allPrevEls = [sidebar, topbar, content].filter(Boolean);
+
+            function sync() {
+                for (const [key, prop] of Object.entries(colorMap)) {
+                    const el = form.querySelector('[name="' + key + '"]');
+                    if (!el) continue;
+                    const val = el.value;
+                    allPrevEls.forEach(n => n && n.style.setProperty(prop, val));
+                }
+                const r = form.querySelector('[name="va_ap_radius"]');
+                if (r && content) content.style.setProperty('--pv-radius', r.value + 'px');
+
+                const icon = form.querySelector('[name="va_ap_panel_icon"]');
+                const name = form.querySelector('[name="va_ap_panel_name"]');
+                if (iconEl && icon && icon.value) iconEl.textContent = icon.value;
+                if (nameEl && name && name.value) nameEl.textContent = name.value;
+            }
+
+            form.addEventListener('input',  sync);
+            form.addEventListener('change', sync);
+        })();
+        </script>
+        <?php
+    }
+
     /* ══ Hirdetés beállítások ═════════════════════════════ */
     public static function render_listings() {
         if ( ! current_user_can( 'manage_options' ) ) return;
