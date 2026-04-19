@@ -439,6 +439,13 @@ class VA_Ajax {
             $current = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
             update_user_meta( $user_id, 'va_listing_credits', $current + $qty );
             delete_transient( 'va_credit_token_' . $token );
+
+            // Felfüggesztett hirdetések visszakapcsolása ha most van elég keret
+            if ( class_exists( 'VA_User_Roles' ) ) {
+                delete_transient( 'va_enforce_ok_' . $user_id );
+                VA_User_Roles::enforce_plan_limits( $user_id );
+            }
+
             va_set_flash( 'success', $qty . ' hirdetési kredit jóváírva! Most már feladhatod a hirdetésedet.' );
             if ( $return_to === 'submit' ) {
                 self::redirect_submit_page();

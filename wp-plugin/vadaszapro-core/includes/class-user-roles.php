@@ -84,13 +84,35 @@ class VA_User_Roles {
 
         // Automatikus limit-érvényesítés bejelentkezett usereknél (naponta egyszer/user)
         add_action( 'wp', [ __CLASS__, 'maybe_enforce_current_user_limits' ] );
+
+        // Ha bármi (admin, webhook, WC) frissíti a va_plan metát → azonnal enforce
+        add_action( 'update_user_meta', [ __CLASS__, 'on_plan_meta_updated' ], 10, 4 );
+        add_action( 'added_user_meta',  [ __CLASS__, 'on_plan_meta_updated' ], 10, 4 );
     }
 
     /**
-     * Ha az aktuális bejelentkezett user limitje módosult (pl. terv manuálisan állítva
-     * még mielőtt ez a kód létezett volna), naponta egyszer lefuttatja a enforce-t.
+     * Ha a va_plan user meta változik, azonnal enforce-olja a limitet.
+     * Ez elkapja az admin-mentést, webhookokat, WC-integrációt egyaránt.
      */
-    public static function maybe_enforce_current_user_limits(): void {
+    public static function on_plan_meta_updated( int $meta_id, int $user_id, string $meta_key, mixed $meta_value ): void {
+        if ( $meta_key !== 'va_plan' ) return;
+        // Cache flush hogy az új plan érvényes legyen
+        self::flush_plan_cache();
+        delete_transient( 'va_enforce_ok_' . $user_id );
+        self::enforce_plan_limits( $user_id );
+    }
+
+    /**
+     * Ha a va_listing_credits user meta nő, enforce-olja a limitet (felold visszafelfüggesztetteket).
+     */
+    public static function on_credits_meta_updated( int $meta_id, int $user_id, string $meta_key, mixed $meta_value ): void {
+        if ( $meta_key !== 'va_listing_credits' ) return;
+        delete_transient( 'va_enforce_ok_' . $user_id );
+        self::enforce_plan_limits( $user_id );
+    }
+
+    /**
+     * Automatikus limit-érvényesítés bejelentkezett usereknél (naponta egyszer/user)
         if ( ! is_user_logged_in() || is_admin() ) return;
         $uid = get_current_user_id();
         $key = 'va_enforce_ok_' . $uid;
@@ -412,16 +434,20 @@ class VA_User_Roles {
         $purchased_credits = (int) get_user_meta( $user_id, 'va_listing_credits', true );
         $limit = $cfg['monthly_limit'] + $purchased_credits;
 
-        // Active listings legrégebbtől legújabbig (direktben, WP filter nélkül)
-        // A LEGRÉGEBBI (legelső) hirdetések maradnak aktívak – ezek a "valódi" hirdetések.
-        // Az újabbak (másolatok, teszt) lesznek felfüggesztve.
+        // MINDEN hirdetés (aktiv és felfüggesztett) – legrégebbtől legújabbig
+        // Az ASC sorrend biztosítja hogy a legrégebbi ("igazi") hirdetések maradnak aktiv.
         global $wpdb;
         $posts = $wpdb->get_results( $wpdb->prepare(
-            "SELECT ID, post_title, post_status FROM {$wpdb->posts}
-             WHERE post_type = 'va_listing'
-               AND post_author = %d
-               AND post_status IN ('publish','pending')
-             ORDER BY post_date ASC
+            "SELECT p.ID, p.post_title, p.post_status
+             FROM {$wpdb->posts} p
+             LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = 'va_suspended_by_plan'
+             WHERE p.post_type = 'va_listing'
+               AND p.post_author = %d
+               AND (
+                 p.post_status IN ('publish','pending')
+                 OR (p.post_status = 'private' AND pm.meta_value = '1')
+               )
+             ORDER BY p.post_date ASC
              LIMIT 200",
             $user_id
         ) );
