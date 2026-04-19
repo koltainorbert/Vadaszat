@@ -163,16 +163,31 @@ $free_limit = max( 0, absint( get_option( 'va_free_listings_limit', 1 ) ) );
 $paid_price = max( 0, absint( get_option( 'va_listing_price_after_free', 1990 ) ) );
 
 $user_listings_count = 0;
+$user_credit_balance = 0;
+$plan_has_allowance = false;
+$plan_remaining = null;
 if ( is_user_logged_in() ) {
     global $wpdb;
+    $user_id = get_current_user_id();
     $user_listings_count = (int) $wpdb->get_var( $wpdb->prepare(
         "SELECT COUNT(*) FROM {$wpdb->posts}
          WHERE post_type = %s
          AND post_author = %d
          AND post_status IN ('publish','pending','draft','future','private')",
         'va_listing',
-        get_current_user_id()
+        $user_id
     ) );
+
+    $user_credit_balance = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
+
+    if ( class_exists( 'VA_User_Roles' ) ) {
+        $plan_check = VA_User_Roles::can_post_listing( $user_id );
+        $plan_has_allowance = ! empty( $plan_check['can'] );
+
+        if ( isset( $plan_check['limit'], $plan_check['used'] ) && (int) $plan_check['limit'] > 0 ) {
+            $plan_remaining = max( 0, (int) $plan_check['limit'] - (int) $plan_check['used'] );
+        }
+    }
 }
 
 $remaining_free = $free_limit === 0 ? 9999 : max( 0, $free_limit - $user_listings_count );
@@ -207,7 +222,15 @@ wp_localize_script( 'va-submit', 'VA_Data', [
 
         <?php if ( ! $edit_mode ): ?>
         <div class="va-notice va-notice--info" style="margin-bottom:16px;">
-            <?php if ( $free_limit === 0 ): ?>
+            <?php if ( $plan_has_allowance || $user_credit_balance > 0 ): ?>
+                <?php if ( $user_credit_balance > 0 ): ?>
+                    Előfizetett egyenleged: <strong><?php echo esc_html( (string) $user_credit_balance ); ?> db kredit</strong>. Ebből még tudsz hirdetést feladni.
+                <?php elseif ( is_int( $plan_remaining ) ): ?>
+                    Előfizetett csomagkeretedből még <strong><?php echo esc_html( (string) $plan_remaining ); ?> db</strong> hirdetést tudsz feladni.
+                <?php else: ?>
+                    Az előfizetésed alapján jelenleg tudsz hirdetést feladni.
+                <?php endif; ?>
+            <?php elseif ( $free_limit === 0 ): ?>
                 Jelenleg korlátlan számú ingyenes hirdetés adható fel.
             <?php else: ?>
                 <?php if ( $remaining_free > 0 ): ?>
