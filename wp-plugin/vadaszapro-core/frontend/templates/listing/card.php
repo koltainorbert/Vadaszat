@@ -120,7 +120,7 @@ if ( has_post_thumbnail( $post_id ) ) {
 <div class="va-card va-animate" data-post-id="<?php echo esc_attr( $post_id ); ?>">
 
     <?php if ( $featured ): ?>
-        <span class="va-card__badge va-card__badge--featured">⭐ Kiemelt</span>
+        <span class="va-card__badge va-card__badge--featured"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
     <?php elseif ( $is_auction ): ?>
         <span class="va-card__badge">🔨 Aukció</span>
     <?php endif; ?>
