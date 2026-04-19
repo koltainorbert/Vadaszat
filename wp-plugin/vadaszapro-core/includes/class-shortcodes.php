@@ -102,10 +102,10 @@ class VA_Shortcodes {
 
         $all_plan_cfg = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
         $rank_cards = [
-            [ 'slug' => 'basic',    'qty' => 1,  'theme' => 'basic',    'tag' => 'Belépő' ],
-            [ 'slug' => 'silver',   'qty' => 3,  'theme' => 'silver',   'tag' => 'Népszerű' ],
-            [ 'slug' => 'gold',     'qty' => 5,  'theme' => 'gold',     'tag' => 'Profi' ],
-            [ 'slug' => 'platinum', 'qty' => 10, 'theme' => 'platinum', 'tag' => 'Prémium' ],
+            [ 'slug' => 'basic',    'qty' => 1,  'theme' => 'basic',    'tag' => 'Belépő',  'icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>' ],
+            [ 'slug' => 'silver',   'qty' => 3,  'theme' => 'silver',   'tag' => 'Népszerű','icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>' ],
+            [ 'slug' => 'gold',     'qty' => 5,  'theme' => 'gold',     'tag' => 'Profi',   'icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' ],
+            [ 'slug' => 'platinum', 'qty' => 10, 'theme' => 'platinum', 'tag' => 'Prémium', 'icon' => '<svg viewBox="0 0 24 24" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 8h12l4-8"/><path d="M6 12v8h12v-8"/><path d="M12 12v8"/></svg>' ],
         ];
 
         ob_start();
@@ -148,23 +148,30 @@ class VA_Shortcodes {
                     $plan_basis    = (string) ( $cfg['basis'] ?? 'monthly' );
                     $plan_boost_cd = (int) ( $cfg['boost_cooldown'] ?? 0 );
                 ?>
-                <div class="va-pkg-card va-pkg-card--rank va-pkg-card--<?php echo esc_attr( $card['theme'] ); ?>" data-qty="<?php echo esc_attr( (string) $qty ); ?>">
+                <div class="va-pkg-card va-pkg-card--<?php echo esc_attr( $card['theme'] ); ?>" data-qty="<?php echo esc_attr( (string) $qty ); ?>">
                     <div class="va-pkg-badge"><?php echo esc_html( $card['tag'] ); ?></div>
-                    <div class="va-pkg-rank"><?php echo esc_html( strtoupper( $plan_label ) ); ?></div>
-                    <div class="va-pkg-qty"><?php echo esc_html( (string) $pkg['label'] ); ?></div>
-                    <div class="va-pkg-price"><?php echo number_format( (int) $pkg['total'], 0, ',', ' ' ); ?> Ft</div>
-                    <div class="va-pkg-unit"><?php echo number_format( (int) $pkg['unit_price'], 0, ',', ' ' ); ?> Ft / kredit</div>
+                    <div class="va-pkg-header">
+                        <div class="va-pkg-icon-wrap"><?php echo $card['icon']; // SVG, no user input ?></div>
+                        <div class="va-pkg-header-text">
+                            <div class="va-pkg-rank"><?php echo esc_html( strtoupper( $plan_label ) ); ?></div>
+                            <div class="va-pkg-qty"><?php echo esc_html( (string) $pkg['label'] ); ?></div>
+                        </div>
+                    </div>
+                    <div class="va-pkg-price-block">
+                        <div class="va-pkg-price"><?php echo number_format( (int) $pkg['total'], 0, ',', ' ' ); ?><span>Ft</span></div>
+                        <div class="va-pkg-unit"><?php echo number_format( (int) $pkg['unit_price'], 0, ',', ' ' ); ?> Ft / kredit</div>
+                    </div>
                     <ul class="va-pkg-meta">
                         <li><?php echo esc_html( $plan_desc ); ?></li>
                         <?php if ( $plan_limit > 0 ): ?>
-                        <li>Keret: <?php echo esc_html( (string) $plan_limit ); ?> <?php echo $plan_basis === 'active' ? 'aktív hirdetés' : 'hirdetés / hó'; ?></li>
+                        <li><?php echo $plan_basis === 'active' ? 'Max ' . esc_html( (string) $plan_limit ) . ' aktív hirdetés' : esc_html( (string) $plan_limit ) . ' hirdetés / hó'; ?></li>
                         <?php else: ?>
-                        <li>Keret: korlátlan</li>
+                        <li>Korlátlan hirdetés</li>
                         <?php endif; ?>
-                        <li>Boost: <?php echo esc_html( (string) max( 0, $plan_boost_cd ) ); ?> nap</li>
+                        <li>Boost újratöltés: <?php echo esc_html( (string) max( 0, $plan_boost_cd ) ); ?> nap</li>
                     </ul>
-                    <button type="button" class="va-btn va-btn--primary va-pkg-buy-btn" data-qty="<?php echo esc_attr( (string) $qty ); ?>" data-total="<?php echo esc_attr( (string) $pkg['total'] ); ?>">
-                        Vásárlás
+                    <button type="button" class="va-pkg-buy-btn" data-qty="<?php echo esc_attr( (string) $qty ); ?>" data-total="<?php echo esc_attr( (string) $pkg['total'] ); ?>">
+                        Vásárlás →
                     </button>
                 </div>
                 <?php endforeach; ?>
