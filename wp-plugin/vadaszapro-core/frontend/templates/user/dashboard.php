@@ -32,6 +32,7 @@ $plan_cfg     = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_plan_config
 $plan_check   = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::can_post_listing( $user->ID ) : [ 'used' => 0, 'limit' => 0 ];
 $boost_nonce  = wp_create_nonce( 'va_user_nonce' );
 $ajax_url     = admin_url( 'admin-ajax.php' );
+$seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
 ?>
 <div class="va-wrap">
     <?php va_display_flash(); ?>
@@ -248,9 +249,19 @@ $ajax_url     = admin_url( 'admin-ajax.php' );
                     </div>
 
                     <div class="va-form-group">
-                        <label>Bemutatkozás</label>
+                        <label>Bемutatkozás</label>
                         <textarea name="profile_bio" class="va-textarea"><?php echo esc_textarea( $user->description ); ?></textarea>
                     </div>
+
+                    <?php if ( $user_plan === 'platinum' ): ?>
+                    <div class="va-form-group">
+                        <label>Rang / címke a hirdetésoldalakon
+                            <span style="font-size:11px;font-weight:400;color:rgba(255,255,255,.45);margin-left:6px;">Platinum jogosultság</span>
+                        </label>
+                        <input type="text" name="profile_seller_label" class="va-input" value="<?php echo esc_attr( $seller_label ); ?>" placeholder="pl. Kereskedő, Viszonteladó – hagyd üresen ha nem kell" maxlength="40">
+                        <p style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">Ez jelenik meg a feladó blokkban a hirdetéseimnél. Üresen hagyva az alapértelme zett csomagcímke látszik.</p>
+                    </div>
+                    <?php endif; ?>
 
                     <hr style="border-color:rgba(255,255,255,0.1);margin:20px 0;">
                     <h3 style="font-size:14px;font-weight:700;margin-bottom:14px;">Jelszócsere (hagyd üresen ha nem változtatod)</h3>

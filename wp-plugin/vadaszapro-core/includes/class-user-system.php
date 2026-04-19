@@ -375,6 +375,13 @@ class VA_User_System {
         $phone     = sanitize_text_field( wp_unslash( $_POST['profile_phone']     ?? '' ) );
         $bio       = sanitize_textarea_field( wp_unslash( $_POST['profile_bio']   ?? '' ) );
 
+        // Platinum: egyedi rang címke
+        $user_plan = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_user_plan( $user_id ) : 'basic';
+        if ( $user_plan === 'platinum' ) {
+            $seller_label = sanitize_text_field( wp_unslash( $_POST['profile_seller_label'] ?? '' ) );
+            update_user_meta( $user_id, 'va_seller_label', $seller_label );
+        }
+
         wp_update_user([
             'ID'          => $user_id,
             'first_name'  => $firstname,

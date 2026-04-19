@@ -323,9 +323,16 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
                             $author_plan     = VA_User_Roles::get_user_plan( $author->ID );
                             $all_plan_cfg    = VA_User_Roles::get_all_plan_configs();
                             $plan_labels     = [ 'basic' => 'Alap', 'silver' => 'Ezüst', 'gold' => 'Arany', 'platinum' => 'Platina' ];
-                            // Platinum: egyedi rang címke ha be van állítva
-                            if ( $author_plan === 'platinum' && ! empty( $all_plan_cfg['platinum']['seller_label'] ) ) {
-                                $plan_label = sanitize_text_field( $all_plan_cfg['platinum']['seller_label'] );
+                            // Platinum priority: 1. user sajat beallitasa, 2. globalis plan config, 3. alapertelmezett
+                            if ( $author_plan === 'platinum' ) {
+                                $user_seller_label = get_user_meta( $author->ID, 'va_seller_label', true );
+                                if ( ! empty( $user_seller_label ) ) {
+                                    $plan_label = sanitize_text_field( $user_seller_label );
+                                } elseif ( ! empty( $all_plan_cfg['platinum']['seller_label'] ) ) {
+                                    $plan_label = sanitize_text_field( $all_plan_cfg['platinum']['seller_label'] );
+                                } else {
+                                    $plan_label = $plan_labels['platinum'];
+                                }
                             } else {
                                 $plan_label = $plan_labels[ $author_plan ] ?? ucfirst( $author_plan );
                             }
