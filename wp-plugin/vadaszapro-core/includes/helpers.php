@@ -20,8 +20,8 @@ function va_display_views( int $post_id ): int {
 function va_social_svg( string $platform, int $size = 20 ): string {
     $s = esc_attr( (string) $size );
     $icons = [
-        // Facebook – csak az "f" lettermark, kör nélkül (a gomb saját háttere adja a keretet)
-        'facebook' => '<svg xmlns="http://www.w3.org/2000/svg" width="'.$s.'" height="'.$s.'" viewBox="0 0 8 16" fill="currentColor" aria-hidden="true"><path d="M5.5 16V9h2.2l.3-2.8H5.5V4.5c0-.8.2-1.4 1.4-1.4H8V.1C7.7.1 6.8 0 5.8 0 3.6 0 2.1 1.3 2.1 3.8V6.2H0V9h2.1v7H5.5z"/></svg>',
+        // Facebook – hivatalos lettermark (kör nélkül)
+        'facebook' => '<svg xmlns="http://www.w3.org/2000/svg" width="'.$s.'" height="'.$s.'" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.5 21v-8.2h2.8l.4-3.8h-3.2V6.6c0-1.1.3-1.9 1.9-1.9h1.5V1.5c-.3 0-1.4-.1-2.7-.1-2.7 0-4.5 1.6-4.5 4.7V9H7v3.8h2.7V21h3.8z"/></svg>',
 
         // Instagram – keret + belső kör + pont, kör nélküli változat
         'instagram' => '<svg xmlns="http://www.w3.org/2000/svg" width="'.$s.'" height="'.$s.'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>',
