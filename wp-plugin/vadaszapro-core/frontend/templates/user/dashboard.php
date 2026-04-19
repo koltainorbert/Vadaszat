@@ -192,6 +192,12 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 : get_edit_post_link( $l->ID );
                             ?>
                             <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--outline va-btn--sm">Szerk.</a>
+                            <form method="post" class="va-listing-delete-form" style="display:inline;" onsubmit="return confirm('Biztosan törlöd ezt a hirdetést? A képekkel együtt végleg eltűnik!');">
+                                <?php wp_nonce_field( 'va_delete_listing', 'va_delete_listing_nonce' ); ?>
+                                <input type="hidden" name="va_action" value="delete_listing">
+                                <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
+                                <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,42,42,.12);border:1px solid rgba(255,42,42,.4);color:#ff6060;">Törlés</button>
+                            </form>
                         </td>
                     </tr>
                     <?php endforeach; ?>

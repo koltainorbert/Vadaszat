@@ -143,7 +143,9 @@ class VA_User_System {
             if ( $action === 'logout'   ) self::process_logout();
             if ( $action === 'profile'  ) self::process_profile();
             if ( $action === 'profile_avatar' ) self::process_profile_avatar();
-            if ( $action === 'profile_label' ) self::process_profile_label();
+            if ( $action === 'profile_label'  ) self::process_profile_label();
+            if ( $action === 'delete_listing' ) self::process_delete_listing();
+            if ( $action === 'delete_profile' ) self::process_delete_profile();
         }
     }
 
@@ -564,6 +566,130 @@ class VA_User_System {
 
         va_set_flash( 'success', 'Rang címke frissítve.' );
         wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+        exit;
+    }
+
+    /* ── Hirdetés törlés (saját) ───────────────────────── */
+    private static function process_delete_listing(): void {
+        if ( ! is_user_logged_in() ) return;
+        if ( ! isset( $_POST['va_delete_listing_nonce'] ) ||
+             ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_delete_listing_nonce'] ) ), 'va_delete_listing' ) ) {
+            va_set_flash( 'error', 'Érvénytelen kérés.' );
+            return;
+        }
+
+        $user_id = get_current_user_id();
+        $post_id = (int) ( $_POST['listing_id'] ?? 0 );
+        if ( ! $post_id ) return;
+
+        $post = get_post( $post_id );
+        if ( ! $post || (int) $post->post_author !== $user_id || $post->post_type !== 'va_listing' ) {
+            va_set_flash( 'error', 'Nincs jogosultságod ehhez a hirdetéshez.' );
+            wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+            exit;
+        }
+
+        self::delete_listing_with_images( $post_id );
+
+        va_set_flash( 'success', 'A hirdetés sikeresen törölve.' );
+        wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+        exit;
+    }
+
+    /* ── Helper: hirdetés + képek törlése ─────────────── */
+    public static function delete_listing_with_images( int $post_id ): void {
+        global $wpdb;
+
+        // Csatolt képek törlése (post_parent alapján)
+        $attached = get_posts([
+            'post_type'      => 'attachment',
+            'post_parent'    => $post_id,
+            'posts_per_page' => 100,
+            'post_status'    => 'any',
+            'fields'         => 'ids',
+            'no_found_rows'  => true,
+        ]);
+        foreach ( $attached as $att_id ) {
+            wp_delete_attachment( (int) $att_id, true );
+        }
+
+        // Galéria képek törlése (va_gallery_ids meta alapján – esetleg nincs post_parent)
+        $gallery_str = get_post_meta( $post_id, 'va_gallery_ids', true );
+        if ( $gallery_str ) {
+            foreach ( array_filter( array_map( 'intval', explode( ',', $gallery_str ) ) ) as $att_id ) {
+                wp_delete_attachment( $att_id, true );
+            }
+        }
+
+        // Custom táblák takarítás
+        $wpdb->delete( $wpdb->prefix . 'va_listing_meta', [ 'post_id'    => $post_id ], [ '%d' ] );
+        $wpdb->delete( $wpdb->prefix . 'va_bids',         [ 'auction_id' => $post_id ], [ '%d' ] );
+        $wpdb->delete( $wpdb->prefix . 'va_watchlist',    [ 'post_id'    => $post_id ], [ '%d' ] );
+
+        wp_delete_post( $post_id, true );
+    }
+
+    /* ── Teljes profil törlése ─────────────────────────── */
+    private static function process_delete_profile(): void {
+        if ( ! is_user_logged_in() ) return;
+        if ( ! isset( $_POST['va_delete_profile_nonce'] ) ||
+             ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_delete_profile_nonce'] ) ), 'va_delete_profile' ) ) {
+            va_set_flash( 'error', 'Érvénytelen kérés.' );
+            return;
+        }
+
+        $confirm = sanitize_text_field( wp_unslash( $_POST['confirm_delete'] ?? '' ) );
+        if ( $confirm !== 'TORLESEM' ) {
+            va_set_flash( 'error', 'A törlés megerősítéséhez írd be: TORLESEM' );
+            wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+            exit;
+        }
+
+        $user_id = get_current_user_id();
+
+        // Admin nem törölheti magát így
+        if ( user_can( $user_id, 'manage_options' ) ) {
+            va_set_flash( 'error', 'Admin fiók nem törölhető ezen az úton.' );
+            wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
+            exit;
+        }
+
+        global $wpdb;
+
+        // Összes saját hirdetés törlése (max 100-as batch)
+        $paged = 1;
+        do {
+            $ids = get_posts([
+                'post_type'      => 'va_listing',
+                'author'         => $user_id,
+                'posts_per_page' => 100,
+                'paged'          => $paged,
+                'post_status'    => 'any',
+                'fields'         => 'ids',
+                'no_found_rows'  => false,
+            ]);
+            foreach ( $ids as $pid ) {
+                self::delete_listing_with_images( (int) $pid );
+            }
+            $paged++;
+        } while ( count( $ids ) === 100 );
+
+        // Profilkép törlése
+        $avatar_id = (int) get_user_meta( $user_id, 'va_profile_avatar_id', true );
+        if ( $avatar_id ) {
+            wp_delete_attachment( $avatar_id, true );
+        }
+
+        // Licitek és kedvencek törlése
+        $wpdb->delete( $wpdb->prefix . 'va_bids',      [ 'user_id' => $user_id ], [ '%d' ] );
+        $wpdb->delete( $wpdb->prefix . 'va_watchlist', [ 'user_id' => $user_id ], [ '%d' ] );
+
+        // Kijelentkezés, majd felhasználó törlése
+        wp_logout();
+        require_once ABSPATH . 'wp-admin/includes/user.php';
+        wp_delete_user( $user_id );
+
+        wp_safe_redirect( add_query_arg( 'va_deleted', '1', home_url( '/' ) ) );
         exit;
     }
 }
