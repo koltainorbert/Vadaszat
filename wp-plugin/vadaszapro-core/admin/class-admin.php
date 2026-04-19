@@ -28,6 +28,8 @@ class VA_Admin {
         $id = $screen->id ?? "";
         return (
             strpos( $id, "vadaszapro" ) !== false ||
+            strpos( $id, "vadaszapro-listings" ) !== false ||
+            strpos( $id, "vadaszapro-listing-edit" ) !== false ||
             strpos( $id, "va-form-builder" ) !== false ||
             strpos( $id, "va_listing" ) !== false ||
             strpos( $id, "va_auction" ) !== false
@@ -65,7 +67,11 @@ class VA_Admin {
             "va-form-builder"         => "Form Szerkesztő",
             "vadaszapro-stats"        => "Statisztika",
         ];
-        if ( $pt === "va_listing" ) {
+        $titles["vadaszapro-listings"]     = "Hirdetések";
+        $titles["vadaszapro-listing-edit"] = "Hirdetés szerkesztése";
+        if ( $page === "vadaszapro-listings" || $page === "vadaszapro-listing-edit" ) {
+            $topbar_title = ( $page === "vadaszapro-listing-edit" ) ? ( isset( $_GET['id'] ) ? 'Hirdetés szerkesztése' : 'Új hirdetés' ) : 'Hirdetések';
+        } elseif ( $pt === "va_listing" ) {
             $topbar_title = "Hirdetések";
         } elseif ( $pt === "va_auction" ) {
             $topbar_title = "Aukciók";
@@ -87,7 +93,7 @@ class VA_Admin {
 
                 <?php self::sb_item( "📊", "Irányítópult", admin_url( "admin.php?page=vadaszapro-dashboard" ), $page === "vadaszapro-dashboard" ); ?>
 
-                <?php self::sb_item( "📋", "Hirdetések", admin_url( "edit.php?post_type=va_listing" ), $pt === "va_listing" || str_contains( $scr_id, "va_listing" ), $pending > 0 ? (int)$pending : 0 ); ?>
+                <?php self::sb_item( "📋", "Hirdetések", admin_url( "admin.php?page=vadaszapro-listings" ), $page === "vadaszapro-listings" || $page === "vadaszapro-listing-edit" || $pt === "va_listing" || str_contains( $scr_id, "va_listing" ), $pending > 0 ? (int)$pending : 0 ); ?>
 
                 <?php if ( $auctions_enabled ): ?>
                 <?php self::sb_item( "🔨", "Aukciók", admin_url( "edit.php?post_type=va_auction" ), $pt === "va_auction" || str_contains( $scr_id, "va_auction" ) ); ?>
@@ -134,7 +140,7 @@ class VA_Admin {
                 <small>VadászApró</small>
             </div>
             <div class="va-topbar__actions">
-                <a href="<?php echo esc_url( admin_url( "post-new.php?post_type=va_listing" ) ); ?>" class="va-topbar__btn va-topbar__btn--primary">
+                <a href="<?php echo esc_url( admin_url( "admin.php?page=vadaszapro-listing-edit" ) ); ?>" class="va-topbar__btn va-topbar__btn--primary">
                     + Új hirdetés
                 </a>
                 <a href="<?php echo esc_url( home_url( "/" ) ); ?>" target="_blank" class="va-topbar__btn">
@@ -184,6 +190,9 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Felhasználók",           "Felhasználók",      "manage_options", "vadaszapro-users",          [ VA_Settings_Page::class, "render_users"            ] );
         add_submenu_page( "vadaszapro", "Form szerkesztő",        "🧩 Form szerkesztő","manage_options", "va-form-builder",           [ VA_Form_Builder::class,  "render"                 ] );
         add_submenu_page( "vadaszapro", "Statisztika",            "Statisztika",       "manage_options", "vadaszapro-stats",          [ VA_Settings_Page::class, "render_stats"            ] );
+        // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
+        add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
+        add_submenu_page( "vadaszapro", "Hirdetés szerkesztő", "", "edit_posts", "vadaszapro-listing-edit", [ VA_Listing_Edit::class, "render_edit" ] );
     }
 
     /* ── Assets ─────────────────────────────────────────────── */
