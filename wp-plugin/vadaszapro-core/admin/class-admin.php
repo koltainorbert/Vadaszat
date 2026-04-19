@@ -243,6 +243,7 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Felhasználók",           "Felhasználók",      "manage_options", "vadaszapro-users",          [ VA_Settings_Page::class, "render_users"            ] );
         add_submenu_page( "vadaszapro", "Form szerkesztő",        "🧩 Form szerkesztő","manage_options", "va-form-builder",           [ VA_Form_Builder::class,  "render"                 ] );
         add_submenu_page( "vadaszapro", "Admin Panel beállítások", "Admin Panel",       "manage_options", "vadaszapro-adminpanel",     [ VA_Settings_Page::class, "render_adminpanel"      ] );
+        add_submenu_page( "vadaszapro", "Social Media",              "🌐 Social Media",   "manage_options", "vadaszapro-social",         [ VA_Settings_Page::class, "render_social"           ] );
         add_submenu_page( "vadaszapro", "Statisztika",            "Statisztika",       "manage_options", "vadaszapro-stats",          [ VA_Settings_Page::class, "render_stats"            ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );

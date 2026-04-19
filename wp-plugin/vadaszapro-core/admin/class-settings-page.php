@@ -3129,4 +3129,87 @@ class VA_Settings_Page {
         $val = (string) self::get_display_option( $key, '0' );
         echo "<tr><th>{$label}</th><td><input type=\"hidden\" name=\"{$key}\" value=\"0\"><label class=\"va-toggle\"><input type=\"checkbox\" name=\"{$key}\" value=\"1\"" . checked( $val, '1', false ) . "><span class=\"va-toggle-slider\"></span></label></td></tr>";
     }
+
+    /* ══ Social Media beállítások ═════════════════════════ */
+    public static function render_social(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $platforms = [
+            'facebook'  => [ 'label' => 'Facebook',   'placeholder' => 'https://facebook.com/vadaszapro' ],
+            'instagram' => [ 'label' => 'Instagram',  'placeholder' => 'https://instagram.com/vadaszapro' ],
+            'youtube'   => [ 'label' => 'YouTube',    'placeholder' => 'https://youtube.com/@vadaszapro' ],
+            'tiktok'    => [ 'label' => 'TikTok',     'placeholder' => 'https://tiktok.com/@vadaszapro' ],
+            'twitter'   => [ 'label' => 'X (Twitter)','placeholder' => 'https://x.com/vadaszapro' ],
+            'pinterest' => [ 'label' => 'Pinterest',  'placeholder' => 'https://pinterest.com/vadaszapro' ],
+            'linkedin'  => [ 'label' => 'LinkedIn',   'placeholder' => 'https://linkedin.com/company/vadaszapro' ],
+            'whatsapp'  => [ 'label' => 'WhatsApp',   'placeholder' => 'https://wa.me/36301234567' ],
+            'telegram'  => [ 'label' => 'Telegram',   'placeholder' => 'https://t.me/vadaszapro' ],
+        ];
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🌐 VadászApró – Social Media</h1>
+            <p class="description">Add meg a közösségi média profilok URL-jeit. Az ikonok automatikusan megjelennek a fejlécben és a láblécben.</p>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_social_settings' ); ?>
+
+                <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                    <div class="va-le-card-hdr">🔗 Platform linkek</div>
+                    <table class="form-table">
+                        <?php foreach ( $platforms as $key => $cfg ): ?>
+                        <tr>
+                            <th style="display:flex;align-items:center;gap:10px;">
+                                <?php echo va_social_svg( $key, 20 ); ?>
+                                <?php echo esc_html( $cfg['label'] ); ?>
+                            </th>
+                            <td>
+                                <input type="url" name="va_social_<?php echo esc_attr( $key ); ?>"
+                                       value="<?php echo esc_attr( (string) get_option( 'va_social_' . $key, '' ) ); ?>"
+                                       placeholder="<?php echo esc_attr( $cfg['placeholder'] ); ?>"
+                                       class="va-le-input regular-text">
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </table>
+                </div>
+
+                <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                    <div class="va-le-card-hdr">⚙️ Megjelenítés</div>
+                    <table class="form-table">
+                        <?php self::field_toggle( 'va_social_header_show', 'Fejlécben megjelenjen' ); ?>
+                        <?php self::field_toggle( 'va_social_footer_show', 'Láblécben megjelenjen' ); ?>
+                        <tr>
+                            <th>Fejléc stílus</th>
+                            <td><?php self::field_select( 'va_social_header_style', '', [
+                                'icons' => 'Csak ikonok (kompakt)',
+                                'pills' => 'Pill (ikon + platformnév)',
+                            ] ); ?></td>
+                        </tr>
+                        <tr>
+                            <th>Lábléc stílus</th>
+                            <td><?php self::field_select( 'va_social_footer_style', '', [
+                                'icons' => 'Csak ikonok',
+                                'pills' => 'Pill (ikon + platformnév)',
+                                'full'  => 'Teljes sor (ikon + link + leírás)',
+                            ] ); ?></td>
+                        </tr>
+                        <?php self::field_num( 'va_social_icon_size', 'Ikon méret (px)', 14, 40 ); ?>
+                    </table>
+                </div>
+
+                <?php submit_button( 'Social Media mentése' ); ?>
+            </form>
+
+            <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                <div class="va-le-card-hdr">👁️ Előnézet</div>
+                <div style="padding:12px 0;">
+                    <p style="font-size:11px;color:var(--va-muted);margin-bottom:8px;">Ikonos változat:</p>
+                    <?php echo va_social_bar( 'icons', 24 ); ?>
+                    <p style="font-size:11px;color:var(--va-muted);margin:16px 0 8px;">Pill változat:</p>
+                    <?php echo va_social_bar( 'pills', 20 ); ?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
 }
