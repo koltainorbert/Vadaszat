@@ -894,6 +894,67 @@ textarea { min-height: 110px; resize: vertical; }
 .va-footer__bottom a { color: var(--a3); }
 .va-footer__bottom a:hover { color: var(--a2); }
 
+/* ── Social Media sáv ────────────────────────────────── */
+.va-social-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+/* Ikon stílus */
+.va-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.07);
+  color: rgba(255,255,255,.6);
+  border: 1px solid rgba(255,255,255,.1);
+  transition: background .18s, color .18s, border-color .18s, transform .15s;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.va-social-icon:hover {
+  background: var(--sc, #ff0000);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+/* Pill stílus */
+.va-social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px 5px 9px;
+  border-radius: 99px;
+  background: rgba(255,255,255,.07);
+  color: rgba(255,255,255,.65);
+  border: 1px solid rgba(255,255,255,.1);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background .18s, color .18s, border-color .18s, transform .15s;
+  flex-shrink: 0;
+}
+.va-social-pill:hover {
+  background: var(--sc, #ff0000);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+/* Header social bar – kompakt */
+.va-header__right .va-social-bar { gap: 4px; margin-right: 6px; }
+.va-header__right .va-social-icon { width: 30px; height: 30px; }
+/* Footer social bar */
+.va-footer__bottom .va-social-bar { justify-content: center; margin-bottom: 10px; }
+/* Mobilon social bar el van rejtve a headerből */
+@media (max-width: 860px) {
+  .va-header__right .va-social-bar { display: none; }
+}
+
+
 /* ──────────────────────────────────────────────────────────
    ARCHÍVUM FEJLÉC
 ────────────────────────────────────────────────────────── */
