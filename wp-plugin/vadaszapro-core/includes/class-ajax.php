@@ -586,6 +586,17 @@ class VA_Ajax {
         };
         add_filter( 'user_has_cap', $cap_filter );
 
+        // Felhasználónkénti könyvtár: /va-users/{author_id}/listings/{post_id}/
+        $listing_author_id = (int) get_post_field( 'post_author', $post_id );
+        if ( ! $listing_author_id ) $listing_author_id = get_current_user_id();
+        $va_listing_dir_filter = static function( $dirs ) use ( $listing_author_id, $post_id ) {
+            $dirs['subdir'] = '/va-users/' . $listing_author_id . '/listings/' . $post_id;
+            $dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
+            $dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
+            return $dirs;
+        };
+        add_filter( 'upload_dir', $va_listing_dir_filter );
+
         $max_images     = intval( get_option( 'va_max_images_per_listing', 10 ) );
         $allowed_types  = [ 'image/jpeg', 'image/png', 'image/webp' ];
         $count          = 0;
@@ -628,6 +639,7 @@ class VA_Ajax {
             }
         }
 
+        remove_filter( 'upload_dir', $va_listing_dir_filter );
         remove_filter( 'user_has_cap', $cap_filter );
 
         // Főkép beállítása a kiválasztott index alapján (vagy az első ha invalid)

@@ -402,6 +402,15 @@ class VA_User_System {
             require_once ABSPATH . 'wp-admin/includes/file.php';
             require_once ABSPATH . 'wp-admin/includes/image.php';
 
+            // Felhasználónkénti könyvtár: /va-users/{user_id}/avatar/
+            $va_avatar_dir_filter = static function( $dirs ) use ( $user_id ) {
+                $dirs['subdir'] = '/va-users/' . $user_id . '/avatar';
+                $dirs['path']   = $dirs['basedir'] . $dirs['subdir'];
+                $dirs['url']    = $dirs['baseurl'] . $dirs['subdir'];
+                return $dirs;
+            };
+            add_filter( 'upload_dir', $va_avatar_dir_filter );
+
             $uploaded = wp_handle_upload( $_FILES['profile_avatar'], [
                 'test_form' => false,
                 'mimes'     => [
@@ -412,10 +421,13 @@ class VA_User_System {
             ] );
 
             if ( ! empty( $uploaded['error'] ) ) {
+                remove_filter( 'upload_dir', $va_avatar_dir_filter );
                 va_set_flash( 'error', 'A profilkép feltöltése sikertelen: ' . sanitize_text_field( $uploaded['error'] ) );
                 wp_safe_redirect( get_permalink( get_page_by_path( 'va-fiok' ) ) );
                 exit;
             }
+
+            remove_filter( 'upload_dir', $va_avatar_dir_filter );
 
             $file_path = $uploaded['file'] ?? '';
             $file_url  = $uploaded['url'] ?? '';
