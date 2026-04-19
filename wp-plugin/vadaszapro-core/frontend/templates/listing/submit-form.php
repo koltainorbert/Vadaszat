@@ -75,24 +75,30 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 ?>
                 <textarea id="va_desc_editor" name="description" rows="12" style="width:100%;"><?php echo esc_textarea( $desc_val ); ?></textarea>
                 <style>
-                #va_desc_editor-wrap .mce-tinymce{box-shadow:none!important;border:1px solid rgba(255,255,255,.15)!important;}
-                #va_desc_editor-wrap .mce-top-part,
-                #va_desc_editor-wrap .mce-toolbar-grp,
-                #va_desc_editor-wrap .mce-panel,
-                #va_desc_editor-wrap .mce-toolbar,
-                #va_desc_editor-wrap .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
-                #va_desc_editor-wrap .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
-                #va_desc_editor-wrap .mce-btn,
-                #va_desc_editor-wrap .mce-btn button{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
-                #va_desc_editor-wrap .mce-btn:hover button,
-                #va_desc_editor-wrap .mce-btn.mce-active button{background:#2a2a2a!important;}
-                #va_desc_editor-wrap .mce-ico{color:#bbb!important;}
-                #va_desc_editor-wrap .mce-txt,
-                #va_desc_editor-wrap .mce-caret{color:#ccc!important;}
-                #va_desc_editor-wrap .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
-                #va_desc_editor-wrap .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
-                #va_desc_editor-wrap .mce-path-item,
-                #va_desc_editor-wrap .mce-wordcount{color:#555!important;}
+                #va-submit-form .tox-tinymce{border:1px solid rgba(255,255,255,.15)!important;border-radius:6px!important;}
+                #va-submit-form .tox-editor-header,
+                #va-submit-form .tox-toolbar-overlord,
+                #va-submit-form .tox-toolbar__primary,
+                #va-submit-form .tox-toolbar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
+                #va-submit-form .tox-menubar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
+                #va-submit-form .tox-mbtn,
+                #va-submit-form .tox-mbtn__select-label{background:transparent!important;color:#ccc!important;}
+                #va-submit-form .tox-mbtn:hover{background:#2a2a2a!important;}
+                #va-submit-form .tox-toolbar__group{border-right-color:rgba(255,255,255,.1)!important;}
+                #va-submit-form .tox-tbtn{color:#ccc!important;background:transparent!important;}
+                #va-submit-form .tox-tbtn svg{fill:#aaa!important;}
+                #va-submit-form .tox-tbtn:hover,
+                #va-submit-form .tox-tbtn:focus{background:#2a2a2a!important;}
+                #va-submit-form .tox-tbtn--active{background:#333!important;}
+                #va-submit-form .tox-tbtn__select-label{color:#ccc!important;}
+                #va-submit-form .tox-split-button{border-color:transparent!important;}
+                #va-submit-form .tox-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+                #va-submit-form .tox-statusbar__text-container span,
+                #va-submit-form .tox-statusbar__path-item,
+                #va-submit-form .tox-statusbar__branding,
+                #va-submit-form .tox-statusbar__wordcount{color:#444!important;}
+                #va-submit-form .tox-statusbar__branding a{color:#444!important;}
+                #va-submit-form .tox-statusbar__resize-handle svg{fill:#444!important;}
                 </style>
                 <script>
                 (function tryVaMCE(){
@@ -100,10 +106,14 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                     if (tinymce.get('va_desc_editor')) return;
                     tinymce.init({
                         selector: '#va_desc_editor',
-                        plugins: 'lists link paste hr fullscreen',
-                        toolbar: 'formatselect | bold italic underline | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | undo redo',
+                        menubar: false,
+                        plugins: 'lists link image paste hr fullscreen',
+                        toolbar: 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link image | hr | undo redo | fullscreen',
+                        block_formats: 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
                         resize: true,
-                        content_style: 'body{background:#111;color:#e8e8e8;font-family:system-ui,sans-serif;font-size:15px;padding:12px;}a{color:#ff4444;}img{max-width:100%;height:auto;}',
+                        image_advtab: true,
+                        automatic_uploads: false,
+                        content_style: 'body{background:#111;color:#e8e8e8;font-family:system-ui,sans-serif;font-size:15px;padding:12px;}a{color:#ff4444;}img{max-width:100%;height:auto;border-radius:6px;}',
                         setup: function(ed){ ed.on('change keyup', function(){ ed.save(); }); }
                     });
                 })();
