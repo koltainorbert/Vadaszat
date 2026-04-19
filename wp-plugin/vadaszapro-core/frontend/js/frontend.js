@@ -124,6 +124,25 @@
     });
   });
 
+  // ── Teljes kártya kattintható (szív/gomb/link kivételével) ──
+  $(document).on('click', '.va-card', function(e) {
+    if ($(e.target).closest('a, button, input, select, textarea, label').length) {
+      return;
+    }
+
+    var href = $(this).find('.va-card__title a').attr('href') || $(this).find('.va-card__img-wrap').attr('href');
+    if (!href) {
+      return;
+    }
+
+    if (e.ctrlKey || e.metaKey) {
+      window.open(href, '_blank');
+      return;
+    }
+
+    window.location.href = href;
+  });
+
   // ── Hirdetések AJAX szűrő ────────────────────────────────
   var filterTimeout;
 
