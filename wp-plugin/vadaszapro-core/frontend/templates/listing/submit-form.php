@@ -71,7 +71,6 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '</select>';
                 break;
             case 'description':
-                wp_enqueue_media();
                 wp_editor(
                     wp_kses_post( (string) $val ),
                     'va_desc_editor',
