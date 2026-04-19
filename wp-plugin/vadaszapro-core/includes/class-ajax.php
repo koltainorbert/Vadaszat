@@ -335,6 +335,11 @@ class VA_Ajax {
             wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
         }
 
+        $return_to = isset( $_POST['return_to'] ) ? sanitize_key( (string) wp_unslash( $_POST['return_to'] ) ) : 'buy';
+        if ( ! in_array( $return_to, [ 'buy', 'submit' ], true ) ) {
+            $return_to = 'buy';
+        }
+
         $qty = absint( $_POST['qty'] ?? 0 );
         if ( $qty < 1 ) {
             wp_send_json_error( [ 'message' => 'Érvénytelen mennyiség.' ] );
@@ -368,14 +373,13 @@ class VA_Ajax {
             'user_id'    => $user_id,
             'qty'        => $qty,
             'amount'     => $total,
+            'return_to'  => $return_to,
             'created_at' => time(),
         ], 3600 );
 
-        $return_url = home_url( '/' );
-        $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
-        if ( $submit_page ) {
-            $return_url = get_permalink( $submit_page );
-        }
+        $return_url = $return_to === 'submit'
+            ? self::get_submit_page_url()
+            : self::get_buy_credits_page_url();
 
         $success_url = add_query_arg([
             'va_credit_payment' => 'success',
@@ -413,14 +417,19 @@ class VA_Ajax {
         $data = get_transient( 'va_credit_token_' . $token );
         if ( ! $data || (int) $data['user_id'] !== get_current_user_id() ) {
             va_set_flash( 'error', 'A fizetési session érvénytelen vagy lejárt.' );
-            self::redirect_submit_page();
+            self::redirect_buy_credits_page();
             return;
         }
+
+        $return_to = ( isset( $data['return_to'] ) && $data['return_to'] === 'submit' ) ? 'submit' : 'buy';
 
         if ( $state === 'cancel' ) {
             delete_transient( 'va_credit_token_' . $token );
             va_set_flash( 'warning', 'A fizetés megszakadt.' );
-            self::redirect_submit_page();
+            if ( $return_to === 'submit' ) {
+                self::redirect_submit_page();
+            }
+            self::redirect_buy_credits_page();
             return;
         }
 
@@ -431,7 +440,10 @@ class VA_Ajax {
             update_user_meta( $user_id, 'va_listing_credits', $current + $qty );
             delete_transient( 'va_credit_token_' . $token );
             va_set_flash( 'success', $qty . ' hirdetési kredit jóváírva! Most már feladhatod a hirdetésedet.' );
-            self::redirect_submit_page();
+            if ( $return_to === 'submit' ) {
+                self::redirect_submit_page();
+            }
+            self::redirect_buy_credits_page();
         }
     }
 
@@ -566,9 +578,24 @@ class VA_Ajax {
         return $text;
     }
 
-    private static function redirect_submit_page(): void {
+    private static function get_submit_page_url(): string {
         $submit_page = get_page_by_path( 'va-hirdetes-feladas' );
-        $url = $submit_page ? get_permalink( $submit_page ) : home_url( '/va-hirdetes-feladas/' );
+        return $submit_page ? get_permalink( $submit_page ) : home_url( '/va-hirdetes-feladas/' );
+    }
+
+    private static function get_buy_credits_page_url(): string {
+        $buy_page = get_page_by_path( 'va-kredit-vasarlas' );
+        return $buy_page ? get_permalink( $buy_page ) : home_url( '/va-kredit-vasarlas/' );
+    }
+
+    private static function redirect_submit_page(): void {
+        $url = self::get_submit_page_url();
+        wp_safe_redirect( $url );
+        exit;
+    }
+
+    private static function redirect_buy_credits_page(): void {
+        $url = self::get_buy_credits_page_url();
         wp_safe_redirect( $url );
         exit;
     }
