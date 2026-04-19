@@ -734,6 +734,10 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
   </span>
 </div>
 <div class="va-hnaptar__legend" id="va-hn-legend"></div>
+<div class="va-hnaptar__meta">
+  <span class="va-hnaptar__hint" id="va-hn-hint">Húzd oldalra a naptárat</span>
+  <span class="va-hnaptar__month-ind" id="va-hn-month-ind">Január</span>
+</div>
 <div class="va-hnaptar__scroll">
   <div class="va-hnaptar__chart" id="va-hn-chart"></div>
 </div>
@@ -754,11 +758,21 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
 .va-hnaptar__legend{display:flex;flex-wrap:wrap;gap:5px 14px;padding:8px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
 .va-hn-leg{display:flex;align-items:center;gap:5px;font-size:.65rem;color:rgba(255,255,255,.6);}
 .va-hn-leg-dot{width:13px;height:8px;border-radius:2px;flex-shrink:0;}
+.va-hnaptar__meta{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 16px;border-bottom:1px solid rgba(255,255,255,.05);}
+.va-hnaptar__hint{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.42);opacity:0;transform:translateX(-6px);transition:all .25s ease;}
+.va-hnaptar__scroll.has-overflow .va-hnaptar__hint{opacity:1;transform:none;}
+.va-hnaptar__scroll.is-scrolled .va-hnaptar__hint{opacity:.2;}
+.va-hnaptar__month-ind{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#ffb4b4;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.25);padding:2px 8px;border-radius:999px;white-space:nowrap;}
 .va-hnaptar__scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .va-hnaptar__chart{min-width:980px;}
 /* month header */
 .va-hn-mh{display:flex;position:sticky;top:0;z-index:10;background:rgb(12,12,12);border-bottom:1px solid rgba(255,255,255,.08);}
 .va-hn-mh-name{width:var(--va-hn-name-w);min-width:var(--va-hn-name-w);flex-shrink:0;padding:6px 10px;font-size:.6rem;color:rgba(255,255,255,.35);letter-spacing:.07em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.07);}
+.va-hn-mh-name,.va-hn-gl,.va-hn-name{position:sticky;left:0;z-index:6;}
+.va-hn-mh-name{z-index:12;background:rgb(12,12,12);}
+.va-hn-gl{z-index:9;background:rgb(20,10,10);}
+.va-hn-name{z-index:8;background:rgb(10,10,10);}
+.va-hn-mh-name::after,.va-hn-gl::after,.va-hn-name::after{content:'';position:absolute;top:0;right:-12px;width:12px;height:100%;pointer-events:none;background:linear-gradient(90deg,rgba(255,0,0,.18),rgba(255,0,0,0));}
 .va-hn-mh-months{flex:1;display:flex;position:relative;}
 .va-hn-mh-month{flex:1;text-align:center;font-size:.6rem;font-weight:700;color:rgba(255,255,255,.45);padding:6px 0;border-left:1px solid rgba(255,255,255,.07);}
 .va-hn-mh-month.cur{color:#ff0000;}
@@ -813,6 +827,7 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
   .va-hnaptar__sub{font-size:.61rem;gap:8px;}
   .va-hnaptar__sun{order:2;width:100%;font-size:.6rem;}
   .va-hnaptar__legend{padding:7px 10px;gap:4px 10px;}
+  .va-hnaptar__meta{padding:6px 10px;}
   .va-hn-leg{font-size:.58rem;}
   .va-hnaptar__chart{min-width:760px;}
   .va-hn-mh-month{font-size:.54rem;padding:5px 0;}
@@ -834,6 +849,8 @@ $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1
   .va-hn-gl{letter-spacing:.05em;}
   .va-hn-name{font-size:.58rem;}
   .va-hn-name .sub{display:none;}
+  .va-hnaptar__hint{font-size:.56rem;}
+  .va-hnaptar__month-ind{font-size:.56rem;padding:2px 7px;}
 }
 </style>
 
@@ -1058,6 +1075,31 @@ if(legEl){groups.forEach(function(g){var d=document.createElement('div');d.class
 var chart=document.getElementById('va-hn-chart');
 if(!chart)return;
 var _acdList=[];
+var hnScroll=document.querySelector('#va-hnaptar-wrap .va-hnaptar__scroll');
+var hnMonthInd=document.getElementById('va-hn-month-ind');
+
+function updateHnOverflowState(){
+  if(!hnScroll)return;
+  var overflow=hnScroll.scrollWidth>hnScroll.clientWidth+4;
+  hnScroll.classList.toggle('has-overflow',overflow);
+}
+function updateHnMonthIndicator(){
+  if(!hnScroll||!hnMonthInd)return;
+  var max=Math.max(1,hnScroll.scrollWidth-hnScroll.clientWidth);
+  var ratio=hnScroll.scrollLeft/max;
+  var idx=Math.max(0,Math.min(11,Math.round(ratio*11)));
+  hnMonthInd.textContent=MF[idx];
+}
+if(hnScroll){
+  hnScroll.addEventListener('scroll',function(){
+    hnScroll.classList.add('is-scrolled');
+    updateHnMonthIndicator();
+  },{passive:true});
+  window.addEventListener('resize',function(){
+    updateHnOverflowState();
+    updateHnMonthIndicator();
+  });
+}
 
 function makeTL(){var t=document.createElement('div');t.className='va-hn-tl';t.style.left=TODAY_PCT;return t;}
 function makeBA(h){var ba=document.createElement('div');ba.className='va-hn-ba';ba.style.height=h+'px';ba.appendChild(makeTL());return ba;}
@@ -1168,6 +1210,8 @@ function updateCDs(){
 }
 updateCDs();
 setInterval(updateCDs,1000);
+updateHnOverflowState();
+updateHnMonthIndicator();
 })();
 </script>
 <?php endif; ?>
