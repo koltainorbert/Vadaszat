@@ -72,68 +72,62 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 break;
             case 'description':
                 $desc_val = wp_kses_post( (string) $val );
-                ?>
-                <textarea id="va_desc_editor" name="description" rows="12" style="width:100%;"><?php echo esc_textarea( $desc_val ); ?></textarea>
-                <style>
-                .va-dark-mce.tox-tinymce{border:1px solid rgba(255,255,255,.15)!important;border-radius:6px!important;}
-                .va-dark-mce .tox-editor-header,
-                .va-dark-mce .tox-toolbar-overlord,
-                .va-dark-mce .tox-toolbar__primary,
-                .va-dark-mce .tox-toolbar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
-                .va-dark-mce .tox-toolbar__group{border-right-color:rgba(255,255,255,.1)!important;}
-                .va-dark-mce .tox-tbtn{color:#ccc!important;background:transparent!important;}
-                .va-dark-mce .tox-tbtn svg{fill:#aaa!important;}
-                .va-dark-mce .tox-tbtn:hover,.va-dark-mce .tox-tbtn:focus{background:#2a2a2a!important;}
-                .va-dark-mce .tox-tbtn--active{background:#333!important;}
-                .va-dark-mce .tox-tbtn__select-label{color:#ccc!important;}
-                .va-dark-mce .tox-split-button{border-color:transparent!important;}
-                .va-dark-mce .tox-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
-                .va-dark-mce .tox-statusbar__text-container span,
-                .va-dark-mce .tox-statusbar__path-item,
-                .va-dark-mce .tox-statusbar__branding,
-                .va-dark-mce .tox-statusbar__wordcount{color:#444!important;}
-                .va-dark-mce .tox-statusbar__branding a{color:#444!important;pointer-events:none;}
-                .va-dark-mce .tox-statusbar__resize-handle svg{fill:#444!important;}
-                </style>
-                <script>
-                (function tryVaMCE(){
-                    if (typeof tinymce === 'undefined') { setTimeout(tryVaMCE, 200); return; }
-                    if (tinymce.get('va_desc_editor')) return;
-                    tinymce.init({
-                        selector: '#va_desc_editor',
-                        menubar: false,
-                        plugins: 'lists link image paste hr fullscreen',
-                        toolbar: 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link image | hr | undo redo | fullscreen',
-                        block_formats: 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
-                        resize: true,
-                        image_advtab: true,
-                        automatic_uploads: false,
-                        file_picker_types: 'image',
-                        file_picker_callback: function(cb, value, meta) {
-                            if (typeof wp === 'undefined' || typeof wp.media === 'undefined') return;
-                            var frame = wp.media({
-                                title: 'Kép kiválasztása',
-                                button: { text: 'Beillesztés' },
-                                multiple: false,
-                                library: { type: 'image' }
-                            });
-                            frame.on('select', function() {
-                                var attachment = frame.state().get('selection').first().toJSON();
-                                cb(attachment.url, { title: attachment.title, alt: attachment.alt });
-                            });
-                            frame.open();
-                        },
-                        content_style: 'body{background:#111;color:#e8e8e8;font-family:system-ui,sans-serif;font-size:15px;padding:12px;}a{color:#ff4444;}img{max-width:100%;height:auto;border-radius:6px;}',
-                        setup: function(ed){
-                            ed.on('init', function(){
-                                ed.getContainer().classList.add('va-dark-mce');
-                            });
-                            ed.on('change keyup', function(){ ed.save(); });
-                        }
-                    });
-                })();
-                </script>
-                <?php
+                wp_editor(
+                    $desc_val,
+                    'va_desc_editor',
+                    [
+                        'textarea_name' => 'description',
+                        'textarea_rows' => 12,
+                        'media_buttons' => true,
+                        'teeny'         => false,
+                        'quicktags'     => true,
+                        'tinymce'       => [
+                            'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | image media | undo redo',
+                            'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
+                            'block_formats' => 'Bekezdes=p;Cim 2=h2;Cim 3=h3',
+                            'resize'        => true,
+                            'content_style' => 'body { background:#111; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; line-height:1.7; padding:12px; } a { color:#ff4444; } img { max-width:100%; height:auto; border-radius:6px; }',
+                        ],
+                    ]
+                );
+                echo '<style>
+#wp-va_desc_editor-wrap .wp-editor-tools{background:#141414!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-wrap .wp-media-buttons .button{background:#1e1e1e!important;color:#ccc!important;border-color:rgba(255,255,255,.2)!important;box-shadow:none!important;text-shadow:none!important;}
+#wp-va_desc_editor-wrap .wp-editor-tabs button{background:#141414!important;color:#888!important;border-color:rgba(255,255,255,.12)!important;box-shadow:none!important;}
+#wp-va_desc_editor-wrap .wp-editor-tabs button:hover,
+#wp-va_desc_editor-wrap .wp-editor-tabs button.active{background:#1e1e1e!important;color:#e8e8e8!important;}
+#wp-va_desc_editor-wrap .mce-tinymce{box-shadow:none!important;border:1px solid rgba(255,255,255,.15)!important;}
+#wp-va_desc_editor-wrap .mce-top-part,
+#wp-va_desc_editor-wrap .mce-toolbar-grp,
+#wp-va_desc_editor-wrap .mce-panel,
+#wp-va_desc_editor-wrap .mce-toolbar,
+#wp-va_desc_editor-wrap .mce-flow-layout{background:#1e1e1e!important;border-color:rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-wrap .mce-btn-group{border-color:rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-wrap .mce-btn,
+#wp-va_desc_editor-wrap .mce-btn button{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
+#wp-va_desc_editor-wrap .mce-btn:hover button,
+#wp-va_desc_editor-wrap .mce-btn.mce-active button{background:#2a2a2a!important;}
+#wp-va_desc_editor-wrap .mce-ico{color:#bbb!important;}
+#wp-va_desc_editor-wrap .mce-txt,
+#wp-va_desc_editor-wrap .mce-caret{color:#ccc!important;}
+#wp-va_desc_editor-wrap .mce-listbox.mce-btn button{background:#252525!important;border-color:rgba(255,255,255,.15)!important;}
+#wp-va_desc_editor-wrap .mce-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-wrap .mce-path-item,
+#wp-va_desc_editor-wrap .mce-wordcount{color:#555!important;}
+#wp-va_desc_editor-wrap .tox-tinymce{border:1px solid rgba(255,255,255,.15)!important;border-radius:6px!important;}
+#wp-va_desc_editor-wrap .tox-editor-header,
+#wp-va_desc_editor-wrap .tox-toolbar-overlord,
+#wp-va_desc_editor-wrap .tox-toolbar__primary,
+#wp-va_desc_editor-wrap .tox-toolbar{background:#1e1e1e!important;border-bottom:1px solid rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-wrap .tox-toolbar__group{border-right-color:rgba(255,255,255,.1)!important;}
+#wp-va_desc_editor-wrap .tox-tbtn{color:#ccc!important;background:transparent!important;}
+#wp-va_desc_editor-wrap .tox-tbtn svg{fill:#aaa!important;}
+#wp-va_desc_editor-wrap .tox-tbtn:hover,
+#wp-va_desc_editor-wrap .tox-tbtn:focus{background:#2a2a2a!important;}
+#wp-va_desc_editor-wrap .tox-tbtn--active{background:#333!important;}
+#wp-va_desc_editor-wrap .tox-tbtn__select-label{color:#ccc!important;}
+#wp-va_desc_editor-wrap .tox-statusbar{background:#1e1e1e!important;border-top:1px solid rgba(255,255,255,.1)!important;}
+</style>';
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
