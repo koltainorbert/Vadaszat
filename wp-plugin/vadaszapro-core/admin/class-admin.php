@@ -61,23 +61,35 @@ class VA_Admin {
 
         // TinyMCE editor sötétítés az admin hirdetés szerkesztőben
         echo '<style id="va-tinymce-dark">
+/* Wrapper és tab gombok */
 .wp-editor-wrap { border-color: rgba(255,255,255,.12) !important; border-radius: 6px; overflow: hidden; }
-.wp-editor-tabs .wp-switch-editor { background: #1a1a1a; color: #aaa; border-color: rgba(255,255,255,.12); }
-.wp-editor-tabs .wp-switch-editor:hover,
-.wp-editor-tabs .html-active .wp-switch-editor[data-wp-editor-id],
-.wp-editor-tabs .tmce-active .wp-switch-editor[data-wp-editor-id] { background: #2a2a2a; color: #e8e8e8; }
-.mce-toolbar-grp, .mce-container, .mce-container-body,
-.mce-panel, .mce-toolbar, .mce-menubar { background: #1a1a1a !important; border-color: rgba(255,255,255,.1) !important; }
-.mce-ico { color: #ccc !important; }
-.mce-btn button { color: #ccc !important; }
-.mce-btn:hover, .mce-btn.mce-active { background: #2a2a2a !important; }
-.mce-edit-area { background: #1a1a1a !important; }
-.mce-edit-area iframe { background: #1a1a1a !important; }
-.wp-media-buttons { background: #111; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,.1); }
-.wp-media-buttons .button { background: #222; color: #ddd; border-color: rgba(255,255,255,.2); }
-.wp-media-buttons .button:hover { background: #2a2a2a; color: #fff; }
+.wp-editor-tabs .wp-switch-editor { background: #1a1a1a !important; color: #aaa !important; border-color: rgba(255,255,255,.12) !important; }
+.wp-editor-tabs .wp-switch-editor:hover { background: #2a2a2a !important; color: #e8e8e8 !important; }
+
+/* Média gomb sor */
+.wp-media-buttons { background: #111 !important; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
+.wp-media-buttons .button { background: #222 !important; color: #ddd !important; border-color: rgba(255,255,255,.2) !important; }
+.wp-media-buttons .button:hover { background: #2a2a2a !important; color: #fff !important; }
+
+/* TinyMCE 5+ (tox) */
+.tox-tinymce { border-color: rgba(255,255,255,.12) !important; border-radius: 0 !important; }
+.tox .tox-toolbar-overlord,
+.tox .tox-toolbar__primary,
+.tox .tox-toolbar,
+.tox .tox-toolbar-overlord .tox-toolbar:not(.tox-toolbar--scrolling):first-child { background: #1a1a1a !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
+.tox .tox-toolbar__group { border-color: rgba(255,255,255,.1) !important; }
+.tox .tox-tbtn svg { fill: #bbb !important; }
+.tox .tox-tbtn:hover { background: #2a2a2a !important; }
+.tox .tox-tbtn--active { background: #333 !important; }
+.tox .tox-tbtn__select-label, .tox .tox-tbtn { color: #ccc !important; }
+.tox .tox-statusbar { background: #1a1a1a !important; border-top: 1px solid rgba(255,255,255,.1) !important; color: #666 !important; }
+.tox .tox-statusbar__path-item, .tox .tox-statusbar__wordcount { color: #666 !important; }
+.tox-edit-area { background: #111 !important; }
+.tox-edit-area__iframe { background: #111 !important; }
+
+/* Quicktags */
 .quicktags-toolbar { background: #1a1a1a !important; border-color: rgba(255,255,255,.1) !important; }
-.quicktags-toolbar input.ed_button { background: #252525 !important; color: #ccc !important; border-color: rgba(255,255,255,.15) !important; }
+.quicktags-toolbar input.ed_button { background: #252525 !important; color: #ccc !important; border-color: rgba(255,255,255,.15) !important; border-radius: 3px; }
 .quicktags-toolbar input.ed_button:hover { background: #333 !important; color: #fff !important; }
 </style>' . "\n";
     }
