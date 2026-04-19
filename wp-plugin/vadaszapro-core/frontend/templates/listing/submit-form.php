@@ -6,17 +6,19 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* ── Helper: egyes mező HTML kimenete ──────────────── */
 if ( ! function_exists( 'self_render_listing_field' ) ) {
-    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions ): void {
+    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions, array $ev = [] ): void {
+        $val = $ev[ $key ] ?? '';
         switch ( $key ) {
             case 'title':
-                echo '<input type="text" id="va-title" name="title" class="va-input" maxlength="150"' . $req_attr . ' placeholder="' . $ph . '">';
+                echo '<input type="text" id="va-title" name="title" class="va-input" maxlength="150"' . $req_attr . ' placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'category':
                 echo '<select name="category" class="va-select"' . $req_attr . '>';
                 echo '<option value="">– Válasszon –</option>';
                 foreach ( $categories as $cat ) {
-                    $indent = $cat->parent ? '&nbsp;&nbsp;' : '';
-                    echo '<option value="' . esc_attr( $cat->term_id ) . '">' . $indent . esc_html( $cat->name ) . '</option>';
+                    $indent   = $cat->parent ? '&nbsp;&nbsp;' : '';
+                    $selected = selected( (int) $val, $cat->term_id, false );
+                    echo '<option value="' . esc_attr( $cat->term_id ) . '"' . $selected . '>' . $indent . esc_html( $cat->name ) . '</option>';
                 }
                 echo '</select>';
                 break;
@@ -24,7 +26,8 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '<select name="county" class="va-select"' . $req_attr . '>';
                 echo '<option value="">– Válasszon –</option>';
                 foreach ( $counties as $county ) {
-                    echo '<option value="' . esc_attr( $county->term_id ) . '">' . esc_html( $county->name ) . '</option>';
+                    $selected = selected( (int) $val, $county->term_id, false );
+                    echo '<option value="' . esc_attr( $county->term_id ) . '"' . $selected . '>' . esc_html( $county->name ) . '</option>';
                 }
                 echo '</select>';
                 break;
@@ -32,41 +35,43 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '<select name="condition" class="va-select">';
                 echo '<option value="">– Válasszon –</option>';
                 foreach ( $conditions as $cond ) {
-                    echo '<option value="' . esc_attr( $cond->term_id ) . '">' . esc_html( $cond->name ) . '</option>';
+                    $selected = selected( (int) $val, $cond->term_id, false );
+                    echo '<option value="' . esc_attr( $cond->term_id ) . '"' . $selected . '>' . esc_html( $cond->name ) . '</option>';
                 }
                 echo '</select>';
                 break;
             case 'location':
-                echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '">';
+                echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'brand':
-                echo '<input type="text" name="brand" class="va-input" placeholder="' . $ph . '">';
+                echo '<input type="text" name="brand" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'model':
-                echo '<input type="text" name="model" class="va-input" placeholder="' . $ph . '">';
+                echo '<input type="text" name="model" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'caliber':
-                echo '<input type="text" name="caliber" class="va-input" placeholder="' . $ph . '">';
+                echo '<input type="text" name="caliber" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'year':
-                echo '<input type="number" name="year" class="va-input" min="1800" max="' . date('Y') . '" placeholder="' . $ph . '">';
+                echo '<input type="number" name="year" class="va-input" min="1800" max="' . date('Y') . '" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'license_req':
-                echo '<label class="va-check-label"><input type="checkbox" name="license_req" value="1"> Fegyverengedély szükséges a vásárláshoz</label>';
+                $checked = $val === '1' ? ' checked' : '';
+                echo '<label class="va-check-label"><input type="checkbox" name="license_req" value="1"' . $checked . '> Fegyverengedély szükséges a vásárláshoz</label>';
                 break;
             case 'price':
-                echo '<input type="number" name="price" class="va-input" min="0" placeholder="' . $ph . '">';
+                echo '<input type="number" name="price" class="va-input" min="0" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'price_type':
+                $pt = (string) $val;
                 echo '<select name="price_type" class="va-select">';
-                echo '<option value="fixed">Fix ár</option>';
-                echo '<option value="negotiable">Alkudható</option>';
-                echo '<option value="free">Ingyenes</option>';
-                echo '<option value="on_request">Érdeklődjön</option>';
+                foreach ( [ 'fixed' => 'Fix ár', 'negotiable' => 'Alkudható', 'free' => 'Ingyenes', 'on_request' => 'Érdeklődjön' ] as $k => $l ) {
+                    echo '<option value="' . esc_attr( $k ) . '"' . selected( $pt, $k, false ) . '>' . esc_html( $l ) . '</option>';
+                }
                 echo '</select>';
                 break;
             case 'description':
-                echo '<textarea id="va-desc" name="description" class="va-textarea" rows="6"' . $req_attr . ' placeholder="' . $ph . '"></textarea>';
+                echo '<textarea id="va-desc" name="description" class="va-textarea" rows="6"' . $req_attr . ' placeholder="' . $ph . '">' . esc_textarea( (string) $val ) . '</textarea>';
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
@@ -80,12 +85,13 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                     </div>
                     <input type="file" id="va-img-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-max="<?php echo esc_attr( (string) $max_img ); ?>">
                     <input type="hidden" name="featured_image_index" id="va-featured-index" value="0">
+                    <input type="hidden" name="keep_images" id="va-keep-images" value="">
                     <p class="va-img-hint">Húzd a képeket az átrendezéshez &bull; &#9733; = borítókép beállítása</p>
                 </div>
                 <?php
                 break;
             case 'phone':
-                echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . '>';
+                echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . ' value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'email_show':
                 echo '<label class="va-check-label" style="align-self:flex-end;">';
@@ -155,9 +161,15 @@ $remaining_free = $free_limit === 0 ? 9999 : max( 0, $free_limit - $user_listing
 wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 wp_enqueue_script( 'va-submit',   VA_PLUGIN_URL . 'frontend/js/frontend.js',  [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-submit', 'VA_Data', [
-    'ajax_url' => admin_url( 'admin-ajax.php' ),
-    'nonce'    => wp_create_nonce( 'va_submit_listing' ),
-    'post_id'  => 0,
+    'ajax_url'    => admin_url( 'admin-ajax.php' ),
+    'nonce'       => wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ),
+    'post_id'     => $edit_post_id,
+    'edit_mode'   => $edit_mode,
+    'edit_images' => $edit_mode ? array_map( function( $id ) {
+        $src = wp_get_attachment_image_url( $id, 'thumbnail' );
+        return [ 'id' => $id, 'url' => $src ?: '' ];
+    }, $edit_gallery ?? [] ) : [],
+    'edit_thumb'  => $edit_mode ? $edit_thumb : 0,
 ]);
 ?>
 <div class="va-wrap">
@@ -166,11 +178,15 @@ wp_localize_script( 'va-submit', 'VA_Data', [
     <div id="va-submit-notice"></div>
 
     <form id="va-submit-form" method="post" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" enctype="multipart/form-data">
-        <input type="hidden" name="action" value="va_submit_listing">
-        <input type="hidden" name="nonce"  value="<?php echo esc_attr( wp_create_nonce( 'va_submit_listing' ) ); ?>">
+        <input type="hidden" name="action" value="<?php echo $edit_mode ? 'va_update_listing' : 'va_submit_listing'; ?>">
+        <input type="hidden" name="nonce"  value="<?php echo esc_attr( wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ) ); ?>">
+        <?php if ( $edit_mode ): ?>
+        <input type="hidden" name="post_id" value="<?php echo esc_attr( (string) $edit_post_id ); ?>">
+        <?php endif; ?>
 
-        <h2 style="font-size:20px;font-weight:800;margin-bottom:22px;">📋 Hirdetés feladása</h2>
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:22px;"><?php echo $edit_mode ? '✏️ Hirdetés szerkesztése' : '📋 Hirdetés feladása'; ?></h2>
 
+        <?php if ( ! $edit_mode ): ?>
         <div class="va-notice va-notice--info" style="margin-bottom:16px;">
             <?php if ( $free_limit === 0 ): ?>
                 Jelenleg korlátlan számú ingyenes hirdetés adható fel.
@@ -182,6 +198,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 <?php endif; ?>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
 
         <?php
         // Dinamikus form mezők VA_Form_Builder config alapján
