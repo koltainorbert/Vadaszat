@@ -71,6 +71,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
             <?php endif; ?>
             <span class="va-dashboard__nav-item" data-tab="watchlist"><span class="va-dashboard__nav-ico" aria-hidden="true">♥</span><span class="va-dashboard__nav-label">Kedvenceim (<?php echo count( $watchlist ); ?>)</span></span>
             <span class="va-dashboard__nav-item" data-tab="profile"><span class="va-dashboard__nav-ico" aria-hidden="true">👤</span><span class="va-dashboard__nav-label">Profilom</span></span>
+            <span class="va-dashboard__nav-item va-dashboard__nav-item--danger" data-tab="deleteaccount"><span class="va-dashboard__nav-ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></span><span class="va-dashboard__nav-label">Fiók törlése</span></span>
             <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="va-dashboard__nav-item va-dashboard__nav-item--logout"><span class="va-dashboard__nav-ico" aria-hidden="true">🚪</span><span class="va-dashboard__nav-label">Kijelentkezés</span></a>
 
             <?php if ( $plan_cfg ): ?>
@@ -345,25 +346,22 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                     <button type="submit" class="va-btn va-btn--primary">Mentés</button>
                 </form>
 
-                <!-- Fiók törlése -->
+            </div>
+
+            <!-- Tab: Fiók törlése -->
+            <div id="va-tab-deleteaccount" class="va-dashboard__section">
+                <h2 class="va-dashboard__title" style="color:#ff6060;">Fiók törlése</h2>
                 <div class="va-danger-zone">
-                    <h3 class="va-danger-zone__title">Veszélyes zóna</h3>
-                    <p class="va-danger-zone__desc">A fiók törlése visszafordíthatatlan! Összes hirdetésed, képeid és adataid végleg törlődnek.</p>
-                    <button type="button" class="va-btn va-btn--sm va-danger-zone__toggle" onclick="document.getElementById('va-delete-account-box').classList.toggle('is-open')">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                        Fiók törlése
-                    </button>
-                    <div id="va-delete-account-box" class="va-danger-zone__box">
-                        <form method="post" onsubmit="return document.getElementById('va-confirm-del-input').value === 'TORLESEM' || (alert('Írd be: TORLESEM') || false);">
-                            <?php wp_nonce_field( 'va_delete_profile', 'va_delete_profile_nonce' ); ?>
-                            <input type="hidden" name="va_action" value="delete_profile">
-                            <label class="va-danger-zone__label">Megerősítés – írd be: <strong>TORLESEM</strong></label>
-                            <div style="display:flex;gap:8px;align-items:center;margin-top:8px;">
-                                <input id="va-confirm-del-input" type="text" name="confirm_delete" class="va-input va-danger-zone__input" placeholder="TORLESEM" autocomplete="off">
-                                <button type="submit" class="va-btn va-btn--sm va-danger-zone__submit">Végleg töröl</button>
-                            </div>
-                        </form>
-                    </div>
+                    <p class="va-danger-zone__desc">A fiók törlése <strong>visszafordíthatatlan</strong>! Összes hirdetésed, képeid és adataid végleg törlődnek.</p>
+                    <p class="va-danger-zone__desc">A megerősítéshez írd be az alábbi mezőbe: <strong style="color:#ff6060;">TORLESEM</strong></p>
+                    <form method="post">
+                        <?php wp_nonce_field( 'va_delete_profile', 'va_delete_profile_nonce' ); ?>
+                        <input type="hidden" name="va_action" value="delete_profile">
+                        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px;">
+                            <input id="va-confirm-del-input" type="text" name="confirm_delete" class="va-input va-danger-zone__input" placeholder="TORLESEM" autocomplete="off">
+                            <button type="submit" class="va-btn va-danger-zone__submit" onclick="return this.form['confirm_delete'].value==='TORLESEM'||(alert('Írd be pontosan: TORLESEM'),false);">Fiók végleges törlése</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -493,32 +491,30 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
 
 /* ── Veszélyes zóna ── */
 .va-danger-zone {
-    margin-top:32px;
-    padding:16px;
+    padding:20px;
     border:1px solid rgba(255,42,42,.25);
     border-radius:10px;
     background:rgba(255,42,42,.05);
 }
-.va-danger-zone__title { font-size:13px;font-weight:700;color:#ff6060;margin:0 0 6px; }
-.va-danger-zone__desc  { font-size:12px;color:rgba(255,255,255,.5);margin:0 0 12px; }
-.va-danger-zone__toggle {
-    background:rgba(255,42,42,.12);
-    border:1px solid rgba(255,42,42,.35);
-    color:#ff6060;
-    display:inline-flex;align-items:center;gap:6px;
-}
-.va-danger-zone__toggle:hover { background:rgba(255,42,42,.22); }
-.va-danger-zone__box { display:none;margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,42,42,.18); }
-.va-danger-zone__box.is-open { display:block; }
-.va-danger-zone__label { font-size:12px;color:rgba(255,255,255,.7); }
-.va-danger-zone__input { max-width:180px;border-color:rgba(255,42,42,.4) !important; }
+.va-danger-zone__desc  { font-size:13px;color:rgba(255,255,255,.65);margin:0 0 8px; }
+.va-danger-zone__input { max-width:200px;border-color:rgba(255,42,42,.4) !important; }
 .va-danger-zone__submit {
     background:rgba(255,42,42,.18);
     border:1px solid rgba(255,42,42,.5);
     color:#ff6060;
     white-space:nowrap;
+    padding:0 16px;
+    height:40px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.2s ease;
 }
-.va-danger-zone__submit:hover { background:rgba(255,42,42,.3); }
+.va-danger-zone__submit:hover { background:rgba(255,42,42,.32); }
+.va-dashboard__nav-item--danger { color:#ff6060 !important; }
+.va-dashboard__nav-item--danger .va-dashboard__nav-ico svg { stroke:#ff6060; }
+.va-dashboard__nav-item--danger:hover,
+.va-dashboard__nav-item--danger.active { background:rgba(255,42,42,.1) !important; }
 </style>
 
 <script>
