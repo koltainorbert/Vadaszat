@@ -17,6 +17,7 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );
         add_action( 'admin_post_va_apply_hf_preset', [ __CLASS__, 'handle_apply_hf_preset' ] );
         add_action( 'admin_post_va_apply_ap_preset',  [ __CLASS__, 'handle_apply_ap_preset'  ] );
+        add_action( 'admin_post_va_apply_single_preset', [ __CLASS__, 'handle_apply_single_preset' ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
@@ -611,6 +612,37 @@ class VA_Settings_Page {
             self::$defaults[ $key ] = $default;
             register_setting( 'va_ap_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* Termékoldal Designer (va_single_*) */
+        $single_designer = [
+            'va_single_preset'             => 'cinematic',
+            'va_single_layout_mode'        => 'split',
+            'va_single_content_max'        => 1320,
+            'va_single_sidebar_width'      => 390,
+            'va_single_layout_gap'         => 24,
+            'va_single_gallery_ratio'      => '4/3',
+            'va_single_gallery_fit'        => 'cover',
+            'va_single_thumb_size'         => 86,
+            'va_single_card_radius'        => 14,
+            'va_single_card_padding'       => 22,
+            'va_single_title_size'         => 40,
+            'va_single_price_size'         => 42,
+            'va_single_meta_size'          => 13,
+            'va_single_btn_height'         => 48,
+            'va_single_share_size'         => 40,
+            'va_single_mobile_title_scale' => 78,
+            'va_single_viewer_bg'          => 'rgba(4,4,4,.96)',
+            'va_single_accent'             => '#ff2a2a',
+            'va_single_glass'              => 'rgba(255,255,255,.07)',
+            'va_single_border'             => 'rgba(255,255,255,.12)',
+        ];
+        foreach ( $single_designer as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_single_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) {
+                update_option( $key, $default );
+            }
         }
     }
 
@@ -2570,6 +2602,112 @@ class VA_Settings_Page {
 
         wp_safe_redirect( add_query_arg( 'va_ap_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
         exit;
+    }
+
+    public static function handle_apply_single_preset(): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Nincs jogosultság.' );
+        }
+        check_admin_referer( 'va_apply_single_preset' );
+
+        $preset_key = sanitize_key( (string) ( $_POST['preset_key'] ?? '' ) );
+        $presets    = self::get_single_presets();
+
+        if ( ! isset( $presets[ $preset_key ] ) ) {
+            wp_safe_redirect( add_query_arg( 'va_single_preset', 'invalid', admin_url( 'admin.php?page=vadaszapro-single-designer' ) ) );
+            exit;
+        }
+
+        foreach ( $presets[ $preset_key ]['options'] as $key => $value ) {
+            if ( strpos( (string) $key, 'va_single_' ) !== 0 ) {
+                continue;
+            }
+            update_option( (string) $key, $value );
+        }
+
+        update_option( 'va_single_preset', $preset_key );
+        wp_safe_redirect( add_query_arg( 'va_single_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-single-designer' ) ) );
+        exit;
+    }
+
+    private static function get_single_presets(): array {
+        return [
+            'cinematic' => [
+                'label' => 'Cinematic Hero',
+                'desc'  => 'Nagy cím, hangsúlyos galéria, erős kontraszt.',
+                'options' => [
+                    'va_single_layout_mode'        => 'split',
+                    'va_single_content_max'        => 1380,
+                    'va_single_sidebar_width'      => 410,
+                    'va_single_layout_gap'         => 28,
+                    'va_single_gallery_ratio'      => '16/10',
+                    'va_single_gallery_fit'        => 'cover',
+                    'va_single_thumb_size'         => 88,
+                    'va_single_card_radius'        => 15,
+                    'va_single_card_padding'       => 24,
+                    'va_single_title_size'         => 46,
+                    'va_single_price_size'         => 46,
+                    'va_single_meta_size'          => 13,
+                    'va_single_btn_height'         => 50,
+                    'va_single_share_size'         => 40,
+                    'va_single_mobile_title_scale' => 76,
+                    'va_single_viewer_bg'          => 'rgba(4,4,4,.97)',
+                    'va_single_accent'             => '#ff2a2a',
+                    'va_single_glass'              => 'rgba(255,255,255,.07)',
+                    'va_single_border'             => 'rgba(255,255,255,.12)',
+                ],
+            ],
+            'compact_trade' => [
+                'label' => 'Compact Trade',
+                'desc'  => 'Sűrűbb, mobilon gyorsan áttekinthető.',
+                'options' => [
+                    'va_single_layout_mode'        => 'split',
+                    'va_single_content_max'        => 1260,
+                    'va_single_sidebar_width'      => 360,
+                    'va_single_layout_gap'         => 18,
+                    'va_single_gallery_ratio'      => '4/3',
+                    'va_single_gallery_fit'        => 'cover',
+                    'va_single_thumb_size'         => 76,
+                    'va_single_card_radius'        => 12,
+                    'va_single_card_padding'       => 18,
+                    'va_single_title_size'         => 34,
+                    'va_single_price_size'         => 38,
+                    'va_single_meta_size'          => 12,
+                    'va_single_btn_height'         => 44,
+                    'va_single_share_size'         => 36,
+                    'va_single_mobile_title_scale' => 82,
+                    'va_single_viewer_bg'          => 'rgba(6,6,6,.96)',
+                    'va_single_accent'             => '#ff3b30',
+                    'va_single_glass'              => 'rgba(255,255,255,.06)',
+                    'va_single_border'             => 'rgba(255,255,255,.10)',
+                ],
+            ],
+            'editorial_stack' => [
+                'label' => 'Editorial Stack',
+                'desc'  => 'Tartalom-first, egyhasábos fókusz.',
+                'options' => [
+                    'va_single_layout_mode'        => 'stacked',
+                    'va_single_content_max'        => 1120,
+                    'va_single_sidebar_width'      => 380,
+                    'va_single_layout_gap'         => 20,
+                    'va_single_gallery_ratio'      => '16/9',
+                    'va_single_gallery_fit'        => 'contain',
+                    'va_single_thumb_size'         => 80,
+                    'va_single_card_radius'        => 13,
+                    'va_single_card_padding'       => 22,
+                    'va_single_title_size'         => 42,
+                    'va_single_price_size'         => 40,
+                    'va_single_meta_size'          => 13,
+                    'va_single_btn_height'         => 46,
+                    'va_single_share_size'         => 38,
+                    'va_single_mobile_title_scale' => 86,
+                    'va_single_viewer_bg'          => 'rgba(3,3,3,.95)',
+                    'va_single_accent'             => '#ff1f1f',
+                    'va_single_glass'              => 'rgba(255,255,255,.08)',
+                    'va_single_border'             => 'rgba(255,255,255,.13)',
+                ],
+            ],
+        ];
     }
 
     private static function get_adminpanel_presets(): array {
