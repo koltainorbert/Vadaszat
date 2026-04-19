@@ -134,8 +134,9 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'county'      => (int) ( wp_get_post_terms( $maybe_id, 'va_county',   ['fields'=>'ids'] )[0] ?? 0 ),
             'condition'   => (int) ( wp_get_post_terms( $maybe_id, 'va_condition',['fields'=>'ids'] )[0] ?? 0 ),
         ];
-        // Meglévő képek
-        $edit_gallery = array_map('absint', (array) get_post_meta( $maybe_id, 'va_gallery', true ));
+        // Meglévő képek (va_gallery_ids = vesszővel elválasztott string)
+        $raw_gallery  = get_post_meta( $maybe_id, 'va_gallery_ids', true );
+        $edit_gallery = array_filter( array_map( 'absint', explode( ',', (string) $raw_gallery ) ) );
         $edit_thumb   = (int) get_post_thumbnail_id( $maybe_id );
     }
 }
