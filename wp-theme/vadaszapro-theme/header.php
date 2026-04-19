@@ -155,11 +155,6 @@
 
             <!-- Jobb oldal -->
             <div class="va-header__right">
-                <?php if ( get_option('va_social_header_show','1') === '1' && function_exists('va_social_bar') ):
-                    $hdr_style = get_option('va_social_header_style','icons');
-                    $hdr_size  = max(14, min(28, absint( get_option('va_social_icon_size', 20) )));
-                    echo va_social_bar( $hdr_style, $hdr_size );
-                endif; ?>
                 <?php if ( is_user_logged_in() ):
                     $user        = wp_get_current_user();
                     $dashboard   = get_page_by_path('va-fiok');
@@ -182,6 +177,11 @@
                         <a href="<?php echo esc_url( get_permalink($register_page) ); ?>" class="va-header__submit-btn"><?php echo esc_html( $header_register_text ); ?></a>
                     <?php endif; ?>
                 <?php endif; ?>
+                <?php if ( get_option('va_social_header_show','1') === '1' && function_exists('va_social_bar') ):
+                    $hdr_style = get_option('va_social_header_style','icons');
+                    $hdr_size  = max(14, min(28, absint( get_option('va_social_icon_size', 20) )));
+                    echo '<div style="margin-left:5px">' . va_social_bar( $hdr_style, $hdr_size ) . '</div>';
+                endif; ?>
                 <button class="va-hamburger" id="va-hamburger" aria-label="Men&uuml;">
                     <span></span><span></span><span></span>
                 </button>
