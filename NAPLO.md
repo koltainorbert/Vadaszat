@@ -2,7 +2,27 @@
 
 ---
 
-## 2026. 04. 19. – Session #110 (TinyMCE editor – előkészítve, folytatás következő session)
+## 2026. 04. 19. – Session #111 (Quill editor bugfix + képtörlés cleanup)
+
+### Elvégzett feladatok
+- **Admin editor mentés/betöltés fix**: `dangerouslyPasteHTML` → `root.innerHTML` (képméret megmarad)
+- **Admin "Mentés vázlatként" gomb fix**: `form.submit()` bypass → `vaAdminDoSubmit()` (Quill tartalom most már mentődik)
+- **Admin kép upload fix**: DOM-módosítás helyett HTML string-csere (MutationObserver bug kikerülve)
+- **Admin törlés fix**: `wp_trash_post` → `wp_delete_post(true)` (valódi törlés, képek is törlődnek)
+- **`before_delete_post` hook bővítés**: editor képek + galéria képek + kiemelt kép törlése listing törlésekor
+- **Frontend törlés fix**: `delete_listing_with_images` bővítve – `post_content` img URL-ek regex-szel kinyerve, `attachment_url_to_postid()` alapján törölve (post_parent=0 esetén is működik)
+
+### Állapot
+- Admin Quill editor: ✅ teljesen kész
+- Frontend Quill editor: ✅ teljesen kész
+- Képtörlés (listing törléskor): ✅ minden ág lefedve (editor, galéria, borítókép, post_parent=0)
+
+### Következő session lehetséges feladatok
+- [ ] Email HTML support (wp_mail HTML headers)
+- [ ] Auto-update rendszer GitHub-ról (YahnisElsts/plugin-update-checker)
+- [ ] Child theme
+
+
 
 ### Allapot
 - **Git HEAD:** `Auto_2026.04.19_14.50` — ez az utolsó stabil állapot, TinyMCE még nincs benne
