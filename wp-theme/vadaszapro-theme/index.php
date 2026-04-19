@@ -1217,8 +1217,30 @@ updateHnOverflowState();
         <?php endif; ?>
     </div>
 
-    <?php $latest = new WP_Query(['post_type' => 'va_listing', 'post_status' => 'publish', 'posts_per_page' => 8, 'orderby' => 'date', 'order' => 'DESC']); ?>
-    <?php if ($latest->have_posts()): ?>
+    <?php
+    // Legújabb hirdetések – boost-aware rendezés
+    global $wpdb;
+    $_boost_cfg     = class_exists('VA_User_Roles') ? VA_User_Roles::get_all_plan_configs() : [];
+    $_boost_window  = (int) ( $_boost_cfg['_global']['boost_badge_window'] ?? 14 );
+    $_boost_cutoff  = time() - $_boost_window * DAY_IN_SECONDS;
+    $_latest_ids    = $wpdb->get_col( $wpdb->prepare(
+        "SELECT p.ID FROM {$wpdb->posts} p
+         LEFT JOIN {$wpdb->postmeta} bst ON ( bst.post_id = p.ID AND bst.meta_key = 'va_boost_time' )
+         WHERE p.post_type = 'va_listing' AND p.post_status = 'publish'
+         ORDER BY CASE WHEN CAST(bst.meta_value AS UNSIGNED) > %d THEN 1 ELSE 0 END DESC, p.post_date DESC
+         LIMIT 8",
+        $_boost_cutoff
+    ) );
+    $latest = $_latest_ids ? new WP_Query([
+        'post_type'      => 'va_listing',
+        'post_status'    => 'publish',
+        'post__in'       => array_map('intval', $_latest_ids),
+        'orderby'        => 'post__in',
+        'posts_per_page' => 8,
+        'no_found_rows'  => true,
+    ]) : null;
+    ?>
+    <?php if ($latest && $latest->have_posts()): ?>
         <div class="va-grid">
             <?php while ($latest->have_posts()): $latest->the_post();
                 if (class_exists('VA_Shortcodes')) va_template('listing/card', ['post' => get_post()]);

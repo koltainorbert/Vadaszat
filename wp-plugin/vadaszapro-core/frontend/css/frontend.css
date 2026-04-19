@@ -57,7 +57,11 @@
 .va-btn--outline   { background: transparent; color: var(--va-text); border: 1px solid var(--va-border); }
 .va-btn--outline:hover { border-color: var(--va-accent); color: var(--va-accent); }
 .va-btn--outline.active { border-color: var(--va-accent); color: var(--va-accent); background: rgba(255,0,0,.1); }
-/* ── Nézetváltó gombok ─────────────────────────── */
+.va-btn--block { width: 100%; justify-content: center; }
+
+/* ── Form elemek ─────────────────────────────────── */
+.va-form-group { margin-bottom: 18px; }
+.va-form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,.65); font-weight: 500; } ─────────────────────────── */
 .va-view-btn {
   width: 48px; height: 48px;
   display: flex; align-items: center; justify-content: center;
@@ -104,12 +108,8 @@
   0%   { stroke-dasharray: 18; stroke-dashoffset: 18; opacity: 0; }
   100% { stroke-dasharray: 18; stroke-dashoffset: 0;  opacity: 1; }
 }
-.va-btn--sm { padding: 6px 14px; font-size: 12px; height: 34px; box-sizing: border-box; line-height: 1; }
-.va-btn--block { width: 100%; justify-content: center; }
-
-/* ── Form elemek ──────────────────────────────────── */
-.va-form-group { margin-bottom: 18px; }
-.va-form-group label { display: block; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,.65); font-weight: 500; }
+.va-btn--sm { padding: 0 14px; font-size: 12px; height: 34px; box-sizing: border-box; line-height: 34px; display: inline-flex; align-items: center; }
+.va-btn--outline { background: transparent; color: var(--va-text); border: 1px solid var(--va-border); box-sizing: border-box; }
 .va-form-group label .required { color: #ff0000; margin-left: 2px; }
 .va-input, .va-select, .va-textarea {
   width: 100%; padding: 10px 38px 10px 14px; border-radius: var(--va-radius, 6px);
