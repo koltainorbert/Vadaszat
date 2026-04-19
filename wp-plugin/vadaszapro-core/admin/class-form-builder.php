@@ -48,6 +48,21 @@ class VA_Form_Builder {
                 [ 'key' => 'pwd',      'label' => 'Jelszó',                   'placeholder' => '',                  'type' => 'password', 'required' => true,  'enabled' => true, 'order' => 2 ],
                 [ 'key' => 'rememberme','label' => 'Emlékezz rám',            'placeholder' => '',                  'type' => 'checkbox', 'required' => false, 'enabled' => true, 'order' => 3 ],
             ],
+            'va_admin_listing_edit' => [
+                [ 'key' => 'va_price',      'label' => 'Ár (Ft)',                    'placeholder' => '0',                'type' => 'number',   'required' => false, 'enabled' => true,  'order' => 1  ],
+                [ 'key' => 'va_price_type', 'label' => 'Árazás típusa',              'placeholder' => '',                 'type' => 'select',   'required' => false, 'enabled' => true,  'order' => 2  ],
+                [ 'key' => 'va_brand',      'label' => 'Márka / Gyártó',             'placeholder' => 'pl. Browning',     'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 3  ],
+                [ 'key' => 'va_model',      'label' => 'Modell / Típus',             'placeholder' => 'pl. X-Bolt',       'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 4  ],
+                [ 'key' => 'va_caliber',    'label' => 'Kaliber',                    'placeholder' => 'pl. .308 Win',     'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 5  ],
+                [ 'key' => 'va_year',       'label' => 'Gyártási év',                'placeholder' => 'pl. 2020',         'type' => 'number',   'required' => false, 'enabled' => true,  'order' => 6  ],
+                [ 'key' => 'va_phone',      'label' => 'Telefonszám',                'placeholder' => '+36 20 …',         'type' => 'tel',      'required' => false, 'enabled' => true,  'order' => 7  ],
+                [ 'key' => 'va_location',   'label' => 'Helység',                    'placeholder' => 'pl. Budapest',     'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 8  ],
+                [ 'key' => 'va_email_show', 'label' => 'Email cím megjelenítése',    'placeholder' => '',                 'type' => 'checkbox', 'required' => false, 'enabled' => true,  'order' => 9  ],
+                [ 'key' => 'va_featured',   'label' => 'Kiemelt hirdetés',           'placeholder' => '',                 'type' => 'checkbox', 'required' => false, 'enabled' => true,  'order' => 10 ],
+                [ 'key' => 'va_verified',   'label' => 'Ellenőrzött hirdető',        'placeholder' => '',                 'type' => 'checkbox', 'required' => false, 'enabled' => true,  'order' => 11 ],
+                [ 'key' => 'va_license_req','label' => 'Fegyverengedély szükséges',  'placeholder' => '',                 'type' => 'checkbox', 'required' => false, 'enabled' => true,  'order' => 12 ],
+                [ 'key' => 'va_expires',    'label' => 'Lejárat dátuma',             'placeholder' => '',                 'type' => 'date',     'required' => false, 'enabled' => true,  'order' => 13 ],
+            ],
         ];
 
         return $defaults[ $form_id ] ?? [];
@@ -111,7 +126,7 @@ class VA_Form_Builder {
         }
 
         $form_id = sanitize_key( (string) ( $_POST['va_form_id'] ?? '' ) );
-        $allowed = [ 'va_listing_submit', 'va_register', 'va_login' ];
+        $allowed = [ 'va_listing_submit', 'va_register', 'va_login', 'va_admin_listing_edit' ];
         if ( ! in_array( $form_id, $allowed, true ) ) {
             wp_die( 'Ismeretlen form.' );
         }
@@ -173,9 +188,10 @@ class VA_Form_Builder {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
         $forms = [
-            'va_listing_submit' => '📋 Hirdetés feladás',
-            'va_register'       => '👤 Regisztráció',
-            'va_login'          => '🔐 Bejelentkezés',
+            'va_listing_submit'    => '📋 Hirdetés feladás (frontend)',
+            'va_admin_listing_edit'=> '🛠️ Admin hirdetés szerkesztő',
+            'va_register'          => '👤 Regisztráció',
+            'va_login'             => '🔐 Bejelentkezés',
         ];
 
         $active = sanitize_key( (string) ( $_GET['form'] ?? 'va_listing_submit' ) );
@@ -199,6 +215,7 @@ class VA_Form_Builder {
             'checkbox' => '☑️',
             'toggle'   => '🔀',
             'file'     => '🖼️',
+            'date'     => '📅',
         ];
         ?>
         <div class="wrap va-admin-wrap va-fb-wrap">
