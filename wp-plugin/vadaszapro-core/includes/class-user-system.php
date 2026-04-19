@@ -605,6 +605,20 @@ class VA_User_System {
     public static function delete_listing_with_images( int $post_id ): void {
         global $wpdb;
 
+        // Leírásban lévő editor képek törlése (URL alapján – post_parent=0 esetén is)
+        $post = get_post( $post_id );
+        if ( $post && $post->post_content ) {
+            preg_match_all( '/<img[^>]+src=["\']([^"\']+)["\'][^>]*/i', $post->post_content, $img_matches );
+            foreach ( $img_matches[1] as $img_url ) {
+                // Csak saját domain-re mutatói URL-eket töröljük (ne külső képeket)
+                if ( strpos( $img_url, home_url() ) === false ) continue;
+                $att_id = attachment_url_to_postid( $img_url );
+                if ( $att_id ) {
+                    wp_delete_attachment( $att_id, true );
+                }
+            }
+        }
+
         // Csatolt képek törlése (post_parent alapján)
         $attached = get_posts([
             'post_type'      => 'attachment',
