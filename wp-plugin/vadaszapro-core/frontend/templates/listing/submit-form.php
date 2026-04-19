@@ -396,6 +396,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
 
 <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quill-image-resize-module@3.0.0/image-resize.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 (function($){
@@ -532,10 +533,12 @@ document.addEventListener('DOMContentLoaded', function() {
     $input.on('change', function(){ addFiles(this.files); this.value = ''; });
 
     /* ══ Quill editor init ═══════════════════════════════════════ */
+    Quill.register('modules/imageResize', ImageResize);
     var quill = new Quill('#va-quill-editor', {
         theme: 'snow',
         placeholder: 'Írja le a hirdetett terméket részletesen...',
         modules: {
+            imageResize: { parchment: Quill.import('parchment') },
             toolbar: {
                 container: [
                     [{ header: [2, 3, false] }],
