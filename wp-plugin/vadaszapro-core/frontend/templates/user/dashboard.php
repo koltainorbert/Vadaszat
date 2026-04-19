@@ -203,7 +203,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 : get_edit_post_link( $l->ID );
                             ?>
                             <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
-                                <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--outline va-btn--sm" style="white-space:nowrap;">Szerk.</a>
+                                <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--sm" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;white-space:nowrap;">Szerk.</a>
                                 <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
                                 <form method="post" style="margin:0;">
                                     <?php wp_nonce_field( 'va_suspend_listing', 'va_suspend_listing_nonce' ); ?>
