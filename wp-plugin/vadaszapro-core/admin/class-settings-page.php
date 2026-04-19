@@ -3821,15 +3821,738 @@ class VA_Settings_Page {
         $defaults   = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::PLANS : [];
         $nonce      = wp_create_nonce( 'va_admin_plan_cfg' );
         $plan_slugs = array_keys( $defaults );
-                        ?>
-                        <div class="wrap va-admin-wrap">
-                            <h1>💼 Csomag Beállítások</h1>
-                            <p style="color:var(--va-muted);margin-top:-8px;margin-bottom:24px;">
-                                Módosítsd a felhasználói csomagok paramétereit. A változtatások azonnal érvénybe lépnek – nem kell kézi flusholás.
-                            </p>
+        ?>
+        <div class="wrap va-admin-wrap">
 
-                            <!-- ── Plan kártyák grid ── -->
-                            <div class="va-pc-grid">
+        <!-- ══ STICKY SAVE BAR ══ -->
+        <div class="va-pc-topbar">
+            <div class="va-pc-topbar__left">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--va-accent)"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-4 0v2M12 12v4M10 14h4"/></svg>
+                <span class="va-pc-topbar__title">Csomag Beállítások</span>
+                <span class="va-pc-topbar__sub">A változások azonnal érvénybe lépnek.</span>
+            </div>
+            <div class="va-pc-topbar__right">
+                <span id="va-pc-save-status" class="va-pc-save-status"></span>
+                <button id="va-pc-save-all" class="va-pc-save-btn" data-nonce="<?php echo esc_attr( $nonce ); ?>">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Mentés
+                </button>
+            </div>
+        </div>
+
+        <!-- ══ TAB NAV ══ -->
+        <div class="va-pc-tabs" role="tablist">
+            <?php foreach ( $plan_slugs as $i => $slug ):
+                $p  = $plans[ $slug ] ?? $defaults[ $slug ];
+                $d  = $defaults[ $slug ];
+            ?>
+            <button class="va-pc-tab<?php echo $i === 0 ? ' va-pc-tab--active' : ''; ?>"
+                    role="tab"
+                    data-panel="va-pc-panel-<?php echo esc_attr( $slug ); ?>"
+                    style="--tc:<?php echo esc_attr( $p['color'] ); ?>">
+                <span class="va-pc-tab__icon"><?php echo esc_html( $p['icon'] ); ?></span>
+                <span class="va-pc-tab__label"><?php echo esc_html( $p['label'] ); ?></span>
+            </button>
+            <?php endforeach; ?>
+            <button class="va-pc-tab"
+                    role="tab"
+                    data-panel="va-pc-panel-global"
+                    style="--tc:#64b5f6">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                <span class="va-pc-tab__label">Globális</span>
+            </button>
+        </div>
+
+        <!-- ══ PLAN PANELS ══ -->
+        <?php foreach ( $plan_slugs as $i => $slug ):
+            $p = $plans[ $slug ] ?? $defaults[ $slug ];
+            $d = $defaults[ $slug ];
+        ?>
+        <div class="va-pc-panel<?php echo $i === 0 ? ' va-pc-panel--active' : ''; ?>"
+             id="va-pc-panel-<?php echo esc_attr( $slug ); ?>"
+             data-slug="<?php echo esc_attr( $slug ); ?>">
+
+            <!-- Panel header: live preview badge -->
+            <div class="va-pc-panel__header" style="--pc:<?php echo esc_attr( $p['color'] ); ?>">
+                <div class="va-pc-live-badge">
+                    <span class="va-pc-live-icon"><?php echo esc_html( $p['icon'] ); ?></span>
+                    <span class="va-pc-live-label"><?php echo esc_html( $p['label'] ); ?></span>
+                    <span class="va-pc-live-desc"><?php echo esc_html( $p['description'] ); ?></span>
+                </div>
+                <div class="va-pc-panel__slug"><?php echo esc_html( strtoupper( $slug ) ); ?></div>
+            </div>
+
+            <div class="va-pc-panel__body">
+
+                <!-- ── ROW 1: Megjelenés ── -->
+                <div class="va-pc-section">
+                    <div class="va-pc-section__title">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M4.93 19.07l1.41-1.41M19.07 19.07l-1.41-1.41M12 2v2M12 20v2M2 12H4M20 12h2"/></svg>
+                        Megjelenés
+                    </div>
+                    <div class="va-pc-row">
+                        <div class="va-pc-col">
+                            <label class="va-pc-label">Megnevezés</label>
+                            <input type="text" class="va-pc-input va-pc-inp--label"
+                                   data-key="label" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                   value="<?php echo esc_attr( $p['label'] ); ?>"
+                                   placeholder="<?php echo esc_attr( $d['label'] ); ?>">
+                        </div>
+                        <div class="va-pc-col va-pc-col--icon">
+                            <label class="va-pc-label">Ikon (emoji)</label>
+                            <input type="text" class="va-pc-input va-pc-inp--icon"
+                                   data-key="icon" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                   value="<?php echo esc_attr( $p['icon'] ); ?>"
+                                   placeholder="🏅" maxlength="8">
+                        </div>
+                        <div class="va-pc-col va-pc-col--color">
+                            <label class="va-pc-label">Szín (badge)</label>
+                            <div class="va-pc-color-row">
+                                <input type="color" class="va-pc-colorpicker" data-key="color"
+                                       data-slug="<?php echo esc_attr( $slug ); ?>"
+                                       value="<?php echo esc_attr( preg_match('/^#[0-9a-fA-F]{6}$/', $p['color']) ? $p['color'] : $d['color'] ); ?>">
+                                <input type="text" class="va-pc-input va-pc-inp--colortext"
+                                       data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                       value="<?php echo esc_attr( $p['color'] ); ?>"
+                                       placeholder="<?php echo esc_attr( $d['color'] ); ?>" maxlength="30">
+                            </div>
+                        </div>
+                        <div class="va-pc-col va-pc-col--color">
+                            <label class="va-pc-label">Háttér (RGBA)</label>
+                            <input type="text" class="va-pc-input"
+                                   data-key="bg" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                   value="<?php echo esc_attr( $p['bg'] ); ?>"
+                                   placeholder="<?php echo esc_attr( $d['bg'] ); ?>">
+                        </div>
+                    </div>
+                    <div class="va-pc-row" style="margin-top:10px;">
+                        <div class="va-pc-col va-pc-col--full">
+                            <label class="va-pc-label">Leírás / rövid szöveg</label>
+                            <input type="text" class="va-pc-input va-pc-inp--desc"
+                                   data-key="description" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                   value="<?php echo esc_attr( $p['description'] ); ?>"
+                                   placeholder="<?php echo esc_attr( $d['description'] ); ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="va-pc-divider"></div>
+
+                <!-- ── ROW 2: Hirdetési limit + Boost ── -->
+                <div class="va-pc-two-col">
+
+                    <div class="va-pc-section">
+                        <div class="va-pc-section__title">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            Hirdetési limit
+                        </div>
+                        <div class="va-pc-row">
+                            <div class="va-pc-col">
+                                <label class="va-pc-label">
+                                    Limit
+                                    <span class="va-pc-hint">0 = korlátlan</span>
+                                </label>
+                                <input type="number" class="va-pc-input va-pc-input--num"
+                                       data-key="monthly_limit" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                       value="<?php echo esc_attr( (string) $p['monthly_limit'] ); ?>"
+                                       min="0" max="9999">
+                            </div>
+                            <div class="va-pc-col">
+                                <label class="va-pc-label">
+                                    Számlálás módja
+                                    <span class="va-pc-hint">aktív db vs havi feladott</span>
+                                </label>
+                                <select class="va-pc-select" data-key="basis" data-slug="<?php echo esc_attr( $slug ); ?>">
+                                    <option value="active"  <?php selected( $p['basis'], 'active'  ); ?>>Aktív hirdetések (egyszerre)</option>
+                                    <option value="monthly" <?php selected( $p['basis'], 'monthly' ); ?>>Havi feladott</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="va-pc-section">
+                        <div class="va-pc-section__title">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            Boost / Kiemelés
+                        </div>
+                        <div class="va-pc-row">
+                            <div class="va-pc-col">
+                                <label class="va-pc-label">
+                                    Cooldown
+                                    <span class="va-pc-hint">napokban</span>
+                                </label>
+                                <input type="number" class="va-pc-input va-pc-input--num"
+                                       data-key="boost_cooldown" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                       value="<?php echo esc_attr( (string) $p['boost_cooldown'] ); ?>"
+                                       min="1" max="365">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="va-pc-divider"></div>
+
+                <!-- ── ROW 3: Ár & Marketing ── -->
+                <div class="va-pc-section">
+                    <div class="va-pc-section__title">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                        Ár &amp; Marketing
+                        <span class="va-pc-section__note">opcionális – megjelenítési célokra</span>
+                    </div>
+                    <div class="va-pc-row">
+                        <div class="va-pc-col">
+                            <label class="va-pc-label">Havi ár</label>
+                            <input type="text" class="va-pc-input"
+                                   data-key="price_monthly" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                   value="<?php echo esc_attr( $p['price_monthly'] ?? '' ); ?>"
+                                   placeholder="pl. 990 Ft/hó">
+                        </div>
+                        <div class="va-pc-col">
+                            <label class="va-pc-label">Éves ár</label>
+                            <input type="text" class="va-pc-input"
+                                   data-key="price_yearly" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                   value="<?php echo esc_attr( $p['price_yearly'] ?? '' ); ?>"
+                                   placeholder="pl. 9 900 Ft/év">
+                        </div>
+                        <div class="va-pc-col">
+                            <label class="va-pc-label">
+                                Promo badge
+                                <span class="va-pc-hint">pl. "Legjobb ár"</span>
+                            </label>
+                            <input type="text" class="va-pc-input"
+                                   data-key="badge_text" data-slug="<?php echo esc_attr( $slug ); ?>"
+                                   value="<?php echo esc_attr( $p['badge_text'] ?? '' ); ?>"
+                                   placeholder="opcionális">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Reset ── -->
+                <div class="va-pc-reset-row">
+                    <button class="va-pc-reset-btn"
+                            data-slug="<?php echo esc_attr( $slug ); ?>"
+                            data-defaults="<?php echo esc_attr( wp_json_encode([
+                                'label'          => $d['label'],
+                                'icon'           => $d['icon'],
+                                'color'          => $d['color'],
+                                'bg'             => $d['bg'],
+                                'monthly_limit'  => $d['monthly_limit'],
+                                'boost_cooldown' => $d['boost_cooldown'],
+                                'basis'          => $d['basis'],
+                                'description'    => $d['description'],
+                                'price_monthly'  => '',
+                                'price_yearly'   => '',
+                                'badge_text'     => '',
+                            ]) ); ?>">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+                        Visszaállítás alapértelmezettre
+                    </button>
+                </div>
+
+            </div><!-- .va-pc-panel__body -->
+        </div><!-- .va-pc-panel -->
+        <?php endforeach; ?>
+
+        <!-- ══ GLOBAL PANEL ══ -->
+        <div class="va-pc-panel" id="va-pc-panel-global">
+            <div class="va-pc-panel__header" style="--pc:#64b5f6">
+                <div class="va-pc-live-badge">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#64b5f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+                    <span class="va-pc-live-label" style="color:#64b5f6">Globális</span>
+                    <span class="va-pc-live-desc">Minden csomagra érvényes közös beállítások</span>
+                </div>
+                <div class="va-pc-panel__slug">GLOBAL</div>
+            </div>
+            <div class="va-pc-panel__body">
+
+                <div class="va-pc-section">
+                    <div class="va-pc-section__title">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        Boost / Kiemelés – közös
+                    </div>
+                    <div class="va-pc-row">
+                        <div class="va-pc-col">
+                            <label class="va-pc-label">
+                                Badge megjelenési ablak
+                                <span class="va-pc-hint">ennyi napig látszik a badge az utolsó boost után</span>
+                            </label>
+                            <input type="number" id="va-pc-global-window" class="va-pc-input va-pc-input--num"
+                                   value="<?php echo esc_attr( (string) $global['boost_badge_window'] ); ?>"
+                                   min="1" max="365">
+                        </div>
+                        <div class="va-pc-col">
+                            <label class="va-pc-label">
+                                Badge szöveg
+                                <span class="va-pc-hint">kártyán jelenik meg ha boost aktív</span>
+                            </label>
+                            <input type="text" id="va-pc-global-badgetext" class="va-pc-input"
+                                   value="<?php echo esc_attr( $global['boost_badge_text'] ); ?>"
+                                   placeholder="⚡ Előre téve">
+                        </div>
+                        <div class="va-pc-col">
+                            <label class="va-pc-label">Boost rendszer</label>
+                            <label class="va-pc-toggle">
+                                <input type="checkbox" id="va-pc-global-boost-enabled"
+                                       <?php checked( ! empty( $global['boost_enabled'] ) ); ?>>
+                                <span class="va-pc-toggle-track"></span>
+                                <span class="va-pc-toggle-label"><?php echo ! empty( $global['boost_enabled'] ) ? 'Bekapcsolva' : 'Kikapcsolva'; ?></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div><!-- #va-pc-panel-global -->
+
+        </div><!-- .wrap -->
+
+        <style>
+        /* ═══════════════════════════════════════════════
+           VA Plan Config – teljes redesign
+        ═══════════════════════════════════════════════ */
+
+        /* Sticky top bar */
+        .va-pc-topbar {
+            position: sticky;
+            top: 32px;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--va-bg2);
+            border: 1px solid var(--va-border2);
+            border-radius: var(--va-radius);
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            gap: 16px;
+        }
+        .va-pc-topbar__left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+        }
+        .va-pc-topbar__title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--va-text);
+            white-space: nowrap;
+        }
+        .va-pc-topbar__sub {
+            font-size: 12px;
+            color: var(--va-muted);
+            white-space: nowrap;
+        }
+        .va-pc-topbar__right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-shrink: 0;
+        }
+        .va-pc-save-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--va-accent) !important;
+            color: #fff !important;
+            border: none !important;
+            border-radius: var(--va-radius-sm) !important;
+            padding: 8px 20px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer;
+            transition: opacity .2s;
+        }
+        .va-pc-save-btn:hover { opacity: .85 !important; }
+        .va-pc-save-btn:disabled { opacity: .5 !important; cursor: not-allowed; }
+        .va-pc-save-status { font-size: 13px; min-width: 140px; text-align: right; }
+
+        /* Tab nav */
+        .va-pc-tabs {
+            display: flex;
+            gap: 4px;
+            border-bottom: 2px solid var(--va-border);
+            margin-bottom: 0;
+            flex-wrap: wrap;
+        }
+        .va-pc-tab {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 10px 18px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            color: var(--va-muted);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color .2s, border-color .2s;
+            border-radius: var(--va-radius-sm) var(--va-radius-sm) 0 0;
+        }
+        .va-pc-tab:hover { color: var(--tc, var(--va-text)); background: rgba(255,255,255,.04); }
+        .va-pc-tab--active {
+            color: var(--tc, var(--va-accent)) !important;
+            border-bottom-color: var(--tc, var(--va-accent)) !important;
+            background: rgba(255,255,255,.05);
+        }
+        .va-pc-tab__icon { font-size: 16px; line-height: 1; }
+        .va-pc-tab__label { white-space: nowrap; }
+
+        /* Panels */
+        .va-pc-panel { display: none; }
+        .va-pc-panel--active { display: block; }
+
+        .va-pc-panel__header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--va-bg2);
+            border: 1px solid var(--va-border);
+            border-top: 3px solid var(--pc, var(--va-accent));
+            border-radius: 0 0 var(--va-radius) var(--va-radius);
+            padding: 16px 24px;
+            margin-bottom: 2px;
+        }
+        .va-pc-live-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .va-pc-live-icon  { font-size: 24px; line-height: 1; }
+        .va-pc-live-label { font-size: 18px; font-weight: 800; color: var(--pc, #fff); transition: color .2s; }
+        .va-pc-live-desc  { font-size: 12px; color: var(--va-muted); }
+        .va-pc-panel__slug {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: var(--va-muted);
+            background: rgba(255,255,255,.06);
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .va-pc-panel__body {
+            background: var(--va-bg2);
+            border: 1px solid var(--va-border);
+            border-top: none;
+            border-radius: 0 0 var(--va-radius) var(--va-radius);
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        /* Section */
+        .va-pc-section { margin-bottom: 20px; }
+        .va-pc-section__title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .7px;
+            color: var(--va-muted);
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--va-border);
+        }
+        .va-pc-section__note {
+            margin-left: auto;
+            font-size: 10px;
+            font-weight: 400;
+            text-transform: none;
+            letter-spacing: 0;
+            color: rgba(255,255,255,.25);
+        }
+
+        .va-pc-divider {
+            height: 1px;
+            background: var(--va-border);
+            margin: 22px 0;
+        }
+
+        /* Two-col layout */
+        .va-pc-two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 900px) { .va-pc-two-col { grid-template-columns: 1fr; } }
+
+        /* Row / Col */
+        .va-pc-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-start;
+        }
+        .va-pc-col {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 140px;
+            flex: 1;
+        }
+        .va-pc-col--icon  { flex: 0 0 70px; min-width: 70px; }
+        .va-pc-col--color { flex: 0 1 200px; }
+        .va-pc-col--full  { flex: 1 1 100%; }
+
+        /* Label */
+        .va-pc-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--va-muted);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .va-pc-hint {
+            font-size: 10px;
+            font-weight: 400;
+            color: rgba(255,255,255,.3);
+        }
+
+        /* Inputs */
+        .va-pc-input,
+        .va-pc-select {
+            background: var(--va-bg3) !important;
+            border: 1px solid var(--va-border2) !important;
+            color: var(--va-text) !important;
+            border-radius: var(--va-radius-sm) !important;
+            padding: 8px 12px !important;
+            font-size: 13px !important;
+            font-family: inherit !important;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .va-pc-input:focus,
+        .va-pc-select:focus {
+            border-color: var(--va-accent) !important;
+            box-shadow: 0 0 0 3px rgba(255,32,32,.12) !important;
+        }
+        .va-pc-input--num { max-width: 90px; text-align: center; }
+        .va-pc-inp--icon  { text-align: center; font-size: 20px !important; max-width: 70px; }
+        .va-pc-inp--desc  { font-size: 13px !important; }
+
+        /* Color row */
+        .va-pc-color-row { display: flex; align-items: center; gap: 8px; }
+        .va-pc-colorpicker {
+            width: 40px;
+            height: 36px;
+            border: 1px solid var(--va-border2);
+            border-radius: var(--va-radius-sm);
+            padding: 2px;
+            background: none;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .va-pc-inp--colortext { max-width: 130px; }
+
+        /* Toggle */
+        .va-pc-toggle { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-top: 4px; }
+        .va-pc-toggle input { display: none; }
+        .va-pc-toggle-track {
+            width: 42px; height: 22px;
+            background: rgba(255,255,255,.12);
+            border-radius: 999px;
+            position: relative;
+            transition: background .2s;
+            flex-shrink: 0;
+        }
+        .va-pc-toggle-track::after {
+            content: '';
+            position: absolute;
+            top: 3px; left: 3px;
+            width: 16px; height: 16px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform .2s;
+        }
+        .va-pc-toggle input:checked + .va-pc-toggle-track { background: var(--va-accent); }
+        .va-pc-toggle input:checked + .va-pc-toggle-track::after { transform: translateX(20px); }
+        .va-pc-toggle-label { font-size: 13px; color: var(--va-text); }
+
+        /* Reset row */
+        .va-pc-reset-row { margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--va-border); }
+        .va-pc-reset-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: transparent;
+            border: 1px solid var(--va-border2);
+            border-radius: var(--va-radius-sm);
+            padding: 6px 14px;
+            font-size: 12px;
+            color: var(--va-muted);
+            cursor: pointer;
+            transition: border-color .2s, color .2s;
+        }
+        .va-pc-reset-btn:hover { border-color: var(--va-accent); color: var(--va-accent); }
+        </style>
+
+        <script>
+        (function(){
+            /* ── Tab switching ── */
+            var tabs   = document.querySelectorAll('.va-pc-tab');
+            var panels = document.querySelectorAll('.va-pc-panel');
+
+            tabs.forEach(function(tab){
+                tab.addEventListener('click', function(){
+                    tabs.forEach(function(t){ t.classList.remove('va-pc-tab--active'); });
+                    panels.forEach(function(p){ p.classList.remove('va-pc-panel--active'); });
+                    this.classList.add('va-pc-tab--active');
+                    var target = document.getElementById(this.dataset.panel);
+                    if(target) target.classList.add('va-pc-panel--active');
+                });
+            });
+
+            /* ── Live preview update ── */
+            function updatePreview(slug){
+                var panel = document.getElementById('va-pc-panel-' + slug);
+                if(!panel) return;
+                var header = panel.querySelector('.va-pc-panel__header');
+                var icon   = panel.querySelector('.va-pc-live-icon');
+                var label  = panel.querySelector('.va-pc-live-label');
+                var desc   = panel.querySelector('.va-pc-live-desc');
+
+                var iconVal  = (panel.querySelector('[data-key="icon"]')  || {}).value  || '';
+                var labelVal = (panel.querySelector('[data-key="label"]') || {}).value  || '';
+                var colorVal = (panel.querySelector('input[type="color"][data-key="color"]') || {value:'#888'}).value;
+                var descVal  = (panel.querySelector('[data-key="description"]') || {}).value || '';
+
+                if(icon)   icon.textContent  = iconVal;
+                if(label){ label.textContent = labelVal; label.style.color = colorVal; }
+                if(desc)   desc.textContent  = descVal;
+                if(header) header.style.setProperty('--pc', colorVal);
+
+                /* Tab icon + color sync */
+                var tab = document.querySelector('[data-panel="va-pc-panel-' + slug + '"]');
+                if(tab){
+                    var tIcon = tab.querySelector('.va-pc-tab__icon');
+                    var tLabel= tab.querySelector('.va-pc-tab__label');
+                    if(tIcon)  tIcon.textContent  = iconVal;
+                    if(tLabel) tLabel.textContent = labelVal;
+                    tab.style.setProperty('--tc', colorVal);
+                }
+            }
+
+            /* Color picker ↔ text sync */
+            document.querySelectorAll('.va-pc-colorpicker').forEach(function(cp){
+                var slug = cp.dataset.slug;
+                var row  = cp.closest('.va-pc-color-row');
+                var txt  = row ? row.querySelector('.va-pc-inp--colortext') : null;
+                cp.addEventListener('input', function(){
+                    if(txt) txt.value = this.value;
+                    updatePreview(slug);
+                });
+            });
+            document.querySelectorAll('.va-pc-inp--colortext').forEach(function(inp){
+                var slug = inp.dataset.slug;
+                inp.addEventListener('input', function(){
+                    var row = inp.closest('.va-pc-color-row');
+                    var cp  = row ? row.querySelector('.va-pc-colorpicker') : null;
+                    if(cp && /^#[0-9a-fA-F]{6}$/.test(this.value)) cp.value = this.value;
+                    updatePreview(slug);
+                });
+            });
+
+            /* Label / icon / desc live preview */
+            document.querySelectorAll('[data-key="label"],[data-key="icon"],[data-key="description"]').forEach(function(inp){
+                inp.addEventListener('input', function(){
+                    updatePreview(this.dataset.slug);
+                });
+            });
+
+            /* Toggle label */
+            var boostToggle = document.getElementById('va-pc-global-boost-enabled');
+            if(boostToggle){
+                boostToggle.addEventListener('change', function(){
+                    var lbl = this.closest('.va-pc-toggle').querySelector('.va-pc-toggle-label');
+                    if(lbl) lbl.textContent = this.checked ? 'Bekapcsolva' : 'Kikapcsolva';
+                });
+            }
+
+            /* Reset btn */
+            document.querySelectorAll('.va-pc-reset-btn').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var slug     = this.dataset.slug;
+                    var defaults = JSON.parse(this.dataset.defaults || '{}');
+                    var panel    = document.getElementById('va-pc-panel-' + slug);
+                    if(!panel || !defaults) return;
+                    Object.keys(defaults).forEach(function(key){
+                        var el = panel.querySelector('[data-key="' + key + '"]');
+                        if(el) el.value = defaults[key];
+                        if(key === 'color'){
+                            var cp = panel.querySelector('input[type="color"][data-key="color"]');
+                            if(cp && /^#[0-9a-fA-F]{6}$/.test(defaults[key])) cp.value = defaults[key];
+                        }
+                    });
+                    updatePreview(slug);
+                });
+            });
+
+            /* ── Save all ── */
+            document.getElementById('va-pc-save-all').addEventListener('click', function(){
+                var status = document.getElementById('va-pc-save-status');
+                var btn    = this;
+                btn.disabled = true;
+                if(status){ status.textContent = '⏳ Mentés…'; status.style.color = 'var(--va-muted)'; }
+
+                var payload = {};
+
+                document.querySelectorAll('.va-pc-panel[data-slug]').forEach(function(panel){
+                    var slug = panel.dataset.slug;
+                    var obj  = {};
+                    panel.querySelectorAll('[data-key]').forEach(function(el){
+                        var key = el.dataset.key;
+                        if(el.type === 'color') return; /* text pair covers it */
+                        obj[key] = (el.tagName === 'SELECT') ? el.value : el.value;
+                    });
+                    payload[slug] = obj;
+                });
+
+                payload['_global'] = {
+                    boost_badge_window : (document.getElementById('va-pc-global-window')        || {value:14}).value,
+                    boost_badge_text   : (document.getElementById('va-pc-global-badgetext')     || {value:''}).value,
+                    boost_enabled      : (document.getElementById('va-pc-global-boost-enabled') || {checked:true}).checked ? 1 : 0,
+                };
+
+                var data = new URLSearchParams({
+                    action : 'va_admin_save_plan_cfg',
+                    nonce  : this.dataset.nonce,
+                    plans  : JSON.stringify(payload)
+                });
+
+                fetch('<?php echo esc_url( admin_url('admin-ajax.php') ); ?>', {
+                    method : 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body   : data.toString()
+                })
+                .then(function(r){ return r.json(); })
+                .then(function(res){
+                    btn.disabled = false;
+                    if(res.success){
+                        if(status){ status.textContent = '✅ Mentve!'; status.style.color = '#00c850'; }
+                    } else {
+                        if(status){ status.textContent = '❌ ' + (res.data ? res.data.message : 'Hiba'); status.style.color = '#ff4444'; }
+                    }
+                    setTimeout(function(){ if(status) status.textContent = ''; }, 4000);
+                })
+                .catch(function(){
+                    btn.disabled = false;
+                    if(status){ status.textContent = '❌ Hálózati hiba'; status.style.color = '#ff4444'; }
+                });
+            });
+        })();
+        </script>
+        <?php
+    }
+
                             <?php foreach ( $plan_slugs as $slug ):
                                 $p = $plans[ $slug ] ?? $defaults[ $slug ];
                                 $d = $defaults[ $slug ];
