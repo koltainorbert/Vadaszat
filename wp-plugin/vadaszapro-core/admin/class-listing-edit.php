@@ -347,6 +347,7 @@ class VA_Listing_Edit {
     public static function render_edit(): void {
         if ( ! current_user_can( 'edit_posts' ) ) return;
         wp_enqueue_media();
+        wp_enqueue_script( 'jquery-ui-sortable' );
 
         $post_id = (int)( $_GET['id'] ?? 0 );
         $post    = $post_id ? get_post( $post_id ) : null;
@@ -359,9 +360,16 @@ class VA_Listing_Edit {
 
         $get_meta = static fn($k) => $post ? (string)get_post_meta( $post_id, $k, true ) : '';
 
-        // Thumbnail
-        $thumb_id  = $post ? (int)get_post_thumbnail_id( $post_id ) : 0;
-        $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'medium' ) : '';
+        // Galéria + borítókép
+        $thumb_id    = $post ? (int)get_post_thumbnail_id( $post_id ) : 0;
+        $gallery_raw = $post ? (string)get_post_meta( $post_id, 'va_gallery_ids', true ) : '';
+        $gallery_ids = array_values( array_unique( array_filter( array_map( 'intval', $gallery_raw !== '' ? explode( ',', $gallery_raw ) : [] ) ) ) );
+        if ( $thumb_id && ! in_array( $thumb_id, $gallery_ids, true ) ) {
+            array_unshift( $gallery_ids, $thumb_id );
+        }
+        if ( ! $thumb_id && $gallery_ids ) {
+            $thumb_id = $gallery_ids[0];
+        }
 
         // Taxonómiák
         $categories   = get_terms([ 'taxonomy' => 'va_category', 'hide_empty' => false, 'number' => 200 ]);
