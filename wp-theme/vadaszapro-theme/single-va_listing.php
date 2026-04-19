@@ -86,7 +86,7 @@ $county      = get_the_terms( $post_id, 'va_county' );
 $condition   = get_the_terms( $post_id, 'va_condition' );
 $author      = get_userdata( get_the_author_meta('ID') );
 
-// Kepek gyujtese
+// Kepek gyujtese (editor képek kizárva)
 $att_args = [
     'post_type'      => 'attachment',
     'posts_per_page' => 12,
@@ -94,6 +94,12 @@ $att_args = [
     'post_mime_type' => 'image',
     'fields'         => 'ids',
     'no_found_rows'  => true,
+    'meta_query'     => [
+        [
+            'key'     => '_va_editor_img',
+            'compare' => 'NOT EXISTS',
+        ],
+    ],
 ];
 $attachment_ids = get_posts( $att_args );
 if ( has_post_thumbnail() ) {
