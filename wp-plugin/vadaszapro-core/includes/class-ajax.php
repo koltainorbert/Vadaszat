@@ -1010,7 +1010,24 @@ class VA_Ajax {
             wp_send_json_error( [ 'message' => 'Túl nagy kép (max 10 MB).' ] );
         }
 
+        // User-specifikus mappa: /va-users/{user_id}/listings/{post_id}/editor/
+        // (ha post_id=0: /va-users/{user_id}/editor/)
+        $va_editor_dir_filter = static function( $dirs ) use ( $user_id, $post_id ) {
+            if ( $post_id > 0 ) {
+                $dirs['subdir'] = '/va-users/' . $user_id . '/listings/' . $post_id . '/editor';
+            } else {
+                $dirs['subdir'] = '/va-users/' . $user_id . '/editor';
+            }
+            $dirs['path'] = $dirs['basedir'] . $dirs['subdir'];
+            $dirs['url']  = $dirs['baseurl'] . $dirs['subdir'];
+            return $dirs;
+        };
+        add_filter( 'upload_dir', $va_editor_dir_filter );
+
         $upload = wp_upload_bits( 'editor-img-' . time() . '.' . $ext, null, $img_data );
+
+        remove_filter( 'upload_dir', $va_editor_dir_filter );
+
         if ( $upload['error'] ) {
             wp_send_json_error( [ 'message' => $upload['error'] ] );
         }
