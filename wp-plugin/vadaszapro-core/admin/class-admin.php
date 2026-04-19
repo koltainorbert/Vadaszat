@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Admin főosztály: menük, assets, dark SaaS shell (sidebar + topbar)
  */
