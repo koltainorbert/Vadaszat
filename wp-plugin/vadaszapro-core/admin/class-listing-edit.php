@@ -16,44 +16,39 @@ class VA_Listing_Edit {
         add_action( 'admin_post_va_listing_save',    [ __CLASS__, 'handle_save'    ] );
         add_action( 'admin_post_va_listing_approve', [ __CLASS__, 'handle_approve' ] );
         add_action( 'admin_post_va_listing_delete',  [ __CLASS__, 'handle_delete'  ] );
-        // TinyMCE sötét toolbar — admin_footer-ben fut, minden CSS után
-        add_action( 'admin_footer', [ __CLASS__, 'tinymce_dark_css' ] );
+        // Quill CDN betöltése az admin fejlécbe
+        add_action( 'admin_head', [ __CLASS__, 'quill_assets' ] );
     }
 
-    /* ── TinyMCE 4 sötét skin CSS (footer = legkésőbb tölt be) ── */
-    public static function tinymce_dark_css(): void {
+    /* ── Quill CDN betöltése ── */
+    public static function quill_assets(): void {
         $screen = get_current_screen();
         if ( ! $screen || strpos( $screen->id, 'vadaszapro-listing-edit' ) === false ) return;
         ?>
+        <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
+        <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
         <style>
-        /* TinyMCE 4 (.mce-*) sötét override */
-        #wp-va_listing_description-editor-container .mce-tinymce,
-        #wp-va_listing_description-editor-container .mce-tinymce.mce-container { box-shadow: none !important; border: 1px solid rgba(255,255,255,.12) !important; }
-        #wp-va_listing_description-editor-container .mce-top-part,
-        #wp-va_listing_description-editor-container .mce-toolbar-grp,
-        #wp-va_listing_description-editor-container .mce-panel,
-        #wp-va_listing_description-editor-container .mce-toolbar,
-        #wp-va_listing_description-editor-container .mce-flow-layout,
-        #wp-va_listing_description-editor-container .mce-menubar { background: #1e1e1e !important; border-color: rgba(255,255,255,.1) !important; }
-        #wp-va_listing_description-editor-container .mce-btn-group { border-color: rgba(255,255,255,.1) !important; }
-        #wp-va_listing_description-editor-container .mce-btn button,
-        #wp-va_listing_description-editor-container .mce-btn { background: transparent !important; border-color: transparent !important; box-shadow: none !important; }
-        #wp-va_listing_description-editor-container .mce-btn:hover button,
-        #wp-va_listing_description-editor-container .mce-btn.mce-active button { background: #2a2a2a !important; }
-        #wp-va_listing_description-editor-container .mce-ico { color: #bbb !important; }
-        #wp-va_listing_description-editor-container .mce-txt,
-        #wp-va_listing_description-editor-container .mce-caret { color: #ccc !important; }
-        #wp-va_listing_description-editor-container .mce-listbox.mce-btn button { background: #252525 !important; border-color: rgba(255,255,255,.15) !important; }
-        #wp-va_listing_description-editor-container .mce-statusbar,
-        #wp-va_listing_description-editor-container .mce-resizehandler { background: #1e1e1e !important; border-top: 1px solid rgba(255,255,255,.1) !important; color: #555 !important; }
-        #wp-va_listing_description-editor-container .mce-path-item { color: #555 !important; }
-        #wp-va_listing_description-editor-container .mce-wordcount { color: #555 !important; }
-        /* Media gomb sor + tab gombok */
-        #wp-va_listing_description-wrap .wp-editor-tools { background: #141414 !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
-        #wp-va_listing_description-wrap .wp-media-buttons .button { background: #1e1e1e !important; color: #ccc !important; border-color: rgba(255,255,255,.2) !important; box-shadow: none !important; text-shadow: none !important; }
-        #wp-va_listing_description-wrap .wp-editor-tabs button { background: #141414 !important; color: #888 !important; border-color: rgba(255,255,255,.12) !important; box-shadow: none !important; }
-        #wp-va_listing_description-wrap .wp-editor-tabs button:hover,
-        #wp-va_listing_description-wrap .wp-editor-tabs button.active { background: #1e1e1e !important; color: #e8e8e8 !important; }
+        #va-admin-quill-editor { background:#111; border-radius:0 0 6px 6px; }
+        #va-admin-quill-editor .ql-editor { color:#e8e8e8; min-height:220px; font-size:15px; line-height:1.7; font-family:system-ui,sans-serif; }
+        #va-admin-quill-editor .ql-editor.ql-blank::before { color:rgba(255,255,255,.3); font-style:normal; }
+        #va-admin-quill-editor a { color:#ff4444; }
+        #va-admin-quill-editor img { max-width:100%; border-radius:4px; }
+        #va-admin-quill-editor blockquote { border-left:3px solid #ff4444; padding-left:12px; color:#aaa; }
+        .ql-toolbar.ql-snow { background:#1e1e1e; border:1px solid rgba(255,255,255,.15)!important; border-bottom:none!important; border-radius:6px 6px 0 0; }
+        .ql-container.ql-snow { border:1px solid rgba(255,255,255,.15)!important; border-radius:0 0 6px 6px; }
+        .ql-snow .ql-stroke { stroke:#aaa!important; }
+        .ql-snow .ql-fill,.ql-snow .ql-stroke.ql-fill { fill:#aaa!important; }
+        .ql-snow .ql-picker { color:#bbb!important; }
+        .ql-snow .ql-picker-label { border-color:rgba(255,255,255,.15)!important; }
+        .ql-snow .ql-picker-options { background:#1e1e1e!important; border-color:rgba(255,255,255,.15)!important; }
+        .ql-snow .ql-picker-item { color:#bbb!important; }
+        .ql-snow .ql-picker-item:hover,.ql-snow .ql-picker-item.ql-selected { color:#fff!important; }
+        .ql-snow.ql-toolbar button:hover .ql-stroke,.ql-snow .ql-toolbar button:hover .ql-stroke { stroke:#ff4444!important; }
+        .ql-snow.ql-toolbar button.ql-active .ql-stroke { stroke:#ff4444!important; }
+        .ql-snow.ql-toolbar button:hover .ql-fill,.ql-snow.ql-toolbar button.ql-active .ql-fill { fill:#ff4444!important; }
+        .ql-snow .ql-tooltip { background:#1e1e1e!important; border-color:rgba(255,255,255,.15)!important; color:#e8e8e8!important; box-shadow:0 4px 20px rgba(0,0,0,.5)!important; }
+        .ql-snow .ql-tooltip input[type=text] { background:#111!important; border-color:rgba(255,255,255,.2)!important; color:#e8e8e8!important; }
+        .ql-snow .ql-tooltip a.ql-action,.ql-snow .ql-tooltip a.ql-remove { color:#ff4444!important; }
         </style>
         <?php
     }
@@ -483,26 +478,8 @@ class VA_Listing_Edit {
                         <!-- Leírás -->
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">📝 Leírás</div>
-                            <?php
-                            wp_editor(
-                                $post ? $post->post_content : '',
-                                'va_listing_description',
-                                [
-                                    'textarea_name' => 'va_description',
-                                    'textarea_rows' => 14,
-                                    'media_buttons' => true,
-                                    'teeny'         => false,
-                                    'quicktags'     => true,
-                                    'tinymce'       => [
-                                        'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | media | undo redo',
-                                        'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
-                                        'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
-                                        'resize'        => true,
-                                        'content_style' => 'body { background:#1a1a1a; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; padding:12px 16px; } a { color:#ff4444; } h2,h3,h4 { color:#fff; } img { max-width:100%; height:auto; border-radius:4px; }',
-                                    ],
-                                ]
-                            );
-                            ?>
+                            <div id="va-admin-quill-editor"></div>
+                            <textarea name="va_description" id="va-admin-desc-hidden" style="display:none"><?php echo esc_textarea( $post ? $post->post_content : '' ); ?></textarea>
                         </div>
 
                         <!-- Képek -->
@@ -757,6 +734,71 @@ class VA_Listing_Edit {
         </div><!-- .va-le-wrap -->
 
         <script>
+        /* ══ Quill admin init ══════════════════════════════ */
+        (function(){
+            var quillAdmin = new Quill('#va-admin-quill-editor', {
+                theme: 'snow',
+                placeholder: 'Hirdetés leírása...',
+                modules: {
+                    toolbar: {
+                        container: [
+                            [{ header: [2, 3, false] }],
+                            ['bold', 'italic', 'underline', 'strike'],
+                            [{ list: 'ordered' }, { list: 'bullet' }],
+                            ['blockquote'],
+                            [{ align: [] }],
+                            ['link', 'image'],
+                            ['clean']
+                        ],
+                        handlers: {
+                            image: function() {
+                                var input = document.createElement('input');
+                                input.setAttribute('type', 'file');
+                                input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                                input.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+                                document.body.appendChild(input);
+                                input.addEventListener('change', function() {
+                                    var file = input.files[0];
+                                    document.body.removeChild(input);
+                                    if (!file) return;
+                                    var reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        var range = quillAdmin.getSelection(true);
+                                        quillAdmin.insertEmbed(range ? range.index : quillAdmin.getLength(), 'image', e.target.result);
+                                        quillAdmin.setSelection((range ? range.index : 0) + 1);
+                                    };
+                                    reader.readAsDataURL(file);
+                                });
+                                input.click();
+                            }
+                        }
+                    }
+                }
+            });
+            var existing = document.getElementById('va-admin-desc-hidden');
+            if (existing && existing.value.trim()) quillAdmin.root.innerHTML = existing.value;
+
+            /* Kép resize */
+            var activeImg = null, rHandle = document.createElement('div'), startX, startW;
+            rHandle.style.cssText = 'position:absolute;width:12px;height:12px;background:#ff4444;border:2px solid #fff;border-radius:3px;cursor:se-resize;display:none;z-index:9999;box-shadow:0 0 4px rgba(0,0,0,.6);';
+            document.body.appendChild(rHandle);
+            function posH() { if (!activeImg) return; var r = activeImg.getBoundingClientRect(); rHandle.style.left=(r.right+window.scrollX-8)+'px'; rHandle.style.top=(r.bottom+window.scrollY-8)+'px'; }
+            quillAdmin.root.addEventListener('click', function(e) {
+                if (e.target.tagName==='IMG') { activeImg=e.target; if(!activeImg.style.width) activeImg.style.width=activeImg.offsetWidth+'px'; posH(); rHandle.style.display='block'; }
+                else { rHandle.style.display='none'; activeImg=null; }
+            });
+            rHandle.addEventListener('mousedown', function(e) { e.preventDefault(); startX=e.clientX; startW=activeImg?activeImg.offsetWidth:100; document.addEventListener('mousemove',onM); document.addEventListener('mouseup',onU); });
+            function onM(e) { if (!activeImg) return; var w=Math.max(40,startW+(e.clientX-startX)); activeImg.style.width=w+'px'; activeImg.style.height='auto'; posH(); }
+            function onU() { document.removeEventListener('mousemove',onM); document.removeEventListener('mouseup',onU); }
+            window.addEventListener('scroll',posH); window.addEventListener('resize',posH);
+            document.addEventListener('click',function(e){ if(e.target!==activeImg&&e.target!==rHandle){rHandle.style.display='none';activeImg=null;} });
+
+            /* Submit előtt szinkron */
+            document.querySelector('form').addEventListener('submit', function(){
+                document.getElementById('va-admin-desc-hidden').value = quillAdmin.root.innerHTML;
+            });
+        })();
+
         jQuery(function($) {
             var mf,
                 $grid      = $('#va-gal-grid'),
