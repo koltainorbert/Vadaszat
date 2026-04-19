@@ -367,13 +367,42 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     // Link másolása
     var copyBtn = document.getElementById('sl-copy-link');
     if (copyBtn) {
-        copyBtn.addEventListener('click', function(){
+        copyBtn.addEventListener('click', function(e){
+            e.preventDefault();
             var url = this.dataset.url;
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(url).then(function(){
-                    copyBtn.classList.add('sl__share-btn--copied');
-                    setTimeout(function(){ copyBtn.classList.remove('sl__share-btn--copied'); }, 2000);
-                });
+            function markCopied() {
+                copyBtn.classList.add('sl__share-btn--copied');
+                setTimeout(function(){ copyBtn.classList.remove('sl__share-btn--copied'); }, 2000);
+                if (typeof window.va_toast === 'function') {
+                    window.va_toast('Link kimásolva.', 'success');
+                }
+            }
+
+            function markFailed() {
+                if (typeof window.va_toast === 'function') {
+                    window.va_toast('A másolás nem sikerült.', 'error');
+                }
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(markCopied).catch(markFailed);
+                return;
+            }
+
+            try {
+                var temp = document.createElement('textarea');
+                temp.value = url;
+                temp.setAttribute('readonly', 'readonly');
+                temp.style.position = 'fixed';
+                temp.style.opacity = '0';
+                document.body.appendChild(temp);
+                temp.select();
+                temp.setSelectionRange(0, temp.value.length);
+                var ok = document.execCommand('copy');
+                document.body.removeChild(temp);
+                if (ok) { markCopied(); } else { markFailed(); }
+            } catch (err) {
+                markFailed();
             }
         });
     }

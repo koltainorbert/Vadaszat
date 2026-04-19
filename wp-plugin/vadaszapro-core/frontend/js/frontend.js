@@ -19,7 +19,7 @@
 
     var toast = document.createElement('div');
     toast.className = 'va-toast va-toast--' + kind;
-    toast.innerHTML = '<div class="va-toast__title">' + (kind === 'error' ? 'Hiba' : 'Kedvencek') + '</div>'
+    toast.innerHTML = '<div class="va-toast__title">' + (kind === 'error' ? 'Sikertelen' : 'Sikeres') + '</div>'
       + '<div class="va-toast__msg"></div>';
     toast.querySelector('.va-toast__msg').textContent = message;
     stack.appendChild(toast);
@@ -37,6 +37,16 @@
       }, 250);
     }, 5000);
   }
+
+  // Kulso template scriptek is tudjanak push toastot inditani
+  window.va_toast = va_toast;
+
+  // Szerver oldali notice-okbol is csinalunk push visszajelzest
+  document.querySelectorAll('.va-notice--success, .va-notice--error').forEach(function(el) {
+    var msg = (el.textContent || '').trim();
+    if (!msg) return;
+    va_toast(msg, el.classList.contains('va-notice--error') ? 'error' : 'success');
+  });
 
   // ── Megtekintés számláló ─────────────────────────────────
   if (typeof VA_Data !== 'undefined' && VA_Data.post_id) {

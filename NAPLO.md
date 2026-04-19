@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 04. 19. – Session #96 (Social ikon minoseg + link masolas javitas + frontend push toast rendszer)
+
+### Mit csinaltunk [x]
+- [x] `wp-plugin/vadaszapro-core/includes/helpers.php` – social ikonkeszlet finomitas, hivatalosabb brand karakter (kulon Facebook lettermark)
+- [x] `wp-theme/vadaszapro-theme/single-va_listing.php` – megosztas ikonok atallitva kozponti `va_social_svg()` helperre (header/footer/single egyseges)
+- [x] `wp-theme/vadaszapro-theme/single-va_listing.php` – link masolas javitas:
+- [x] `navigator.clipboard` secure context esetben
+- [x] fallback `document.execCommand('copy')` insecure/local kornyezetre
+- [x] siker/hiba push visszajelzes masolas utan
+- [x] `wp-plugin/vadaszapro-core/frontend/js/frontend.js` – push toast globalizalas (`window.va_toast`), title javitas (`Sikeres` / `Sikertelen`), szerver oldali `va-notice` automatikus push-ra tukrozese
+- [x] `wp-plugin/vadaszapro-core/frontend/templates/listing/submit-form.php` – hirdetes feladas/szerkesztes osszes AJAX kimenetere push notifikacio (siker, hiba, kredit/fizetes kovetelmeny, halozati hiba)
+- [x] `wp-plugin/vadaszapro-core/frontend/css/frontend.css` – push szinkodok javitasa: siker = zold, hiba = piros
+- [x] Deploy All: exit 0 ✅
+
+### Megjegyzes
+- A push visszajelzes immar form menteseknel es masolasnal is konzisztensen mukodik.
+
+---
+
 ## 2026. 04. 19. – Session #95 (Admin Panel teljes személyre szabás – presetek + live preview + CSS injektálás)
 
 ### Mit csinaltunk [x]
