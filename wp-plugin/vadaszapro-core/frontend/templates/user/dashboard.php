@@ -195,36 +195,34 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                             endif;
                             ?>
                         </td>
-                        <td style="padding:10px 8px;text-align:right;">
+                        <td style="padding:10px 8px;text-align:right;white-space:nowrap;">
                             <?php
                             $edit_page = get_page_by_path('va-hirdetes-feladas');
                             $edit_url  = $edit_page
                                 ? add_query_arg( 'edit', $l->ID, get_permalink( $edit_page ) )
                                 : get_edit_post_link( $l->ID );
                             ?>
-                            <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--outline va-btn--sm">Szerk.</a>
-                            <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
-                            <form method="post" style="display:inline;">
-                                <?php wp_nonce_field( 'va_suspend_listing', 'va_suspend_listing_nonce' ); ?>
-                                <input type="hidden" name="va_action" value="suspend_listing">
-                                <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
-                                <?php if ( $is_suspended ): ?>
-                                    <button type="submit" class="va-btn va-btn--sm" style="background:rgba(0,200,80,.12);border:1px solid rgba(0,200,80,.4);color:#00c850;" title="Hirdetés újraindítása">
-                                        ▶ Indítás
-                                    </button>
-                                <?php else: ?>
-                                    <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,153,0,.12);border:1px solid rgba(255,153,0,.4);color:#ff9900;" title="Hirdetés felfüggesztése">
-                                        ⏸ Szünet
-                                    </button>
+                            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
+                                <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--outline va-btn--sm" style="white-space:nowrap;">Szerk.</a>
+                                <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
+                                <form method="post" style="margin:0;">
+                                    <?php wp_nonce_field( 'va_suspend_listing', 'va_suspend_listing_nonce' ); ?>
+                                    <input type="hidden" name="va_action" value="suspend_listing">
+                                    <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
+                                    <?php if ( $is_suspended ): ?>
+                                        <button type="submit" class="va-btn va-btn--sm" style="background:rgba(0,200,80,.12);border:1px solid rgba(0,200,80,.4);color:#00c850;white-space:nowrap;">▶ Indítás</button>
+                                    <?php else: ?>
+                                        <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,153,0,.12);border:1px solid rgba(255,153,0,.4);color:#ff9900;white-space:nowrap;">⏸ Szünet</button>
+                                    <?php endif; ?>
+                                </form>
                                 <?php endif; ?>
-                            </form>
-                            <?php endif; ?>
-                            <form method="post" class="va-listing-delete-form" style="display:inline;" onsubmit="return confirm('Biztosan törlöd ezt a hirdetést? A képekkel együtt végleg eltűnik!');">
-                                <?php wp_nonce_field( 'va_delete_listing', 'va_delete_listing_nonce' ); ?>
-                                <input type="hidden" name="va_action" value="delete_listing">
-                                <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
-                                <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,42,42,.12);border:1px solid rgba(255,42,42,.4);color:#ff6060;">Törlés</button>
-                            </form>
+                                <form method="post" style="margin:0;" onsubmit="return confirm('Biztosan törlöd ezt a hirdetést? A képekkel együtt végleg eltűnik!');">
+                                    <?php wp_nonce_field( 'va_delete_listing', 'va_delete_listing_nonce' ); ?>
+                                    <input type="hidden" name="va_action" value="delete_listing">
+                                    <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
+                                    <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,42,42,.12);border:1px solid rgba(255,42,42,.4);color:#ff6060;white-space:nowrap;">Törlés</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                     <?php endforeach; ?>
