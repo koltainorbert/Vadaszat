@@ -375,6 +375,16 @@ body.va-admin-page .widefat th,
 body.va-admin-page .va-users-table th { background: rgba(255,255,255,.03) !important; color: var(--va-muted) !important; font-size: 10px !important; text-transform: uppercase !important; letter-spacing: .8px !important; border-bottom: 1px solid var(--va-border) !important; padding: 10px 14px !important; }
 body.va-admin-page .widefat td,
 body.va-admin-page .va-users-table td { background: transparent !important; color: var(--va-text) !important; border-bottom: 1px solid rgba(255,255,255,.04) !important; padding: 10px 14px !important; font-size: 13px !important; }
+body.va-admin-page .va-users-table tr,
+body.va-admin-page .va-users-table.striped > tbody > tr:nth-child(odd) { background: transparent !important; }
+body.va-admin-page .va-users-table { table-layout: auto !important; }
+body.va-admin-page .va-users-table td:nth-child(4) { width: 200px !important; min-width: 200px !important; max-width: 200px !important; }
+body.va-admin-page .va-users-table td:nth-child(4) form { display: flex; gap: 4px; align-items: center; flex-wrap: nowrap; }
+body.va-admin-page .va-users-table td:nth-child(4) select { max-width: 120px !important; font-size: 12px !important; }
+body.va-admin-page .va-users-table td:nth-child(4) .button { font-size: 11px !important; padding: 2px 8px !important; white-space: nowrap; }
+body.va-admin-page .va-users-table td:nth-child(5),
+body.va-admin-page .va-users-table td:nth-child(6),
+body.va-admin-page .va-users-table td:nth-child(8) { white-space: nowrap; }
 body.va-admin-page .widefat tr:hover td,
 body.va-admin-page .va-users-table tr:hover td { background: rgba(255,255,255,.025) !important; }
 

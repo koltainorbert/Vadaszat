@@ -1645,7 +1645,7 @@ class VA_Settings_Page {
         <div class="wrap va-admin-wrap">
             <h1>👤 VadászApró – Felhasználók</h1>
             <?php settings_errors( 'va_users' ); ?>
-            <table class="wp-list-table widefat fixed striped va-users-table">
+            <table class="wp-list-table widefat striped va-users-table">
                 <thead>
                     <tr>
                         <th>Felhasználónév</th>
