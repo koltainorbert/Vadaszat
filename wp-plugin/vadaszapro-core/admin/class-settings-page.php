@@ -558,12 +558,24 @@ class VA_Settings_Page {
 
         /* Aukciók */
         $auction_opts = [
-            'va_default_min_bid_step' => 500,
-            'va_auction_fee_pct'      => 0,
+            'va_default_min_bid_step'  => 500,
+            'va_auction_fee_pct'       => 0,
+            'va_email_outbid_subject'  => 'Túllicitáltak – {title}',
+            'va_email_outbid_heading'  => 'Túllicitáltak téged!',
+            'va_email_outbid_body'     => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Túllicitáltak a <strong>{title}</strong> aukción.</p>\n<p>Aktuális licit: <strong>{amount} Ft</strong></p>",
+            'va_email_outbid_btn'      => 'Licitáljon újra',
+            'va_email_winner_subject'  => 'Nyertél az aukción! – {title}',
+            'va_email_winner_heading'  => '🏆 Nyertél az aukción!',
+            'va_email_winner_body'     => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Gratulálunk! Nyertél a <strong>{title}</strong> aukción.</p>\n<p>Nyerő licit: <strong>{amount} Ft</strong></p>\n<p>A hirdetés feladójával hamarosan felveszi Önnel a kapcsolatot.</p>",
+            'va_email_winner_btn'      => 'Aukció megtekintése',
+            'va_email_seller_subject'  => 'Aukciód lezárult – {title}',
+            'va_email_seller_heading'  => 'Aukciód lezárult!',
+            'va_email_seller_body'     => "<p>Kedves <strong>{seller_name}</strong>,</p>\n<p>Lezárult a <strong>{title}</strong> aukciód.</p>\n<p>Nyerő licit: <strong>{amount} Ft</strong></p>\n<p>Nyertes: <strong>{winner_name}</strong> (<a href=\"mailto:{winner_email}\" style=\"color:#cc0000;\">{winner_email}</a>)</p>\n<p>Kérjük, vegye fel a kapcsolatot a nyertessel.</p>",
+            'va_email_seller_btn'      => 'Aukció megtekintése',
         ];
         foreach ( $auction_opts as $key => $default ) {
             self::$defaults[ $key ] = $default;
-            register_setting( 'va_auction_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            register_setting( 'va_auction_settings', $key, [ 'sanitize_callback' => 'wp_kses_post' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
@@ -3670,6 +3682,14 @@ class VA_Settings_Page {
     private static function field_toggle( string $key, string $label ): void {
         $val = (string) self::get_display_option( $key, '0' );
         echo "<tr><th>{$label}</th><td><input type=\"hidden\" name=\"{$key}\" value=\"0\"><label class=\"va-toggle\"><input type=\"checkbox\" name=\"{$key}\" value=\"1\"" . checked( $val, '1', false ) . "><span class=\"va-toggle-slider\"></span></label></td></tr>";
+    }
+
+    private static function field_textarea( string $key, string $label, string $desc = '', int $rows = 6 ): void {
+        $val = esc_textarea( (string) self::get_display_option( $key, '' ) );
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
+        echo "<textarea id=\"{$key}\" name=\"{$key}\" rows=\"{$rows}\" class=\"large-text code\" style=\"font-size:13px;line-height:1.6;\">{$val}</textarea>";
+        if ( $desc ) echo "<p class=\"description\">{$desc}</p>";
+        echo "</td></tr>";
     }
 
     public static function render_single_designer(): void {
