@@ -154,16 +154,32 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                     ?>
                     <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
                         <td style="padding:10px 8px;">
-                            <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;"><?php echo esc_html( $l->post_title ); ?></a>
-                            <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
-                                <span style="font-size:11px;background:#ffaa00;color:#000;padding:2px 6px;border-radius:3px;margin-left:6px;">Kiemelt</span>
-                            <?php endif; ?>
-                            <div style="margin-top:3px;font-size:11px;">
-                            <?php if ( $is_suspended && $suspended_at ): ?>
-                                <span style="color:#ff9900;">⏸ Felfüggesztve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
-                            <?php else: ?>
-                                <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) ) . ' napja' ); ?></span>
-                            <?php endif; ?>
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <?php
+                                $thumb_id  = get_post_thumbnail_id( $l->ID );
+                                if ( ! $thumb_id ) {
+                                    $gallery = get_post_meta( $l->ID, 'va_gallery_ids', true );
+                                    $ids     = array_filter( array_map( 'intval', explode( ',', (string)$gallery ) ) );
+                                    $thumb_id = $ids[0] ?? 0;
+                                }
+                                if ( $thumb_id ) :
+                                    $thumb_url = wp_get_attachment_image_url( $thumb_id, 'thumbnail' );
+                                ?>
+                                <img src="<?php echo esc_url( $thumb_url ); ?>" alt="" style="width:52px;height:52px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid rgba(255,255,255,.1);">
+                                <?php endif; ?>
+                                <div style="min-width:0;">
+                                    <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;"><?php echo esc_html( $l->post_title ); ?></a>
+                                    <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
+                                        <span style="font-size:11px;background:#ffaa00;color:#000;padding:2px 6px;border-radius:3px;margin-left:6px;">Kiemelt</span>
+                                    <?php endif; ?>
+                                    <div style="margin-top:3px;font-size:11px;">
+                                    <?php if ( $is_suspended && $suspended_at ): ?>
+                                        <span style="color:#ff9900;">⏸ Felfüggesztve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
+                                    <?php else: ?>
+                                        <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) ) . ' napja' ); ?></span>
+                                    <?php endif; ?>
+                                    </div>
+                                </div>
                             </div>
                         </td>
                         <td style="padding:10px 8px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
@@ -203,7 +219,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 : get_edit_post_link( $l->ID );
                             ?>
                             <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
-                                <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--sm" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;white-space:nowrap;">Szerk.</a>
+                                <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--sm" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;white-space:nowrap;">Szerkesztés</a>
                                 <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
                                 <form method="post" style="margin:0;">
                                     <?php wp_nonce_field( 'va_suspend_listing', 'va_suspend_listing_nonce' ); ?>
