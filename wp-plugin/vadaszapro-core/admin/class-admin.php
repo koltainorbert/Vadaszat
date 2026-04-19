@@ -117,6 +117,7 @@ class VA_Admin {
             "vadaszapro-users"        => "Felhasználók",
             "va-form-builder"         => "Form Szerkesztő",
             "vadaszapro-adminpanel"   => "Admin Panel beállítások",
+            "vadaszapro-single-designer" => "Termékoldal Designer",
             "vadaszapro-stats"        => "Statisztika",
         ];
         $titles["vadaszapro-listings"]     = "Hirdetések";
@@ -161,6 +162,7 @@ class VA_Admin {
                 <?php self::sb_item( "🗂️", "Fejléc & Lábléc", admin_url( "admin.php?page=vadaszapro-header-footer" ), $page === "vadaszapro-header-footer" ); ?>
                 <?php self::sb_item( "🧩", "Form szerkesztő", admin_url( "admin.php?page=va-form-builder" ), $page === "va-form-builder" ); ?>
                 <?php self::sb_item( "🖥️", "Admin Panel", admin_url( "admin.php?page=vadaszapro-adminpanel" ), $page === "vadaszapro-adminpanel" ); ?>
+                <?php self::sb_item( "🧱", "Termékoldal", admin_url( "admin.php?page=vadaszapro-single-designer" ), $page === "vadaszapro-single-designer" ); ?>
 
                 <span class="va-sb-sep">Tartalom</span>
 
@@ -243,6 +245,7 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Felhasználók",           "Felhasználók",      "manage_options", "vadaszapro-users",          [ VA_Settings_Page::class, "render_users"            ] );
         add_submenu_page( "vadaszapro", "Form szerkesztő",        "🧩 Form szerkesztő","manage_options", "va-form-builder",           [ VA_Form_Builder::class,  "render"                 ] );
         add_submenu_page( "vadaszapro", "Admin Panel beállítások", "Admin Panel",       "manage_options", "vadaszapro-adminpanel",     [ VA_Settings_Page::class, "render_adminpanel"      ] );
+        add_submenu_page( "vadaszapro", "Termékoldal Designer",    "Termékoldal",       "manage_options", "vadaszapro-single-designer", [ VA_Settings_Page::class, "render_single_designer" ] );
         add_submenu_page( "vadaszapro", "Social Media",              "🌐 Social Media",   "manage_options", "vadaszapro-social",         [ VA_Settings_Page::class, "render_social"           ] );
         add_submenu_page( "vadaszapro", "Statisztika",            "Statisztika",       "manage_options", "vadaszapro-stats",          [ VA_Settings_Page::class, "render_stats"            ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
