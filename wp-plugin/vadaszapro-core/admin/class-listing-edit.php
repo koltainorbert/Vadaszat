@@ -781,7 +781,9 @@ class VA_Listing_Edit {
             });
             var existing = document.getElementById('va-admin-desc-hidden');
             if (existing && existing.value.trim()) {
-                quillAdmin.clipboard.dangerouslyPasteHTML(existing.value);
+                // root.innerHTML közvetlen írás: megőrzi az img style="width:…" attribútumot
+                // (dangerouslyPasteHTML sanitizálja és elveszíti a méretet)
+                quillAdmin.root.innerHTML = existing.value;
             }
 
             /* Kép resize */
