@@ -20,34 +20,40 @@ class VA_Listing_Edit {
         add_action( 'admin_footer', [ __CLASS__, 'tinymce_dark_css' ] );
     }
 
-    /* ── TinyMCE sötét skin CSS (footer = legkésőbb tölt be) ── */
+    /* ── TinyMCE 4 sötét skin CSS (footer = legkésőbb tölt be) ── */
     public static function tinymce_dark_css(): void {
         $screen = get_current_screen();
         if ( ! $screen || strpos( $screen->id, 'vadaszapro-listing-edit' ) === false ) return;
         ?>
         <style>
-        #wp-va_listing_description-wrap .wp-editor-tools { background: #141414 !important; border: none !important; }
+        /* TinyMCE 4 (.mce-*) sötét override */
+        #wp-va_listing_description-editor-container .mce-tinymce,
+        #wp-va_listing_description-editor-container .mce-tinymce.mce-container { box-shadow: none !important; border: 1px solid rgba(255,255,255,.12) !important; }
+        #wp-va_listing_description-editor-container .mce-top-part,
+        #wp-va_listing_description-editor-container .mce-toolbar-grp,
+        #wp-va_listing_description-editor-container .mce-panel,
+        #wp-va_listing_description-editor-container .mce-toolbar,
+        #wp-va_listing_description-editor-container .mce-flow-layout,
+        #wp-va_listing_description-editor-container .mce-menubar { background: #1e1e1e !important; border-color: rgba(255,255,255,.1) !important; }
+        #wp-va_listing_description-editor-container .mce-btn-group { border-color: rgba(255,255,255,.1) !important; }
+        #wp-va_listing_description-editor-container .mce-btn button,
+        #wp-va_listing_description-editor-container .mce-btn { background: transparent !important; border-color: transparent !important; box-shadow: none !important; }
+        #wp-va_listing_description-editor-container .mce-btn:hover button,
+        #wp-va_listing_description-editor-container .mce-btn.mce-active button { background: #2a2a2a !important; }
+        #wp-va_listing_description-editor-container .mce-ico { color: #bbb !important; }
+        #wp-va_listing_description-editor-container .mce-txt,
+        #wp-va_listing_description-editor-container .mce-caret { color: #ccc !important; }
+        #wp-va_listing_description-editor-container .mce-listbox.mce-btn button { background: #252525 !important; border-color: rgba(255,255,255,.15) !important; }
+        #wp-va_listing_description-editor-container .mce-statusbar,
+        #wp-va_listing_description-editor-container .mce-resizehandler { background: #1e1e1e !important; border-top: 1px solid rgba(255,255,255,.1) !important; color: #555 !important; }
+        #wp-va_listing_description-editor-container .mce-path-item { color: #555 !important; }
+        #wp-va_listing_description-editor-container .mce-wordcount { color: #555 !important; }
+        /* Media gomb sor + tab gombok */
+        #wp-va_listing_description-wrap .wp-editor-tools { background: #141414 !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
         #wp-va_listing_description-wrap .wp-media-buttons .button { background: #1e1e1e !important; color: #ccc !important; border-color: rgba(255,255,255,.2) !important; box-shadow: none !important; text-shadow: none !important; }
         #wp-va_listing_description-wrap .wp-editor-tabs button { background: #141414 !important; color: #888 !important; border-color: rgba(255,255,255,.12) !important; box-shadow: none !important; }
-        #wp-va_listing_description-wrap .wp-editor-tabs button.active,
-        #wp-va_listing_description-wrap .wp-editor-tabs button:hover { background: #1e1e1e !important; color: #e8e8e8 !important; }
-        #wp-va_listing_description-editor-container { border: 1px solid rgba(255,255,255,.12) !important; overflow: hidden; }
-        #wp-va_listing_description-editor-container .tox-tinymce { border: none !important; border-radius: 0 !important; }
-        #wp-va_listing_description-editor-container .tox-editor-header,
-        #wp-va_listing_description-editor-container .tox-toolbar-overlord,
-        #wp-va_listing_description-editor-container .tox-toolbar__primary,
-        #wp-va_listing_description-editor-container .tox-toolbar { background: #1e1e1e !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
-        #wp-va_listing_description-editor-container .tox-toolbar__group { border-right-color: rgba(255,255,255,.1) !important; }
-        #wp-va_listing_description-editor-container .tox-tbtn { color: #ccc !important; background: transparent !important; border: none !important; }
-        #wp-va_listing_description-editor-container .tox-tbtn svg { fill: #aaa !important; }
-        #wp-va_listing_description-editor-container .tox-tbtn:hover { background: #2a2a2a !important; }
-        #wp-va_listing_description-editor-container .tox-tbtn--active { background: #333 !important; }
-        #wp-va_listing_description-editor-container .tox-tbtn__select-label { color: #ccc !important; }
-        #wp-va_listing_description-editor-container .tox-split-button { border-color: transparent !important; }
-        #wp-va_listing_description-editor-container .tox-statusbar { background: #1e1e1e !important; border-top: 1px solid rgba(255,255,255,.1) !important; }
-        #wp-va_listing_description-editor-container .tox-statusbar__path-item,
-        #wp-va_listing_description-editor-container .tox-statusbar__wordcount { color: #555 !important; }
-        #wp-va_listing_description-editor-container .tox-statusbar__resize-handle svg { fill: #444 !important; }
+        #wp-va_listing_description-wrap .wp-editor-tabs button:hover,
+        #wp-va_listing_description-wrap .wp-editor-tabs button.active { background: #1e1e1e !important; color: #e8e8e8 !important; }
         </style>
         <?php
     }
