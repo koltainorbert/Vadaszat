@@ -2,6 +2,24 @@
 
 ---
 
+## 2026. 04. 19. – Session #104 (Vadásznaptár desktop: alsó fekete csúszka + felső hónap-indikátor eltávolítás)
+
+### Mit csinaltunk [x]
+- [x] `wp-theme/vadaszapro-theme/index.php` – nyitooldali vadásznaptárból kiveve a felső, scroll közbeni hónap-indikátor (`va-hn-month-ind`)
+- [x] a hozzá tartozó JS logika törölve (`updateHnMonthIndicator` és hívásai)
+- [x] vízszintes chart csúszka desktop stílus finomítva: fekete alsó scrollbar track + sötét thumb (`.va-hnaptar__scroll`)
+- [x] `wp-theme/vadaszapro-theme/page-vadasz-naptar.php` – külön vadásznaptár oldalon is kiveve a felső hónap-indikátor (`vn-chart-month-ind`)
+- [x] a hozzá tartozó JS logika törölve (`updateVnMonthIndicator` és hívásai)
+- [x] vízszintes chart csúszka desktop stílus finomítva: fekete alsó scrollbar track + sötét thumb (`.vn-chart-scroll`)
+- [x] Hibavizsgálat: módosított fájlok hibamentesek
+- [x] Deploy Theme: kész ✅
+
+### Eredmeny
+- Desktopon a vadásznaptár vízszintes csúszkája sötét/fekete megjelenésű az alsó sávban.
+- A naptár tetején oldalra húzáskor már nem jelenik meg hónapnév-kijelzés.
+
+---
+
 ## 2026. 04. 19. – Session #103 (Termékoldal Designer admin menü + wireframe presetek + frontend paraméterezés)
 
 ### Mit csinaltunk [x]

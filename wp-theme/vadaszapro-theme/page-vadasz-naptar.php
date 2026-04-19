@@ -121,8 +121,11 @@ get_header();
 .vn-chart-hint{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.42);opacity:0;transform:translateX(-6px);transition:all .25s ease;}
 .vn-wrap.has-overflow .vn-chart-hint{opacity:1;transform:none;}
 .vn-wrap.is-scrolled .vn-chart-hint{opacity:.2;}
-.vn-chart-month-ind{font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#ffb4b4;background:rgba(255,0,0,.12);border:1px solid rgba(255,0,0,.25);padding:2px 8px;border-radius:999px;white-space:nowrap;}
-.vn-chart-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.vn-chart-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:#171717 #060606;}
+.vn-chart-scroll::-webkit-scrollbar{height:12px;}
+.vn-chart-scroll::-webkit-scrollbar-track{background:#060606;}
+.vn-chart-scroll::-webkit-scrollbar-thumb{background:#171717;border:1px solid #2a2a2a;border-radius:999px;}
+.vn-chart-scroll::-webkit-scrollbar-thumb:hover{background:#232323;}
 .vn-chart{
   max-width:1200px;margin:0 auto;
   min-width:980px;
@@ -260,7 +263,6 @@ get_header();
   .vn-today{margin-bottom:14px;}
   .vn-op-box,.vn-cl-box{padding:24px 18px 20px;}
   .vn-chart{min-width:760px;}
-  .vn-chart-month-ind{font-size:.58rem;padding:2px 7px;}
 }
 @media(max-width:400px){
   .vn-tp-grid{grid-template-columns:1fr;}
@@ -352,7 +354,6 @@ get_header();
   <!-- ── GANTT CHART ── -->
   <div class="vn-chart-meta">
     <span class="vn-chart-hint" id="vn-chart-hint">Húzd oldalra a naptárat</span>
-    <span class="vn-chart-month-ind" id="vn-chart-month-ind">Január</span>
   </div>
   <div class="vn-chart-scroll">
     <div class="vn-chart" id="vn-chart"></div>
@@ -674,28 +675,18 @@ buildTodayPanel();
 const chart=document.getElementById('vn-chart');
 const chartWrap=document.querySelector('.vn-wrap');
 const chartScroll=document.querySelector('.vn-chart-scroll');
-const chartMonthInd=document.getElementById('vn-chart-month-ind');
 
 function updateVnOverflowState(){
   if(!chartWrap||!chartScroll)return;
   const overflow=chartScroll.scrollWidth>chartScroll.clientWidth+4;
   chartWrap.classList.toggle('has-overflow',overflow);
 }
-function updateVnMonthIndicator(){
-  if(!chartScroll||!chartMonthInd)return;
-  const max=Math.max(1,chartScroll.scrollWidth-chartScroll.clientWidth);
-  const ratio=chartScroll.scrollLeft/max;
-  const idx=Math.max(0,Math.min(11,Math.round(ratio*11)));
-  chartMonthInd.textContent=MONTHS[idx];
-}
 if(chartScroll){
   chartScroll.addEventListener('scroll',()=>{
     if(chartWrap)chartWrap.classList.add('is-scrolled');
-    updateVnMonthIndicator();
   },{passive:true});
   window.addEventListener('resize',()=>{
     updateVnOverflowState();
-    updateVnMonthIndicator();
   });
 }
 
@@ -781,7 +772,6 @@ if(_grpData2.length>0&&grpDaysSinceOpen2(groups[0])<9999){
 }
 updateAllCountdowns();
 updateVnOverflowState();
-updateVnMonthIndicator();
 
 // ── HOLDNAPTÁR ───────────────────────────────────────────────────────
 (function(){
