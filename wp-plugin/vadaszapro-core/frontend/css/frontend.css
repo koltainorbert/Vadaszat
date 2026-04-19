@@ -599,72 +599,63 @@
 }
 .va-img-card {
   position: relative;
-  border: 2px solid rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.14);
   border-radius: 10px;
   overflow: hidden;
   background: #111;
-  cursor: grab;
-  transition: border-color .2s, box-shadow .2s;
+  cursor: move;
 }
-.va-img-card:active { cursor: grabbing; }
 .va-img-card--featured {
   border-color: #ff0000;
-  box-shadow: 0 0 0 2px rgba(255,32,32,.25);
+  box-shadow: 0 0 0 2px rgba(255,0,0,.25);
 }
 .va-img-card__thumb {
   width: 100%;
   aspect-ratio: 1 / 1;
   object-fit: cover;
   display: block;
-  pointer-events: none;
-  user-select: none;
 }
 .va-img-card__overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,.6);
-  opacity: 0;
-  transition: opacity .18s;
+  background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,.05));
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
-  padding: 7px;
-  pointer-events: none;
+  padding: 6px;
 }
-.va-img-card:hover .va-img-card__overlay { opacity: 1; pointer-events: auto; }
-.va-img-card--featured .va-img-card__overlay { opacity: 1; pointer-events: auto; }
+.va-img-card__num {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(0,0,0,.5);
+  border-radius: 999px;
+  padding: 2px 7px;
+}
 .va-img-feat-btn,
 .va-img-del-btn {
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border: none;
-  border-radius: 7px;
+  border-radius: 50%;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
   cursor: pointer;
-  background: rgba(255,255,255,.15);
-  color: rgba(255,255,255,.8);
-  transition: background .15s, color .15s;
-  flex-shrink: 0;
 }
-.va-img-feat-btn:hover { background: #ff0000; color: #fff; }
-.va-img-card--featured .va-img-feat-btn { background: #ff0000; color: #fff; }
-.va-img-del-btn:hover { background: #c0392b; color: #fff; }
+.va-img-feat-btn { background: rgba(0,0,0,.55); color: #ffd44d; }
+.va-img-del-btn { background: rgba(255,0,0,.9); color: #fff; }
 .va-img-card__label {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: 6px;
+  left: 6px;
   font-size: 10px;
   font-weight: 700;
   background: #ff0000;
   color: #fff;
-  text-align: center;
-  padding: 4px 0;
-  text-transform: uppercase;
-  letter-spacing: .5px;
-  pointer-events: none;
+  border-radius: 999px;
+  padding: 3px 8px;
 }
 
 /* ── Dashboard ─────────────────────────────────── */

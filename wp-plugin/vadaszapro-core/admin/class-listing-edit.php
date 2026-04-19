@@ -81,18 +81,13 @@ class VA_Listing_Edit {
             }
         }
 
-        // Kiemelt kép (borítókép)
+        // Kiemelt kép
         $thumbnail_id = (int)( $_POST['va_thumbnail_id'] ?? 0 );
         if ( $thumbnail_id > 0 ) {
             set_post_thumbnail( $post_id, $thumbnail_id );
-        } else {
+        } elseif ( isset( $_POST['va_remove_thumbnail'] ) ) {
             delete_post_thumbnail( $post_id );
         }
-
-        // Galéria képek mentése
-        $raw_gallery = sanitize_text_field( wp_unslash( $_POST['va_gallery_ids'] ?? '' ) );
-        $gids = array_values( array_unique( array_filter( array_map( 'intval', $raw_gallery !== '' ? explode( ',', $raw_gallery ) : [] ) ) ) );
-        update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $gids ) );
 
         // Taxonómiák
         $cat_id    = (int)( $_POST['va_category'] ?? 0 );
@@ -347,7 +342,6 @@ class VA_Listing_Edit {
     public static function render_edit(): void {
         if ( ! current_user_can( 'edit_posts' ) ) return;
         wp_enqueue_media();
-        wp_enqueue_script( 'jquery-ui-sortable' );
 
         $post_id = (int)( $_GET['id'] ?? 0 );
         $post    = $post_id ? get_post( $post_id ) : null;
@@ -360,18 +354,9 @@ class VA_Listing_Edit {
 
         $get_meta = static fn($k) => $post ? (string)get_post_meta( $post_id, $k, true ) : '';
 
-        // Galéria képek betöltése
-        $thumb_id    = $post ? (int)get_post_thumbnail_id( $post_id ) : 0;
-        $gallery_raw = $post ? (string)get_post_meta( $post_id, 'va_gallery_ids', true ) : '';
-        $gallery_ids = array_values( array_unique( array_filter( array_map( 'intval', $gallery_raw !== '' ? explode( ',', $gallery_raw ) : [] ) ) ) );
-        // Ha thumbnail nincs a galériában, tegyük az elejére
-        if ( $thumb_id && ! in_array( $thumb_id, $gallery_ids, true ) ) {
-            array_unshift( $gallery_ids, $thumb_id );
-        }
-        // Ha nincs thumbnail de van galéria, az első legyen a borítókép
-        if ( ! $thumb_id && $gallery_ids ) {
-            $thumb_id = $gallery_ids[0];
-        }
+        // Thumbnail
+        $thumb_id  = $post ? (int)get_post_thumbnail_id( $post_id ) : 0;
+        $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'medium' ) : '';
 
         // Taxonómiák
         $categories   = get_terms([ 'taxonomy' => 'va_category', 'hide_empty' => false, 'number' => 200 ]);
@@ -449,40 +434,21 @@ class VA_Listing_Edit {
                                       placeholder="Részletes leírás a hirdetett termékről…"><?php echo esc_textarea($post ? $post->post_content : ''); ?></textarea>
                         </div>
 
-                        <!-- Képek galéria -->
+                        <!-- Kiemelt kép -->
                         <div class="va-le-card">
-                            <div class="va-le-card-hdr" style="display:flex;align-items:center;gap:8px;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                                Képek
-                                <span class="va-le-gallery-count" id="va-gallery-count"><?php echo count($gallery_ids) ? count($gallery_ids) . ' kép' : ''; ?></span>
-                            </div>
-                            <div class="va-gallery-grid" id="va-gallery-grid">
-                                <?php foreach ( $gallery_ids as $gid ):
-                                    $gurl = wp_get_attachment_image_url( $gid, 'thumbnail' );
-                                    if ( ! $gurl ) continue;
-                                    $is_cover = ( $gid === $thumb_id );
-                                ?>
-                                <div class="va-gallery-item<?php echo $is_cover ? ' is-cover' : ''; ?>" data-id="<?php echo (int)$gid; ?>">
-                                    <img src="<?php echo esc_url( $gurl ); ?>" alt="">
-                                    <div class="va-gallery-item-overlay">
-                                        <button type="button" class="va-gallery-cover-btn" title="Beállítás borítóképnek">
-                                            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                                        </button>
-                                        <button type="button" class="va-gallery-rm-btn" title="Eltávolítás">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                                        </button>
-                                    </div>
-                                    <?php if ( $is_cover ): ?><div class="va-gallery-cover-badge">Borítókép</div><?php endif; ?>
-                                </div>
-                                <?php endforeach; ?>
-                                <button type="button" class="va-gallery-add-btn" id="va-gallery-add">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="28" height="28"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                                    <span>Képek hozzáadása</span>
-                                </button>
+                            <div class="va-le-card-hdr">📷 Kiemelt kép</div>
+                            <div class="va-le-img-area" id="va-img-area" style="cursor:pointer" title="Kép kiválasztása">
+                                <?php if ($thumb_url): ?>
+                                <img src="<?php echo esc_url($thumb_url); ?>" id="va-img-preview" class="va-le-img-preview">
+                                <?php else: ?>
+                                <div class="va-le-img-ph" id="va-img-ph"><span>📷</span><p>Kattints a kép kiválasztásához</p></div>
+                                <?php endif; ?>
                             </div>
                             <input type="hidden" name="va_thumbnail_id" id="va_thumbnail_id" value="<?php echo (int)$thumb_id; ?>">
-                            <input type="hidden" name="va_gallery_ids"  id="va_gallery_ids"  value="<?php echo esc_attr( implode( ',', $gallery_ids ) ); ?>">
-                            <p class="va-le-gallery-hint">Húzd a képeket az átrendezéshez &bull; Kattints a ★ gombra a borítókép beállításához</p>
+                            <div class="va-le-img-btns">
+                                <button type="button" id="va-img-btn" class="va-btn va-btn--sm">📂 Kép kiválasztása</button>
+                                <button type="button" id="va-img-rm" class="va-btn va-btn--sm va-btn--danger"<?php echo $thumb_id ? '' : ' style="display:none"'; ?>>✕ Eltávolítás</button>
+                            </div>
                         </div>
 
                         <!-- Árazás -->
@@ -699,135 +665,35 @@ class VA_Listing_Edit {
         </div><!-- .va-le-wrap -->
 
         <script>
-        jQuery(function ($) {
-            var mediaFrame,
-                grid        = document.getElementById('va-gallery-grid'),
-                addBtn      = document.getElementById('va-gallery-add'),
-                thumbInput  = document.getElementById('va_thumbnail_id'),
-                galleryInput= document.getElementById('va_gallery_ids'),
-                countEl     = document.getElementById('va-gallery-count');
+        (function () {
+            var frame, imgArea = document.getElementById('va-img-area'),
+                thumbInput = document.getElementById('va_thumbnail_id'),
+                imgBtn = document.getElementById('va-img-btn'),
+                rmBtn  = document.getElementById('va-img-rm');
 
-            /* ── Segédek ─────────────────────────────────── */
-            function getIds() {
-                return Array.from(grid.querySelectorAll('.va-gallery-item')).map(function(el){
-                    return parseInt(el.dataset.id, 10);
-                });
-            }
-
-            function sync() {
-                var ids = getIds();
-                galleryInput.value = ids.join(',');
-                // Ha nincs cover, az első legyen az
-                if (!grid.querySelector('.va-gallery-item.is-cover') && grid.querySelector('.va-gallery-item')) {
-                    grid.querySelector('.va-gallery-item').classList.add('is-cover');
-                    updateCoverBadge();
-                }
-                var coverId = grid.querySelector('.va-gallery-item.is-cover');
-                thumbInput.value = coverId ? coverId.dataset.id : '0';
-                countEl.textContent = ids.length ? ids.length + ' kép' : '';
-            }
-
-            function updateCoverBadge() {
-                grid.querySelectorAll('.va-gallery-item').forEach(function(el){
-                    var badge = el.querySelector('.va-gallery-cover-badge');
-                    if (el.classList.contains('is-cover')) {
-                        if (!badge) {
-                            badge = document.createElement('div');
-                            badge.className = 'va-gallery-cover-badge';
-                            badge.textContent = 'Borítókép';
-                            el.appendChild(badge);
-                        }
-                    } else {
-                        if (badge) badge.remove();
-                    }
-                });
-            }
-
-            function makeItem(att) {
-                var url = (att.sizes && att.sizes.thumbnail) ? att.sizes.thumbnail.url : att.url;
-                var div = document.createElement('div');
-                div.className = 'va-gallery-item';
-                div.dataset.id = att.id;
-                div.innerHTML =
-                    '<img src="' + url + '" alt="">' +
-                    '<div class="va-gallery-item-overlay">' +
-                        '<button type="button" class="va-gallery-cover-btn" title="Beállítás borítóképnek">' +
-                            '<svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>' +
-                        '</button>' +
-                        '<button type="button" class="va-gallery-rm-btn" title="Eltávolítás">' +
-                            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="14" height="14"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
-                        '</button>' +
-                    '</div>';
-                return div;
-            }
-
-            function bindItem(item) {
-                item.querySelector('.va-gallery-cover-btn').addEventListener('click', function(e){
-                    e.stopPropagation();
-                    grid.querySelectorAll('.va-gallery-item').forEach(function(el){ el.classList.remove('is-cover'); });
-                    item.classList.add('is-cover');
-                    thumbInput.value = item.dataset.id;
-                    updateCoverBadge();
-                });
-                item.querySelector('.va-gallery-rm-btn').addEventListener('click', function(e){
-                    e.stopPropagation();
-                    var wasCover = item.classList.contains('is-cover');
-                    item.remove();
-                    if (wasCover) {
-                        var first = grid.querySelector('.va-gallery-item');
-                        if (first) { first.classList.add('is-cover'); }
-                    }
-                    updateCoverBadge();
-                    sync();
-                });
-            }
-
-            /* ── Init: meglévő elemek ────────────────────── */
-            grid.querySelectorAll('.va-gallery-item').forEach(bindItem);
-
-            /* ── Médiatár megnyitó ───────────────────────── */
-            function openMedia() {
+            function openMedia(e) {
+                if (e) e.preventDefault();
                 if (!window.wp || !wp.media) return;
-                if (mediaFrame) { mediaFrame.open(); return; }
-                mediaFrame = wp.media({
-                    title: 'Képek kiválasztása',
-                    multiple: 'add',
-                    library: { type: 'image' },
-                    button: { text: 'Hozzáadás a galériához' }
+                if (frame) { frame.open(); return; }
+                frame = wp.media({ title: 'Kép kiválasztása', multiple: false, library: { type: 'image' }, button: { text: 'Kiválaszt' } });
+                frame.on('select', function () {
+                    var att = frame.state().get('selection').first().toJSON();
+                    thumbInput.value = att.id;
+                    imgArea.innerHTML = '<img src="' + (att.sizes && att.sizes.medium ? att.sizes.medium.url : att.url) + '" id="va-img-preview" class="va-le-img-preview">';
+                    if (rmBtn) rmBtn.style.display = '';
                 });
-                mediaFrame.on('select', function () {
-                    var existing = getIds();
-                    mediaFrame.state().get('selection').each(function(att){
-                        var data = att.toJSON();
-                        if (existing.indexOf(data.id) !== -1) return; // duplikát skip
-                        var item = makeItem(data);
-                        grid.insertBefore(item, addBtn);
-                        bindItem(item);
-                    });
-                    // Ha még nincs cover, az első legyen
-                    if (!grid.querySelector('.va-gallery-item.is-cover')) {
-                        var first = grid.querySelector('.va-gallery-item');
-                        if (first) first.classList.add('is-cover');
-                    }
-                    updateCoverBadge();
-                    sync();
-                });
-                mediaFrame.open();
+                frame.open();
             }
 
-            if (addBtn) addBtn.addEventListener('click', openMedia);
-
-            /* ── Drag & drop sorrend (jQuery UI Sortable) ── */
-            $(grid).sortable({
-                items: '.va-gallery-item',
-                tolerance: 'pointer',
-                cursor: 'grabbing',
-                placeholder: 'ui-sortable-placeholder',
-                forcePlaceholderSize: true,
-                stop: function() { sync(); }
+            if (imgBtn)  imgBtn.addEventListener('click', openMedia);
+            if (imgArea) imgArea.addEventListener('click', function(e){ if (!e.target.closest('#va-img-rm')) openMedia(e); });
+            if (rmBtn)   rmBtn.addEventListener('click', function(e){
+                e.preventDefault(); e.stopPropagation();
+                thumbInput.value = '0';
+                imgArea.innerHTML = '<div class="va-le-img-ph" id="va-img-ph"><span>📷</span><p>Kattints a kép kiválasztásához</p></div>';
+                rmBtn.style.display = 'none';
             });
-
-        });
+        })();
         </script>
         <?php
     }
