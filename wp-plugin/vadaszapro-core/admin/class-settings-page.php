@@ -2527,6 +2527,132 @@ class VA_Settings_Page {
         return $options;
     }
 
+    /* ── Admin Panel preset alkalmazás ───────────────────── */
+    public static function handle_apply_ap_preset(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
+        check_admin_referer( 'va_apply_ap_preset' );
+
+        $preset_key = sanitize_key( (string) ( $_POST['preset_key'] ?? '' ) );
+        $presets = self::get_adminpanel_presets();
+
+        if ( ! isset( $presets[ $preset_key ] ) ) {
+            wp_safe_redirect( add_query_arg( 'va_ap_preset', 'invalid', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
+            exit;
+        }
+
+        foreach ( $presets[ $preset_key ]['options'] as $key => $value ) {
+            update_option( (string) $key, $value );
+        }
+
+        wp_safe_redirect( add_query_arg( 'va_ap_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
+        exit;
+    }
+
+    private static function get_adminpanel_presets(): array {
+        return [
+            'dark_crimson' => [
+                'label' => 'Dark Crimson', 'desc' => 'Alapértelmezett – sötét + piros',
+                'bg' => '#070709', 'bg2' => '#0d0d11', 'accent' => '#ff2020', 'accent2' => '#ff5050',
+                'options' => [
+                    'va_ap_color_bg' => '#070709', 'va_ap_color_bg2' => '#0d0d11', 'va_ap_color_bg3' => '#111118', 'va_ap_color_bg4' => '#161620',
+                    'va_ap_color_text' => '#e8e8f0', 'va_ap_color_muted' => 'rgba(255,255,255,.45)',
+                    'va_ap_color_accent' => '#ff2020', 'va_ap_color_accent2' => '#ff5050',
+                    'va_ap_color_border' => 'rgba(255,255,255,.07)', 'va_ap_color_border2' => 'rgba(255,255,255,.12)',
+                ],
+            ],
+            'midnight_navy' => [
+                'label' => 'Midnight Navy', 'desc' => 'Sötétkék + neon kék accent',
+                'bg' => '#07090f', 'bg2' => '#0b0f1a', 'accent' => '#3b8af7', 'accent2' => '#6aadff',
+                'options' => [
+                    'va_ap_color_bg' => '#07090f', 'va_ap_color_bg2' => '#0b0f1a', 'va_ap_color_bg3' => '#101520', 'va_ap_color_bg4' => '#151c2b',
+                    'va_ap_color_text' => '#dce8ff', 'va_ap_color_muted' => 'rgba(220,232,255,.45)',
+                    'va_ap_color_accent' => '#3b8af7', 'va_ap_color_accent2' => '#6aadff',
+                    'va_ap_color_border' => 'rgba(59,138,247,.08)', 'va_ap_color_border2' => 'rgba(59,138,247,.15)',
+                ],
+            ],
+            'forest_command' => [
+                'label' => 'Forest Command', 'desc' => 'Mély zöld, vadász feeling',
+                'bg' => '#060f0b', 'bg2' => '#0b1910', 'accent' => '#25d468', 'accent2' => '#5de891',
+                'options' => [
+                    'va_ap_color_bg' => '#060f0b', 'va_ap_color_bg2' => '#0b1910', 'va_ap_color_bg3' => '#0f2018', 'va_ap_color_bg4' => '#142a20',
+                    'va_ap_color_text' => '#d4f5e3', 'va_ap_color_muted' => 'rgba(212,245,227,.45)',
+                    'va_ap_color_accent' => '#25d468', 'va_ap_color_accent2' => '#5de891',
+                    'va_ap_color_border' => 'rgba(37,212,104,.07)', 'va_ap_color_border2' => 'rgba(37,212,104,.14)',
+                ],
+            ],
+            'obsidian_gold' => [
+                'label' => 'Obsidian Gold', 'desc' => 'Fekete + arany, prémium',
+                'bg' => '#080807', 'bg2' => '#10100d', 'accent' => '#e8b840', 'accent2' => '#f5cf6a',
+                'options' => [
+                    'va_ap_color_bg' => '#080807', 'va_ap_color_bg2' => '#10100d', 'va_ap_color_bg3' => '#161612', 'va_ap_color_bg4' => '#1e1d17',
+                    'va_ap_color_text' => '#f5f0e0', 'va_ap_color_muted' => 'rgba(245,240,224,.45)',
+                    'va_ap_color_accent' => '#e8b840', 'va_ap_color_accent2' => '#f5cf6a',
+                    'va_ap_color_border' => 'rgba(232,184,64,.07)', 'va_ap_color_border2' => 'rgba(232,184,64,.14)',
+                ],
+            ],
+            'graphite_purple' => [
+                'label' => 'Graphite Purple', 'desc' => 'Grafit + lila, tech-SaaS vibe',
+                'bg' => '#090910', 'bg2' => '#0f0f19', 'accent' => '#8b5cf6', 'accent2' => '#a78bfa',
+                'options' => [
+                    'va_ap_color_bg' => '#090910', 'va_ap_color_bg2' => '#0f0f19', 'va_ap_color_bg3' => '#141420', 'va_ap_color_bg4' => '#1a1a28',
+                    'va_ap_color_text' => '#e4e4f0', 'va_ap_color_muted' => 'rgba(228,228,240,.42)',
+                    'va_ap_color_accent' => '#8b5cf6', 'va_ap_color_accent2' => '#a78bfa',
+                    'va_ap_color_border' => 'rgba(139,92,246,.08)', 'va_ap_color_border2' => 'rgba(139,92,246,.16)',
+                ],
+            ],
+            'carbon_steel' => [
+                'label' => 'Carbon Steel', 'desc' => 'Tiszta szürke-acél, minimál',
+                'bg' => '#0a0a0a', 'bg2' => '#111111', 'accent' => '#64748b', 'accent2' => '#94a3b8',
+                'options' => [
+                    'va_ap_color_bg' => '#0a0a0a', 'va_ap_color_bg2' => '#111111', 'va_ap_color_bg3' => '#171717', 'va_ap_color_bg4' => '#1e1e1e',
+                    'va_ap_color_text' => '#e0e0e0', 'va_ap_color_muted' => 'rgba(224,224,224,.45)',
+                    'va_ap_color_accent' => '#64748b', 'va_ap_color_accent2' => '#94a3b8',
+                    'va_ap_color_border' => 'rgba(255,255,255,.06)', 'va_ap_color_border2' => 'rgba(255,255,255,.11)',
+                ],
+            ],
+            'copper_dark' => [
+                'label' => 'Copper Dark', 'desc' => 'Sötétbarna + réz, prémium outdoor',
+                'bg' => '#0a0806', 'bg2' => '#140f0a', 'accent' => '#c97d3e', 'accent2' => '#e0a265',
+                'options' => [
+                    'va_ap_color_bg' => '#0a0806', 'va_ap_color_bg2' => '#140f0a', 'va_ap_color_bg3' => '#1c160e', 'va_ap_color_bg4' => '#241c13',
+                    'va_ap_color_text' => '#f2e8d8', 'va_ap_color_muted' => 'rgba(242,232,216,.44)',
+                    'va_ap_color_accent' => '#c97d3e', 'va_ap_color_accent2' => '#e0a265',
+                    'va_ap_color_border' => 'rgba(201,125,62,.08)', 'va_ap_color_border2' => 'rgba(201,125,62,.14)',
+                ],
+            ],
+            'steel_ember' => [
+                'label' => 'Steel Ember', 'desc' => 'Acélos szürke + izzó narancs',
+                'bg' => '#0d0e10', 'bg2' => '#111317', 'accent' => '#ff7a22', 'accent2' => '#ffaa66',
+                'options' => [
+                    'va_ap_color_bg' => '#0d0e10', 'va_ap_color_bg2' => '#111317', 'va_ap_color_bg3' => '#16181e', 'va_ap_color_bg4' => '#1c1e25',
+                    'va_ap_color_text' => '#f0f2f5', 'va_ap_color_muted' => 'rgba(240,242,245,.45)',
+                    'va_ap_color_accent' => '#ff7a22', 'va_ap_color_accent2' => '#ffaa66',
+                    'va_ap_color_border' => 'rgba(255,122,34,.08)', 'va_ap_color_border2' => 'rgba(255,122,34,.15)',
+                ],
+            ],
+            'arctic_white' => [
+                'label' => 'Arctic White', 'desc' => 'Fehér/világos, magas kontraszt',
+                'bg' => '#f4f6f9', 'bg2' => '#ffffff', 'accent' => '#ef4444', 'accent2' => '#f87171',
+                'options' => [
+                    'va_ap_color_bg' => '#f4f6f9', 'va_ap_color_bg2' => '#ffffff', 'va_ap_color_bg3' => '#eef0f5', 'va_ap_color_bg4' => '#e4e7ed',
+                    'va_ap_color_text' => '#1a1a2e', 'va_ap_color_muted' => 'rgba(26,26,46,.5)',
+                    'va_ap_color_accent' => '#ef4444', 'va_ap_color_accent2' => '#f87171',
+                    'va_ap_color_border' => 'rgba(0,0,0,.08)', 'va_ap_color_border2' => 'rgba(0,0,0,.14)',
+                ],
+            ],
+            'royal_plum' => [
+                'label' => 'Royal Plum', 'desc' => 'Sötét lila-bordó, exkluzív',
+                'bg' => '#12091a', 'bg2' => '#1a0f24', 'accent' => '#c75cff', 'accent2' => '#da98ff',
+                'options' => [
+                    'va_ap_color_bg' => '#12091a', 'va_ap_color_bg2' => '#1a0f24', 'va_ap_color_bg3' => '#22132e', 'va_ap_color_bg4' => '#2b1a38',
+                    'va_ap_color_text' => '#f8f0ff', 'va_ap_color_muted' => 'rgba(248,240,255,.44)',
+                    'va_ap_color_accent' => '#c75cff', 'va_ap_color_accent2' => '#da98ff',
+                    'va_ap_color_border' => 'rgba(199,92,255,.08)', 'va_ap_color_border2' => 'rgba(199,92,255,.16)',
+                ],
+            ],
+        ];
+    }
+
     private static function get_header_footer_presets(): array {
         return [
             'carbon_red' => [
