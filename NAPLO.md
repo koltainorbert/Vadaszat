@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 04. 19. – Session #98 (Single product full-frame galeria + profi zoom kepnezegeto)
+
+### Mit csinaltunk [x]
+- [x] `wp-theme/vadaszapro-theme/style.css` – fo galeria kep frame-kitoltese (`object-fit: cover`) + zoom trigger gomb
+- [x] `wp-theme/vadaszapro-theme/single-va_listing.php` – fullscreen kepnezegeto overlay bevezetese
+- [x] Viewer funkciok: megnyitas fokeprol, ESC/overlay bezaras, zoom +/-, reset, egergorgos zoom, drag mozgatas nagyitasnal
+- [x] Mobil finomhangolas (1:1 fo kep, toolbar/close pozicio)
+- [x] Safari kompatibilitas: `-webkit-backdrop-filter`, `-webkit-user-select`
+- [x] Deploy Theme: exit 0 ✅
+
+---
+
 ## 2026. 04. 19. – Session #97 (Szerkeszteskor ures keppaletta javitas)
 
 ### Mit csinaltunk [x]

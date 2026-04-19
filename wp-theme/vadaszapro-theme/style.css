@@ -1059,6 +1059,7 @@ textarea { min-height: 110px; resize: vertical; }
   letter-spacing: .04em;
   text-transform: uppercase;
   cursor: pointer;
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   transition: all .2s ease;
 }
@@ -1153,6 +1154,7 @@ body.sl-viewer-open { overflow: hidden; }
   max-height: 100%;
   transform-origin: center center;
   will-change: transform;
+  -webkit-user-select: none;
   user-select: none;
   -webkit-user-drag: none;
 }
