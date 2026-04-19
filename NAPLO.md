@@ -2,6 +2,29 @@
 
 ---
 
+## 2026. 04. 19. – Session #103 (Termékoldal Designer admin menü + wireframe presetek + frontend paraméterezés)
+
+### Mit csinaltunk [x]
+- [x] `wp-plugin/vadaszapro-core/admin/class-admin.php` – új admin menüpont: `Termékoldal` (`vadaszapro-single-designer`)
+- [x] topbar cím map frissítve: `Termékoldal Designer`
+- [x] sidebarban új elem: `🧱 Termékoldal`
+- [x] `wp-plugin/vadaszapro-core/admin/class-settings-page.php` – új settings csoport: `va_single_settings` (layout, galéria, tipó, gombok, színek, viewer)
+- [x] új preset action hook: `admin_post_va_apply_single_preset`
+- [x] új preset handler: `handle_apply_single_preset()`
+- [x] új preset gyűjtemény: `get_single_presets()` (Cinematic Hero, Compact Trade, Editorial Stack)
+- [x] új render oldal: `render_single_designer()`
+- [x] grafikus wireframe előnézet élő frissítéssel (input/change → preview CSS változók)
+- [x] `wp-theme/vadaszapro-theme/single-va_listing.php` – `va_single_*` opciók beolvasása és validálása
+- [x] dinamikus inline CSS: max szélesség, oszlopok, gap, fő kép arány/fit, thumb méret, card radius/padding, cím/ár/meta méret, gomb méret, share méret, accent/glass/border, viewer háttér
+- [x] layout osztály kapcsolás: `sl--layout-split` / `sl--layout-stacked`
+- [x] Hibavizsgalat: modosított fájlok hibamentesek
+
+### Eredmeny
+- A termékoldal teljes megjelenése adminból paraméterezhetővé vált, presetekkel és vizuális wireframe előnézettel.
+- A mentett beállítások azonnal érvényesülnek a hirdetés részletes oldalon.
+
+---
+
 ## 2026. 04. 19. – Session #102 (Naptar UX Pro: scroll hint + sticky oszlop arnyek + mini honap indikator)
 
 ### Mit csinaltunk [x]
