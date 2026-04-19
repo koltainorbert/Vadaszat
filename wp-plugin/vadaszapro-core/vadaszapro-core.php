@@ -72,6 +72,12 @@ add_action( 'init', function () {
     }
 }, 999 );
 
+// Hiányzó alapoldalak létrehozása futás közben (reaktiválás nélkül)
+add_action( 'init', function () {
+    if ( ! is_admin() ) return;
+    va_create_default_pages();
+}, 1 );
+
 /* ── Vadász Naptár – virtuális oldal (WP admin nélkül) ──────────────
  * A /vadasz-naptar/ URL betölti a theme page-vadasz-naptar.php-t
  * automatikusan, adatbázis bejegyzés nélkül.
