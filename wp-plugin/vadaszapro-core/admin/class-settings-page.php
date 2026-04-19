@@ -4014,6 +4014,13 @@ class VA_Settings_Page {
                                         <span class="va-pc-field__label">Leiras</span>
                                         <input type="text" class="va-pc-input" data-key="description" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['description'] ); ?>" placeholder="<?php echo esc_attr( $default['description'] ); ?>">
                                     </label>
+                                    <?php if ( $slug === 'platinum' ): ?>
+                                    <label class="va-pc-field va-pc-field--full">
+                                        <span class="va-pc-field__label">Egyedi rang címke (feladó panel)</span>
+                                        <span class="va-pc-field__hint">Ha üres, az alap „Platina tag” feliratok jelennek meg. Írd be pl. Kereskedő, Viszonteladó – ez jelenik meg a hirdetés oldalon.</span>
+                                        <input type="text" class="va-pc-input" data-key="seller_label" data-slug="platinum" value="<?php echo esc_attr( $plan['seller_label'] ?? '' ); ?>" placeholder="pl. Kereskedő, Viszonteladó">
+                                    </label>
+                                    <?php endif; ?>
                                 </div>
                             </section>
 

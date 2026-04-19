@@ -64,8 +64,7 @@ class VA_User_Roles {
             'monthly_limit' => 20,      // felülírja va_plan_listing_limit
             'boost_cooldown'=> 3,       // felülírja va_plan_boost_cooldown
             'basis'         => 'monthly',
-            'description'   => 'Egyedi feltételek – admin határozza meg',
-        ],
+            'description'   => 'Egyedi feltételek – admin határozza meg',            'seller_label'  => '',      // egyedi feladó rang címke (pl. Kereskedő)        ],
     ];
 
     /* ── Boot ───────────────────────────────────────────────── */
@@ -350,6 +349,7 @@ class VA_User_Roles {
                 'price_monthly'  => sanitize_text_field( $d['price_monthly']     ?? '' ),
                 'price_yearly'   => sanitize_text_field( $d['price_yearly']      ?? '' ),
                 'badge_text'     => sanitize_text_field( $d['badge_text']        ?? '' ),
+                'seller_label'   => $slug === 'platinum' ? sanitize_text_field( $d['seller_label'] ?? '' ) : '',
             ];
         }
 

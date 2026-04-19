@@ -320,9 +320,15 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
                         <div class="sl__seller-since">Tag <?php echo esc_html(date('Y', strtotime($author->user_registered))); ?> &oacute;ta</div>
                         <?php
                         if ( get_option( 'va_single_show_plan_badge', '1' ) === '1' && class_exists( 'VA_User_Roles' ) ):
-                            $author_plan  = VA_User_Roles::get_user_plan( $author->ID );
-                            $plan_labels  = [ 'basic' => 'Alap', 'silver' => 'Ezüst', 'gold' => 'Arany', 'platinum' => 'Platina' ];
-                            $plan_label   = $plan_labels[ $author_plan ] ?? ucfirst( $author_plan );
+                            $author_plan     = VA_User_Roles::get_user_plan( $author->ID );
+                            $all_plan_cfg    = VA_User_Roles::get_all_plan_configs();
+                            $plan_labels     = [ 'basic' => 'Alap', 'silver' => 'Ezüst', 'gold' => 'Arany', 'platinum' => 'Platina' ];
+                            // Platinum: egyedi rang címke ha be van állítva
+                            if ( $author_plan === 'platinum' && ! empty( $all_plan_cfg['platinum']['seller_label'] ) ) {
+                                $plan_label = sanitize_text_field( $all_plan_cfg['platinum']['seller_label'] );
+                            } else {
+                                $plan_label = $plan_labels[ $author_plan ] ?? ucfirst( $author_plan );
+                            }
                             $plan_icons   = [ 'basic' => '', 'silver' => '✦', 'gold' => '★', 'platinum' => '◆' ];
                             $plan_icon    = $plan_icons[ $author_plan ] ?? '';
                         ?>
