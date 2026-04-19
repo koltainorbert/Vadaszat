@@ -81,10 +81,23 @@ class VA_Shortcodes {
             return '<p class="va-notice va-notice--info">Csomag vásárláshoz <a href="' . esc_url( wp_login_url( get_permalink() ) ) . '">jelentkezz be</a>.</p>';
         }
 
-        $user_id    = get_current_user_id();
-        $packages   = VA_Ajax::get_credit_packages();
-        $credits    = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
-        $nonce      = wp_create_nonce( 'va_buy_credits' );
+        $user_id      = get_current_user_id();
+        $packages     = VA_Ajax::get_credit_packages();
+        $paid_credits = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
+        $nonce        = wp_create_nonce( 'va_buy_credits' );
+
+        // Plan-ból kapott maradék keret
+        $plan_remaining = 0;
+        if ( class_exists( 'VA_User_Roles' ) ) {
+            $check = VA_User_Roles::can_post_listing( $user_id );
+            if ( $check['limit'] > 0 ) {
+                $plan_remaining = max( 0, $check['limit'] - $check['used'] );
+            } elseif ( $check['limit'] === 0 ) {
+                // korlátlan plan – ne mutassunk számot a hőssávban
+                $plan_remaining = -1;
+            }
+        }
+        $total_credits = ( $plan_remaining >= 0 ) ? ( $plan_remaining + $paid_credits ) : $paid_credits;
 
         $return_to = isset( $_GET['va_return'] ) ? sanitize_key( (string) wp_unslash( $_GET['va_return'] ) ) : 'buy';
         if ( ! in_array( $return_to, [ 'buy', 'submit' ], true ) ) {
@@ -125,7 +138,19 @@ class VA_Shortcodes {
                 <div class="va-credits-eyebrow"><span class="va-credits-eyebrow-dot"></span>Átlátható csomagok</div>
                 <h2 class="va-credits-title">Rang Alapú Vásárlás</h2>
                 <p class="va-credits-sub">Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.</p>
-                <p class="va-credits-sub">Jelenlegi kreditjeid: <strong class="va-credits-count"><?php echo esc_html( (string) $credits ); ?> db</strong></p>
+                <p class="va-credits-sub">Jelenlegi elérhető hirdetési kereteid:
+                    <?php if ( $plan_remaining < 0 ): ?>
+                    <strong class="va-credits-count">Korlátlan (plan)</strong>
+                    <?php elseif ( $plan_remaining > 0 && $paid_credits > 0 ): ?>
+                    <strong class="va-credits-count"><?php echo esc_html( (string) $plan_remaining ); ?> plan + <?php echo esc_html( (string) $paid_credits ); ?> vásárolt = <?php echo esc_html( (string) $total_credits ); ?> db</strong>
+                    <?php elseif ( $plan_remaining > 0 ): ?>
+                    <strong class="va-credits-count"><?php echo esc_html( (string) $plan_remaining ); ?> db (plan keretből)</strong>
+                    <?php elseif ( $paid_credits > 0 ): ?>
+                    <strong class="va-credits-count"><?php echo esc_html( (string) $paid_credits ); ?> db (vásárolt kredit)</strong>
+                    <?php else: ?>
+                    <strong class="va-credits-count">0 db</strong>
+                    <?php endif; ?>
+                </p>
                 <?php if ( $return_to === 'submit' ): ?>
                 <div class="va-notice va-notice--warning" style="margin:14px auto 0;max-width:860px;">A hirdetés feladás folytatásához válassz csomagot, fizetés után automatikusan visszairányítunk a feladáshoz.</div>
                 <?php endif; ?>
