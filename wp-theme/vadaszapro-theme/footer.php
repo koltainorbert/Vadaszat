@@ -86,6 +86,11 @@
             </div>
         </div>
         <div class="va-footer__bottom">
+            <?php if ( get_option('va_social_footer_show','1') === '1' && function_exists('va_social_bar') ):
+                $ftr_style = get_option('va_social_footer_style','icons');
+                $ftr_size  = max(14, min(28, absint( get_option('va_social_icon_size', 20) )));
+                echo va_social_bar( $ftr_style, $ftr_size );
+            endif; ?>
             &copy; <?php echo date('Y'); ?> <?php echo esc_html( $f_copy_text ); ?> |
             <a href="<?php echo esc_url(home_url('/adatvedelmi-nyilatkozat')); ?>"><?php echo esc_html( $f_privacy_bottom ); ?></a>
         </div>

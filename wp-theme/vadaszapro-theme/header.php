@@ -155,6 +155,11 @@
 
             <!-- Jobb oldal -->
             <div class="va-header__right">
+                <?php if ( get_option('va_social_header_show','1') === '1' && function_exists('va_social_bar') ):
+                    $hdr_style = get_option('va_social_header_style','icons');
+                    $hdr_size  = max(14, min(28, absint( get_option('va_social_icon_size', 20) )));
+                    echo va_social_bar( $hdr_style, $hdr_size );
+                endif; ?>
                 <?php if ( is_user_logged_in() ):
                     $user        = wp_get_current_user();
                     $dashboard   = get_page_by_path('va-fiok');
