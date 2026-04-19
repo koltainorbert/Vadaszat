@@ -408,18 +408,21 @@ class VA_User_Roles {
             return 0;
         }
 
-        $limit = $cfg['monthly_limit'];
+        // Plan limit + megvásárolt kredit = összes engedélyezett aktív hirdetés
+        $purchased_credits = (int) get_user_meta( $user_id, 'va_listing_credits', true );
+        $limit = $cfg['monthly_limit'] + $purchased_credits;
 
-        // Active listings legújabbtól legrégebbig
-        $posts = get_posts( [
-            'post_type'      => 'va_listing',
-            'post_author'    => $user_id,
-            'post_status'    => [ 'publish', 'pending' ],
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-            'posts_per_page' => 200,
-            'no_found_rows'  => true,
-        ] );
+        // Active listings legújabbtól legrégebbig (direktben, WP filter nélkül)
+        global $wpdb;
+        $posts = $wpdb->get_results( $wpdb->prepare(
+            "SELECT ID, post_title, post_status FROM {$wpdb->posts}
+             WHERE post_type = 'va_listing'
+               AND post_author = %d
+               AND post_status IN ('publish','pending')
+             ORDER BY post_date DESC
+             LIMIT 200",
+            $user_id
+        ) );
 
         $suspended = 0;
         foreach ( $posts as $i => $post ) {

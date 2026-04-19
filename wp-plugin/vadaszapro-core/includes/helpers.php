@@ -204,21 +204,43 @@ function va_user_watches( int $post_id ): bool {
 
 /* ── Felhasználó hirdetései ───────────────────────────── */
 function va_get_user_listings( int $user_id, string $status = 'any', int $per_page = 50, int $page = 1 ): array {
+    global $wpdb;
+
     $post_types = [ 'va_listing' ];
     if ( va_auctions_enabled() ) {
         $post_types[] = 'va_auction';
     }
 
-    return get_posts([
-        'post_type'      => $post_types,
-        'post_status'    => $status === 'any' ? [ 'publish', 'pending', 'draft', 'private' ] : $status,
-        'author'         => $user_id,
-        'posts_per_page' => $per_page,
-        'offset'         => ( $page - 1 ) * $per_page,
-        'orderby'        => 'date',
-        'order'          => 'DESC',
-        'no_found_rows'  => true,
-    ]);
+    // Közvetlen DB lekérdezés hogy a privát (felfüggesztett) hirdetések is
+    // mindig látszódjanak a saját dashboardon, WP jogosultság-szűrés nélkül.
+    $type_placeholders = implode( ',', array_fill( 0, count( $post_types ), '%s' ) );
+
+    if ( $status === 'any' ) {
+        $statuses = [ 'publish', 'pending', 'draft', 'private' ];
+    } else {
+        $statuses = is_array( $status ) ? $status : [ $status ];
+    }
+    $status_placeholders = implode( ',', array_fill( 0, count( $statuses ), '%s' ) );
+
+    $limit  = absint( $per_page );
+    $offset = absint( ( $page - 1 ) * $per_page );
+
+    $args = array_merge( $post_types, $statuses, [ $user_id, $limit, $offset ] );
+
+    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+    $rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT * FROM {$wpdb->posts}
+             WHERE post_type IN ($type_placeholders)
+               AND post_status IN ($status_placeholders)
+               AND post_author = %d
+             ORDER BY post_date DESC
+             LIMIT %d OFFSET %d",
+            ...$args
+        )
+    );
+
+    return $rows ?: [];
 }
 
 /* ── Felhasználó watchlist-je ─────────────────────────── */
