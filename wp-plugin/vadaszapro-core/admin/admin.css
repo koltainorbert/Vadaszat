@@ -577,9 +577,12 @@ body.va-admin-page .va-fb-row:hover { border-color: var(--va-border2) !important
 .va-le-field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .va-le-field { display: flex; flex-direction: column; gap: 5px; }
 .va-le-lbl { font-size: 11px; font-weight: 600; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: .5px; }
-.va-le-input { background: var(--va-bg2); border: 1px solid var(--va-border); color: var(--va-text); border-radius: 8px; padding: 8px 11px; font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s; width: 100%; box-sizing: border-box; }
-.va-le-input:focus { border-color: rgba(255,0,0,.4); }
+.va-le-input { background: var(--va-bg2) !important; border: 1px solid var(--va-border) !important; color: var(--va-text) !important; border-radius: 8px; padding: 8px 11px; font-size: 13px; font-family: inherit; outline: none; transition: border-color .15s; width: 100%; box-sizing: border-box; -webkit-appearance: none; appearance: none; box-shadow: none !important; }
+.va-le-input:focus { border-color: rgba(255,0,0,.4) !important; box-shadow: none !important; }
 .va-le-input::placeholder { color: rgba(255,255,255,.2); }
+.va-le-input:-webkit-autofill,
+.va-le-input:-webkit-autofill:hover,
+.va-le-input:-webkit-autofill:focus { -webkit-box-shadow: 0 0 0 100px var(--va-bg2) inset !important; -webkit-text-fill-color: var(--va-text) !important; }
 .va-le-select { background: var(--va-bg2); border: 1px solid var(--va-border); color: var(--va-text); border-radius: 8px; padding: 8px 11px; font-size: 13px; font-family: inherit; outline: none; width: 100%; cursor: pointer; transition: border-color .15s; }
 .va-le-select:focus { border-color: rgba(255,0,0,.4); }
 
