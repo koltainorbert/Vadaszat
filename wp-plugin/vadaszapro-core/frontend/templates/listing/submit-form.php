@@ -82,7 +82,6 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                         'teeny'         => false,
                         'quicktags'     => true,
                         'tinymce'       => [
-                            'language'      => 'en',
                             'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | image media | undo redo',
                             'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
                             'block_formats' => 'Bekezdes=p;Cim 2=h2;Cim 3=h3',

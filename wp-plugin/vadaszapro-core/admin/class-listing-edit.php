@@ -494,7 +494,6 @@ class VA_Listing_Edit {
                                     'teeny'         => false,
                                     'quicktags'     => true,
                                     'tinymce'       => [
-                                        'language'      => 'en',
                                         'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | media | undo redo',
                                         'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
                                         'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
