@@ -715,7 +715,7 @@ class VA_Ajax {
 
     /* ── Megtekintés számláló ──────────────────────────── */
     public static function increment_views() {
-        check_ajax_referer( 'va_nonce', 'nonce' );
+        check_ajax_referer( 'va_user_nonce', 'nonce' );
 
         $post_id = intval( $_POST['post_id'] ?? 0 );
         if ( ! $post_id ) wp_send_json_error();
