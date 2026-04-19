@@ -4186,6 +4186,284 @@ class VA_Settings_Page {
         <?php
     }
 
+    /* ══ Árkártyák szerkesztő ════════════════════════════════════ */
+    public static function render_price_cards(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $g = static fn( string $k, string $d = '' ) => (string) ( get_option( $k, $d ) ?: $d );
+        $gi = static fn( string $k, int $d = 0 ) => (int) ( get_option( $k, $d ) ?: $d );
+
+        $card_defaults = [
+            'labels'     => [ 1 => 'Basic', 2 => 'Silver', 3 => 'Gold', 4 => 'Platinum' ],
+            'slugs'      => [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ],
+            'tags'       => [ 1 => 'Belépő', 2 => 'Népszerű', 3 => 'Profi', 4 => 'Prémium' ],
+            'descs'      => [ 1 => 'Ingyenes alap csomag minden regisztrált felhasználónak.', 2 => '3 hirdetési kredit kedvezményes áron.', 3 => '5 kredit – legjobb érték a profik számára.', 4 => '10 kredit – maximális értékcsomag vadász profiknak.' ],
+            'qtys'       => [ 1 => 1, 2 => 3, 3 => 5, 4 => 10 ],
+            'prices'     => [ 1 => 0, 2 => 1791, 3 => 1592, 4 => 1393 ],
+            'badges'     => [ 1 => '', 2 => '–10%', 3 => '–20%', 4 => '–30%' ],
+            'themes'     => [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ],
+            'btns'       => [ 1 => 'Mindenki számára elérhető', 2 => 'Vásárlás →', 3 => 'Vásárlás →', 4 => 'Vásárlás →' ],
+        ];
+
+        $theme_colors = [
+            'basic'    => [ 'accent' => '#6b7280', 'glow' => 'rgba(107,114,128,.25)', 'gradient' => 'linear-gradient(135deg,#1a1a1a,#111)' ],
+            'silver'   => [ 'accent' => '#94a3b8', 'glow' => 'rgba(148,163,184,.3)',  'gradient' => 'linear-gradient(135deg,#1e2a35,#111827)' ],
+            'gold'     => [ 'accent' => '#f59e0b', 'glow' => 'rgba(245,158,11,.35)',  'gradient' => 'linear-gradient(135deg,#2a1f0a,#1a1200)' ],
+            'platinum' => [ 'accent' => '#cc0000', 'glow' => 'rgba(204,0,0,.35)',     'gradient' => 'linear-gradient(135deg,#2a0a0a,#1a0000)' ],
+        ];
+
+        ?>
+        <style>
+        .va-pk-wrap { max-width:1400px; }
+        .va-pk-hero { background:linear-gradient(135deg,rgba(204,0,0,.08),rgba(0,0,0,0)),rgba(14,14,18,.95); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:28px 32px; margin-bottom:28px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+        .va-pk-hero__text h1 { margin:0 0 6px; font-size:22px; color:#fff; font-weight:700; }
+        .va-pk-hero__text p  { margin:0; color:rgba(255,255,255,.5); font-size:13px; }
+        .va-pk-hero-section { background:rgba(14,14,18,.7); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:20px 24px; margin-bottom:24px; }
+        .va-pk-hero-section h2 { margin:0 0 16px; font-size:15px; color:#fff; font-weight:600; display:flex; align-items:center; gap:8px; }
+        .va-pk-hero-fields { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+        .va-pk-field { display:flex; flex-direction:column; gap:5px; }
+        .va-pk-field label { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:rgba(255,255,255,.45); }
+        .va-pk-field input, .va-pk-field textarea { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; padding:9px 12px; color:#e8e8f0; font-size:13px; width:100%; box-sizing:border-box; transition:border-color .15s; }
+        .va-pk-field input:focus, .va-pk-field textarea:focus { border-color:rgba(204,0,0,.6); outline:none; box-shadow:0 0 0 3px rgba(204,0,0,.1); }
+        .va-pk-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+        @media(max-width:1200px) { .va-pk-grid { grid-template-columns:repeat(2,1fr); } }
+        @media(max-width:700px)  { .va-pk-grid { grid-template-columns:1fr; } }
+        .va-pk-card { border-radius:16px; border:1px solid rgba(255,255,255,.1); overflow:hidden; transition:box-shadow .2s; }
+        .va-pk-card--featured { border-color:rgba(245,158,11,.4); }
+        .va-pk-card__header { padding:16px 16px 12px; position:relative; }
+        .va-pk-card__badge-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+        .va-pk-card__badge { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:20px; background:rgba(255,255,255,.08); color:rgba(255,255,255,.5); }
+        .va-pk-card__badge--tag { background:rgba(255,255,255,.1); color:#e8e8f0; }
+        .va-pk-card__enable-row { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:rgba(0,0,0,.2); border-top:1px solid rgba(255,255,255,.06); }
+        .va-pk-card__enable-label { font-size:11px; color:rgba(255,255,255,.4); font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+        .va-pk-toggle { position:relative; width:36px; height:20px; flex-shrink:0; }
+        .va-pk-toggle input { opacity:0; width:0; height:0; position:absolute; }
+        .va-pk-toggle__track { position:absolute; inset:0; border-radius:20px; background:rgba(255,255,255,.1); cursor:pointer; transition:background .15s; }
+        .va-pk-toggle input:checked+.va-pk-toggle__track { background:#cc0000; }
+        .va-pk-toggle__track::after { content:''; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .15s; }
+        .va-pk-toggle input:checked+.va-pk-toggle__track::after { transform:translateX(16px); }
+        .va-pk-card__fields { padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px; }
+        .va-pk-card__field-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .va-pk-card__field-row--3 { grid-template-columns:1fr 1fr 1fr; }
+        .va-pk-card__price-preview { text-align:center; padding:12px 0; }
+        .va-pk-card__price-preview .total { font-size:26px; font-weight:800; color:#fff; }
+        .va-pk-card__price-preview .unit  { font-size:12px; color:rgba(255,255,255,.4); margin-top:2px; }
+        .va-pk-card__price-preview .free-tag { font-size:16px; font-weight:700; color:#4ade80; }
+        .va-pk-save-bar { background:rgba(14,14,18,.95); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px 24px; display:flex; align-items:center; gap:14px; }
+        .va-pk-save-bar .button-primary { background:#cc0000 !important; border-color:#cc0000 !important; color:#fff !important; padding:8px 24px !important; height:auto !important; border-radius:8px !important; font-weight:600 !important; font-size:13px !important; }
+        .va-pk-save-bar .button-primary:hover { background:#aa0000 !important; border-color:#aa0000 !important; }
+        .va-pk-note { font-size:12px; color:rgba(255,255,255,.35); }
+        </style>
+
+        <div class="wrap va-admin-wrap va-pk-wrap">
+            <div class="va-pk-hero">
+                <div class="va-pk-hero__text">
+                    <h1>💳 Árkártyák szerkesztő</h1>
+                    <p>Szerkeszd az árkártyák megjelenését, szövegeit és árait. A változtatások azonnal megjelennek az oldalon mentés után.</p>
+                </div>
+            </div>
+
+            <?php settings_errors( 'va_price_cards_settings' ); ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_price_cards_settings' ); ?>
+
+                <!-- ─── Hero szövegek ─── -->
+                <div class="va-pk-hero-section">
+                    <h2>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                        Az oldal hero szövegei
+                    </h2>
+                    <div class="va-pk-hero-fields">
+                        <div class="va-pk-field">
+                            <label for="va_pc_eyebrow">Eyebrow (kis felirat fölött)</label>
+                            <input type="text" id="va_pc_eyebrow" name="va_pc_eyebrow" value="<?php echo esc_attr( $g('va_pc_eyebrow','Átlátható csomagok') ); ?>">
+                        </div>
+                        <div class="va-pk-field">
+                            <label for="va_pc_title">Főcím</label>
+                            <input type="text" id="va_pc_title" name="va_pc_title" value="<?php echo esc_attr( $g('va_pc_title','Rang Alapú Vásárlás') ); ?>">
+                        </div>
+                        <div class="va-pk-field">
+                            <label for="va_pc_subtitle">Alcím / leírás</label>
+                            <input type="text" id="va_pc_subtitle" name="va_pc_subtitle" value="<?php echo esc_attr( $g('va_pc_subtitle','Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.') ); ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── Kártya szerkesztők ─── -->
+                <div class="va-pk-grid">
+                <?php for ( $n = 1; $n <= 4; $n++ ):
+                    $label    = $g( "va_pc_{$n}_label",    $card_defaults['labels'][$n]  );
+                    $slug     = $g( "va_pc_{$n}_plan_slug",$card_defaults['slugs'][$n]   );
+                    $tag      = $g( "va_pc_{$n}_tag",      $card_defaults['tags'][$n]    );
+                    $desc     = $g( "va_pc_{$n}_desc",     $card_defaults['descs'][$n]   );
+                    $qty      = $gi( "va_pc_{$n}_qty",     $card_defaults['qtys'][$n]    );
+                    $price    = $gi( "va_pc_{$n}_price",   $card_defaults['prices'][$n]  );
+                    $badge    = $g( "va_pc_{$n}_badge",    $card_defaults['badges'][$n]  );
+                    $featured = $g( "va_pc_{$n}_featured", ( $n === 3 ) ? '1' : '0' ) === '1';
+                    $free     = $g( "va_pc_{$n}_free",     ( $n === 1 ) ? '1' : '0' ) === '1';
+                    $btn_text = $g( "va_pc_{$n}_btn_text", $card_defaults['btns'][$n]    );
+                    $theme    = $g( "va_pc_{$n}_theme",    $card_defaults['themes'][$n]  );
+                    $enabled  = $g( "va_pc_{$n}_enabled",  '1' ) === '1';
+
+                    $tc       = $theme_colors[ $theme ] ?? $theme_colors['basic'];
+                    $total    = $qty * $price;
+                ?>
+                <div class="va-pk-card<?php echo $featured ? ' va-pk-card--featured' : ''; ?>"
+                     style="background:<?php echo esc_attr( $tc['gradient'] ); ?>; box-shadow:<?php echo $featured ? '0 8px 40px ' . esc_attr( $tc['glow'] ) : 'none'; ?>;">
+                    <!-- Header preview -->
+                    <div class="va-pk-card__header" style="border-bottom:1px solid rgba(255,255,255,.06);">
+                        <div class="va-pk-card__badge-row">
+                            <span class="va-pk-card__badge va-pk-card__badge--tag" style="background:<?php echo esc_attr( $tc['glow'] ); ?>; color:<?php echo esc_attr( $tc['accent'] ); ?>;">
+                                <?php echo esc_html( $tag ); ?>
+                            </span>
+                            <?php if ( $badge ): ?>
+                            <span class="va-pk-card__badge" style="background:<?php echo esc_attr( $tc['glow'] ); ?>; color:<?php echo esc_attr( $tc['accent'] ); ?>;">
+                                <?php echo esc_html( $badge ); ?>
+                            </span>
+                            <?php endif; ?>
+                        </div>
+                        <div style="font-size:16px; font-weight:800; color:#fff; letter-spacing:.04em; margin-bottom:4px;">
+                            <?php echo esc_html( strtoupper( $label ) ); ?>
+                        </div>
+                        <div style="font-size:12px; color:rgba(255,255,255,.4);">
+                            <?php echo esc_html( $desc ); ?>
+                        </div>
+                        <!-- Ár preview -->
+                        <div class="va-pk-card__price-preview">
+                            <?php if ( $free ): ?>
+                            <div class="free-tag">Ingyenes</div>
+                            <?php else: ?>
+                            <div class="total" style="color:<?php echo esc_attr( $tc['accent'] ); ?>;">
+                                <span id="va-pk-total-<?php echo $n; ?>"><?php echo number_format( $total, 0, ',', ' ' ); ?></span> Ft
+                            </div>
+                            <div class="unit"><span id="va-pk-unit-<?php echo $n; ?>"><?php echo number_format( $price, 0, ',', ' ' ); ?></span> Ft / kredit · <?php echo esc_html( (string) $qty ); ?> db</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Enable toggle -->
+                    <div class="va-pk-card__enable-row">
+                        <span class="va-pk-card__enable-label">Kártya aktív</span>
+                        <label class="va-pk-toggle">
+                            <input type="checkbox" name="va_pc_<?php echo $n; ?>_enabled" value="1"<?php checked( $enabled ); ?>>
+                            <span class="va-pk-toggle__track"></span>
+                        </label>
+                    </div>
+
+                    <!-- Fields -->
+                    <div class="va-pk-card__fields">
+                        <div class="va-pk-field">
+                            <label>Kártya neve (label)</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_label" value="<?php echo esc_attr( $label ); ?>" placeholder="Basic">
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <label>Tag (badge felirat)</label>
+                                <input type="text" name="va_pc_<?php echo $n; ?>_tag" value="<?php echo esc_attr( $tag ); ?>" placeholder="Népszerű">
+                            </div>
+                            <div class="va-pk-field">
+                                <label>Kedvezmény badge</label>
+                                <input type="text" name="va_pc_<?php echo $n; ?>_badge" value="<?php echo esc_attr( $badge ); ?>" placeholder="–20%">
+                            </div>
+                        </div>
+
+                        <div class="va-pk-field">
+                            <label>Leírás szöveg</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_desc" value="<?php echo esc_attr( $desc ); ?>">
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <label>Kredit mennyiség</label>
+                                <input type="number" name="va_pc_<?php echo $n; ?>_qty" value="<?php echo esc_attr( (string) $qty ); ?>" min="1" max="9999"
+                                       data-card="<?php echo $n; ?>" class="va-pk-qty-input">
+                            </div>
+                            <div class="va-pk-field">
+                                <label>Ár / kredit (Ft)</label>
+                                <input type="number" name="va_pc_<?php echo $n; ?>_price" value="<?php echo esc_attr( (string) $price ); ?>" min="0" max="99999"
+                                       data-card="<?php echo $n; ?>" class="va-pk-price-input">
+                            </div>
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <label>
+                                    <label class="va-pk-toggle" style="display:inline-flex;gap:6px;align-items:center;flex-direction:row;text-transform:none;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;">
+                                        <input type="checkbox" name="va_pc_<?php echo $n; ?>_featured" value="1"<?php checked( $featured ); ?>>
+                                        <span class="va-pk-toggle__track" style="flex-shrink:0;"></span>
+                                        Kiemelt kártya
+                                    </label>
+                                </label>
+                            </div>
+                            <div class="va-pk-field">
+                                <label>
+                                    <label class="va-pk-toggle" style="display:inline-flex;gap:6px;align-items:center;flex-direction:row;text-transform:none;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;">
+                                        <input type="checkbox" name="va_pc_<?php echo $n; ?>_free" value="1"<?php checked( $free ); ?>>
+                                        <span class="va-pk-toggle__track" style="flex-shrink:0;"></span>
+                                        Ingyenes kártya
+                                    </label>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="va-pk-field">
+                            <label>Gomb felirat</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_btn_text" value="<?php echo esc_attr( $btn_text ); ?>" placeholder="Vásárlás →">
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <label>Plan slug (aktív det.)</label>
+                                <input type="text" name="va_pc_<?php echo $n; ?>_plan_slug" value="<?php echo esc_attr( $slug ); ?>" placeholder="gold">
+                            </div>
+                            <div class="va-pk-field">
+                                <label>Téma / szín</label>
+                                <select name="va_pc_<?php echo $n; ?>_theme" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 10px;color:#e8e8f0;font-size:13px;width:100%;box-sizing:border-box;">
+                                    <?php foreach ( $theme_colors as $t_key => $_ ): ?>
+                                    <option value="<?php echo esc_attr( $t_key ); ?>"<?php selected( $theme, $t_key ); ?>><?php echo esc_html( ucfirst( $t_key ) ); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endfor; ?>
+                </div>
+
+                <!-- ─── Mentés ─── -->
+                <div class="va-pk-save-bar">
+                    <?php submit_button( 'Mentés', 'primary', 'submit', false ); ?>
+                    <span class="va-pk-note">Mentés után az árkártyák azonnal frissülnek a vásárlás oldalon.</span>
+                </div>
+            </form>
+        </div>
+
+        <script>
+        (function(){
+            function formatHu(n){
+                return n.toLocaleString('hu-HU');
+            }
+            document.querySelectorAll('.va-pk-qty-input,.va-pk-price-input').forEach(function(el){
+                el.addEventListener('input', function(){
+                    var card = this.dataset.card;
+                    var qtyEl   = document.querySelector('.va-pk-qty-input[data-card="'+card+'"]');
+                    var priceEl = document.querySelector('.va-pk-price-input[data-card="'+card+'"]');
+                    var totalEl = document.getElementById('va-pk-total-'+card);
+                    var unitEl  = document.getElementById('va-pk-unit-'+card);
+                    if (!qtyEl||!priceEl||!totalEl) return;
+                    var qty   = parseInt(qtyEl.value)||0;
+                    var price = parseInt(priceEl.value)||0;
+                    totalEl.textContent = formatHu(qty*price);
+                    if(unitEl) unitEl.textContent = formatHu(price);
+                });
+            });
+        })();
+        </script>
+        <?php
+    }
+
     /* ══ Csomag beállítások oldal ═══════════════════════════════ */
     public static function render_plans(): void {
         if ( ! current_user_can( 'manage_options' ) ) return;
