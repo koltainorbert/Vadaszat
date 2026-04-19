@@ -81,11 +81,16 @@ class VA_Listing_Edit {
             }
         }
 
-        // Kiemelt kép
+        // Galéria képek
+        $raw_gids = sanitize_text_field( wp_unslash( $_POST['va_gallery_ids'] ?? '' ) );
+        $gids = array_values( array_unique( array_filter( array_map( 'intval', $raw_gids !== '' ? explode( ',', $raw_gids ) : [] ) ) ) );
+        update_post_meta( $post_id, 'va_gallery_ids', implode( ',', $gids ) );
+
+        // Kiemelt kép (borítókép) – a galériából
         $thumbnail_id = (int)( $_POST['va_thumbnail_id'] ?? 0 );
         if ( $thumbnail_id > 0 ) {
             set_post_thumbnail( $post_id, $thumbnail_id );
-        } elseif ( isset( $_POST['va_remove_thumbnail'] ) ) {
+        } else {
             delete_post_thumbnail( $post_id );
         }
 
