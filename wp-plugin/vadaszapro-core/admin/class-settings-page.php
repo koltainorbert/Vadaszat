@@ -4242,6 +4242,8 @@ class VA_Settings_Page {
         .va-pk-toggle input:checked+.va-pk-toggle__track { background:#cc0000; }
         .va-pk-toggle__track::after { content:''; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .15s; }
         .va-pk-toggle input:checked+.va-pk-toggle__track::after { transform:translateX(16px); }
+        .va-pk-toggle-row { display:flex; align-items:center; gap:8px; padding:4px 0; }
+        .va-pk-toggle-text { font-size:12px; color:rgba(255,255,255,.45); font-weight:500; text-transform:none; letter-spacing:0; }
         .va-pk-card__fields { padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px; }
         .va-pk-card__field-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
         .va-pk-card__field-row--3 { grid-template-columns:1fr 1fr 1fr; }
@@ -4389,22 +4391,22 @@ class VA_Settings_Page {
 
                         <div class="va-pk-card__field-row">
                             <div class="va-pk-field">
-                                <label>
-                                    <label class="va-pk-toggle" style="display:inline-flex;gap:6px;align-items:center;flex-direction:row;text-transform:none;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;">
+                                <span class="va-pk-toggle-row">
+                                    <label class="va-pk-toggle">
                                         <input type="checkbox" name="va_pc_<?php echo $n; ?>_featured" value="1"<?php checked( $featured ); ?>>
-                                        <span class="va-pk-toggle__track" style="flex-shrink:0;"></span>
-                                        Kiemelt kártya
+                                        <span class="va-pk-toggle__track"></span>
                                     </label>
-                                </label>
+                                    <span class="va-pk-toggle-text">Kiemelt kártya</span>
+                                </span>
                             </div>
                             <div class="va-pk-field">
-                                <label>
-                                    <label class="va-pk-toggle" style="display:inline-flex;gap:6px;align-items:center;flex-direction:row;text-transform:none;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;">
+                                <span class="va-pk-toggle-row">
+                                    <label class="va-pk-toggle">
                                         <input type="checkbox" name="va_pc_<?php echo $n; ?>_free" value="1"<?php checked( $free ); ?>>
-                                        <span class="va-pk-toggle__track" style="flex-shrink:0;"></span>
-                                        Ingyenes kártya
+                                        <span class="va-pk-toggle__track"></span>
                                     </label>
-                                </label>
+                                    <span class="va-pk-toggle-text">Ingyenes kártya</span>
+                                </span>
                             </div>
                         </div>
 
