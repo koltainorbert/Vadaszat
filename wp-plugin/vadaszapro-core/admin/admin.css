@@ -664,7 +664,9 @@ body.va-admin-page .media-modal-close:hover::before {
 }
 
 /* Tab sor: Feltöltés / Médiatár */
-body.va-admin-page .media-menu {
+body.va-admin-page .media-menu,
+body.va-admin-page .media-frame-router,
+body.va-admin-page .media-router {
     background: var(--va-bg3) !important;
     border-bottom: 1px solid var(--va-border) !important;
     padding: 0 16px !important;
