@@ -1148,13 +1148,32 @@ setInterval(updateCDs,1000);
         <?php endif; ?>
     </div>
 
-    <?php $latest = new WP_Query(['post_type' => 'va_listing', 'post_status' => 'publish', 'posts_per_page' => 8, 'orderby' => 'date', 'order' => 'DESC']); ?>
+    <?php $latest = new WP_Query(['post_type' => 'va_listing', 'post_status' => 'publish', 'posts_per_page' => 12, 'orderby' => 'date', 'order' => 'DESC', 'no_found_rows' => true]); ?>
     <?php if ($latest->have_posts()): ?>
-        <div class="va-grid">
-            <?php while ($latest->have_posts()): $latest->the_post();
-                if (class_exists('VA_Shortcodes')) va_template('listing/card', ['post' => get_post()]);
-            endwhile; wp_reset_postdata(); ?>
+        <div class="va-carousel-wrap">
+            <div class="va-carousel" id="va-latest-carousel">
+                <?php while ($latest->have_posts()): $latest->the_post();
+                    echo '<div class="va-carousel-slide">';
+                    if (class_exists('VA_Shortcodes')) va_template('listing/card', ['post' => get_post()]);
+                    echo '</div>';
+                endwhile; wp_reset_postdata(); ?>
+            </div>
+            <button class="va-carousel-btn va-carousel-btn--prev" onclick="vaCarouselScroll('va-latest-carousel',-1)" aria-label="Előző">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="va-carousel-btn va-carousel-btn--next" onclick="vaCarouselScroll('va-latest-carousel',1)" aria-label="Következő">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
         </div>
+        <script>
+        function vaCarouselScroll(id, dir) {
+            var el = document.getElementById(id);
+            if (!el) return;
+            var slide = el.querySelector('.va-carousel-slide');
+            var w = slide ? slide.offsetWidth + 16 : 300;
+            el.scrollBy({ left: dir * w * 4, behavior: 'smooth' });
+        }
+        </script>
     <?php endif; ?>
 </div>
 

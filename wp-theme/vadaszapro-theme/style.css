@@ -599,6 +599,47 @@ hr { border-color: var(--border); }
 @media (max-width: 1100px) { .va-sidebar.va-sidebar--right { display: none; } }
 @media (max-width: 768px)  { .va-main-content { padding: 16px; } }
 
+/* Carousel (főoldal) */
+.va-carousel-wrap { position: relative; }
+.va-carousel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(25% - 12px);
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+.va-carousel::-webkit-scrollbar { display: none; }
+.va-carousel-slide { scroll-snap-align: start; min-width: 0; }
+.va-carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(20,20,20,.92);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 12px rgba(0,0,0,.5);
+  transition: background .18s;
+}
+.va-carousel-btn:hover { background: #ff0000; }
+.va-carousel-btn--prev { left: -18px; }
+.va-carousel-btn--next { right: -18px; }
+@media (max-width: 1100px) { .va-carousel { grid-auto-columns: calc(33.333% - 11px); } }
+@media (max-width: 760px)  { .va-carousel { grid-auto-columns: calc(50% - 8px); } .va-carousel-btn { display: none; } }
+@media (max-width: 480px)  { .va-carousel { grid-auto-columns: 80%; } }
+
 /* Minden hirdetéslistán 4 oszlopos grid */
 .va-grid {
   grid-template-columns: repeat(4, 1fr);
