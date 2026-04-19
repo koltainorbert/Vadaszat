@@ -21,7 +21,7 @@ get_header();
 
 <style>
 /* ══ VN prefix – vadásznaptár oldal ══════════════════════════════════ */
-.vn-wrap{max-width:1280px;margin:0 auto;padding:24px 16px 60px;}
+.vn-wrap{--vn-name-w:200px;max-width:1280px;margin:0 auto;padding:24px 16px 60px;}
 
 /* ── LEGEND ── */
 .vn-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 18px;margin-bottom:20px;}
@@ -120,6 +120,7 @@ get_header();
 .vn-chart-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .vn-chart{
   max-width:1200px;margin:0 auto;
+  min-width:980px;
   border:1px solid rgba(255,255,255,.08);border-radius:12px;overflow:hidden;
 }
 .vn-month-header{
@@ -127,7 +128,7 @@ get_header();
   background:rgb(10,10,10);border-bottom:1px solid rgba(255,255,255,.1);
   box-shadow:0 2px 12px rgba(0,0,0,.7);
 }
-.vn-mh-name{width:200px;min-width:200px;flex-shrink:0;padding:8px 14px;font-size:.68rem;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.08);}
+.vn-mh-name{width:var(--vn-name-w);min-width:var(--vn-name-w);flex-shrink:0;padding:8px 14px;font-size:.68rem;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase;border-right:1px solid rgba(255,255,255,.08);}
 .vn-mh-months{flex:1;display:flex;position:relative;}
 .vn-mh-month{flex:1;text-align:center;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.06em;padding:8px 0;border-left:1px solid rgba(255,255,255,.08);}
 .vn-mh-month.current{color:#ff0000}
@@ -139,7 +140,7 @@ get_header();
 }
 .vn-group-header:hover{background:rgba(255,0,0,.15)}
 .vn-group-label{
-  width:200px;min-width:200px;flex-shrink:0;padding:9px 14px;
+  width:var(--vn-name-w);min-width:var(--vn-name-w);flex-shrink:0;padding:9px 14px;
   font-size:.72rem;font-weight:700;color:#ff0000;letter-spacing:.1em;text-transform:uppercase;
   border-right:1px solid rgba(255,0,0,.18);display:flex;align-items:center;gap:7px;
 }
@@ -153,7 +154,7 @@ get_header();
 
 .vn-animal-row{display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.04);transition:background .12s;min-height:38px;}
 .vn-animal-row:hover{background:rgba(255,255,255,.04)}
-.vn-animal-name{width:200px;min-width:200px;flex-shrink:0;padding:6px 14px;font-size:.78rem;font-weight:600;color:#fff;border-right:1px solid rgba(255,255,255,.06);line-height:1.3;}
+.vn-animal-name{width:var(--vn-name-w);min-width:var(--vn-name-w);flex-shrink:0;padding:6px 14px;font-size:.78rem;font-weight:600;color:#fff;border-right:1px solid rgba(255,255,255,.06);line-height:1.3;}
 .vn-animal-name .sub{display:block;font-size:.64rem;font-weight:400;color:rgba(255,255,255,.35);margin-top:1px;font-style:italic;}
 .vn-acd{display:flex;align-items:center;gap:4px;margin-top:4px;font-size:.6rem;font-weight:700;letter-spacing:.03em;line-height:1.2;}
 .vn-acd-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
@@ -226,7 +227,12 @@ get_header();
 .vn-cl-btn:hover{background:rgba(255,40,40,.28);box-shadow:0 0 16px rgba(255,0,0,.25);}
 
 /* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .vn-wrap{--vn-name-w:150px;}
+  .vn-chart{min-width:860px;}
+}
 @media(max-width:700px){
+  .vn-wrap{--vn-name-w:112px;}
   .vn-moon-grid{gap:2px;}
   .vn-moon-tools{gap:8px;}
   .vn-moon-field{min-width:calc(50% - 4px);}
@@ -235,7 +241,7 @@ get_header();
   .vn-moon-dnum{font-size:.6rem;}
   .vn-moon-dpct{display:none;}
   .vn-moon-legend{font-size:.58rem;gap:4px 10px;}
-  .vn-mh-name,.vn-animal-name,.vn-group-label{width:100px;min-width:100px;font-size:.6rem;padding:5px 6px;}
+  .vn-mh-name,.vn-animal-name,.vn-group-label{font-size:.6rem;padding:5px 6px;}
   .vn-mh-month{font-size:.52rem;padding:6px 0;}
   .vn-legend{gap:5px 12px;margin-bottom:14px;}
   .vn-leg{font-size:.66rem;}
@@ -243,10 +249,14 @@ get_header();
   .vn-tp-card-name{font-size:.72rem;}
   .vn-today{margin-bottom:14px;}
   .vn-op-box,.vn-cl-box{padding:24px 18px 20px;}
+  .vn-chart{min-width:760px;}
 }
 @media(max-width:400px){
   .vn-tp-grid{grid-template-columns:1fr;}
-  .vn-mh-name,.vn-animal-name,.vn-group-label{width:80px;min-width:80px;font-size:.56rem;}
+  .vn-wrap{--vn-name-w:82px;}
+  .vn-mh-name,.vn-animal-name,.vn-group-label{font-size:.56rem;}
+  .vn-animal-name .sub{display:none;}
+  .vn-chart{min-width:620px;}
 }
 </style>
 

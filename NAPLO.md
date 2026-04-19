@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 04. 19. – Session #101 (Vadasz naptar teljes responsive overhaul: nyitooldal + kulon oldal)
+
+### Mit csinaltunk [x]
+- [x] `wp-theme/vadaszapro-theme/index.php` – nyitooldali `va-hnaptar` mobil-first atdolgozas
+- [x] fix oszlopszelessegek CSS valtozora emelve (`--va-hn-name-w`)
+- [x] chart olvashatosag: fixalt minimum szelessegek viewporttol fuggoen (`980/860/760/680/620`)
+- [x] tobb torespont (1024, 760, 560, 420) + tipografia/padding finomitas
+- [x] extrém keskeny kijelzon sub sorok tomoritese (sub elrejtese 420px alatt)
+- [x] `wp-theme/vadaszapro-theme/page-vadasz-naptar.php` – azonos responsive hardening a kulon naptar oldalon
+- [x] oszlopszelesseg valtozo (`--vn-name-w`) + chart min-width lepcsok
+- [x] Deploy Theme: exit 0 ✅
+
+### Eredmeny
+- A naptar elemei nem tornek szet mobilon, olvashatoak maradnak, a chart konzisztensen vizszintesen gorgetheto.
+
+---
+
 ## 2026. 04. 19. – Session #100 (Viewer responsive hardening + touch gesztusok)
 
 ### Mit csinaltunk [x]
