@@ -660,7 +660,7 @@ class VA_Listing_Edit {
                                 </select>
                             </div>
                             <div class="va-le-publish-row">
-                                <button type="button" class="va-btn va-btn--ghost va-btn--sm" onclick="document.getElementById('va_post_status').value='draft';document.getElementById('va-listing-form').submit()">Mentés vázlatként</button>
+                                <button type="button" class="va-btn va-btn--ghost va-btn--sm" onclick="document.getElementById('va_post_status').value='draft'; vaAdminDoSubmit(document.getElementById('va-listing-form'));">Mentés vázlatként</button>
                                 <button type="submit" class="va-btn va-btn--primary va-btn--sm">💾 Mentés</button>
                             </div>
                         </div>
@@ -736,7 +736,7 @@ class VA_Listing_Edit {
         <script>
         /* ══ Quill admin init ══════════════════════════════ */
         (function(){
-            var quillAdmin = new Quill('#va-admin-quill-editor', {
+            var quillAdmin = window.quillAdmin = new Quill('#va-admin-quill-editor', {
                 theme: 'snow',
                 placeholder: 'Hirdetés leírása...',
                 modules: {
@@ -780,7 +780,9 @@ class VA_Listing_Edit {
                 }
             });
             var existing = document.getElementById('va-admin-desc-hidden');
-            if (existing && existing.value.trim()) quillAdmin.root.innerHTML = existing.value;
+            if (existing && existing.value.trim()) {
+                quillAdmin.clipboard.dangerouslyPasteHTML(0, existing.value);
+            }
 
             /* Kép resize */
             var activeImg = null, rHandle = document.createElement('div'), startX, startW;
@@ -797,31 +799,43 @@ class VA_Listing_Edit {
             window.addEventListener('scroll',posH); window.addEventListener('resize',posH);
             document.addEventListener('click',function(e){ if(e.target!==activeImg&&e.target!==rHandle){rHandle.style.display='none';activeImg=null;} });
 
-            /* Submit előtt: base64 képek feltöltése, majd szinkron */
-            document.querySelector('form').addEventListener('submit', function(e){
-                var imgs = quillAdmin.root.querySelectorAll('img[src^="data:"]');
+            /* Submit előtt: base64 képek feltöltése, majd form küldés */
+            var _nonce  = '<?php echo esc_js( wp_create_nonce( 'va_upload_editor_image' ) ); ?>';
+            var _ajax   = '<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>';
+            var _postId = '<?php echo esc_js( (string) ( (int) ( $_GET['id'] ?? 0 ) ) ); ?>';
+
+            window.vaAdminDoSubmit = function(form) {
+                var imgs     = quillAdmin.root.querySelectorAll('img[src^="data:"]');
+                var textarea = document.getElementById('va-admin-desc-hidden');
                 if (!imgs.length) {
-                    document.getElementById('va-admin-desc-hidden').value = quillAdmin.root.innerHTML;
+                    textarea.value = quillAdmin.root.innerHTML;
+                    form.submit();
                     return;
                 }
-                e.preventDefault();
-                var form = this;
-                var nonce = '<?php echo esc_js( wp_create_nonce( 'va_upload_editor_image' ) ); ?>';
-                var ajaxUrl = '<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>';
-                var postId = '<?php echo esc_js( (string) ( (int) ( $_GET['id'] ?? 0 ) ) ); ?>';
-                var promises = Array.from(imgs).map(function(img){
-                    return fetch(ajaxUrl, {
+                var promises = Array.from(imgs).map(function(img) {
+                    return fetch(_ajax, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                        body: new URLSearchParams({ action: 'va_upload_editor_image', nonce: nonce, post_id: postId, data_url: img.src })
-                    }).then(function(r){ return r.json(); }).then(function(res){
-                        if (res.success) img.src = res.data.url;
+                        body: new URLSearchParams({ action: 'va_upload_editor_image', nonce: _nonce, post_id: _postId, data_url: img.src })
+                    })
+                    .then(function(r) { return r.json(); })
+                    .then(function(res) { if (res.success) img.src = res.data.url; })
+                    .catch(function() { /* hálózati hiba: kép base64-ben marad */ });
+                });
+                Promise.all(promises)
+                    .then(function() {
+                        textarea.value = quillAdmin.root.innerHTML;
+                        form.submit();
+                    })
+                    .catch(function() {
+                        textarea.value = quillAdmin.root.innerHTML;
+                        form.submit();
                     });
-                });
-                Promise.all(promises).then(function(){
-                    document.getElementById('va-admin-desc-hidden').value = quillAdmin.root.innerHTML;
-                    form.submit();
-                });
+            };
+
+            document.getElementById('va-listing-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                vaAdminDoSubmit(this);
             });
         })();
 
