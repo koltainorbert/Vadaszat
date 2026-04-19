@@ -70,7 +70,7 @@
             <nav class="va-nav" id="va-main-nav">
                 <?php
                 $nav_items = apply_filters('va_nav_items', [
-                    ['url' => home_url('/hirdetes'),  'label' => 'Hirdetések', 'class' => ''],
+                    ['url' => home_url('/va-hirdetes-kereses'),  'label' => 'Hirdetések', 'class' => ''],
                     ['url' => home_url('/kategoria'), 'label' => 'Kategóriák', 'class' => ''],
                     ['url' => home_url('/kapcsolat'), 'label' => 'Kapcsolat',  'class' => ''],
                 ]);
