@@ -237,15 +237,16 @@ if ( ! $edit_mode && is_user_logged_in() ) {
 wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 wp_enqueue_script( 'va-submit',   VA_PLUGIN_URL . 'frontend/js/frontend.js',  [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-submit', 'VA_Data', [
-    'ajax_url'    => admin_url( 'admin-ajax.php' ),
-    'nonce'       => wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ),
-    'post_id'     => $edit_post_id,
-    'edit_mode'   => $edit_mode,
-    'edit_images' => $edit_mode ? array_map( function( $id ) {
+    'ajax_url'       => admin_url( 'admin-ajax.php' ),
+    'nonce'          => wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ),
+    'nonce_editor_img' => wp_create_nonce( 'va_upload_editor_image' ),
+    'post_id'        => $edit_post_id,
+    'edit_mode'      => $edit_mode,
+    'edit_images'    => $edit_mode ? array_map( function( $id ) {
         $src = wp_get_attachment_image_url( $id, 'thumbnail' );
         return [ 'id' => $id, 'url' => $src ?: '' ];
     }, $edit_gallery ?? [] ) : [],
-    'edit_thumb'  => $edit_mode ? $edit_thumb : 0,
+    'edit_thumb'     => $edit_mode ? $edit_thumb : 0,
 ]);
 ?>
 <div class="va-wrap">

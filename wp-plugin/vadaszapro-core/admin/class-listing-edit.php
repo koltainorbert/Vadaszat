@@ -793,9 +793,30 @@ class VA_Listing_Edit {
             window.addEventListener('scroll',posH); window.addEventListener('resize',posH);
             document.addEventListener('click',function(e){ if(e.target!==activeImg&&e.target!==rHandle){rHandle.style.display='none';activeImg=null;} });
 
-            /* Submit előtt szinkron */
-            document.querySelector('form').addEventListener('submit', function(){
-                document.getElementById('va-admin-desc-hidden').value = quillAdmin.root.innerHTML;
+            /* Submit előtt: base64 képek feltöltése, majd szinkron */
+            document.querySelector('form').addEventListener('submit', function(e){
+                var imgs = quillAdmin.root.querySelectorAll('img[src^="data:"]');
+                if (!imgs.length) {
+                    document.getElementById('va-admin-desc-hidden').value = quillAdmin.root.innerHTML;
+                    return;
+                }
+                e.preventDefault();
+                var form = this;
+                var nonce = '<?php echo esc_js( wp_create_nonce( 'va_upload_editor_image' ) ); ?>';
+                var ajaxUrl = '<?php echo esc_js( admin_url( 'admin-ajax.php' ) ); ?>';
+                var promises = Array.from(imgs).map(function(img){
+                    return fetch(ajaxUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: new URLSearchParams({ action: 'va_upload_editor_image', nonce: nonce, data_url: img.src })
+                    }).then(function(r){ return r.json(); }).then(function(res){
+                        if (res.success) img.src = res.data.url;
+                    });
+                });
+                Promise.all(promises).then(function(){
+                    document.getElementById('va-admin-desc-hidden').value = quillAdmin.root.innerHTML;
+                    form.submit();
+                });
             });
         })();
 
