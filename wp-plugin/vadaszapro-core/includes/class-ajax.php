@@ -59,7 +59,7 @@ class VA_Ajax {
         }
 
         $title       = sanitize_text_field( wp_unslash( $_POST['title']       ?? '' ) );
-        $description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
+        $description = wp_kses_post( wp_unslash( $_POST['description'] ?? '' ) );
         $price       = floatval( $_POST['price'] ?? 0 );
         $price_type  = sanitize_key( $_POST['price_type'] ?? 'fixed' );
         $phone       = sanitize_text_field( wp_unslash( $_POST['phone']    ?? '' ) );
@@ -171,7 +171,7 @@ class VA_Ajax {
         $payment_url = trim( (string) get_option( 'va_listing_payment_url', '' ) );
 
         $title       = sanitize_text_field( wp_unslash( $_POST['title']       ?? '' ) );
-        $description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
+        $description = wp_kses_post( wp_unslash( $_POST['description'] ?? '' ) );
         $price       = floatval( $_POST['price'] ?? 0 );
         $price_type  = sanitize_key( $_POST['price_type'] ?? 'fixed' );
         $phone       = sanitize_text_field( wp_unslash( $_POST['phone']  ?? '' ) );

@@ -443,8 +443,25 @@ class VA_Listing_Edit {
                         <!-- Leírás -->
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">📝 Leírás</div>
-                            <textarea name="va_description" class="va-le-desc" rows="10"
-                                      placeholder="Részletes leírás a hirdetett termékről…"><?php echo esc_textarea($post ? $post->post_content : ''); ?></textarea>
+                            <?php
+                            wp_editor(
+                                $post ? $post->post_content : '',
+                                'va_listing_description',
+                                [
+                                    'textarea_name' => 'va_description',
+                                    'textarea_rows' => 14,
+                                    'media_buttons' => true,
+                                    'teeny'         => false,
+                                    'quicktags'     => true,
+                                    'tinymce'       => [
+                                        'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | media | undo redo',
+                                        'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
+                                        'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
+                                        'resize'        => true,
+                                    ],
+                                ]
+                            );
+                            ?>
                         </div>
 
                         <!-- Képek -->

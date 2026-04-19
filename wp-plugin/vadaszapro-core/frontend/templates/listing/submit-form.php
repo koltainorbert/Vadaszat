@@ -71,7 +71,26 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '</select>';
                 break;
             case 'description':
-                echo '<textarea id="va-desc" name="description" class="va-textarea" rows="6"' . $req_attr . ' placeholder="' . $ph . '">' . esc_textarea( (string) $val ) . '</textarea>';
+                wp_enqueue_media();
+                wp_editor(
+                    wp_kses_post( (string) $val ),
+                    'va_desc_editor',
+                    [
+                        'textarea_name' => 'description',
+                        'textarea_rows' => 12,
+                        'media_buttons' => true,
+                        'teeny'         => false,
+                        'quicktags'     => true,
+                        'tinymce'       => [
+                            'toolbar1'      => 'formatselect | bold italic underline strikethrough | bullist numlist | blockquote | alignleft aligncenter alignright | link unlink | media | undo redo',
+                            'toolbar2'      => 'forecolor | hr | charmap | removeformat | fullscreen',
+                            'block_formats' => 'Bekezdés=p;Cím 2=h2;Cím 3=h3',
+                            'resize'        => true,
+                            'skin'          => 'oxide-dark',
+                            'content_style' => 'body { background:#111; color:#e8e8e8; font-family:system-ui,sans-serif; font-size:15px; padding:12px; } a { color:#ff4444; } img { max-width:100%; height:auto; border-radius:6px; }',
+                        ],
+                    ]
+                );
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
@@ -505,6 +524,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var $btn    = $('#va-submit-btn');
         var editMode = !! VA_Data.edit_mode;
         $btn.prop('disabled', true).text('Feltöltés...');
+
+        // TinyMCE tartalom szinkronizálása a textarea-ba submit előtt
+        if (typeof tinymce !== 'undefined' && tinymce.get('va_desc_editor')) {
+            tinymce.get('va_desc_editor').save();
+        }
 
         var formData = new FormData(this);
 
