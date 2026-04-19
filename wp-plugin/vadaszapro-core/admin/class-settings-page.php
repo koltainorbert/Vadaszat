@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Settings oldal – minden beállítás egy helyen
  * Lapok: Általános | Reklámzónák | Hirdetések | Aukciók | Felhasználók | Statisztika
@@ -1298,77 +1298,586 @@ class VA_Settings_Page {
     /* ══ Statisztika oldal ════════════════════════════════ */
     public static function render_stats() {
         if ( ! current_user_can( 'manage_options' ) ) return;
-
+        global $wpdb;
         $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true;
 
-        global $wpdb;
-        $total_listings  = wp_count_posts( 'va_listing' );
-        $total_auctions  = wp_count_posts( 'va_auction' );
-        $total_users     = count_users();
-        $total_bids      = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}va_bids" );
-        $total_watchlist = $wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}va_watchlist" );
-        $top_viewed      = get_posts([
+        /* ── Hirdetés KPI ─────────────────────────────────────── */
+        $lc        = wp_count_posts( 'va_listing' );
+        $published = (int)( $lc->publish  ?? 0 );
+        $pending   = (int)( $lc->pending  ?? 0 );
+        $draft     = (int)( $lc->draft    ?? 0 );
+
+        $ac              = $auctions_enabled ? wp_count_posts( 'va_auction' ) : null;
+        $auctions_active = (int)( $ac->publish ?? 0 );
+
+        $uc          = count_users();
+        $total_users = (int)( $uc['total_users'] ?? 0 );
+
+        $total_bids      = (int)$wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}va_bids" );
+        $total_watchlist = (int)$wpdb->get_var( "SELECT COUNT(*) FROM {$wpdb->prefix}va_watchlist" );
+
+        $total_views = (int)$wpdb->get_var( $wpdb->prepare(
+            "SELECT SUM( CAST( meta_value AS UNSIGNED ) ) FROM {$wpdb->postmeta} WHERE meta_key = %s",
+            'va_views'
+        ) );
+
+        $today = current_time( 'Y-m-d' );
+        $today_listings = (int)$wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->posts}
+             WHERE post_type = %s AND post_status IN ('publish','pending') AND DATE(post_date) = %s",
+            'va_listing', $today
+        ) );
+
+        $this_month_listings = (int)$wpdb->get_var( $wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->posts}
+             WHERE post_type = %s AND post_status IN ('publish','pending')
+             AND YEAR(post_date) = %d AND MONTH(post_date) = %d",
+            'va_listing', (int)date('Y'), (int)date('m')
+        ) );
+
+        $this_week_users = count( get_users([
+            'number'     => 999,
+            'date_query' => [[ 'after' => '7 days ago', 'column' => 'user_registered' ]],
+        ]) );
+
+        /* ── Ár statisztikák (wp_va_listing_meta ha létezik) ─── */
+        $lmeta_table = $wpdb->prefix . 'va_listing_meta';
+        $listing_meta_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $lmeta_table ) ) === $lmeta_table;
+        $avg_price = $min_price = $max_price = 0;
+        $price_ranges = [];
+        if ( $listing_meta_exists ) {
+            $ps = $wpdb->get_row( "SELECT AVG(price) as a, MIN(price) as mi, MAX(price) as ma FROM {$lmeta_table} WHERE price > 0" );
+            $avg_price = (int)round( (float)( $ps->a  ?? 0 ) );
+            $min_price = (int)( $ps->mi ?? 0 );
+            $max_price = (int)( $ps->ma ?? 0 );
+            $price_ranges = [
+                '0–10 e Ft'     => (int)$wpdb->get_var( "SELECT COUNT(*) FROM {$lmeta_table} WHERE price > 0 AND price <= 10000" ),
+                '10–50 e Ft'    => (int)$wpdb->get_var( "SELECT COUNT(*) FROM {$lmeta_table} WHERE price > 10000 AND price <= 50000" ),
+                '50–200 e Ft'   => (int)$wpdb->get_var( "SELECT COUNT(*) FROM {$lmeta_table} WHERE price > 50000 AND price <= 200000" ),
+                '200–500 e Ft'  => (int)$wpdb->get_var( "SELECT COUNT(*) FROM {$lmeta_table} WHERE price > 200000 AND price <= 500000" ),
+                '500 e+ Ft'     => (int)$wpdb->get_var( "SELECT COUNT(*) FROM {$lmeta_table} WHERE price > 500000" ),
+            ];
+        }
+
+        /* ── 30 napos aktivitás ───────────────────────────────── */
+        $days30 = [];
+        for ( $i = 29; $i >= 0; $i-- ) $days30[ date( 'Y-m-d', strtotime( "-{$i} days" ) ) ] = 0;
+        $rows30 = $wpdb->get_results( $wpdb->prepare(
+            "SELECT DATE(post_date) as d, COUNT(*) as cnt FROM {$wpdb->posts}
+             WHERE post_type = %s AND post_status IN ('publish','pending')
+             AND post_date >= %s GROUP BY DATE(post_date)",
+            'va_listing', date( 'Y-m-d', strtotime( '-29 days' ) )
+        ), ARRAY_A );
+        foreach ( $rows30 as $r ) { if ( isset( $days30[$r['d']] ) ) $days30[$r['d']] = (int)$r['cnt']; }
+
+        /* ── 30 napos regisztráció ────────────────────────────── */
+        $reg30 = [];
+        for ( $i = 29; $i >= 0; $i-- ) $reg30[ date( 'Y-m-d', strtotime( "-{$i} days" ) ) ] = 0;
+        $reg_rows = $wpdb->get_results(
+            "SELECT DATE(user_registered) as d, COUNT(*) as cnt FROM {$wpdb->users}
+             WHERE user_registered >= '" . esc_sql( date( 'Y-m-d', strtotime( '-29 days' ) ) ) . "'
+             GROUP BY DATE(user_registered)",
+            ARRAY_A
+        );
+        foreach ( $reg_rows as $r ) { if ( isset( $reg30[$r['d']] ) ) $reg30[$r['d']] = (int)$r['cnt']; }
+
+        /* ── Top kategóriák ──────────────────────────────────── */
+        $top_cats = get_terms(['taxonomy'=>'va_category','orderby'=>'count','order'=>'DESC','number'=>12,'hide_empty'=>false]);
+        if ( is_wp_error($top_cats) ) $top_cats = [];
+
+        /* ── Top megyék ──────────────────────────────────────── */
+        $top_counties = get_terms(['taxonomy'=>'va_county','orderby'=>'count','order'=>'DESC','number'=>20,'hide_empty'=>false]);
+        if ( is_wp_error($top_counties) ) $top_counties = [];
+
+        /* ── Top megtekintett hirdetések ─────────────────────── */
+        $top_viewed = get_posts([
             'post_type'      => 'va_listing',
             'post_status'    => 'publish',
             'meta_key'       => 'va_views',
             'orderby'        => 'meta_value_num',
             'order'          => 'DESC',
-            'posts_per_page' => 5,
+            'posts_per_page' => 10,
+            'no_found_rows'  => true,
         ]);
+
+        /* ── Top watchlistezett hirdetések ───────────────────── */
+        $top_wl_rows = $wpdb->get_results(
+            "SELECT post_id, COUNT(*) as cnt FROM {$wpdb->prefix}va_watchlist
+             GROUP BY post_id ORDER BY cnt DESC LIMIT 10",
+            ARRAY_A
+        );
+        foreach ( $top_wl_rows as &$wl ) {
+            $wl['title'] = get_the_title( $wl['post_id'] );
+            $wl['url']   = get_permalink( $wl['post_id'] );
+        }
+        unset($wl);
+
+        /* ── Top hirdetők ────────────────────────────────────── */
+        $top_posters = $wpdb->get_results( $wpdb->prepare(
+            "SELECT post_author, COUNT(*) as cnt FROM {$wpdb->posts}
+             WHERE post_type = %s AND post_status = 'publish'
+             GROUP BY post_author ORDER BY cnt DESC LIMIT 10",
+            'va_listing'
+        ), ARRAY_A );
+
+        /* ── Legutóbbi regisztrációk ──────────────────────────── */
+        $recent_regs = get_users(['number'=>10,'orderby'=>'registered','order'=>'DESC']);
+
+        /* ── Legutóbbi hirdetések ─────────────────────────────── */
+        $recent_listings = get_posts([
+            'post_type'      => 'va_listing',
+            'post_status'    => ['publish','pending'],
+            'posts_per_page' => 10,
+            'no_found_rows'  => true,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+        ]);
+
+        /* ── Aukció extra ────────────────────────────────────── */
+        $top_auctions = [];
+        $total_bids_value = 0;
+        if ( $auctions_enabled ) {
+            $total_bids_value = (float)$wpdb->get_var( "SELECT SUM(amount) FROM {$wpdb->prefix}va_bids" );
+            $top_auctions = $wpdb->get_results(
+                "SELECT post_id, COUNT(*) as bid_cnt, MAX(amount) as max_bid
+                 FROM {$wpdb->prefix}va_bids GROUP BY post_id ORDER BY bid_cnt DESC LIMIT 8",
+                ARRAY_A
+            );
+        }
+
+        /* ── JSON adatok Chart.js-hez ────────────────────────── */
+        $ch_day_lbl  = wp_json_encode( array_map( fn($d) => date('m.d', strtotime($d)), array_keys($days30) ) );
+        $ch_day_data = wp_json_encode( array_values($days30) );
+        $ch_reg_data = wp_json_encode( array_values($reg30) );
+        $ch_cat_lbl  = wp_json_encode( array_map( fn($t) => $t->name,  $top_cats ) );
+        $ch_cat_data = wp_json_encode( array_map( fn($t) => (int)$t->count, $top_cats ) );
+        $ch_cty_lbl  = wp_json_encode( array_map( fn($t) => $t->name,  $top_counties ) );
+        $ch_cty_data = wp_json_encode( array_map( fn($t) => (int)$t->count, $top_counties ) );
+        $ch_pr_lbl   = wp_json_encode( array_keys($price_ranges) );
+        $ch_pr_data  = wp_json_encode( array_values($price_ranges) );
+        $ch_st_lbl   = wp_json_encode( ['Aktív', 'Függő', 'Vázlat'] );
+        $ch_st_data  = wp_json_encode( [$published, $pending, $draft] );
         ?>
-        <div class="wrap va-admin-wrap">
-            <h1>📊 VadászApró – Statisztika</h1>
-            <div class="va-stats-grid">
-                <div class="va-stat-card">
-                    <span class="va-stat-num"><?php echo esc_html( $total_listings->publish ); ?></span>
-                    <span class="va-stat-label">Aktív hirdetés</span>
+        <div class="va-stats-page wrap va-admin-wrap">
+            <h1>📈 Statisztika</h1>
+
+            <!-- ══ KPI kártyák ═══════════════════════════════════ -->
+            <div class="va-st-kpi-grid">
+                <?php
+                $kpis = [
+                    ['icon'=>'📋','num'=>$published,         'label'=>'Aktív hirdetés',     'sub'=>"+{$today_listings} ma · +{$this_month_listings} idén",                         'color'=>'red'],
+                    ['icon'=>'⏳','num'=>$pending,            'label'=>'Jóváhagyásra vár',  'sub'=>$draft . ' vázlat',                                                              'color'=>'orange'],
+                    ['icon'=>'👥','num'=>$total_users,        'label'=>'Regisztrált user',   'sub'=>"+{$this_week_users} az elmúlt 7 napban",                                       'color'=>'blue'],
+                    ['icon'=>'👁',  'num'=>number_format($total_views,0,',','&nbsp;'), 'label'=>'Összes megtekintés','sub'=>'Összes hirdetésen',                                 'color'=>'purple'],
+                    ['icon'=>'❤️', 'num'=>$total_watchlist,  'label'=>'Figyelőlista',       'sub'=>'mentett hirdetés összesen',                                                    'color'=>'pink'],
+                ];
+                if ($auctions_enabled) {
+                    $kpis[] = ['icon'=>'🔨','num'=>$auctions_active,'label'=>'Aktív aukció','sub'=>$total_bids . ' licit · ' . number_format($total_bids_value,0,',','&nbsp;') . ' Ft forgalom','color'=>'green'];
+                }
+                foreach ($kpis as $k): ?>
+                <div class="va-st-kpi va-st-kpi--<?php echo esc_attr($k['color']); ?>">
+                    <div class="va-st-kpi__icon"><?php echo $k['icon']; ?></div>
+                    <div class="va-st-kpi__num"><?php echo $k['num']; ?></div>
+                    <div class="va-st-kpi__label"><?php echo esc_html($k['label']); ?></div>
+                    <div class="va-st-kpi__sub"><?php echo wp_kses_post($k['sub']); ?></div>
                 </div>
-                <div class="va-stat-card">
-                    <span class="va-stat-num"><?php echo esc_html( $total_listings->pending ); ?></span>
-                    <span class="va-stat-label">Jóváhagyásra vár</span>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- ══ Ár blokk ══════════════════════════════════════ -->
+            <?php if ($avg_price > 0): ?>
+            <div class="va-st-price-strip">
+                <div class="va-st-price-item">
+                    <span class="va-st-price-lbl">Átlagár</span>
+                    <span class="va-st-price-val"><?php echo number_format($avg_price,0,',','&nbsp;'); ?> Ft</span>
                 </div>
-                <?php if ( $auctions_enabled ): ?>
-                <div class="va-stat-card">
-                    <span class="va-stat-num"><?php echo esc_html( $total_auctions->publish ); ?></span>
-                    <span class="va-stat-label">Aktív aukció</span>
+                <div class="va-st-price-sep">|</div>
+                <div class="va-st-price-item">
+                    <span class="va-st-price-lbl">Legalacsonyabb</span>
+                    <span class="va-st-price-val"><?php echo number_format($min_price,0,',','&nbsp;'); ?> Ft</span>
                 </div>
-                <?php endif; ?>
-                <div class="va-stat-card">
-                    <span class="va-stat-num"><?php echo esc_html( $total_users['total_users'] ); ?></span>
-                    <span class="va-stat-label">Regisztrált felhasználó</span>
+                <div class="va-st-price-sep">|</div>
+                <div class="va-st-price-item">
+                    <span class="va-st-price-lbl">Legmagasabb</span>
+                    <span class="va-st-price-val va-st-price-val--hi"><?php echo number_format($max_price,0,',','&nbsp;'); ?> Ft</span>
                 </div>
-                <?php if ( $auctions_enabled ): ?>
-                <div class="va-stat-card">
-                    <span class="va-stat-num"><?php echo esc_html( $total_bids ?: 0 ); ?></span>
-                    <span class="va-stat-label">Összes licit</span>
+            </div>
+            <?php endif; ?>
+
+            <!-- ══ Grafikonok sor 1 ═══════════════════════════════ -->
+            <div class="va-st-charts-row">
+                <div class="va-st-chart-card va-st-chart-card--wide">
+                    <div class="va-st-chart-hdr">
+                        <div><h3>Hirdetési aktivitás</h3><p>Utolsó 30 nap – napi új feladások</p></div>
+                        <span class="va-st-badge"><?php echo array_sum(array_values($days30)); ?> hirdetés / 30 nap</span>
+                    </div>
+                    <div class="va-st-chart-body" style="height:200px;">
+                        <canvas id="va-st-bar"></canvas>
+                    </div>
                 </div>
-                <?php endif; ?>
-                <div class="va-stat-card">
-                    <span class="va-stat-num"><?php echo esc_html( $total_watchlist ?: 0 ); ?></span>
-                    <span class="va-stat-label">Figyelő (watchlist)</span>
+                <div class="va-st-chart-card">
+                    <div class="va-st-chart-hdr">
+                        <div><h3>Új regisztrációk</h3><p>Utolsó 30 nap</p></div>
+                        <span class="va-st-badge"><?php echo array_sum(array_values($reg30)); ?> / 30 nap</span>
+                    </div>
+                    <div class="va-st-chart-body" style="height:200px;">
+                        <canvas id="va-st-reg"></canvas>
+                    </div>
                 </div>
             </div>
 
-            <h2>Top 5 legtöbb megtekintés</h2>
-            <table class="wp-list-table widefat fixed striped">
-                <thead><tr><th>Hirdetés</th><th>Megtekintés</th><th>Dátum</th></tr></thead>
-                <tbody>
-                <?php foreach ( $top_viewed as $p ):
-                    $views = get_post_meta( $p->ID, 'va_views', true );
-                ?>
-                <tr>
-                    <td><a href="<?php echo esc_url( get_permalink( $p->ID ) ); ?>"><?php echo esc_html( $p->post_title ); ?></a></td>
-                    <td><?php echo esc_html( $views ?: 0 ); ?></td>
-                    <td><?php echo esc_html( get_the_date( 'Y.m.d', $p ) ); ?></td>
-                </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+            <!-- ══ Grafikonok sor 2 ═══════════════════════════════ -->
+            <div class="va-st-charts-row">
+                <?php if (!empty($top_cats)): ?>
+                <div class="va-st-chart-card va-st-chart-card--wide">
+                    <div class="va-st-chart-hdr">
+                        <div><h3>Top kategóriák</h3><p>Hirdetésszám alapján</p></div>
+                    </div>
+                    <div class="va-st-chart-body" style="height:220px;">
+                        <canvas id="va-st-cat"></canvas>
+                    </div>
+                </div>
+                <?php endif; ?>
+                <?php if (!empty($top_counties)): ?>
+                <div class="va-st-chart-card">
+                    <div class="va-st-chart-hdr">
+                        <div><h3>Top megyék</h3><p>Hirdetésszám alapján</p></div>
+                    </div>
+                    <div class="va-st-chart-body" style="height:220px;">
+                        <canvas id="va-st-county"></canvas>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- ══ Grafikonok sor 3 – státusz + ár ═══════════════ -->
+            <div class="va-st-charts-row va-st-charts-row--sm">
+                <div class="va-st-chart-card">
+                    <div class="va-st-chart-hdr"><div><h3>Hirdetés státuszok</h3><p>Jelenlegi eloszlás</p></div></div>
+                    <div class="va-st-chart-body va-st-chart-body--donut">
+                        <canvas id="va-st-status" width="140" height="140"></canvas>
+                        <div class="va-st-donut-legend">
+                            <?php foreach (['Aktív'=>['#ff4444',$published],'Függő'=>['#ff8c42',$pending],'Vázlat'=>['#4da6ff',$draft]] as $lbl=>[$col,$val]): ?>
+                            <div class="va-st-leg-row">
+                                <span class="va-st-leg-dot" style="background:<?php echo $col; ?>"></span>
+                                <span class="va-st-leg-name"><?php echo esc_html($lbl); ?></span>
+                                <span class="va-st-leg-val"><?php echo $val; ?></span>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php if (!empty($price_ranges)): ?>
+                <div class="va-st-chart-card">
+                    <div class="va-st-chart-hdr"><div><h3>Ár sávok</h3><p>Hirdetések ár szerint csoportosítva</p></div></div>
+                    <div class="va-st-chart-body va-st-chart-body--donut">
+                        <canvas id="va-st-price" width="140" height="140"></canvas>
+                        <div class="va-st-donut-legend" id="va-st-price-legend"></div>
+                    </div>
+                </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- ══ Táblázatok ─────────────────────────────────── -->
+            <div class="va-st-tables-row">
+
+                <!-- Top megtekintett -->
+                <div class="va-st-panel">
+                    <div class="va-st-panel__hdr"><h3>👁 Top 10 megtekintett hirdetés</h3></div>
+                    <table class="va-st-table">
+                        <thead><tr><th>#</th><th>Hirdetés</th><th>Kat.</th><th>Megtekintés</th><th>Feladva</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($top_viewed as $idx => $p):
+                            $views = (int)get_post_meta($p->ID, 'va_views', true);
+                            $cats  = get_the_terms($p->ID, 'va_category');
+                            $cat   = (!is_wp_error($cats) && $cats) ? $cats[0]->name : '–';
+                        ?>
+                        <tr>
+                            <td class="va-st-rank"><?php echo $idx+1; ?></td>
+                            <td><a href="<?php echo esc_url(get_permalink($p->ID)); ?>" target="_blank"><?php echo esc_html(wp_trim_words($p->post_title,6,'…')); ?></a></td>
+                            <td><span class="va-st-tag"><?php echo esc_html($cat); ?></span></td>
+                            <td><strong class="va-st-accent"><?php echo number_format($views,0,',','&nbsp;'); ?></strong></td>
+                            <td class="va-st-muted"><?php echo esc_html(date_i18n('Y.m.d', strtotime($p->post_date))); ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Top hirdetők -->
+                <div class="va-st-panel">
+                    <div class="va-st-panel__hdr"><h3>🏆 Top 10 hirdető</h3></div>
+                    <table class="va-st-table">
+                        <thead><tr><th>#</th><th>Felhasználó</th><th>E-mail</th><th>Hirdetés</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($top_posters as $idx => $row):
+                            $u = get_userdata($row['post_author']);
+                            if (!$u) continue;
+                        ?>
+                        <tr>
+                            <td class="va-st-rank"><?php echo $idx+1; ?></td>
+                            <td><strong><?php echo esc_html($u->display_name); ?></strong></td>
+                            <td class="va-st-muted"><?php echo esc_html($u->user_email); ?></td>
+                            <td><strong class="va-st-accent"><?php echo (int)$row['cnt']; ?></strong></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <div class="va-st-tables-row">
+
+                <!-- Top watchlist -->
+                <?php if (!empty($top_wl_rows)): ?>
+                <div class="va-st-panel">
+                    <div class="va-st-panel__hdr"><h3>❤️ Top 10 mentett hirdetés (watchlist)</h3></div>
+                    <table class="va-st-table">
+                        <thead><tr><th>#</th><th>Hirdetés</th><th>Mentések</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($top_wl_rows as $idx => $wl): ?>
+                        <tr>
+                            <td class="va-st-rank"><?php echo $idx+1; ?></td>
+                            <td><a href="<?php echo esc_url($wl['url']); ?>" target="_blank"><?php echo esc_html(wp_trim_words($wl['title'],8,'…')); ?></a></td>
+                            <td><strong class="va-st-accent"><?php echo (int)$wl['cnt']; ?></strong></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php endif; ?>
+
+                <!-- Legutóbbi regisztrációk -->
+                <div class="va-st-panel">
+                    <div class="va-st-panel__hdr"><h3>🆕 Legutóbbi 10 regisztráció</h3></div>
+                    <table class="va-st-table">
+                        <thead><tr><th>Név</th><th>E-mail</th><th>Regisztrált</th></tr></thead>
+                        <tbody>
+                        <?php foreach ($recent_regs as $u): ?>
+                        <tr>
+                            <td><strong><?php echo esc_html($u->display_name); ?></strong></td>
+                            <td class="va-st-muted"><?php echo esc_html($u->user_email); ?></td>
+                            <td class="va-st-muted"><?php echo esc_html(date_i18n('Y.m.d H:i', strtotime($u->user_registered))); ?></td>
+                        </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+            <!-- Legutóbbi hirdetések -->
+            <div class="va-st-panel va-st-panel--full">
+                <div class="va-st-panel__hdr"><h3>🕐 Legutóbbi 10 hirdetés</h3></div>
+                <table class="va-st-table">
+                    <thead><tr><th>Cím</th><th>Hirdető</th><th>Kategória</th><th>Ár</th><th>Státusz</th><th>Dátum</th><th></th></tr></thead>
+                    <tbody>
+                    <?php foreach ($recent_listings as $p):
+                        $author = get_userdata($p->post_author);
+                        $cats   = get_the_terms($p->ID, 'va_category');
+                        $cat    = (!is_wp_error($cats) && $cats) ? $cats[0]->name : '–';
+                        $price  = (float)get_post_meta($p->ID, 'va_price', true);
+                        $status_map = ['publish'=>['Aktív','#4ade80'],'pending'=>['Függő','#fb923c'],'draft'=>['Vázlat','#94a3b8']];
+                        [$st_label, $st_color] = $status_map[$p->post_status] ?? ['–','#666'];
+                    ?>
+                    <tr>
+                        <td><strong><?php echo esc_html(wp_trim_words($p->post_title,7,'…')); ?></strong></td>
+                        <td class="va-st-muted"><?php echo $author ? esc_html($author->display_name) : '–'; ?></td>
+                        <td><span class="va-st-tag"><?php echo esc_html($cat); ?></span></td>
+                        <td><?php echo $price > 0 ? '<span class="va-st-price">' . number_format($price,0,',','&nbsp;') . ' Ft</span>' : '<span class="va-st-muted">—</span>'; ?></td>
+                        <td><span class="va-st-status-dot" style="color:<?php echo $st_color; ?>"><?php echo esc_html($st_label); ?></span></td>
+                        <td class="va-st-muted"><?php echo esc_html(date_i18n('m.d H:i', strtotime($p->post_date))); ?></td>
+                        <td><a href="<?php echo esc_url(admin_url("post.php?action=edit&post={$p->ID}")); ?>" class="va-st-edit-btn">Szerk.</a></td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <?php if ($auctions_enabled && !empty($top_auctions)): ?>
+            <!-- Aukció statisztikák -->
+            <div class="va-st-panel va-st-panel--full">
+                <div class="va-st-panel__hdr"><h3>🔨 Legtöbb licitet kapott aukciók</h3></div>
+                <table class="va-st-table">
+                    <thead><tr><th>Aukció</th><th>Licitek száma</th><th>Legmagasabb licit</th></tr></thead>
+                    <tbody>
+                    <?php foreach ($top_auctions as $a):
+                        $title = get_the_title($a['post_id']);
+                        $url   = get_permalink($a['post_id']);
+                    ?>
+                    <tr>
+                        <td><a href="<?php echo esc_url($url); ?>" target="_blank"><?php echo esc_html(wp_trim_words($title,8,'…')); ?></a></td>
+                        <td><strong class="va-st-accent"><?php echo (int)$a['bid_cnt']; ?></strong></td>
+                        <td class="va-st-price"><?php echo number_format((float)$a['max_bid'],0,',','&nbsp;'); ?> Ft</td>
+                    </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <?php endif; ?>
+
+        </div><!-- .va-stats-page -->
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Chart.defaults.color = 'rgba(255,255,255,.5)';
+            Chart.defaults.font.family = '"Montserrat", system-ui, sans-serif';
+            Chart.defaults.font.size = 11;
+
+            const palette = ['#ff2222','#ff6b35','#ffd166','#06d6a0','#118ab2','#9b5de5','#f72585','#4cc9f0','#80b918','#e07a5f','#3d405b','#81b29a'];
+
+            const tooltipDark = {
+                backgroundColor: 'rgba(12,12,18,.95)',
+                borderColor: 'rgba(255,0,0,.35)',
+                borderWidth: 1,
+                padding: 10,
+                titleColor: '#fff',
+                bodyColor: 'rgba(255,255,255,.7)',
+            };
+
+            function gradientRed(ctx, chart) {
+                const g = ctx.createLinearGradient(0, 0, 0, chart.chartArea?.bottom || 200);
+                g.addColorStop(0, 'rgba(255,0,0,.7)');
+                g.addColorStop(1, 'rgba(255,0,0,.1)');
+                return g;
+            }
+
+            /* Bar – hirdetési aktivitás */
+            const ctxBar = document.getElementById('va-st-bar');
+            if (ctxBar) new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: <?php echo $ch_day_lbl; ?>,
+                    datasets: [{
+                        label: 'Új hirdetés',
+                        data: <?php echo $ch_day_data; ?>,
+                        backgroundColor: 'rgba(255,0,0,.55)',
+                        borderColor: 'rgba(255,60,60,.9)',
+                        borderWidth: 1.5,
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipDark, callbacks: { label: c => ` ${c.parsed.y} db` } } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { maxTicksLimit: 10 } },
+                        y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { precision: 0, stepSize: 1 }, beginAtZero: true }
+                    }
+                }
+            });
+
+            /* Line – regisztrációk */
+            const ctxReg = document.getElementById('va-st-reg');
+            if (ctxReg) new Chart(ctxReg, {
+                type: 'line',
+                data: {
+                    labels: <?php echo $ch_day_lbl; ?>,
+                    datasets: [{
+                        label: 'Regisztráció',
+                        data: <?php echo $ch_reg_data; ?>,
+                        borderColor: '#4da6ff',
+                        backgroundColor: 'rgba(77,166,255,.12)',
+                        fill: true,
+                        tension: 0.35,
+                        pointRadius: 3,
+                        pointBackgroundColor: '#4da6ff',
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipDark, callbacks: { label: c => ` ${c.parsed.y} fő` } } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { maxTicksLimit: 10 } },
+                        y: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { precision: 0, stepSize: 1 }, beginAtZero: true }
+                    }
+                }
+            });
+
+            /* Horizontal Bar – kategóriák */
+            const ctxCat = document.getElementById('va-st-cat');
+            if (ctxCat && <?php echo $ch_cat_lbl; ?>.length) new Chart(ctxCat, {
+                type: 'bar',
+                data: {
+                    labels: <?php echo $ch_cat_lbl; ?>,
+                    datasets: [{
+                        label: 'Hirdetés',
+                        data: <?php echo $ch_cat_data; ?>,
+                        backgroundColor: palette,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipDark } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { precision: 0 }, beginAtZero: true },
+                        y: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,.6)' } }
+                    }
+                }
+            });
+
+            /* Horizontal Bar – megyék */
+            const ctxCty = document.getElementById('va-st-county');
+            if (ctxCty && <?php echo $ch_cty_lbl; ?>.length) new Chart(ctxCty, {
+                type: 'bar',
+                data: {
+                    labels: <?php echo $ch_cty_lbl; ?>,
+                    datasets: [{
+                        label: 'Hirdetés',
+                        data: <?php echo $ch_cty_data; ?>,
+                        backgroundColor: 'rgba(77,166,255,.65)',
+                        borderColor: 'rgba(77,166,255,.9)',
+                        borderWidth: 1,
+                        borderRadius: 5,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { ...tooltipDark } },
+                    scales: {
+                        x: { grid: { color: 'rgba(255,255,255,.05)' }, ticks: { precision: 0 }, beginAtZero: true },
+                        y: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,.6)' } }
+                    }
+                }
+            });
+
+            /* Doughnut – státusz */
+            const ctxSt = document.getElementById('va-st-status');
+            if (ctxSt) new Chart(ctxSt, {
+                type: 'doughnut',
+                data: {
+                    labels: <?php echo $ch_st_lbl; ?>,
+                    datasets: [{ data: <?php echo $ch_st_data; ?>, backgroundColor: ['#ff4444','#ff8c42','#4da6ff'], borderColor: '#0d0d11', borderWidth: 3, hoverOffset: 5 }]
+                },
+                options: { cutout: '68%', plugins: { legend: { display: false }, tooltip: { ...tooltipDark } } }
+            });
+
+            /* Doughnut – ár sávok */
+            const ctxPr = document.getElementById('va-st-price');
+            if (ctxPr) {
+                const prLabels = <?php echo $ch_pr_lbl; ?>;
+                const prData   = <?php echo $ch_pr_data; ?>;
+                const prTotal  = prData.reduce((a,b)=>a+b,0);
+                new Chart(ctxPr, {
+                    type: 'doughnut',
+                    data: {
+                        labels: prLabels,
+                        datasets: [{ data: prData, backgroundColor: ['#4ade80','#06d6a0','#4da6ff','#9b5de5','#ff4444'], borderColor: '#0d0d11', borderWidth: 3, hoverOffset: 5 }]
+                    },
+                    options: { cutout: '68%', plugins: { legend: { display: false }, tooltip: { ...tooltipDark, callbacks: { label: c => ` ${c.label}: ${c.parsed} db (${prTotal>0?Math.round(c.parsed/prTotal*100):0}%)` } } } }
+                });
+                const leg = document.getElementById('va-st-price-legend');
+                if (leg) leg.innerHTML = prLabels.map((l,i)=>`<div class="va-st-leg-row"><span class="va-st-leg-dot" style="background:${['#4ade80','#06d6a0','#4da6ff','#9b5de5','#ff4444'][i]}"></span><span class="va-st-leg-name">${l}</span><span class="va-st-leg-val">${prData[i]}</span></div>`).join('');
+            }
+        });
+        </script>
         <?php
     }
 
-    /* ══ Export / Import / Reset ═════════════════════════ */
     public static function render_tools() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
