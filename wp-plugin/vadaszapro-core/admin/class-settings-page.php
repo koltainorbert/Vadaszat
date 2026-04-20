@@ -203,6 +203,10 @@ class VA_Settings_Page {
             'va_color_hero_badge_border'       => 'rgba(255,0,0,.55)',
             'va_color_hero_badge_text'         => '#ffffff',
 
+            // Hero szöveg színek
+            'va_color_hero_title'              => '#ffffff',
+            'va_color_hero_sub'                => 'rgba(255,255,255,.80)',
+
             // Hero primary gomb színek
             'va_color_hero_btn_primary_bg'     => '#ff0000',
             'va_color_hero_btn_primary_hover'  => '#cc0000',
@@ -258,6 +262,8 @@ class VA_Settings_Page {
             'va_hf_header_btn_pad_x'               => 20,
             'va_hf_header_btn_glow_alpha'          => '0.40',
             'va_hf_header_btn_glow_color'          => 'rgba(255,0,0,.52)',
+            'va_color_header_submit_hover_bg'          => '#cc0000',
+            'va_color_header_submit_hover_text'        => '#ffffff',
             'va_hf_header_user_border_alpha'       => '0.12',
             'va_hf_header_user_bg_alpha'           => '0.06',
             'va_hf_header_mobile_show_search'      => '0',
@@ -353,6 +359,8 @@ class VA_Settings_Page {
             'va_hf_header_btn_pad_x',
             'va_hf_header_btn_glow_alpha',
             'va_hf_header_btn_glow_color',
+            'va_color_header_submit_hover_bg',
+            'va_color_header_submit_hover_text',
             'va_hf_header_user_border_alpha',
             'va_hf_header_user_bg_alpha',
             'va_hf_header_mobile_show_search',
@@ -957,6 +965,8 @@ class VA_Settings_Page {
 
                 <h2>Hero badge és gombok színei</h2>
                 <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_title',            'Hero cím szöveg szín' ); ?>
+                    <?php self::field_text(  'va_color_hero_sub',              'Hero alcím szöveg szín (rgba vagy hex)' ); ?>
                     <?php self::field_text(  'va_color_hero_badge_bg',          'Hero badge háttér (rgba vagy hex)' ); ?>
                     <?php self::field_text(  'va_color_hero_badge_border',       'Hero badge keret szín (rgba vagy hex)' ); ?>
                     <?php self::field_color( 'va_color_hero_badge_text',         'Hero badge szöveg szín' ); ?>
@@ -1119,6 +1129,8 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_hf_header_btn_pad_y',           'Header gombok függőleges padding (px)', 4, 20 ); ?>
                     <?php self::field_num( 'va_hf_header_btn_pad_x',           'Header gombok vízszintes padding (px)', 8, 40 ); ?>
                     <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Piros gomb glow opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_color( 'va_color_header_submit_hover_bg',   'CTA gomb hover háttér' ); ?>
+                    <?php self::field_color( 'va_color_header_submit_hover_text', 'CTA gomb hover szöveg szín' ); ?>
                     <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Felhasználó gomb keret opacitás (0-1)', 0, 1, 0.01 ); ?>
                     <?php self::field_decimal( 'va_hf_header_user_bg_alpha',   'Felhasználó gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
                     <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső megjelenjen mobilon is' ); ?>
