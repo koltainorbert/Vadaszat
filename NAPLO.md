@@ -2,7 +2,21 @@
 
 ---
 
-<<<<<<< HEAD
+## 2026. 04. 20. – Session #114 (Irodai gép szinkronizálás)
+
+### Mit csináltunk [x]
+- [x] Irodai gépen beállított LocalWP (apro.local, port 10017) szinkronizálva
+- [x] Plugin + téma deployolva a repóból LocalWP-be
+- [x] Teljes szinkronizálás: LocalWP zip → repo (minden fájl naprakész)
+- [x] Push: minden fájl fent van GitHubon
+- [x] WP oldalak shortcode-jai javítva MySQL-en keresztül
+- [x] Megállapítva: va_create_default_pages() automatikusan létrehozza az oldalakat aktiváláskor
+
+### Hol tartunk
+Az irodai gépen minden működik (apro.local). A vásárlás gomb bejelentkezéshez köti a csomagvásárlást — ez szándékos.
+
+---
+
 ## 2026. 04. 20. – Session #4 (délelőtt, irodai gép)
 
 ### Mit csináltunk [x]
