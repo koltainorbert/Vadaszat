@@ -198,6 +198,23 @@ class VA_Settings_Page {
             'va_weight_footer_title'       => '700',
             'va_weight_footer_link'        => '500',
 
+            // Hero badge színek
+            'va_color_hero_badge_bg'           => 'rgba(6,6,6,.56)',
+            'va_color_hero_badge_border'       => 'rgba(255,0,0,.55)',
+            'va_color_hero_badge_text'         => '#ffffff',
+
+            // Hero primary gomb színek
+            'va_color_hero_btn_primary_bg'     => '#ff0000',
+            'va_color_hero_btn_primary_hover'  => '#cc0000',
+            'va_color_hero_btn_primary_text'   => '#ffffff',
+            'va_color_hero_btn_primary_glow'   => 'rgba(255,0,0,.45)',
+
+            // Hero ghost gomb színek
+            'va_color_hero_btn_ghost_bg'       => 'rgba(255,255,255,.08)',
+            'va_color_hero_btn_ghost_border'   => 'rgba(255,255,255,.22)',
+            'va_color_hero_btn_ghost_hover'    => 'rgba(255,255,255,.15)',
+            'va_color_hero_btn_ghost_text'     => '#ffffff',
+
             // Mobil skála (%)
             'va_mobile_factor_hero'        => 100,
             'va_mobile_factor_header'      => 100,
@@ -936,6 +953,21 @@ class VA_Settings_Page {
                     <?php self::field_color( 'va_color_content_text',     'Tartalom szöveg' ); ?>
                     <?php self::field_color( 'va_color_content_headings', 'Tartalom címsorok' ); ?>
                     <?php self::field_color( 'va_color_content_links',    'Tartalom linkek' ); ?>
+                </table>
+
+                <h2>Hero badge és gombok színei</h2>
+                <table class="form-table">
+                    <?php self::field_text(  'va_color_hero_badge_bg',          'Hero badge háttér (rgba vagy hex)' ); ?>
+                    <?php self::field_text(  'va_color_hero_badge_border',       'Hero badge keret szín (rgba vagy hex)' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_text',         'Hero badge szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_bg',     'Primary gomb háttér' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_hover',  'Primary gomb hover háttér' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_text',   'Primary gomb szöveg szín' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_primary_glow',   'Primary gomb glow szín (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_bg',       'Ghost gomb háttér (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_border',   'Ghost gomb keret szín (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_hover',    'Ghost gomb hover háttér (rgba)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_text',     'Ghost gomb szöveg szín' ); ?>
                 </table>
 
                 <h2>Hero szöveg méretek (összes oldal)</h2>

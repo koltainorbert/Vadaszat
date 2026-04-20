@@ -838,6 +838,19 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' .
     '.va-footer__link:hover,.va-footer__bottom a:hover{color:' . $hf_footer_link_hover_color . ';}' .
 
+    // Hero badge + gomb színek
+    $hero_badge_bg          = va_design_css_color( (string) get_option( 'va_color_hero_badge_bg',          'rgba(6,6,6,.56)' ),          'rgba(6,6,6,.56)' );
+    $hero_badge_border      = va_design_css_color( (string) get_option( 'va_color_hero_badge_border',      'rgba(255,0,0,.55)' ),        'rgba(255,0,0,.55)' );
+    $hero_badge_text        = va_design_css_color( (string) get_option( 'va_color_hero_badge_text',        '#ffffff' ),                  '#ffffff' );
+    $hero_btn_primary_bg    = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_bg',    '#ff0000' ),                  '#ff0000' );
+    $hero_btn_primary_hover = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover', '#cc0000' ),                  '#cc0000' );
+    $hero_btn_primary_text  = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_text',  '#ffffff' ),                  '#ffffff' );
+    $hero_btn_primary_glow  = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_glow',  'rgba(255,0,0,.45)' ),        'rgba(255,0,0,.45)' );
+    $hero_btn_ghost_bg      = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_bg',      'rgba(255,255,255,.08)' ),    'rgba(255,255,255,.08)' );
+    $hero_btn_ghost_border  = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_border',  'rgba(255,255,255,.22)' ),    'rgba(255,255,255,.22)' );
+    $hero_btn_ghost_hover   = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_hover',   'rgba(255,255,255,.15)' ),    'rgba(255,255,255,.15)' );
+    $hero_btn_ghost_text    = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_text',    '#ffffff' ),                  '#ffffff' );
+
     // Hero méretek – összes oldal
     '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;}' .
     '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;}' .
