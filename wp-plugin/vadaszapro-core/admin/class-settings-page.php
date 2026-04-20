@@ -482,6 +482,62 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        /* Hero szekció – teljes vezérlés */
+        $hero = [
+            // Szövegek
+            'va_home_hero_badge_text'           => 'Magyarország első vadászati hirdetőoldala',
+            'va_home_hero_title_top'            => 'VadászBazár',
+            'va_home_hero_title_bottom'         => 'és Apróhirdetés',
+            'va_home_hero_sub_text'             => 'Magyarország első vadászati hirdetőoldala',
+            'va_home_hero_primary_cta_text'     => '+ Hirdetés feladása',
+            'va_home_hero_secondary_cta_text'   => 'Hirdetések böngészése →',
+            // Igazítás
+            'va_home_hero_align'                => 'left',
+            // Overlay
+            'va_hero_overlay_top'               => '0.72',
+            'va_hero_overlay_mid_a'             => '0.18',
+            'va_hero_overlay_mid_b'             => '0.25',
+            'va_hero_overlay_bottom_a'          => '0.85',
+            // Bal oldali piros csík
+            'va_hero_stripe_show'               => '1',
+            'va_hero_stripe_color'              => '#ff0000',
+            'va_hero_stripe_width'              => '3',
+            'va_hero_stripe_opacity'            => '0.55',
+            // Badge dot
+            'va_hero_badge_dot_show'            => '1',
+            'va_hero_badge_dot_color'           => '#ff0000',
+            // Badge
+            'va_color_hero_badge_bg'            => 'rgba(6,6,6,.56)',
+            'va_color_hero_badge_border'        => 'rgba(255,0,0,.55)',
+            'va_color_hero_badge_text'          => '#ffffff',
+            // Cím + alcím
+            'va_color_hero_title'               => '#ffffff',
+            'va_color_hero_title_span'          => '#ff0000',
+            'va_color_hero_sub'                 => 'rgba(255,255,255,.90)',
+            // Primary gomb
+            'va_color_hero_btn_primary_bg'      => '#ff0000',
+            'va_color_hero_btn_primary_hover'   => '#cc0000',
+            'va_color_hero_btn_primary_text'    => '#ffffff',
+            'va_color_hero_btn_primary_hover_text' => '#ffffff',
+            'va_color_hero_btn_primary_glow'    => 'rgba(255,0,0,.45)',
+            // Ghost gomb
+            'va_color_hero_btn_ghost_bg'        => 'rgba(255,255,255,.08)',
+            'va_color_hero_btn_ghost_border'    => 'rgba(255,255,255,.22)',
+            'va_color_hero_btn_ghost_hover'     => 'rgba(255,255,255,.15)',
+            'va_color_hero_btn_ghost_text'      => '#ffffff',
+            'va_color_hero_btn_ghost_hover_text'=> '#ffffff',
+            // Scroll jel
+            'va_hero_scroll_show'               => '1',
+            'va_hero_scroll_line_color'         => '#ff0000',
+            'va_hero_scroll_dot_color'          => '#ff0000',
+            'va_hero_scroll_opacity'            => '0.50',
+        ];
+        foreach ( $hero as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_hero_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
         // Márka ikon URL (header ikon + automata favicon)
         register_setting( 'va_general_settings', 'va_brand_icon_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
         self::$defaults['va_brand_icon_url'] = '';
