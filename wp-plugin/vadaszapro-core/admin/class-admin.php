@@ -144,6 +144,7 @@ class VA_Admin {
             "vadaszapro-design"       => "Design beállítások",
             "vadaszapro-layout"       => "Layout Állító",
             "vadaszapro-header-footer"=> "Fejléc & Lábléc",
+            "vadaszapro-hero"         => "Hero szekció",
             "vadaszapro-tools"        => "Export / Import",
             "vadaszapro-reklam"       => "Reklámzónák",
             "vadaszapro-hirdetes"     => "Hirdetés beállítások",
@@ -197,6 +198,7 @@ class VA_Admin {
 
                 <?php self::sb_item( "⚙️", "Általános", admin_url( "admin.php?page=vadaszapro" ), $page === "vadaszapro" ); ?>
                 <?php self::sb_item( "🎨", "Design", admin_url( "admin.php?page=vadaszapro-design" ), $page === "vadaszapro-design" ); ?>
+                <?php self::sb_item( "🎬", "Hero szekció", admin_url( "admin.php?page=vadaszapro-hero" ), $page === "vadaszapro-hero" ); ?>
                 <?php self::sb_item( "📐", "Layout Állító", admin_url( "admin.php?page=vadaszapro-layout" ), $page === "vadaszapro-layout" ); ?>
                 <?php self::sb_item( "🗂️", "Fejléc & Lábléc", admin_url( "admin.php?page=vadaszapro-header-footer" ), $page === "vadaszapro-header-footer" ); ?>
                 <?php self::sb_item( "🧩", "Form szerkesztő", admin_url( "admin.php?page=va-form-builder" ), $page === "va-form-builder" ); ?>
@@ -283,6 +285,7 @@ class VA_Admin {
 
         add_submenu_page( "vadaszapro", "Általános beállítások",  "Általános",          "manage_options", "vadaszapro",               [ VA_Settings_Page::class, "render_general"        ] );
         add_submenu_page( "vadaszapro", "Design beállítások",     "Design",             "manage_options", "vadaszapro-design",         [ VA_Settings_Page::class, "render_design"          ] );
+        add_submenu_page( "vadaszapro", "Hero szekció",           "Hero szekció",       "manage_options", "vadaszapro-hero",           [ VA_Settings_Page::class, "render_hero"             ] );
         add_submenu_page( "vadaszapro", "Layout Állító",          "Layout Állító",      "manage_options", "vadaszapro-layout",         [ VA_Settings_Page::class, "render_layout_builder"  ] );
         add_submenu_page( "vadaszapro", "Fejléc + Lábléc",        "Fejléc + Lábléc",   "manage_options", "vadaszapro-header-footer",  [ VA_Settings_Page::class, "render_header_footer"   ] );
         add_submenu_page( "vadaszapro", "Export / Import",        "Export / Import",   "manage_options", "vadaszapro-tools",          [ VA_Settings_Page::class, "render_tools"            ] );
