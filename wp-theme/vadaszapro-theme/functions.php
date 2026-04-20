@@ -838,33 +838,87 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' .
     '.va-footer__link:hover,.va-footer__bottom a:hover{color:' . $hf_footer_link_hover_color . ';}' .
 
-    // Hero badge + gomb színek
-    $hero_badge_bg          = va_design_css_color( (string) get_option( 'va_color_hero_badge_bg',          'rgba(6,6,6,.56)' ),          'rgba(6,6,6,.56)' );
-    $hero_badge_border      = va_design_css_color( (string) get_option( 'va_color_hero_badge_border',      'rgba(255,0,0,.55)' ),        'rgba(255,0,0,.55)' );
-    $hero_badge_text        = va_design_css_color( (string) get_option( 'va_color_hero_badge_text',        '#ffffff' ),                  '#ffffff' );
-    $hero_title_color       = va_design_css_color( (string) get_option( 'va_color_hero_title',             '#ffffff' ),                  '#ffffff' );
-    $hero_sub_color         = va_design_css_color( (string) get_option( 'va_color_hero_sub',               'rgba(255,255,255,.80)' ),    'rgba(255,255,255,.80)' );
-    $hero_btn_primary_bg    = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_bg',    '#ff0000' ),                  '#ff0000' );
-    $hero_btn_primary_hover = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover', '#cc0000' ),                  '#cc0000' );
-    $hero_btn_primary_text  = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_text',  '#ffffff' ),                  '#ffffff' );
-    $hero_btn_primary_glow  = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_glow',  'rgba(255,0,0,.45)' ),        'rgba(255,0,0,.45)' );
-    $hero_btn_ghost_bg      = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_bg',      'rgba(255,255,255,.08)' ),    'rgba(255,255,255,.08)' );
-    $hero_btn_ghost_border  = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_border',  'rgba(255,255,255,.22)' ),    'rgba(255,255,255,.22)' );
-    $hero_btn_ghost_hover   = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_hover',   'rgba(255,255,255,.15)' ),    'rgba(255,255,255,.15)' );
-    $hero_btn_ghost_text    = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_text',    '#ffffff' ),                  '#ffffff' );
-    $header_submit_hover_bg   = va_design_css_color( (string) get_option( 'va_color_header_submit_hover_bg',   '#cc0000' ),              '#cc0000' );
-    $header_submit_hover_text = va_design_css_color( (string) get_option( 'va_color_header_submit_hover_text', '#ffffff' ),              '#ffffff' );
+    // ── Hero szekció – összes beállítás ─────────────────────────────
+    ( (function() {
+        // Overlay
+        $ov_top    = va_design_float_option( 'va_hero_overlay_top',      0.72, 0, 1 );
+        $ov_mid_a  = va_design_float_option( 'va_hero_overlay_mid_a',    0.18, 0, 1 );
+        $ov_mid_b  = va_design_float_option( 'va_hero_overlay_mid_b',    0.25, 0, 1 );
+        $ov_bot_a  = va_design_float_option( 'va_hero_overlay_bottom_a', 0.85, 0, 1 );
 
-    // Hero méretek – összes oldal
-    '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;background:' . $hero_badge_bg . ' !important;border-color:' . $hero_badge_border . ' !important;color:' . $hero_badge_text . ' !important;}' .
-    '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;color:' . $hero_title_color . ' !important;}' .
-    '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;color:' . $hero_sub_color . ' !important;}' .
-    '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
-    '.vh__btn--primary{background:' . $hero_btn_primary_bg . ' !important;color:' . $hero_btn_primary_text . ' !important;box-shadow:0 0 28px ' . $hero_btn_primary_glow . ' !important;}' .
-    '.vh__btn--primary:hover{background:' . $hero_btn_primary_hover . ' !important;}' .
-    '.vh__btn--ghost{background:' . $hero_btn_ghost_bg . ' !important;border-color:' . $hero_btn_ghost_border . ' !important;color:' . $hero_btn_ghost_text . ' !important;}' .
-    '.vh__btn--ghost:hover{background:' . $hero_btn_ghost_hover . ' !important;}' .
-    '.va-nav__item--accent:hover,.va-header__submit-btn:hover{background-color:' . $header_submit_hover_bg . ' !important;color:' . $header_submit_hover_text . ' !important;}' .
+        // Bal oldali csík
+        $stripe_show    = get_option( 'va_hero_stripe_show',    '1' ) === '1';
+        $stripe_color   = va_design_css_color( (string) get_option( 'va_hero_stripe_color',   '#ff0000' ), '#ff0000' );
+        $stripe_width   = va_design_int_option( 'va_hero_stripe_width', 3, 1, 20 );
+        $stripe_opacity = va_design_float_option( 'va_hero_stripe_opacity', 0.55, 0, 1 );
+
+        // Badge dot
+        $dot_show  = get_option( 'va_hero_badge_dot_show', '1' ) === '1';
+        $dot_color = va_design_css_color( (string) get_option( 'va_hero_badge_dot_color', '#ff0000' ), '#ff0000' );
+
+        // Badge
+        $badge_bg     = va_design_css_color( (string) get_option( 'va_color_hero_badge_bg',     'rgba(6,6,6,.56)' ),   'rgba(6,6,6,.56)' );
+        $badge_border = va_design_css_color( (string) get_option( 'va_color_hero_badge_border',  'rgba(255,0,0,.55)' ), 'rgba(255,0,0,.55)' );
+        $badge_text   = va_design_css_color( (string) get_option( 'va_color_hero_badge_text',    '#ffffff' ),           '#ffffff' );
+
+        // Cím + alcím
+        $title_color      = va_design_css_color( (string) get_option( 'va_color_hero_title',      '#ffffff' ),                '#ffffff' );
+        $title_span_color = va_design_css_color( (string) get_option( 'va_color_hero_title_span', '#ff0000' ),               '#ff0000' );
+        $sub_color        = va_design_css_color( (string) get_option( 'va_color_hero_sub',        'rgba(255,255,255,.90)' ), 'rgba(255,255,255,.90)' );
+
+        // Primary gomb
+        $btn_p_bg         = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_bg',         '#ff0000' ),         '#ff0000' );
+        $btn_p_hover      = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover',      '#cc0000' ),         '#cc0000' );
+        $btn_p_text       = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_text',       '#ffffff' ),         '#ffffff' );
+        $btn_p_hover_text = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover_text', '#ffffff' ),         '#ffffff' );
+        $btn_p_glow       = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_glow',       'rgba(255,0,0,.45)' ), 'rgba(255,0,0,.45)' );
+
+        // Ghost gomb
+        $btn_g_bg         = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_bg',          'rgba(255,255,255,.08)' ), 'rgba(255,255,255,.08)' );
+        $btn_g_border     = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_border',       'rgba(255,255,255,.22)' ), 'rgba(255,255,255,.22)' );
+        $btn_g_hover      = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_hover',        'rgba(255,255,255,.15)' ), 'rgba(255,255,255,.15)' );
+        $btn_g_text       = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_text',         '#ffffff' ),              '#ffffff' );
+        $btn_g_hover_text = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_hover_text',   '#ffffff' ),              '#ffffff' );
+
+        // Scroll jel
+        $scroll_show      = get_option( 'va_hero_scroll_show', '1' ) === '1';
+        $scroll_line      = va_design_css_color( (string) get_option( 'va_hero_scroll_line_color', '#ff0000' ), '#ff0000' );
+        $scroll_dot       = va_design_css_color( (string) get_option( 'va_hero_scroll_dot_color',  '#ff0000' ), '#ff0000' );
+        $scroll_opacity   = va_design_float_option( 'va_hero_scroll_opacity', 0.50, 0, 1 );
+
+        $css  = '.vh__overlay{background:linear-gradient(to bottom,'
+              . 'rgba(6,6,6,' . $ov_top   . ') 0%,'
+              . 'rgba(6,6,6,' . $ov_mid_a . ') 30%,'
+              . 'rgba(6,6,6,' . $ov_mid_b . ') 55%,'
+              . 'rgba(6,6,6,' . $ov_bot_a . ') 80%,'
+              . 'rgb(6,6,6) 100%) !important;}';
+
+        $css .= $stripe_show
+            ? '.vh__overlay::before{display:block !important;width:' . $stripe_width . 'px !important;background:linear-gradient(to bottom,transparent,' . $stripe_color . ' 40%,' . $stripe_color . ' 60%,transparent) !important;opacity:' . $stripe_opacity . ' !important;}'
+            : '.vh__overlay::before{display:none !important;}';
+
+        $css .= $dot_show
+            ? '.vcp-hero__badge-dot{display:inline-block !important;background:' . $dot_color . ' !important;}'
+            : '.vcp-hero__badge-dot{display:none !important;}';
+
+        $css .= '.vh__badge{background:' . $badge_bg . ' !important;border-color:' . $badge_border . ' !important;color:' . $badge_text . ' !important;}';
+        $css .= '.vh__title{color:' . $title_color . ' !important;}';
+        $css .= '.vh__title span{color:' . $title_span_color . ' !important;}';
+        $css .= '.vh__sub{color:' . $sub_color . ' !important;}';
+
+        $css .= '.vh__btn--primary{background:' . $btn_p_bg . ' !important;color:' . $btn_p_text . ' !important;box-shadow:0 0 28px ' . $btn_p_glow . ' !important;}';
+        $css .= '.vh__btn--primary:hover{background:' . $btn_p_hover . ' !important;color:' . $btn_p_hover_text . ' !important;}';
+        $css .= '.vh__btn--ghost{background:' . $btn_g_bg . ' !important;border-color:' . $btn_g_border . ' !important;color:' . $btn_g_text . ' !important;}';
+        $css .= '.vh__btn--ghost:hover{background:' . $btn_g_hover . ' !important;color:' . $btn_g_hover_text . ' !important;}';
+
+        $css .= $scroll_show
+            ? '.vh__scroll{display:flex !important;opacity:' . $scroll_opacity . ' !important;}.vh__scroll-line{background:linear-gradient(to bottom,transparent,' . $scroll_line . ') !important;}.vh__scroll-dot{background:' . $scroll_dot . ' !important;box-shadow:0 0 6px ' . $scroll_dot . ' !important;}'
+            : '.vh__scroll{display:none !important;}';
+
+        return $css;
+    })() ) .
+
+    // Hero méretvezérlők
 
     '.vcp-hero__badge{font-size:' . $kat_hero_badge_css . ' !important;}' .
     '.vcp-hero__title{font-size:' . $kat_hero_title_css . ' !important;line-height:' . $lh_kat_hero_title . ' !important;}' .

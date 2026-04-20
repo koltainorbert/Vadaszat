@@ -1082,6 +1082,101 @@ class VA_Settings_Page {
         <?php
     }
 
+    /* ══ Hero szekció – teljes vezérlés ══════════════════════════ */
+    public static function render_hero() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🎬 VadászApró – Hero szekció (teljes vezérlés)</h1>
+            <p class="description">A főoldali video hero összes eleme: szövegek, színek, overlay, bal csík, badge pont, gombok, scroll jelző.</p>
+            <?php settings_errors( 'va_hero_settings' ); ?>
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_hero_settings' ); ?>
+
+                <h2>📝 Hero szövegek</h2>
+                <table class="form-table">
+                    <?php self::field_text( 'va_home_hero_badge_text',         'Badge szöveg' ); ?>
+                    <?php self::field_text( 'va_home_hero_title_top',          'Cím 1. sor' ); ?>
+                    <?php self::field_text( 'va_home_hero_title_bottom',       'Cím 2. sor' ); ?>
+                    <?php self::field_text( 'va_home_hero_sub_text',           'Alcím szöveg' ); ?>
+                    <?php self::field_text( 'va_home_hero_primary_cta_text',   'Piros gomb szöveg' ); ?>
+                    <?php self::field_text( 'va_home_hero_secondary_cta_text', 'Ghost gomb szöveg' ); ?>
+                </table>
+
+                <h2>📐 Elrendezés</h2>
+                <table class="form-table">
+                    <?php self::field_select( 'va_home_hero_align', 'Tartalom igazítás', [ 'left' => 'Bal', 'center' => 'Közép', 'right' => 'Jobb' ] ); ?>
+                </table>
+
+                <h2>🌫️ Overlay sötétítés</h2>
+                <p class="description">A videó fölötti fekete gradient réteg erőssége (0 = átlátszó, 1 = teljesen fekete).</p>
+                <table class="form-table">
+                    <?php self::field_decimal( 'va_hero_overlay_top',      'Teteje opacitás (nav mögötti sötétség)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hero_overlay_mid_a',    'Közép-felső opacitás', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hero_overlay_mid_b',    'Közép-alsó opacitás', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hero_overlay_bottom_a', 'Alsó opacitás (alap tartalomba tűnés)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <h2>📍 Bal oldali piros csík</h2>
+                <table class="form-table">
+                    <?php self::field_toggle( 'va_hero_stripe_show',    'Megjelenítés' ); ?>
+                    <?php self::field_color(  'va_hero_stripe_color',   'Csík színe' ); ?>
+                    <?php self::field_num(    'va_hero_stripe_width',   'Csík szélessége (px)', 1, 20 ); ?>
+                    <?php self::field_decimal( 'va_hero_stripe_opacity','Csík átlátszósága (0-1)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <h2>🔴 Badge pulzáló pont</h2>
+                <table class="form-table">
+                    <?php self::field_toggle( 'va_hero_badge_dot_show',  'Pont megjelenítése' ); ?>
+                    <?php self::field_color(  'va_hero_badge_dot_color', 'Pont színe' ); ?>
+                </table>
+
+                <h2>🏷️ Badge háttér és keret</h2>
+                <table class="form-table">
+                    <?php self::field_text(  'va_color_hero_badge_bg',     'Háttér szín (rgba vagy hex)' ); ?>
+                    <?php self::field_text(  'va_color_hero_badge_border', 'Keret szín (rgba vagy hex)' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_text',   'Szöveg szín' ); ?>
+                </table>
+
+                <h2>✍️ Cím és alcím színek</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_title',      'Cím szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_title_span', 'Cím kiemelt szó szín (span)' ); ?>
+                    <?php self::field_text(  'va_color_hero_sub',        'Alcím szín (rgba vagy hex)' ); ?>
+                </table>
+
+                <h2>🔴 Piros (primary) gomb</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_btn_primary_bg',         'Háttér' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_hover',      'Hover háttér' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_text',       'Szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_hover_text', 'Hover szöveg szín' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_primary_glow',       'Glow szín (rgba)' ); ?>
+                </table>
+
+                <h2>👻 Ghost gomb</h2>
+                <table class="form-table">
+                    <?php self::field_text(  'va_color_hero_btn_ghost_bg',          'Háttér (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_border',       'Keret szín (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_hover',        'Hover háttér (rgba)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_text',         'Szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_hover_text',   'Hover szöveg szín' ); ?>
+                </table>
+
+                <h2>⬇️ Scroll jelző (jobb oldal lent)</h2>
+                <table class="form-table">
+                    <?php self::field_toggle( 'va_hero_scroll_show',       'Megjelenítés' ); ?>
+                    <?php self::field_color(  'va_hero_scroll_line_color', 'Vonal szín' ); ?>
+                    <?php self::field_color(  'va_hero_scroll_dot_color',  'Pont szín' ); ?>
+                    <?php self::field_decimal( 'va_hero_scroll_opacity',   'Átlátszóság (0-1)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <?php submit_button( 'Hero beállítások mentése' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
     /* ══ Fejléc + Lábléc oldal (maximális paraméterezés) ════════ */
     public static function render_header_footer() {
         if ( ! current_user_can( 'manage_options' ) ) return;
