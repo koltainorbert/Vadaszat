@@ -9,7 +9,9 @@ class VA_Post_Types {
 
     public static function init() {
         add_action( 'init', [ __CLASS__, 'register_listing' ] );
-        add_action( 'init', [ __CLASS__, 'register_auction'  ] );
+        if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+            add_action( 'init', [ __CLASS__, 'register_auction'  ] );
+        }
     }
 
     /* ── Hirdetés CPT ──────────────────────────────────── */
@@ -40,6 +42,10 @@ class VA_Post_Types {
 
     /* ── Aukció CPT ────────────────────────────────────── */
     public static function register_auction() {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            return;
+        }
+
         $labels = [
             'name'               => 'Aukciók',
             'singular_name'      => 'Aukció',

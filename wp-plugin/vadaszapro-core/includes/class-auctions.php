@@ -8,6 +8,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 class VA_Auctions {
 
     public static function init() {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            $next = wp_next_scheduled( 'va_close_expired_auctions' );
+            if ( $next ) {
+                wp_unschedule_event( $next, 'va_close_expired_auctions' );
+            }
+            return;
+        }
+
         add_action( 'wp_enqueue_scripts', [ __CLASS__, 'enqueue' ] );
         add_action( 'wp_ajax_va_place_bid',             [ __CLASS__, 'ajax_place_bid' ] );
         add_action( 'wp_ajax_nopriv_va_place_bid',      [ __CLASS__, 'ajax_place_bid_nopriv' ] );
@@ -31,6 +39,10 @@ class VA_Auctions {
     }
 
     public static function enqueue() {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            return;
+        }
+
         if ( is_singular( 'va_auction' ) || va_is_page( 'va-aukciok' ) ) {
             wp_enqueue_script( 'va-auction', VA_PLUGIN_URL . 'frontend/js/auction.js', [ 'jquery' ], VA_VERSION, true );
             wp_localize_script( 'va-auction', 'VA_Auction', [
@@ -148,6 +160,10 @@ class VA_Auctions {
 
     /* ── Lejárt aukciók lezárása ───────────────────────── */
     public static function close_expired_auctions() {
+        if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+            return;
+        }
+
         global $wpdb;
 
         $now = current_time( 'mysql' );
@@ -206,39 +222,57 @@ class VA_Auctions {
         if ( ! $prev ) return;
 
         $user    = get_userdata( $prev->user_id );
-        $subject = 'Túllicitáltak – ' . get_the_title( $auction_id );
-        $body    = sprintf(
-            "Kedves %s,\n\nTúllicitáltak a \"%s\" aukción.\nAktuális licit: %s Ft\n\nLicitáljon újra: %s",
-            $user->display_name,
-            get_the_title( $auction_id ),
-            number_format( $new_amount, 0, ',', ' ' ),
-            get_permalink( $auction_id )
+        $amount_fmt = number_format( $new_amount, 0, ',', '\u00a0' );
+        $title   = get_the_title( $auction_id );
+        $vars    = [
+            '{name}'   => esc_html( $user->display_name ),
+            '{title}'  => esc_html( $title ),
+            '{amount}' => esc_html( $amount_fmt ),
+        ];
+        VA_Mailer::send(
+            $user->user_email,
+            strtr( get_option( 'va_email_outbid_subject', 'T\u00falllicit\u00e1ltak \u2013 {title}' ), $vars ),
+            strtr( get_option( 'va_email_outbid_heading', 'T\u00falllicit\u00e1ltak t\u00e9ged!' ), $vars ),
+            strtr( get_option( 'va_email_outbid_body',    '' ), $vars ),
+            [ 'label' => strtr( get_option( 'va_email_outbid_btn', 'Licit\u00e1ljon \u00fajra' ), $vars ), 'url' => get_permalink( $auction_id ) ]
         );
-        wp_mail( $user->user_email, $subject, $body );
     }
 
     private static function notify_winner( $auction_id, $user_id, $amount ) {
-        $user    = get_userdata( $user_id );
-        $subject = 'Nyert az aukción! – ' . get_the_title( $auction_id );
-        $body    = sprintf(
-            "Kedves %s,\n\nNyert a \"%s\" aukción!\nNyerő licit: %s Ft\n\nA hirdetés feladójával fel fogja venni Önnel a kapcsolatot.",
-            $user->display_name,
-            get_the_title( $auction_id ),
-            number_format( $amount, 0, ',', ' ' )
+        $user       = get_userdata( $user_id );
+        $amount_fmt = number_format( $amount, 0, ',', '\u00a0' );
+        $title      = get_the_title( $auction_id );
+        $vars_w = [
+            '{name}'   => esc_html( $user->display_name ),
+            '{title}'  => esc_html( $title ),
+            '{amount}' => esc_html( $amount_fmt ),
+        ];
+
+        // Nyertesnek
+        VA_Mailer::send(
+            $user->user_email,
+            strtr( get_option( 'va_email_winner_subject', 'Nyertél az aukción! – {title}' ), $vars_w ),
+            strtr( get_option( 'va_email_winner_heading', '🏆 Nyertél az aukción!' ), $vars_w ),
+            strtr( get_option( 'va_email_winner_body', '' ), $vars_w ),
+            [ 'label' => strtr( get_option( 'va_email_winner_btn', 'Aukció megtekintése' ), $vars_w ), 'url' => get_permalink( $auction_id ) ]
         );
-        wp_mail( $user->user_email, $subject, $body );
 
         // Eladónak is értesítés
-        $post      = get_post( $auction_id );
-        $seller    = get_userdata( $post->post_author );
-        $body2     = sprintf(
-            "Kedves %s,\n\nLezárult a \"%s\" aukciója.\nNyertes licit: %s Ft\nNyertes felhasználó: %s (%s)\n\nVegye fel a kapcsolatot a nyertessel.",
-            $seller->display_name,
-            get_the_title( $auction_id ),
-            number_format( $amount, 0, ',', ' ' ),
-            $user->display_name,
-            $user->user_email
+        $post   = get_post( $auction_id );
+        $seller = get_userdata( $post->post_author );
+        $vars_s = [
+            '{seller_name}'  => esc_html( $seller->display_name ),
+            '{title}'        => esc_html( $title ),
+            '{amount}'       => esc_html( $amount_fmt ),
+            '{winner_name}'  => esc_html( $user->display_name ),
+            '{winner_email}' => esc_attr( $user->user_email ),
+        ];
+        VA_Mailer::send(
+            $seller->user_email,
+            strtr( get_option( 'va_email_seller_subject', 'Aukciód lezárult – {title}' ), $vars_s ),
+            strtr( get_option( 'va_email_seller_heading', 'Aukciód lezárult!' ), $vars_s ),
+            strtr( get_option( 'va_email_seller_body', '' ), $vars_s ),
+            [ 'label' => strtr( get_option( 'va_email_seller_btn', 'Aukció megtekintése' ), $vars_s ), 'url' => get_permalink( $auction_id ) ]
         );
-        wp_mail( $seller->user_email, 'Aukció lezárult – ' . get_the_title( $auction_id ), $body2 );
     }
 }

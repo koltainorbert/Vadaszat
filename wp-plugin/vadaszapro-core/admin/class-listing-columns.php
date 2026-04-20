@@ -20,6 +20,92 @@ class VA_Listing_Columns {
         // Gyors szerkesztés és státusz
         add_action( 'restrict_manage_posts', [ __CLASS__, 'add_filters' ] );
         add_filter( 'parse_query',           [ __CLASS__, 'parse_filter_query' ] );
+
+        // Admin duplikálás hirdetésekhez
+        add_filter( 'post_row_actions', [ __CLASS__, 'add_duplicate_row_action' ], 10, 2 );
+        add_action( 'admin_action_va_duplicate_listing', [ __CLASS__, 'handle_duplicate_action' ] );
+        add_action( 'admin_notices', [ __CLASS__, 'duplicate_admin_notice' ] );
+    }
+
+    public static function add_duplicate_row_action( array $actions, $post ): array {
+        if ( ! $post instanceof WP_Post || $post->post_type !== 'va_listing' ) {
+            return $actions;
+        }
+        if ( ! current_user_can( 'edit_post', $post->ID ) ) {
+            return $actions;
+        }
+
+        $url = wp_nonce_url(
+            admin_url( 'admin.php?action=va_duplicate_listing&post=' . $post->ID ),
+            'va_duplicate_listing_' . $post->ID
+        );
+
+        $actions['va_duplicate_listing'] = '<a href="' . esc_url( $url ) . '">Duplikálás</a>';
+        return $actions;
+    }
+
+    public static function handle_duplicate_action(): void {
+        $source_id = isset( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+        if ( $source_id <= 0 ) {
+            wp_die( 'Érvénytelen hirdetés azonosító.' );
+        }
+
+        if ( ! current_user_can( 'edit_post', $source_id ) ) {
+            wp_die( 'Nincs jogosultságod a duplikáláshoz.' );
+        }
+
+        check_admin_referer( 'va_duplicate_listing_' . $source_id );
+
+        $source = get_post( $source_id );
+        if ( ! $source || $source->post_type !== 'va_listing' ) {
+            wp_die( 'A kiválasztott bejegyzés nem duplikálható.' );
+        }
+
+        $new_post_id = wp_insert_post( [
+            'post_type'      => 'va_listing',
+            'post_status'    => 'draft',
+            'post_title'     => $source->post_title . ' (Másolat)',
+            'post_content'   => $source->post_content,
+            'post_excerpt'   => $source->post_excerpt,
+            'post_author'    => get_current_user_id(),
+            'menu_order'     => (int) $source->menu_order,
+            'comment_status' => $source->comment_status,
+            'ping_status'    => $source->ping_status,
+        ], true );
+
+        if ( is_wp_error( $new_post_id ) ) {
+            wp_die( 'A duplikálás sikertelen: ' . esc_html( $new_post_id->get_error_message() ) );
+        }
+
+        // Taxonómiák másolása
+        $taxonomies = get_object_taxonomies( 'va_listing' );
+        foreach ( $taxonomies as $taxonomy ) {
+            $term_ids = wp_get_object_terms( $source_id, $taxonomy, [ 'fields' => 'ids' ] );
+            if ( ! is_wp_error( $term_ids ) ) {
+                wp_set_object_terms( $new_post_id, $term_ids, $taxonomy, false );
+            }
+        }
+
+        // Meta mezők másolása (szerkesztő-lock kivétel)
+        $meta = get_post_meta( $source_id );
+        foreach ( $meta as $meta_key => $values ) {
+            if ( in_array( $meta_key, [ '_edit_lock', '_edit_last' ], true ) ) {
+                continue;
+            }
+            foreach ( $values as $value ) {
+                add_post_meta( $new_post_id, $meta_key, maybe_unserialize( $value ) );
+            }
+        }
+
+        wp_safe_redirect( admin_url( 'post.php?post=' . $new_post_id . '&action=edit&va_duplicated=1' ) );
+        exit;
+    }
+
+    public static function duplicate_admin_notice(): void {
+        if ( ! is_admin() || empty( $_GET['va_duplicated'] ) ) {
+            return;
+        }
+        echo '<div class="notice notice-success is-dismissible"><p>Hirdetés sikeresen duplikálva. A másolat piszkozatként jött létre.</p></div>';
     }
 
     public static function listing_columns( $cols ) {

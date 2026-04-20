@@ -12,9 +12,13 @@ class VA_Taxonomy {
     }
 
     public static function register_all() {
+        $object_types = [ 'va_listing' ];
+        if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
+            $object_types[] = 'va_auction';
+        }
 
         /* Kategória */
-        register_taxonomy( 'va_category', [ 'va_listing', 'va_auction' ], [
+        register_taxonomy( 'va_category', $object_types, [
             'labels'        => [
                 'name'          => 'Kategóriák',
                 'singular_name' => 'Kategória',
@@ -27,7 +31,7 @@ class VA_Taxonomy {
         ]);
 
         /* Megye */
-        register_taxonomy( 'va_county', [ 'va_listing', 'va_auction' ], [
+        register_taxonomy( 'va_county', $object_types, [
             'labels'        => [
                 'name'          => 'Megyék',
                 'singular_name' => 'Megye',
@@ -40,7 +44,7 @@ class VA_Taxonomy {
         ]);
 
         /* Állapot */
-        register_taxonomy( 'va_condition', [ 'va_listing', 'va_auction' ], [
+        register_taxonomy( 'va_condition', $object_types, [
             'labels'        => [
                 'name'          => 'Állapot',
                 'singular_name' => 'Állapot',
@@ -59,24 +63,62 @@ class VA_Taxonomy {
 
         /* Kategóriák */
         $categories = [
-            'Fegyver'               => [
-                'Sörétes fegyver',
-                'Golyós fegyver',
-                'Kombinált fegyver',
+            'Fegyverek'              => [
+                'Golyós puska',
+                'Sörétes puska',
+                'Vegyescsövű puska',
+                'Maroklőfegyver',
                 'Légfegyver',
-                'Fekete poros fegyver',
+                'Hatástalanított',
+                'Egyéb fegyver',
             ],
-            'Lőszer'                => [
-                'Sörétes lőszer',
+            'Lőszer & Töltény'       => [
                 'Golyós lőszer',
-                'Légfegyver lőszer',
+                'Sörétes lőszer',
+                'Légpuska lőszer',
             ],
-            'Optika & Kiegészítők'  => [],
-            'Ruházat & Felszerelés' => [],
-            'Vadászkutya'           => [],
-            'Vadászterület & Bérlet'=> [],
-            'Trófeák'               => [],
-            'Egyéb'                 => [],
+            'Optika & Elektronika'   => [
+                'Céltávcsövek',
+                'Éjjellátó',
+                'Hőkamera',
+                'Vadkamera',
+                'Vadászlámpa',
+            ],
+            'Kések & Eszközök'       => [
+                'Kések',
+                'Kürtök & Sípok',
+            ],
+            'Ruházat'                => [
+                'Vadász ruházat',
+                'Cipő & Bakancs',
+                'Egyéb ruházat',
+            ],
+            'Felszerelés'            => [
+                'Vadász felszerelés',
+                'Sportlövő felszerelés',
+            ],
+            'Trófea & Dísztárgy'     => [
+                'Trófeák',
+                'Dísztárgyak',
+            ],
+            'Vadászkutya'            => [],
+            'Vadászterület & Bérlet' => [
+                'Vadászati lehetőség',
+                'Vadkárelhárítás',
+            ],
+            'Jármű'                  => [],
+            'Ingatlan & Szállás'     => [
+                'Ingatlan',
+                'Szállás',
+            ],
+            'Egyéb'                  => [
+                'Takarmány',
+                'Könyv & Folyóirat',
+                'Vadászati hagyaték',
+                'Állás',
+                'Csere',
+                'Szolgáltatás',
+            ],
         ];
 
         foreach ( $categories as $parent => $children ) {

@@ -4,16 +4,249 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/* ── Helper: egyes mező HTML kimenete ──────────────── */
+if ( ! function_exists( 'self_render_listing_field' ) ) {
+    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions, array $ev = [] ): void {
+        $val = $ev[ $key ] ?? '';
+        switch ( $key ) {
+            case 'title':
+                echo '<input type="text" id="va-title" name="title" class="va-input" maxlength="150"' . $req_attr . ' placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'category':
+                echo '<select name="category" class="va-select"' . $req_attr . '>';
+                echo '<option value="">– Válasszon –</option>';
+                foreach ( $categories as $cat ) {
+                    $indent   = $cat->parent ? '&nbsp;&nbsp;' : '';
+                    $selected = selected( (int) $val, $cat->term_id, false );
+                    echo '<option value="' . esc_attr( $cat->term_id ) . '"' . $selected . '>' . $indent . esc_html( $cat->name ) . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'county':
+                echo '<select name="county" class="va-select"' . $req_attr . '>';
+                echo '<option value="">– Válasszon –</option>';
+                foreach ( $counties as $county ) {
+                    $selected = selected( (int) $val, $county->term_id, false );
+                    echo '<option value="' . esc_attr( $county->term_id ) . '"' . $selected . '>' . esc_html( $county->name ) . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'condition':
+                echo '<select name="condition" class="va-select">';
+                echo '<option value="">– Válasszon –</option>';
+                foreach ( $conditions as $cond ) {
+                    $selected = selected( (int) $val, $cond->term_id, false );
+                    echo '<option value="' . esc_attr( $cond->term_id ) . '"' . $selected . '>' . esc_html( $cond->name ) . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'location':
+                echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'brand':
+                echo '<input type="text" name="brand" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'model':
+                echo '<input type="text" name="model" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'caliber':
+                echo '<input type="text" name="caliber" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'year':
+                echo '<input type="number" name="year" class="va-input" min="1800" max="' . date('Y') . '" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'license_req':
+                $checked = $val === '1' ? ' checked' : '';
+                echo '<label class="va-check-label"><input type="checkbox" name="license_req" value="1"' . $checked . '> Fegyverengedély szükséges a vásárláshoz</label>';
+                break;
+            case 'price':
+                echo '<input type="number" name="price" class="va-input" min="0" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'price_type':
+                $pt = (string) $val;
+                echo '<select name="price_type" class="va-select">';
+                foreach ( [ 'fixed' => 'Fix ár', 'negotiable' => 'Alkudható', 'free' => 'Ingyenes', 'on_request' => 'Érdeklődjön' ] as $k => $l ) {
+                    echo '<option value="' . esc_attr( $k ) . '"' . selected( $pt, $k, false ) . '>' . esc_html( $l ) . '</option>';
+                }
+                echo '</select>';
+                break;
+            case 'description':
+                $desc_val = wp_kses_post( (string) $val );
+                ?>
+                <div id="va-quill-editor"></div>
+                <textarea name="description" id="va-desc-hidden" style="display:none"><?php echo esc_textarea( $desc_val ); ?></textarea>
+                <style>
+                .ql-toolbar.ql-snow{background:#1e1e1e;border:1px solid rgba(255,255,255,.15)!important;border-bottom:none!important;border-radius:6px 6px 0 0;}
+                .ql-container.ql-snow{background:#111;border:1px solid rgba(255,255,255,.15)!important;border-radius:0 0 6px 6px;font-size:15px;}
+                .ql-editor{color:#e8e8e8;min-height:200px;line-height:1.7;font-family:system-ui,sans-serif;}
+                .ql-editor.ql-blank::before{color:rgba(255,255,255,.3);font-style:normal;}
+                .ql-snow .ql-stroke{stroke:#aaa!important;}
+                .ql-snow .ql-fill,.ql-snow .ql-stroke.ql-fill{fill:#aaa!important;}
+                .ql-snow .ql-picker{color:#bbb!important;}
+                .ql-snow .ql-picker-label{border-color:rgba(255,255,255,.15)!important;}
+                .ql-snow .ql-picker-options{background:#1e1e1e!important;border-color:rgba(255,255,255,.15)!important;}
+                .ql-snow .ql-picker-item{color:#bbb!important;}
+                .ql-snow .ql-picker-item:hover,.ql-snow .ql-picker-item.ql-selected{color:#fff!important;}
+                .ql-snow.ql-toolbar button:hover .ql-stroke,.ql-snow .ql-toolbar button:hover .ql-stroke{stroke:#ff4444!important;}
+                .ql-snow.ql-toolbar button.ql-active .ql-stroke,.ql-snow .ql-toolbar button.ql-active .ql-stroke{stroke:#ff4444!important;}
+                .ql-snow.ql-toolbar button:hover .ql-fill,.ql-snow .ql-toolbar button:hover .ql-fill{fill:#ff4444!important;}
+                .ql-snow.ql-toolbar button.ql-active .ql-fill{fill:#ff4444!important;}
+                .ql-snow .ql-picker.ql-header .ql-picker-label::before,.ql-snow .ql-picker.ql-header .ql-picker-item::before{color:#bbb!important;}
+                .ql-editor a{color:#ff4444;}
+                .ql-editor img{max-width:100%;border-radius:6px;}
+                .ql-editor blockquote{border-left:3px solid #ff4444;padding-left:12px;color:#aaa;margin:8px 0;}
+                .ql-editor h2,.ql-editor h3{color:#e8e8e8;}
+                .ql-editor ol,.ql-editor ul{color:#e8e8e8;}
+                .ql-snow .ql-tooltip{background:#1e1e1e!important;border-color:rgba(255,255,255,.15)!important;color:#e8e8e8!important;box-shadow:0 4px 20px rgba(0,0,0,.5)!important;}
+                .ql-snow .ql-tooltip input[type=text]{background:#111!important;border-color:rgba(255,255,255,.2)!important;color:#e8e8e8!important;}
+                .ql-snow .ql-tooltip a.ql-action,.ql-snow .ql-tooltip a.ql-remove{color:#ff4444!important;}
+                </style>
+                <?php
+                break;
+            case 'images':
+                $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
+                ?>
+                <div class="va-img-picker" id="va-img-picker">
+                    <div class="va-img-grid" id="va-img-grid">
+                        <button type="button" class="va-img-add" id="va-img-add">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="26" height="26"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            <span>Képek<br>hozzáadása</span>
+                        </button>
+                    </div>
+                    <input type="file" id="va-img-file-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" data-max="<?php echo esc_attr( (string) $max_img ); ?>">
+                    <input type="hidden" name="featured_image_index" id="va-featured-index" value="0">
+                    <input type="hidden" name="keep_images" id="va-keep-images" value="">
+                    <p class="va-img-hint">Húzd a képeket az átrendezéshez &bull; &#9733; = borítókép beállítása</p>
+                </div>
+                <?php
+                break;
+            case 'phone':
+                echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . ' value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'email_show':
+                echo '<label class="va-check-label" style="align-self:flex-end;">';
+                echo '<input type="checkbox" name="email_show" value="1" checked>';
+                echo ' E-mail cím megjelenítése a hirdetésben</label>';
+                break;
+        }
+    }
+}
+
 $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false ] );
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 
+/* ── Edit mód felismerés ───────────────────────────── */
+$edit_post_id = 0;
+$edit_post    = null;
+$edit_meta    = [];
+$edit_mode    = false;
+if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
+    $maybe_id = absint( $_GET['edit'] );
+    $maybe_post = get_post( $maybe_id );
+    if ( $maybe_post && $maybe_post->post_type === 'va_listing' && (int) $maybe_post->post_author === get_current_user_id() ) {
+        $edit_post_id = $maybe_id;
+        $edit_post    = $maybe_post;
+        $edit_mode    = true;
+        $edit_meta    = [
+            'title'       => $maybe_post->post_title,
+            'description' => $maybe_post->post_content,
+            'price'       => get_post_meta( $maybe_id, 'va_price',       true ),
+            'price_type'  => get_post_meta( $maybe_id, 'va_price_type',  true ),
+            'phone'       => get_post_meta( $maybe_id, 'va_phone',       true ),
+            'location'    => get_post_meta( $maybe_id, 'va_location',    true ),
+            'brand'       => get_post_meta( $maybe_id, 'va_brand',       true ),
+            'model'       => get_post_meta( $maybe_id, 'va_model',       true ),
+            'caliber'     => get_post_meta( $maybe_id, 'va_caliber',     true ),
+            'year'        => get_post_meta( $maybe_id, 'va_year',        true ),
+            'license_req' => get_post_meta( $maybe_id, 'va_license_req', true ),
+            'category'    => (int) ( wp_get_post_terms( $maybe_id, 'va_category', ['fields'=>'ids'] )[0] ?? 0 ),
+            'county'      => (int) ( wp_get_post_terms( $maybe_id, 'va_county',   ['fields'=>'ids'] )[0] ?? 0 ),
+            'condition'   => (int) ( wp_get_post_terms( $maybe_id, 'va_condition',['fields'=>'ids'] )[0] ?? 0 ),
+        ];
+        // Meglévő képek betöltése (új + legacy meta kompatibilitás)
+        $edit_thumb = (int) get_post_thumbnail_id( $maybe_id );
+
+        $raw_gallery = get_post_meta( $maybe_id, 'va_gallery_ids', true );
+        $edit_gallery = array_filter( array_map( 'absint', explode( ',', (string) $raw_gallery ) ) );
+
+        // Legacy: régi kulcs lehet tömb vagy vesszős string
+        if ( empty( $edit_gallery ) ) {
+            $legacy_gallery = get_post_meta( $maybe_id, 'va_gallery', true );
+            if ( is_array( $legacy_gallery ) ) {
+                $edit_gallery = array_filter( array_map( 'absint', $legacy_gallery ) );
+            } elseif ( is_string( $legacy_gallery ) && $legacy_gallery !== '' ) {
+                $edit_gallery = array_filter( array_map( 'absint', explode( ',', $legacy_gallery ) ) );
+            }
+        }
+
+        // Ha nincs gallery meta, de van kiemelt kép, akkor azt is mutassuk a palettában
+        if ( empty( $edit_gallery ) && $edit_thumb ) {
+            $edit_gallery = [ $edit_thumb ];
+        } elseif ( $edit_thumb && ! in_array( $edit_thumb, $edit_gallery, true ) ) {
+            array_unshift( $edit_gallery, $edit_thumb );
+        }
+    }
+}
+
+$free_limit = max( 0, absint( get_option( 'va_free_listings_limit', 1 ) ) );
+$paid_price = max( 0, absint( get_option( 'va_listing_price_after_free', 1990 ) ) );
+$buy_page   = get_page_by_path( 'va-kredit-vasarlas' );
+$buy_url    = $buy_page ? get_permalink( $buy_page ) : home_url( '/va-kredit-vasarlas/' );
+$buy_url_submit = add_query_arg( 'va_return', 'submit', $buy_url );
+
+$user_listings_count = 0;
+$user_credit_balance = 0;
+$plan_has_allowance = false;
+$plan_remaining = null;
+if ( is_user_logged_in() ) {
+    global $wpdb;
+    $user_id = get_current_user_id();
+    $user_listings_count = (int) $wpdb->get_var( $wpdb->prepare(
+        "SELECT COUNT(*) FROM {$wpdb->posts}
+         WHERE post_type = %s
+         AND post_author = %d
+         AND post_status IN ('publish','pending','draft','future','private')",
+        'va_listing',
+        $user_id
+    ) );
+
+    $user_credit_balance = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
+
+    if ( class_exists( 'VA_User_Roles' ) ) {
+        $plan_check = VA_User_Roles::can_post_listing( $user_id );
+        $plan_has_allowance = ! empty( $plan_check['can'] );
+
+        if ( isset( $plan_check['limit'], $plan_check['used'] ) && (int) $plan_check['limit'] > 0 ) {
+            $plan_remaining = max( 0, (int) $plan_check['limit'] - (int) $plan_check['used'] );
+        }
+    }
+}
+
+$remaining_free = $free_limit === 0 ? 9999 : max( 0, $free_limit - $user_listings_count );
+
+// ── Azonnali átirányítás ha nincs szabad keret és nem szerkesztés ──
+if ( ! $edit_mode && is_user_logged_in() ) {
+    $has_any_allowance = $plan_has_allowance || $user_credit_balance > 0 || $remaining_free > 0;
+    if ( ! $has_any_allowance ) {
+        wp_redirect( $buy_url_submit );
+        exit;
+    }
+}
+
 wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 wp_enqueue_script( 'va-submit',   VA_PLUGIN_URL . 'frontend/js/frontend.js',  [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-submit', 'VA_Data', [
-    'ajax_url' => admin_url( 'admin-ajax.php' ),
-    'nonce'    => wp_create_nonce( 'va_submit_listing' ),
-    'post_id'  => 0,
+    'ajax_url'       => admin_url( 'admin-ajax.php' ),
+    'nonce'          => wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ),
+    'nonce_editor_img' => wp_create_nonce( 'va_upload_editor_image' ),
+    'post_id'        => $edit_post_id,
+    'edit_mode'      => $edit_mode,
+    'edit_images'    => $edit_mode ? array_map( function( $id ) {
+        $src = wp_get_attachment_image_url( $id, 'thumbnail' );
+        return [ 'id' => $id, 'url' => $src ?: '' ];
+    }, $edit_gallery ?? [] ) : [],
+    'edit_thumb'     => $edit_mode ? $edit_thumb : 0,
 ]);
 ?>
 <div class="va-wrap">
@@ -21,138 +254,137 @@ wp_localize_script( 'va-submit', 'VA_Data', [
 
     <div id="va-submit-notice"></div>
 
-    <form id="va-submit-form" enctype="multipart/form-data">
-        <input type="hidden" name="action" value="va_submit_listing">
-        <input type="hidden" name="nonce"  value="<?php echo esc_attr( wp_create_nonce( 'va_submit_listing' ) ); ?>">
+    <form id="va-submit-form" method="post" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" enctype="multipart/form-data">
+        <input type="hidden" name="action" value="<?php echo $edit_mode ? 'va_update_listing' : 'va_submit_listing'; ?>">
+        <input type="hidden" name="nonce"  value="<?php echo esc_attr( wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ) ); ?>">
+        <?php if ( $edit_mode ): ?>
+        <input type="hidden" name="post_id" value="<?php echo esc_attr( (string) $edit_post_id ); ?>">
+        <?php endif; ?>
 
-        <h2 style="font-size:20px;font-weight:800;margin-bottom:22px;">📋 Hirdetés feladása</h2>
+        <h2 style="font-size:20px;font-weight:800;margin-bottom:22px;"><?php echo $edit_mode ? '✏️ Hirdetés szerkesztése' : '📋 Hirdetés feladása'; ?></h2>
 
-        <!-- Alapadatok -->
-        <div class="va-form-group">
-            <label for="va-title">Hirdetés címe <span class="required">*</span></label>
-            <input type="text" id="va-title" name="title" class="va-input" maxlength="150" required placeholder="pl. Beretta A400 sörétes puska">
+        <?php if ( ! $edit_mode ): ?>
+        <div class="va-notice va-notice--info" style="margin-bottom:16px;">
+            <?php if ( $plan_has_allowance || $user_credit_balance > 0 ): ?>
+                <?php if ( $user_credit_balance > 0 && is_int( $plan_remaining ) && $plan_remaining > 0 ): ?>
+                    Egyenleged: <strong><?php echo esc_html( (string) $plan_remaining ); ?> plan + <?php echo esc_html( (string) $user_credit_balance ); ?> vásárolt kredit</strong>.
+                <?php elseif ( $user_credit_balance > 0 ): ?>
+                    Rendelkezésre álló kreditjeid: <strong><?php echo esc_html( (string) $user_credit_balance ); ?> db</strong>.
+                <?php elseif ( is_int( $plan_remaining ) && $plan_remaining > 0 ): ?>
+                    Csomagkeretedből még <strong><?php echo esc_html( (string) $plan_remaining ); ?> db</strong> hirdetést adhatsz fel.
+                <?php else: ?>
+                    Az előfizetésed alapján jelenleg tudsz hirdetést feladni.
+                <?php endif; ?>
+            <?php elseif ( $remaining_free > 0 ): ?>
+                <?php if ( $remaining_free === 1 ): ?>
+                    Ez az <strong>utolsó ingyenes</strong> hirdetésed. Utána minden új hirdetés díja <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> –
+                    <a href="<?php echo esc_url( $buy_url ); ?>" style="color:#ff6060;font-weight:700;">vásárolj most csomagot!</a>
+                <?php else: ?>
+                    Még <strong><?php echo esc_html( (string) $remaining_free ); ?> db</strong> ingyenes hirdetésed van.
+                    Utána: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft / hirdetés</strong> –
+                    <a href="<?php echo esc_url( $buy_url ); ?>" style="color:#ff6060;font-weight:700;">csomagok megtekintése</a>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
+        <?php endif; ?>
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Kategória <span class="required">*</span></label>
-                <select name="category" class="va-select" required>
-                    <option value="">– Válasszon –</option>
-                    <?php foreach ( $categories as $cat ): ?>
-                        <option value="<?php echo esc_attr( $cat->term_id ); ?>"><?php echo esc_html( str_repeat( '&nbsp;&nbsp;', $cat->parent ? 1 : 0 ) . $cat->name ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="va-form-group">
-                <label>Megye <span class="required">*</span></label>
-                <select name="county" class="va-select" required>
-                    <option value="">– Válasszon –</option>
-                    <?php foreach ( $counties as $county ): ?>
-                        <option value="<?php echo esc_attr( $county->term_id ); ?>"><?php echo esc_html( $county->name ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
+        <?php
+        // Dinamikus form mezők VA_Form_Builder config alapján
+        $fb_form    = 'va_listing_submit';
+        $fb_fields  = VA_Form_Builder::get_fields( $fb_form );
+        usort( $fb_fields, fn( $a, $b ) => (int)( $a['order'] ?? 99 ) - (int)( $b['order'] ?? 99 ) );
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Állapot</label>
-                <select name="condition" class="va-select">
-                    <option value="">– Válasszon –</option>
-                    <?php foreach ( $conditions as $cond ): ?>
-                        <option value="<?php echo esc_attr( $cond->term_id ); ?>"><?php echo esc_html( $cond->name ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="va-form-group">
-                <label>Helyszín (város)</label>
-                <input type="text" name="location" class="va-input" placeholder="pl. Budapest, Győr...">
-            </div>
-        </div>
+        // Csoportok: szekciókat nyit ha szükséges
+        $section_groups = [
+            'brand'       => 'Termék részletek',
+            'price'       => 'Ár',
+            'phone'       => 'Kapcsolat',
+        ];
+        $opened_sections = [];
 
-        <!-- Termék részletek -->
-        <h3 style="font-size:15px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;font-size:12px;letter-spacing:1px;">Termék részletek</h3>
+        // Párba rakandó mezők (2-oszlopos sor)
+        $pair_groups = [
+            ['category', 'county'],
+            ['condition','location'],
+            ['brand',    'model'],
+            ['caliber',  'year'],
+            ['price',    'price_type'],
+            ['phone',    'email_show'],
+        ];
+        $pair_map = [];
+        foreach ( $pair_groups as $pair ) {
+            $pair_map[ $pair[0] ] = $pair[1];
+            $pair_map[ $pair[1] ] = $pair[0]; // partner
+        }
+        $rendered_keys = [];
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Márka / Gyártó</label>
-                <input type="text" name="brand" class="va-input" placeholder="pl. Beretta, Sauer...">
-            </div>
-            <div class="va-form-group">
-                <label>Modell / Típus</label>
-                <input type="text" name="model" class="va-input" placeholder="pl. A400 Xcel">
-            </div>
-        </div>
+        foreach ( $fb_fields as $field ):
+            $fkey = (string)( $field['key'] ?? '' );
+            if ( in_array( $fkey, $rendered_keys, true ) ) continue;
+            if ( empty( $field['enabled'] ) ) {
+                $rendered_keys[] = $fkey;
+                continue;
+            }
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Kaliber</label>
-                <input type="text" name="caliber" class="va-input" placeholder="pl. 12/70, .308 Win">
-            </div>
-            <div class="va-form-group">
-                <label>Gyártási év</label>
-                <input type="number" name="year" class="va-input" min="1800" max="<?php echo date('Y'); ?>" placeholder="pl. 2018">
-            </div>
-        </div>
+            $label = esc_html( (string)( $field['label'] ?? $fkey ) );
+            $ph    = esc_attr( (string)( $field['placeholder'] ?? '' ) );
+            $req   = ! empty( $field['required'] );
+            $req_html = $req ? ' <span class="required">*</span>' : '';
+            $req_attr = $req ? ' required' : '';
 
-        <div class="va-form-group">
-            <label class="va-check-label">
-                <input type="checkbox" name="license_req" value="1">
-                Fegyverengedély szükséges a vásárláshoz
-            </label>
-        </div>
+            // Szekció fejléc
+            if ( isset( $section_groups[ $fkey ] ) && ! isset( $opened_sections[ $fkey ] ) ) {
+                $opened_sections[ $fkey ] = true;
+                echo '<h3 style="font-size:12px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;">'
+                    . esc_html( $section_groups[ $fkey ] ) . '</h3>';
+            }
 
-        <!-- Ár -->
-        <h3 style="font-size:15px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;font-size:12px;letter-spacing:1px;">Ár</h3>
+            // Pár-sor logika
+            $partner_key = $pair_map[ $fkey ] ?? null;
+            $partner_field = null;
+            if ( $partner_key ) {
+                foreach ( $fb_fields as $pf ) {
+                    if ( ( $pf['key'] ?? '' ) === $partner_key && ! empty( $pf['enabled'] ) ) {
+                        $partner_field = $pf;
+                        break;
+                    }
+                }
+            }
 
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Ár (Ft)</label>
-                <input type="number" name="price" class="va-input" min="0" placeholder="0">
-            </div>
-            <div class="va-form-group">
-                <label>Árazás típusa</label>
-                <select name="price_type" class="va-select">
-                    <option value="fixed">Fix ár</option>
-                    <option value="negotiable">Alkudható</option>
-                    <option value="free">Ingyenes</option>
-                    <option value="on_request">Érdeklődjön</option>
-                </select>
-            </div>
-        </div>
-
-        <!-- Leírás -->
-        <div class="va-form-group">
-            <label for="va-desc">Leírás <span class="required">*</span></label>
-            <textarea id="va-desc" name="description" class="va-textarea" rows="6" required placeholder="Részletes leírás a tárgyról, állapotáról, esetleges hibákról..."></textarea>
-        </div>
-
-        <!-- Képek -->
-        <div class="va-form-group">
-            <label>Képek (max. <?php echo esc_html( get_option('va_max_images_per_listing', 10) ); ?> db, jpg/png/webp)</label>
-            <input type="file" name="listing_images[]" class="va-input" accept="image/jpeg,image/png,image/webp" multiple>
-            <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Az első kép lesz a borítókép. Max. 5 MB / kép.</p>
-        </div>
-
-        <!-- Kapcsolat -->
-        <h3 style="font-size:15px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;font-size:12px;letter-spacing:1px;">Kapcsolat</h3>
-
-        <div class="va-form-row">
-            <div class="va-form-group">
-                <label>Telefonszám<?php echo get_option('va_require_phone','1') === '1' ? ' <span class="required">*</span>' : ''; ?></label>
-                <input type="tel" name="phone" class="va-input" placeholder="+36 30 000 0000"
-                    <?php echo get_option('va_require_phone','1') === '1' ? 'required' : ''; ?>>
-            </div>
-            <div class="va-form-group" style="align-self:flex-end;">
-                <label class="va-check-label">
-                    <input type="checkbox" name="email_show" value="1" checked>
-                    E-mail cím megjelenítése a hirdetésben
-                </label>
-            </div>
-        </div>
+            if ( $partner_field && ! in_array( $partner_key, $rendered_keys, true ) ):
+                // 2 oszlopos sor
+                $rendered_keys[] = $fkey;
+                $rendered_keys[] = $partner_key;
+                $p2_label   = esc_html( (string)( $partner_field['label'] ?? $partner_key ) );
+                $p2_ph      = esc_attr( (string)( $partner_field['placeholder'] ?? '' ) );
+                $p2_req     = ! empty( $partner_field['required'] );
+                $p2_req_html = $p2_req ? ' <span class="required">*</span>' : '';
+                $p2_req_attr = $p2_req ? ' required' : '';
+                echo '<div class="va-form-row">';
+                // Mező 1
+                echo '<div class="va-form-group">';
+                echo "<label>{$label}{$req_html}</label>";
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $edit_meta );
+                echo '</div>';
+                // Mező 2
+                echo '<div class="va-form-group">';
+                echo "<label>{$p2_label}{$p2_req_html}</label>";
+                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions, $edit_meta );
+                echo '</div>';
+                echo '</div>';
+            else:
+                $rendered_keys[] = $fkey;
+                // Teljes soros mező
+                echo '<div class="va-form-group">';
+                echo "<label>{$label}{$req_html}</label>";
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $edit_meta );
+                echo '</div>';
+            endif;
+        endforeach;
+        ?>
 
         <button type="submit" class="va-btn va-btn--primary va-btn--block" id="va-submit-btn">
-            📤 Hirdetés feladása
+            <?php echo $edit_mode ? '💾 Változások mentése' : '📤 Hirdetés feladása'; ?>
         </button>
 
         <p style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:12px;text-align:center;">
@@ -163,14 +395,298 @@ wp_localize_script( 'va-submit', 'VA_Data', [
     </form>
 </div>
 
+<link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
+
 <script>
+document.addEventListener('DOMContentLoaded', function() {
 (function($){
+    /* ══ Képkezelő ═══════════════════════════════════════ */
+    let _files   = [];   // { file: File|null, id: string, existing_id: int|null, url: string|null }[]
+    let _maxImg  = 10;
+    let _featured = 0;
+
+    const $picker    = $('#va-img-picker');
+    const $grid      = $('#va-img-grid');
+    const $input     = $('#va-img-file-input');
+    const $featIdx   = $('#va-featured-index');
+    const $keepInput = $('#va-keep-images');
+
+    _maxImg = parseInt( $input.data('max') || 10 );
+
+    // Edit mód: meglévő képek betöltése
+    var editImages = VA_Data.edit_images || [];
+    var editThumb  = parseInt( VA_Data.edit_thumb ) || 0;
+    editImages.forEach(function(img, idx) {
+        if (!img.url) return;
+        _files.push({ file: null, id: 'existing_' + img.id, existing_id: img.id, url: img.url });
+        if (img.id === editThumb) _featured = idx;
+    });
+    if (_files.length) renderGrid();
+
+    /* ── Fájl hozzáadása ─────────────────────────────── */
+    function addFiles(newFiles) {
+        for (let f of newFiles) {
+            if (_files.length >= _maxImg) break;
+            if (!['image/jpeg','image/png','image/webp'].includes(f.type)) continue;
+            if (f.size > 5 * 1024 * 1024) { alert(f.name + ' – túl nagy (max 5 MB)!'); continue; }
+            _files.push({ file: f, id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2), existing_id: null, url: null });
+        }
+        renderGrid();
+    }
+
+    /* ── Megtartandó meglévő képek frissítése ─────────── */
+    function updateKeepImages() {
+        var keep = _files.filter(function(f){ return f.existing_id; }).map(function(f){ return f.existing_id; });
+        $keepInput.val(keep.join(','));
+    }
+
+    /* ── Grid renderelése ────────────────────────────── */
+    function renderGrid() {
+        $grid.empty();
+
+        // Biztosítjuk hogy _featured valid
+        if (_files.length > 0 && _featured >= _files.length) _featured = 0;
+        $featIdx.val(_featured);
+        updateKeepImages();
+
+        _files.forEach((item, idx) => {
+            const url = item.url ? item.url : URL.createObjectURL(item.file);
+            const isFeat = idx === _featured;
+            const starSvg = '<svg viewBox="0 0 24 24" fill="currentColor" width="13" height="13"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+            const xSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" width="13" height="13"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+            const $card = $(`
+                <div class="va-img-card${isFeat ? ' va-img-card--featured' : ''}" data-id="${item.id}">
+                    <img src="${url}" class="va-img-card__thumb" draggable="false" alt="">
+                    <div class="va-img-card__overlay">
+                        <button type="button" class="va-img-feat-btn" title="Borítókép beállítása">${starSvg}</button>
+                        <button type="button" class="va-img-del-btn" title="Törlés">${xSvg}</button>
+                    </div>
+                    ${isFeat ? '<div class="va-img-card__label">Borítókép</div>' : ''}
+                </div>
+            `);
+
+            // Törlés
+            $card.find('.va-img-del-btn').on('click', function(){
+                _files.splice(idx, 1);
+                if (_featured >= _files.length) _featured = 0;
+                renderGrid();
+            });
+
+            // Főkép
+            $card.find('.va-img-feat-btn').on('click', function(){
+                _featured = idx;
+                renderGrid();
+            });
+
+            $grid.append($card);
+        });
+
+        // "+ Képek hozzáadása" gomb a grid végére
+        if (_files.length < _maxImg) {
+            const $addBtn = $('<button type="button" class="va-img-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" width="26" height="26"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Képek<br>hozzáadása</span></button>');
+            $addBtn.on('click', function(){ $input.trigger('click'); });
+            $grid.append($addBtn);
+        }
+
+        // Sortable – jQuery UI (mint az admin)
+        if (_files.length > 1) {
+            $grid.sortable({
+                items: '.va-img-card',
+                tolerance: 'pointer',
+                cursor: 'grabbing',
+                placeholder: 'va-img-ph',
+                forcePlaceholderSize: true,
+                stop: function() {
+                    // Olvassuk vissza a DOM sorrendet _files-ba
+                    const newOrder = [];
+                    let newFeaturedId = _files[_featured] ? _files[_featured].id : null;
+                    $grid.find('.va-img-card').each(function() {
+                        const id = $(this).data('id');
+                        const found = _files.find(function(f){ return f.id === id; });
+                        if (found) newOrder.push(found);
+                    });
+                    _files = newOrder;
+                    if (newFeaturedId) {
+                        _featured = _files.findIndex(function(f){ return f.id === newFeaturedId; });
+                        if (_featured < 0) _featured = 0;
+                    }
+                    $featIdx.val(_featured);
+                    renderGrid();
+                }
+            });
+        }
+    }
+
+    /* ── Drag & drop a gridre ───────────────────────── */
+    $grid.on('dragover', function(e){ e.preventDefault(); $(this).addClass('va-img-grid--hover'); });
+    $grid.on('dragleave', function(){ $(this).removeClass('va-img-grid--hover'); });
+    $grid.on('drop', function(e){
+        e.preventDefault();
+        $(this).removeClass('va-img-grid--hover');
+        addFiles(e.originalEvent.dataTransfer.files);
+    });
+
+    /* ── Statikus "+ gomb" kattintás (első renderelés előtt) ── */
+    $grid.on('click', '.va-img-add', function(){ $input.trigger('click'); });
+
+    /* ── Fájl input ──────────────────────────────────── */
+    $input.on('change', function(){ addFiles(this.files); this.value = ''; });
+
+    /* ══ Quill editor init ═══════════════════════════════════════ */
+    var quillModules = {
+        toolbar: {
+            container: [
+                [{ header: [2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote'],
+                [{ align: [] }],
+                ['link', 'image'],
+                ['clean']
+            ],
+            handlers: {
+                image: function() {
+                    if (quill.root.querySelectorAll('img').length >= 2) {
+                        alert('Maximum 2 kép engedélyezett a leírásban.');
+                        return;
+                    }
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                    input.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+                    document.body.appendChild(input);
+                    input.addEventListener('change', function() {
+                        var file = input.files[0];
+                        document.body.removeChild(input);
+                        if (!file) return;
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            var range = quill.getSelection(true);
+                            quill.insertEmbed(range ? range.index : quill.getLength(), 'image', e.target.result);
+                            quill.setSelection((range ? range.index : 0) + 1);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    input.click();
+                }
+            }
+        }
+    };
+    var quill = new Quill('#va-quill-editor', {
+        theme: 'snow',
+        placeholder: 'Írja le a hirdetett terméket részletesen...',
+        modules: quillModules
+    });
+
+    // Edit módban meglévő tartalom betöltése
+    var $hidden = $('#va-desc-hidden');
+    if ($hidden.val().trim()) {
+        quill.root.innerHTML = $hidden.val();
+    }
+
+    /* ══ Kép átméretezés ════════════════════════════════ */
+    (function(){
+        var activeImg = null, handle = null, startX, startW;
+        handle = document.createElement('div');
+        handle.style.cssText = 'position:absolute;width:12px;height:12px;background:#ff4444;border:2px solid #fff;border-radius:3px;cursor:se-resize;display:none;z-index:999;box-shadow:0 0 4px rgba(0,0,0,.6);';
+        document.body.appendChild(handle);
+
+        function positionHandle() {
+            if (!activeImg) return;
+            var r = activeImg.getBoundingClientRect();
+            handle.style.left = (r.right + window.scrollX - 8) + 'px';
+            handle.style.top  = (r.bottom + window.scrollY - 8) + 'px';
+        }
+
+        quill.root.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG') {
+                activeImg = e.target;
+                if (!activeImg.style.width) activeImg.style.width = activeImg.offsetWidth + 'px';
+                activeImg.style.cursor = 'pointer';
+                positionHandle();
+                handle.style.display = 'block';
+            } else {
+                handle.style.display = 'none';
+                activeImg = null;
+            }
+        });
+
+        handle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            startX = e.clientX;
+            startW = activeImg ? activeImg.offsetWidth : 100;
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+
+        function onMove(e) {
+            if (!activeImg) return;
+            var w = Math.max(40, startW + (e.clientX - startX));
+            activeImg.style.width = w + 'px';
+            activeImg.style.height = 'auto';
+            positionHandle();
+        }
+        function onUp() {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+        }
+        window.addEventListener('scroll', positionHandle);
+        window.addEventListener('resize', positionHandle);
+        document.addEventListener('click', function(e){
+            if (e.target !== activeImg && e.target !== handle) {
+                handle.style.display = 'none';
+                activeImg = null;
+            }
+        });
+    })();
+
+    /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
         e.preventDefault();
-        var $btn = $('#va-submit-btn');
+        var $btn    = $('#va-submit-btn');
+        var editMode = !! VA_Data.edit_mode;
         $btn.prop('disabled', true).text('Feltöltés...');
 
-        var formData = new FormData(this);
+        // Base64 képek feltöltése médiatárba, majd submit
+        var imgs = quill.root.querySelectorAll('img[src^="data:"]');
+        var uploads = [];
+        imgs.forEach(function(img) {
+            uploads.push($.ajax({
+                url: VA_Data.ajax_url,
+                type: 'POST',
+                data: { action: 'va_upload_editor_image', nonce: VA_Data.nonce_editor_img, post_id: VA_Data.post_id || 0, data_url: img.src },
+                success: function(res) { if (res.success) img.src = res.data.url; }
+            }));
+        });
+
+        $.when.apply($, uploads.length ? uploads : [$.Deferred().resolve()]).always(function(){
+            // Quill tartalom szinkronizálása a hidden textarea-ba submit előtt
+            $('#va-desc-hidden').val(quill.root.innerHTML);
+
+        var $form = $('#va-submit-form');
+        var formData = new FormData($form[0]);
+
+        // Csak az új (File objektumos) képek feltöltése
+        _files.forEach(function(item){
+            if (item.file) {
+                formData.append('listing_images[]', item.file, item.file.name);
+            }
+        });
+
+        // Featured kép: meglévő ID vagy index az új képek között
+        var featItem = _files[_featured];
+        if (featItem && featItem.existing_id) {
+            formData.set('featured_existing_id', featItem.existing_id);
+            formData.set('featured_image_index', -1);
+        } else {
+            // Hány meglévő kép van előtte?
+            var newIdx = 0;
+            for (var i = 0; i < _featured; i++) {
+                if (!_files[i].existing_id) newIdx++;
+            }
+            formData.set('featured_image_index', newIdx);
+        }
 
         $.ajax({
             url:         VA_Data.ajax_url,
@@ -179,21 +695,58 @@ wp_localize_script( 'va-submit', 'VA_Data', [
             processData: false,
             contentType: false,
             success: function(res){
-                $btn.prop('disabled', false).text('📤 Hirdetés feladása');
+                $btn.prop('disabled', false).text(editMode ? '💾 Változások mentése' : '📤 Hirdetés feladása');
                 if(res.success){
                     $('#va-submit-notice').html('<div class="va-notice va-notice--success">' + res.data.message + '</div>');
+                    if (typeof window.va_toast === 'function') {
+                        window.va_toast(res.data.message || 'Mentés sikeres.', 'success');
+                    }
                     if(res.data.permalink){
                         setTimeout(function(){ window.location.href = res.data.permalink; }, 2000);
                     }
                 } else {
-                    $('#va-submit-notice').html('<div class="va-notice va-notice--error">' + res.data.message + '</div>');
+                    if (res.data && res.data.need_credits) {
+                        // Kredit szükséges → csomagvásárló megjelenítése
+                        var price = res.data.paid_price ? Number(res.data.paid_price).toLocaleString('hu-HU') + ' Ft' : '';
+                        var buyPage = '<?php echo esc_js( $buy_url_submit ); ?>';
+                        var html = '<div class="va-notice va-notice--warning" style="padding:18px;">'
+                            + '<strong>Elfogyott az ingyenes hirdetési kereted.</strong><br>'
+                            + (price ? 'Egy hirdetés ára: <strong>' + price + '</strong><br>' : '')
+                            + '<a href="' + buyPage + '" class="va-btn va-btn--primary" style="margin-top:12px;display:inline-flex;">🛒 Hirdetési csomag vásárlása</a>'
+                            + '</div>';
+                        $('#va-submit-notice').html(html);
+                        if (typeof window.va_toast === 'function') {
+                            window.va_toast('Elfogyott az ingyenes keret. Csomag vásárlás szükséges.', 'error');
+                        }
+                    } else if (res.data && res.data.payment_required && res.data.payment_url) {
+                        var amount = res.data.amount ? Number(res.data.amount).toLocaleString('hu-HU') + ' Ft' : '';
+                        var html2 = '<div class="va-notice va-notice--warning">'
+                            + res.data.message
+                            + (amount ? '<br><strong>Fizetendő: ' + amount + '</strong>' : '')
+                            + '<br><a href="' + res.data.payment_url + '" class="va-btn va-btn--primary" style="margin-top:10px;display:inline-flex;">Bankkártyás fizetés</a>'
+                            + '</div>';
+                        $('#va-submit-notice').html(html2);
+                        if (typeof window.va_toast === 'function') {
+                            window.va_toast(res.data.message || 'Fizetés szükséges a folytatáshoz.', 'error');
+                        }
+                    } else {
+                        $('#va-submit-notice').html('<div class="va-notice va-notice--error">' + res.data.message + '</div>');
+                        if (typeof window.va_toast === 'function') {
+                            window.va_toast((res.data && res.data.message) ? res.data.message : 'Mentési hiba történt.', 'error');
+                        }
+                    }
                 }
             },
             error: function(){
                 $btn.prop('disabled', false).text('📤 Hirdetés feladása');
                 $('#va-submit-notice').html('<div class="va-notice va-notice--error">Hálózati hiba. Próbálja újra.</div>');
+                if (typeof window.va_toast === 'function') {
+                    window.va_toast('Hálózati hiba. Próbálja újra.', 'error');
+                }
             }
-        });
-    });
+        }); // $.ajax end
+        }); // $.when end
+    }); // submit end
 })(jQuery);
+}); // DOMContentLoaded
 </script>

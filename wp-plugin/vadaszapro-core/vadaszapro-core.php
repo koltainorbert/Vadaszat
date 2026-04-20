@@ -3,7 +3,7 @@
  * Plugin Name: VadászApró Core
  * Plugin URI:  https://vadaszapro.net
  * Description: Vadászati apróhirdetési rendszer – hirdetés, aukció, felhasználói fiók, reklámzónák.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author:      SDH
  * Text Domain: vadaszapro
  * Domain Path: /languages
@@ -11,24 +11,39 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'VA_VERSION',        '1.0.0' );
-define( 'VA_REWRITE_VER',   '1.0.2' );   // Növeld meg ha CPT/tax slug változik!
+define( 'VA_VERSION',        '1.0.1' );
+define( 'VA_REWRITE_VER',   '1.0.3' );   // Növeld meg ha CPT/tax slug változik!
 define( 'VA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'VA_TEXT_DOMAIN', 'vadaszapro' );
+
+// GitHub auto-update – állítsd be a saját repo-dat:
+// Formátum: 'github-felhasznalonev/repo-neve'
+// Privát repo esetén: define( 'VA_GITHUB_TOKEN', 'ghp_...' );
+if ( ! defined( 'VA_GITHUB_REPO' ) )  define( 'VA_GITHUB_REPO',  '' );
+if ( ! defined( 'VA_GITHUB_TOKEN' ) ) define( 'VA_GITHUB_TOKEN', '' );
 
 /* ── Autoload includes ────────────────────────────── */
 require_once VA_PLUGIN_DIR . 'includes/class-post-types.php';
 require_once VA_PLUGIN_DIR . 'includes/class-taxonomy.php';
 require_once VA_PLUGIN_DIR . 'includes/class-meta-fields.php';
+require_once VA_PLUGIN_DIR . 'includes/class-mailer.php';
 require_once VA_PLUGIN_DIR . 'includes/class-user-system.php';
+require_once VA_PLUGIN_DIR . 'includes/class-user-roles.php';
 require_once VA_PLUGIN_DIR . 'includes/class-auctions.php';
 require_once VA_PLUGIN_DIR . 'includes/class-ad-zones.php';
 require_once VA_PLUGIN_DIR . 'includes/class-ajax.php';
 require_once VA_PLUGIN_DIR . 'includes/class-shortcodes.php';
+require_once VA_PLUGIN_DIR . 'includes/class-updater.php';
+require_once VA_PLUGIN_DIR . 'includes/class-page-renderer.php';
 require_once VA_PLUGIN_DIR . 'includes/helpers.php';
 
+require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php'; // frontend is használja (VA_Form_Builder::get_fields)
+
 if ( is_admin() ) {
+    require_once VA_PLUGIN_DIR . 'admin/class-page-builder.php';
+    require_once VA_PLUGIN_DIR . 'admin/class-dashboard.php';
+    require_once VA_PLUGIN_DIR . 'admin/class-listing-edit.php';
     require_once VA_PLUGIN_DIR . 'admin/class-admin.php';
     require_once VA_PLUGIN_DIR . 'admin/class-settings-page.php';
     require_once VA_PLUGIN_DIR . 'admin/class-listing-columns.php';
@@ -40,15 +55,21 @@ add_action( 'plugins_loaded', function () {
     VA_Taxonomy::init();
     VA_Meta_Fields::init();
     VA_User_System::init();
+    VA_User_Roles::init();
     VA_Auctions::init();
     VA_Ad_Zones::init();
     VA_Ajax::init();
     VA_Shortcodes::init();
+    VA_Updater::init();
+    VA_Page_Renderer::init();
 
     if ( is_admin() ) {
+        VA_Page_Builder::init();
         VA_Admin::init();
         VA_Settings_Page::init();
         VA_Listing_Columns::init();
+        VA_Listing_Edit::init();
+        VA_Form_Builder::init();
     }
 });
 
@@ -64,6 +85,32 @@ add_action( 'init', function () {
     }
 }, 999 );
 
+// Hiányzó alapoldalak létrehozása futás közben (reaktiválás nélkül)
+add_action( 'init', function () {
+    if ( get_option( 'va_pages_created_v2' ) ) return;
+    va_create_default_pages();
+    update_option( 'va_pages_created_v2', '1', false );
+}, 1 );
+
+/* ── Vadász Naptár – virtuális oldal (WP admin nélkül) ──────────────
+ * A /vadasz-naptar/ URL betölti a theme page-vadasz-naptar.php-t
+ * automatikusan, adatbázis bejegyzés nélkül.
+──────────────────────────────────────────────────────────────────── */
+add_action( 'init', function () {
+    add_rewrite_rule( '^vadasz-naptar/?$', 'index.php?va_virtual_page=vadasz-naptar', 'top' );
+} );
+add_filter( 'query_vars', function ( $vars ) {
+    $vars[] = 'va_virtual_page';
+    return $vars;
+} );
+add_filter( 'template_include', function ( $template ) {
+    if ( get_query_var( 'va_virtual_page' ) !== 'vadasz-naptar' ) {
+        return $template;
+    }
+    $t = locate_template( 'page-vadasz-naptar.php' );
+    return $t ?: $template;
+} );
+
 /* ── Activation / Deactivation ───────────────────── */
 register_activation_hook( __FILE__,   'va_activate'   );
 register_deactivation_hook( __FILE__, 'va_deactivate' );
@@ -77,7 +124,9 @@ function va_activate() {
     // Régi hourly cron törlése, új 5 perces ütemezés
     $old = wp_next_scheduled( 'va_close_expired_auctions' );
     if ( $old ) wp_unschedule_event( $old, 'va_close_expired_auctions' );
-    wp_schedule_event( time(), 'va_every_5min', 'va_close_expired_auctions' );
+    if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : get_option( 'va_enable_auctions', '1' ) === '1' ) {
+        wp_schedule_event( time(), 'va_every_5min', 'va_close_expired_auctions' );
+    }
 
     global $wpdb;
     $charset = $wpdb->get_charset_collate();
@@ -145,9 +194,13 @@ function va_create_default_pages() {
         'va-bejelentkezes'     => [ 'title' => 'Bejelentkezés',        'content' => '[va_login_form]' ],
         'va-regisztracio'      => [ 'title' => 'Regisztráció',         'content' => '[va_register_form]' ],
         'va-fiok'              => [ 'title' => 'Fiókom',               'content' => '[va_user_dashboard]' ],
-        'va-aukciok'           => [ 'title' => 'Aukciók',              'content' => '[va_auction_list]' ],
         'va-hirdetes-kereses'  => [ 'title' => 'Hirdetések keresése',  'content' => '[va_listing_search]' ],
+        'va-kredit-vasarlas'   => [ 'title' => 'Vásárlás',             'content' => '[va_buy_credits]' ],
     ];
+
+    if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : get_option( 'va_enable_auctions', '1' ) === '1' ) {
+        $pages['va-aukciok'] = [ 'title' => 'Aukciók', 'content' => '[va_auction_list]' ];
+    }
 
     foreach ( $pages as $slug => $data ) {
         if ( ! get_page_by_path( $slug ) ) {

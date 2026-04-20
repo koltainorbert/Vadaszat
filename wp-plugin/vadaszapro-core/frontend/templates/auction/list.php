@@ -4,6 +4,11 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+if ( function_exists( 'va_auctions_enabled' ) && ! va_auctions_enabled() ) {
+    echo '<div class="va-wrap"><div class="va-notice va-notice--info">Az aukció funkció jelenleg ki van kapcsolva.</div></div>';
+    return;
+}
+
 wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 wp_enqueue_script( 'va-frontend', VA_PLUGIN_URL . 'frontend/js/frontend.js', [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-frontend', 'VA_Data', [
