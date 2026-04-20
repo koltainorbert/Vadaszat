@@ -1,5 +1,15 @@
 # VadászApró – Telepítési és fejlesztési útmutató
 
+## Kanonikus források
+
+Fejlesztésnél kizárólag ez a két mappa számít hivatalos forrásnak:
+
+- `wp-plugin/vadaszapro-core`
+- `wp-theme/vadaszapro-theme`
+
+A deploy scriptek is csak ezekből másolnak a LocalWP környezetbe.
+A korábbi gyökérszintű duplikált theme/plugin másolatok el lettek távolítva, hogy ne lehessen rossz fájlt szerkeszteni.
+
 ## Architektúra
 
 ```

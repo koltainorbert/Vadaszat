@@ -128,9 +128,14 @@ $bid_history = $wpdb->get_results($wpdb->prepare(
                         Min. licit: <?php echo esc_html(number_format($min_next,0,',',' ').' Ft'); ?>
                     </p>
                     <?php else:
+                        $login_enabled = get_option( 'va_enable_login', '1' ) === '1';
                         $login_page = get_page_by_path('va-bejelentkezes'); ?>
+                    <?php if ( $login_enabled ): ?>
                     <a href="<?php echo esc_url($login_page ? get_permalink($login_page) . '?redirect_to=' . urlencode(get_permalink()) : wp_login_url(get_permalink())); ?>"
                        class="va-btn va-btn--primary va-btn--block">Bejelentkezés a licitáláshoz</a>
+                    <?php else: ?>
+                    <div class="va-notice va-notice--warning">A bejelentkezés jelenleg ki van kapcsolva, ezért most nem lehet licitálni.</div>
+                    <?php endif; ?>
                     <?php endif; ?>
                     <div id="va-auction-over" style="display:none;text-align:center;padding:10px;color:rgba(255,255,255,0.5);">Az aukció lezárult.</div>
                 <?php endif; ?>

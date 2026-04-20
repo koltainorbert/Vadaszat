@@ -3,3 +3,4 @@
 .env.local
 *.log
 dist/
+.vscode/local-config.ps1
