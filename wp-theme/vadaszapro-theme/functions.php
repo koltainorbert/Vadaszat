@@ -852,10 +852,14 @@ add_action( 'wp_enqueue_scripts', function () {
     $hero_btn_ghost_text    = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_text',    '#ffffff' ),                  '#ffffff' );
 
     // Hero méretek – összes oldal
-    '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;}' .
+    '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;background:' . $hero_badge_bg . ' !important;border-color:' . $hero_badge_border . ' !important;color:' . $hero_badge_text . ' !important;}' .
     '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;}' .
     '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;}' .
     '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
+    '.vh__btn--primary{background:' . $hero_btn_primary_bg . ' !important;color:' . $hero_btn_primary_text . ' !important;box-shadow:0 0 28px ' . $hero_btn_primary_glow . ' !important;}' .
+    '.vh__btn--primary:hover{background:' . $hero_btn_primary_hover . ' !important;}' .
+    '.vh__btn--ghost{background:' . $hero_btn_ghost_bg . ' !important;border-color:' . $hero_btn_ghost_border . ' !important;color:' . $hero_btn_ghost_text . ' !important;}' .
+    '.vh__btn--ghost:hover{background:' . $hero_btn_ghost_hover . ' !important;}' .
 
     '.vcp-hero__badge{font-size:' . $kat_hero_badge_css . ' !important;}' .
     '.vcp-hero__title{font-size:' . $kat_hero_title_css . ' !important;line-height:' . $lh_kat_hero_title . ' !important;}' .
