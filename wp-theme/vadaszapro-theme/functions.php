@@ -919,6 +919,10 @@ add_action( 'wp_enqueue_scripts', function () {
     })() ) .
 
     // Hero méretvezérlők
+    '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;}' .
+    '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;}' .
+    '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;}' .
+    '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
 
     '.vcp-hero__badge{font-size:' . $kat_hero_badge_css . ' !important;}' .
     '.vcp-hero__title{font-size:' . $kat_hero_title_css . ' !important;line-height:' . $lh_kat_hero_title . ' !important;}' .
