@@ -16,9 +16,12 @@ if ( ! file_exists( $json_file ) ) {
     wp_die( 'Hiányzó fájl: <code>va-settings-import.json</code> – másold a WP gyökerébe!' );
 }
 
-$data = json_decode( file_get_contents( $json_file ), true );
+$raw = file_get_contents( $json_file );
+// UTF-8 BOM eltávolítás
+$raw = ltrim( $raw, "\xEF\xBB\xBF" );
+$data = json_decode( $raw, true );
 if ( ! $data ) {
-    wp_die( 'Hibás JSON fájl.' );
+    wp_die( 'Hibás JSON fájl. json_last_error: ' . json_last_error_msg() );
 }
 
 $log = [];
