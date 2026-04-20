@@ -35,9 +35,40 @@ class VA_Ajax {
             add_action( 'save_post_va_auction', [ __CLASS__, 'flush_filter_cache' ] );
         }
 
+        // Base64 kép feltöltése médiatárba
+        add_action( 'wp_ajax_va_upload_editor_image', [ __CLASS__, 'upload_editor_image' ] );
+
+        // Hirdetés törlésekor editor képek törlése
+        add_action( 'before_delete_post', [ __CLASS__, 'delete_editor_images_on_listing_delete' ] );
+
         // Élő keresés
         add_action( 'wp_ajax_va_live_search',        [ __CLASS__, 'live_search' ] );
         add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
+    }
+
+    /* ── Rate limiting helper ──────────────────────────── */
+    /**
+     * IP-alapú rate limiting transient-tel.
+     * @param string $action  Egyedi azonosító (pl. 'live_search')
+     * @param int    $limit   Max kérés száma az időablakon belül
+     * @param int    $window  Időablak másodpercben
+     */
+    private static function is_rate_limited( string $action, int $limit = 30, int $window = 60 ): bool {
+        $ip  = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0' ) );
+        $key = 'va_rl_' . $action . '_' . md5( $ip );
+
+        $count = (int) get_transient( $key );
+        if ( $count >= $limit ) {
+            return true;
+        }
+        if ( $count === 0 ) {
+            set_transient( $key, 1, $window );
+        } else {
+            // Növelés – maradék TTL megőrzése nem lehetséges transient-tel, de
+            // a window újraindul csak ha a transient lejár. Ez elfogadható.
+            set_transient( $key, $count + 1, $window );
+        }
+        return false;
     }
 
     /* ── Hirdetés szerkesztés (frontend) ──────────────── */
@@ -59,7 +90,7 @@ class VA_Ajax {
         }
 
         $title       = sanitize_text_field( wp_unslash( $_POST['title']       ?? '' ) );
-        $description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
+        $description = wp_kses_post( wp_unslash( $_POST['description'] ?? '' ) );
         $price       = floatval( $_POST['price'] ?? 0 );
         $price_type  = sanitize_key( $_POST['price_type'] ?? 'fixed' );
         $phone       = sanitize_text_field( wp_unslash( $_POST['phone']    ?? '' ) );
@@ -171,7 +202,7 @@ class VA_Ajax {
         $payment_url = trim( (string) get_option( 'va_listing_payment_url', '' ) );
 
         $title       = sanitize_text_field( wp_unslash( $_POST['title']       ?? '' ) );
-        $description = sanitize_textarea_field( wp_unslash( $_POST['description'] ?? '' ) );
+        $description = wp_kses_post( wp_unslash( $_POST['description'] ?? '' ) );
         $price       = floatval( $_POST['price'] ?? 0 );
         $price_type  = sanitize_key( $_POST['price_type'] ?? 'fixed' );
         $phone       = sanitize_text_field( wp_unslash( $_POST['phone']  ?? '' ) );
@@ -439,6 +470,13 @@ class VA_Ajax {
             $current = absint( get_user_meta( $user_id, 'va_listing_credits', true ) );
             update_user_meta( $user_id, 'va_listing_credits', $current + $qty );
             delete_transient( 'va_credit_token_' . $token );
+
+            // Felfüggesztett hirdetések visszakapcsolása ha most van elég keret
+            if ( class_exists( 'VA_User_Roles' ) ) {
+                delete_transient( 'va_enforce_ok_' . $user_id );
+                VA_User_Roles::enforce_plan_limits( $user_id );
+            }
+
             va_set_flash( 'success', $qty . ' hirdetési kredit jóváírva! Most már feladhatod a hirdetésedet.' );
             if ( $return_to === 'submit' ) {
                 self::redirect_submit_page();
@@ -450,12 +488,47 @@ class VA_Ajax {
     /* ── Kredit csomagok definíciója ───────────────────── */
     public static function get_credit_packages(): array {
         $base = (int) get_option( 'va_listing_price_after_free', 1990 );
-        return [
-            [ 'qty' => 1,  'label' => '1 hirdetés',   'unit_price' => $base,               'total' => $base,        'badge' => '' ],
-            [ 'qty' => 3,  'label' => '3 hirdetés',   'unit_price' => (int)round($base*.9), 'total' => (int)round($base*3*.9),  'badge' => '–10%' ],
-            [ 'qty' => 5,  'label' => '5 hirdetés',   'unit_price' => (int)round($base*.8), 'total' => (int)round($base*5*.8),  'badge' => '–20%' ],
-            [ 'qty' => 10, 'label' => '10 hirdetés',  'unit_price' => (int)round($base*.7), 'total' => (int)round($base*10*.7), 'badge' => '–30%' ],
-        ];
+
+        $default_qtys   = [ 1 => 1, 2 => 3, 3 => 5, 4 => 10 ];
+        $default_labels = [ 1 => 'Basic', 2 => 'Silver', 3 => 'Gold', 4 => 'Platinum' ];
+        $default_prices = [ 1 => 0, 2 => (int) round( $base * .9 ), 3 => (int) round( $base * .8 ), 4 => (int) round( $base * .7 ) ];
+        $default_badges = [ 1 => '', 2 => '–10%', 3 => '–20%', 4 => '–30%' ];
+
+        $packages = [];
+        for ( $n = 1; $n <= 4; $n++ ) {
+            $enabled = get_option( "va_pc_{$n}_enabled", '1' ) === '1';
+            if ( ! $enabled ) continue;
+
+            $qty   = max( 1, (int) get_option( "va_pc_{$n}_qty",   $default_qtys[$n] ) );
+            $price = (int) get_option( "va_pc_{$n}_price", $default_prices[$n] );
+            // Fallback: ha az ár 0 és nem ingyenes kártya, alapár
+            $free  = get_option( "va_pc_{$n}_free", $n === 1 ? '1' : '0' ) === '1';
+            if ( ! $free && $price <= 0 ) $price = $base;
+            $total = $qty * $price;
+            $label = (string) get_option( "va_pc_{$n}_label", $default_labels[$n] );
+            $badge = (string) get_option( "va_pc_{$n}_badge", $default_badges[$n] );
+
+            $packages[] = [
+                'qty'        => $qty,
+                'label'      => $qty . ' kredit',
+                'unit_price' => $price,
+                'total'      => $total,
+                'badge'      => $badge,
+            ];
+        }
+
+        usort( $packages, static fn( $a, $b ) => $a['qty'] <=> $b['qty'] );
+
+        if ( empty( $packages ) ) {
+            return [
+                [ 'qty' => 1,  'label' => '1 hirdetés',   'unit_price' => $base,               'total' => $base,                      'badge' => '' ],
+                [ 'qty' => 3,  'label' => '3 hirdetés',   'unit_price' => (int) round($base*.9),'total' => (int) round($base*3*.9),   'badge' => '–10%' ],
+                [ 'qty' => 5,  'label' => '5 hirdetés',   'unit_price' => (int) round($base*.8),'total' => (int) round($base*5*.8),   'badge' => '–20%' ],
+                [ 'qty' => 10, 'label' => '10 hirdetés',  'unit_price' => (int) round($base*.7),'total' => (int) round($base*10*.7),  'badge' => '–30%' ],
+            ];
+        }
+
+        return $packages;
     }
 
     private static function generate_invoice( int $post_id ): string {
@@ -600,6 +673,29 @@ class VA_Ajax {
         exit;
     }
 
+    /* ── Kép tömörítés + átméretezés ─────────────────────
+     * Átméretezi ha szélesebb a max értéknél, és beállítja a JPEG minőséget.
+     * A fájlt felülírja helyben (az attachment URL nem változik).
+     * ─────────────────────────────────────────────────────── */
+    private static function compress_image( string $file_path ): void {
+        $quality   = (int) get_option( 'va_img_quality',   82 );
+        $max_width = (int) get_option( 'va_img_max_width', 1920 );
+        if ( $quality  < 10 )  $quality  = 10;
+        if ( $quality  > 100 ) $quality  = 100;
+        if ( $max_width < 400 ) $max_width = 400;
+
+        $editor = wp_get_image_editor( $file_path );
+        if ( is_wp_error( $editor ) ) return;
+
+        $size = $editor->get_size();
+        if ( ! empty( $size['width'] ) && $size['width'] > $max_width ) {
+            $editor->resize( $max_width, null, false );
+        }
+
+        $editor->set_quality( $quality );
+        $editor->save( $file_path ); // helyben felülírja
+    }
+
     /* ── Képfeltöltés ──────────────────────────────────── */
     private static function handle_images( $post_id, $files, int $featured_idx = 0 ): array {
         require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -661,6 +757,13 @@ class VA_Ajax {
             if ( is_wp_error( $attachment_id ) ) {
                 $errors[] = $attachment_id->get_error_message();
             } else {
+                // Tömörítés + átméretezés
+                $file_path = get_attached_file( $attachment_id );
+                if ( $file_path ) {
+                    self::compress_image( $file_path );
+                    // Thumbnail-ek újragenerálása a módosított fájlból
+                    wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $file_path ) );
+                }
                 $attachment_ids[] = $attachment_id;
                 $count++;
             }
@@ -708,8 +811,16 @@ class VA_Ajax {
 
     /* ── Megtekintés számláló ──────────────────────────── */
     public static function increment_views() {
+        check_ajax_referer( 'va_user_nonce', 'nonce' );
+
         $post_id = intval( $_POST['post_id'] ?? 0 );
         if ( ! $post_id ) wp_send_json_error();
+
+        // Csak va_listing és va_auction post típusra engedett
+        $allowed_types = [ 'va_listing', 'va_auction' ];
+        if ( ! in_array( get_post_type( $post_id ), $allowed_types, true ) ) {
+            wp_send_json_error();
+        }
 
         $views = intval( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
         update_post_meta( $post_id, 'va_views', $views + 1 );
@@ -721,6 +832,10 @@ class VA_Ajax {
      * meta_query / EAV helyett – 3M hirdetésnél is gyors marad.
      * Transient cache: 5 perc, automatikusan törlődik új hirdetésnél.     */
     public static function filter_listings() {
+        if ( self::is_rate_limited( 'filter_listings', 60, 60 ) ) {
+            wp_send_json_error( [ 'message' => 'Túl sok kérés. Kérjük várjon egy percet.' ], 429 );
+        }
+
         global $wpdb;
 
         $paged     = max( 1, intval( $_POST['paged']     ?? 1 ) );
@@ -862,6 +977,10 @@ class VA_Ajax {
 
     /* ── Élő keresés (header dropdown) ─────────────────── */
     public static function live_search() {
+        if ( self::is_rate_limited( 'live_search', 60, 60 ) ) {
+            wp_send_json_error( [ 'message' => 'Túl sok kérés. Kérjük várjon egy percet.' ], 429 );
+        }
+
         $q = sanitize_text_field( wp_unslash( $_POST['q'] ?? '' ) );
         if ( strlen( $q ) < 2 ) {
             wp_send_json_success( [] );
@@ -921,27 +1040,148 @@ class VA_Ajax {
 
         wp_reset_postdata();
 
-        // Felhasználó találatok
-        $users = get_users([
-            'search'         => '*' . $q . '*',
-            'search_columns' => [ 'user_login', 'display_name' ],
-            'number'         => 3,
-            'fields'         => [ 'ID', 'display_name', 'user_login' ],
-        ]);
-        $search_page_for_user = get_page_by_path( 'va-hirdetes-kereses' );
-        $search_url_for_user  = $search_page_for_user ? get_permalink( $search_page_for_user ) : home_url( '/va-hirdetes-kereses/' );
-        foreach ( $users as $u ) {
-            $avatar  = get_avatar_url( $u->ID, [ 'size' => 80 ] );
-            $results[] = [
-                'id'    => $u->ID,
-                'title' => $u->display_name,
-                'url'   => add_query_arg( 'author_id', $u->ID, $search_url_for_user ),
-                'price' => '@' . $u->user_login,
-                'thumb' => $avatar,
-                'type'  => 'user',
-            ];
+        // Felhasználó találatok – csak bejelentkezett felhasználóknak
+        if ( is_user_logged_in() ) {
+            $users = get_users([
+                'search'         => '*' . $q . '*',
+                'search_columns' => [ 'user_login', 'display_name' ],
+                'number'         => 3,
+                'fields'         => [ 'ID', 'display_name', 'user_login' ],
+            ]);
+            $search_page_for_user = get_page_by_path( 'va-hirdetes-kereses' );
+            $search_url_for_user  = $search_page_for_user ? get_permalink( $search_page_for_user ) : home_url( '/va-hirdetes-kereses/' );
+            foreach ( $users as $u ) {
+                $avatar  = get_avatar_url( $u->ID, [ 'size' => 80 ] );
+                $results[] = [
+                    'id'    => $u->ID,
+                    'title' => $u->display_name,
+                    'url'   => add_query_arg( 'author_id', $u->ID, $search_url_for_user ),
+                    'price' => '@' . $u->user_login,
+                    'thumb' => $avatar,
+                    'type'  => 'user',
+                ];
+            }
         }
 
         wp_send_json_success( $results );
+    }
+
+    /* ── Base64 kép feltöltése médiatárba ───────────────────── */
+    public static function upload_editor_image(): void {
+        if ( ! is_user_logged_in() ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+        check_ajax_referer( 'va_upload_editor_image', 'nonce' );
+
+        $user_id  = get_current_user_id();
+        $post_id  = absint( $_POST['post_id'] ?? 0 );
+
+        // Max 2 editor kép / hirdetés / felhasználó limitálása szerver oldalon
+        if ( $post_id > 0 ) {
+            $existing = get_posts( [
+                'post_type'      => 'attachment',
+                'post_parent'    => $post_id,
+                'post_status'    => 'inherit',
+                'posts_per_page' => -1,
+                'no_found_rows'  => true,
+                'meta_key'       => '_va_editor_img',
+                'meta_value'     => '1',
+                'author'         => $user_id,
+                'fields'         => 'ids',
+            ] );
+            if ( count( $existing ) >= 2 ) {
+                wp_send_json_error( [ 'message' => 'Maximum 2 kép engedélyezett a leírásban.' ] );
+            }
+        }
+
+        $data_url = wp_unslash( $_POST['data_url'] ?? '' );
+        if ( ! preg_match( '/^data:(image\/(jpeg|png|webp|gif));base64,(.+)$/s', $data_url, $m ) ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen képadat.' ] );
+        }
+
+        $mime      = $m[1];
+        $ext_map   = [ 'jpeg' => 'jpg', 'png' => 'png', 'webp' => 'webp', 'gif' => 'gif' ];
+        $ext       = $ext_map[ $m[2] ] ?? 'jpg';
+        $img_data  = base64_decode( $m[3] );
+
+        if ( ! $img_data || strlen( $img_data ) > 10 * 1024 * 1024 ) {
+            wp_send_json_error( [ 'message' => 'Túl nagy kép (max 10 MB).' ] );
+        }
+
+        // User-specifikus mappa: /va-users/{user_id}/listings/{post_id}/editor/
+        // (ha post_id=0: /va-users/{user_id}/editor/)
+        $va_editor_dir_filter = static function( $dirs ) use ( $user_id, $post_id ) {
+            if ( $post_id > 0 ) {
+                $dirs['subdir'] = '/va-users/' . $user_id . '/listings/' . $post_id . '/editor';
+            } else {
+                $dirs['subdir'] = '/va-users/' . $user_id . '/editor';
+            }
+            $dirs['path'] = $dirs['basedir'] . $dirs['subdir'];
+            $dirs['url']  = $dirs['baseurl'] . $dirs['subdir'];
+            return $dirs;
+        };
+        add_filter( 'upload_dir', $va_editor_dir_filter );
+
+        $upload = wp_upload_bits( 'editor-img-' . time() . '.' . $ext, null, $img_data );
+
+        remove_filter( 'upload_dir', $va_editor_dir_filter );
+
+        if ( $upload['error'] ) {
+            wp_send_json_error( [ 'message' => $upload['error'] ] );
+        }
+
+        // Tömörítés + átméretezés
+        self::compress_image( $upload['file'] );
+
+        $attachment_id = wp_insert_attachment( [
+            'post_mime_type' => $mime,
+            'post_title'     => sanitize_file_name( basename( $upload['file'] ) ),
+            'post_status'    => 'inherit',
+            'post_author'    => $user_id,
+            'post_parent'    => $post_id > 0 ? $post_id : 0,
+        ], $upload['file'] );
+
+        // Jelöljük meg hogy editor kép → törléskor tudjuk tisztítani
+        update_post_meta( $attachment_id, '_va_editor_img', '1' );
+        update_post_meta( $attachment_id, '_va_editor_img_owner', $user_id );
+
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        wp_update_attachment_metadata( $attachment_id, wp_generate_attachment_metadata( $attachment_id, $upload['file'] ) );
+
+        wp_send_json_success( [ 'url' => $upload['url'], 'attachment_id' => $attachment_id ] );
+    }
+
+    /* ── Hirdetés törlésekor editor képek törlése ───────────── */
+    public static function delete_editor_images_on_listing_delete( int $post_id ): void {
+        if ( get_post_type( $post_id ) !== 'va_listing' ) return;
+
+        // Editor képek törlése (_va_editor_img meta alapján)
+        $editor_imgs = get_posts( [
+            'post_type'      => 'attachment',
+            'post_parent'    => $post_id,
+            'post_status'    => 'inherit',
+            'posts_per_page' => 100,
+            'no_found_rows'  => true,
+            'meta_key'       => '_va_editor_img',
+            'meta_value'     => '1',
+            'fields'         => 'ids',
+        ] );
+        foreach ( $editor_imgs as $att_id ) {
+            wp_delete_attachment( $att_id, true );
+        }
+
+        // Galéria képek törlése (va_gallery_ids meta alapján)
+        $gallery_str = get_post_meta( $post_id, 'va_gallery_ids', true );
+        if ( $gallery_str ) {
+            $gallery_ids = array_filter( array_map( 'intval', explode( ',', $gallery_str ) ) );
+            foreach ( $gallery_ids as $att_id ) {
+                wp_delete_attachment( $att_id, true );
+            }
+        }
+        // Kiemelt kép törlése
+        $thumb_id = (int) get_post_thumbnail_id( $post_id );
+        if ( $thumb_id ) {
+            wp_delete_attachment( $thumb_id, true );
+        }
     }
 }

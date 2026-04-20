@@ -17,21 +17,31 @@ define( 'VA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'VA_TEXT_DOMAIN', 'vadaszapro' );
 
+// GitHub auto-update – állítsd be a saját repo-dat:
+// Formátum: 'github-felhasznalonev/repo-neve'
+// Privát repo esetén: define( 'VA_GITHUB_TOKEN', 'ghp_...' );
+if ( ! defined( 'VA_GITHUB_REPO' ) )  define( 'VA_GITHUB_REPO',  '' );
+if ( ! defined( 'VA_GITHUB_TOKEN' ) ) define( 'VA_GITHUB_TOKEN', '' );
+
 /* ── Autoload includes ────────────────────────────── */
 require_once VA_PLUGIN_DIR . 'includes/class-post-types.php';
 require_once VA_PLUGIN_DIR . 'includes/class-taxonomy.php';
 require_once VA_PLUGIN_DIR . 'includes/class-meta-fields.php';
+require_once VA_PLUGIN_DIR . 'includes/class-mailer.php';
 require_once VA_PLUGIN_DIR . 'includes/class-user-system.php';
 require_once VA_PLUGIN_DIR . 'includes/class-user-roles.php';
 require_once VA_PLUGIN_DIR . 'includes/class-auctions.php';
 require_once VA_PLUGIN_DIR . 'includes/class-ad-zones.php';
 require_once VA_PLUGIN_DIR . 'includes/class-ajax.php';
 require_once VA_PLUGIN_DIR . 'includes/class-shortcodes.php';
+require_once VA_PLUGIN_DIR . 'includes/class-updater.php';
+require_once VA_PLUGIN_DIR . 'includes/class-page-renderer.php';
 require_once VA_PLUGIN_DIR . 'includes/helpers.php';
 
 require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php'; // frontend is használja (VA_Form_Builder::get_fields)
 
 if ( is_admin() ) {
+    require_once VA_PLUGIN_DIR . 'admin/class-page-builder.php';
     require_once VA_PLUGIN_DIR . 'admin/class-dashboard.php';
     require_once VA_PLUGIN_DIR . 'admin/class-listing-edit.php';
     require_once VA_PLUGIN_DIR . 'admin/class-admin.php';
@@ -50,8 +60,11 @@ add_action( 'plugins_loaded', function () {
     VA_Ad_Zones::init();
     VA_Ajax::init();
     VA_Shortcodes::init();
+    VA_Updater::init();
+    VA_Page_Renderer::init();
 
     if ( is_admin() ) {
+        VA_Page_Builder::init();
         VA_Admin::init();
         VA_Settings_Page::init();
         VA_Listing_Columns::init();

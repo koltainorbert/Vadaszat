@@ -58,6 +58,40 @@ class VA_Admin {
         $vars .= '}';
 
         echo '<style id="va-admin-theme-vars">' . $vars . '</style>' . "\n";
+
+        // TinyMCE editor sötétítés az admin hirdetés szerkesztőben
+        echo '<style id="va-tinymce-dark">
+/* Wrapper és tab gombok */
+.wp-editor-wrap { border-color: rgba(255,255,255,.12) !important; border-radius: 6px; overflow: hidden; }
+.wp-editor-tabs .wp-switch-editor { background: #1a1a1a !important; color: #aaa !important; border-color: rgba(255,255,255,.12) !important; }
+.wp-editor-tabs .wp-switch-editor:hover { background: #2a2a2a !important; color: #e8e8e8 !important; }
+
+/* Média gomb sor */
+.wp-media-buttons { background: #111 !important; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
+.wp-media-buttons .button { background: #222 !important; color: #ddd !important; border-color: rgba(255,255,255,.2) !important; }
+.wp-media-buttons .button:hover { background: #2a2a2a !important; color: #fff !important; }
+
+/* TinyMCE 5+ (tox) */
+.tox-tinymce { border-color: rgba(255,255,255,.12) !important; border-radius: 0 !important; }
+.tox .tox-toolbar-overlord,
+.tox .tox-toolbar__primary,
+.tox .tox-toolbar,
+.tox .tox-toolbar-overlord .tox-toolbar:not(.tox-toolbar--scrolling):first-child { background: #1a1a1a !important; border-bottom: 1px solid rgba(255,255,255,.1) !important; }
+.tox .tox-toolbar__group { border-color: rgba(255,255,255,.1) !important; }
+.tox .tox-tbtn svg { fill: #bbb !important; }
+.tox .tox-tbtn:hover { background: #2a2a2a !important; }
+.tox .tox-tbtn--active { background: #333 !important; }
+.tox .tox-tbtn__select-label, .tox .tox-tbtn { color: #ccc !important; }
+.tox .tox-statusbar { background: #1a1a1a !important; border-top: 1px solid rgba(255,255,255,.1) !important; color: #666 !important; }
+.tox .tox-statusbar__path-item, .tox .tox-statusbar__wordcount { color: #666 !important; }
+.tox-edit-area { background: #111 !important; }
+.tox-edit-area__iframe { background: #111 !important; }
+
+/* Quicktags */
+.quicktags-toolbar { background: #1a1a1a !important; border-color: rgba(255,255,255,.1) !important; }
+.quicktags-toolbar input.ed_button { background: #252525 !important; color: #ccc !important; border-color: rgba(255,255,255,.15) !important; border-radius: 3px; }
+.quicktags-toolbar input.ed_button:hover { background: #333 !important; color: #fff !important; }
+</style>' . "\n";
     }
 
     /* ── Body class ─────────────────────────────────────────── */
@@ -114,6 +148,7 @@ class VA_Admin {
             "vadaszapro-reklam"       => "Reklámzónák",
             "vadaszapro-hirdetes"     => "Hirdetés beállítások",
             "vadaszapro-aukcio"       => "Aukció beállítások",
+            "vadaszapro-emails"       => "Email sablonok",
             "vadaszapro-users"        => "Felhasználók",
             "va-form-builder"         => "Form Szerkesztő",
             "vadaszapro-adminpanel"   => "Admin Panel beállítások",
@@ -121,6 +156,8 @@ class VA_Admin {
             "vadaszapro-social"        => "Social Media beállítások",
             "vadaszapro-stats"        => "Statisztika",
             "vadaszapro-plans"        => "Csomag beállítások",
+            "vadaszapro-arkartyak"    => "Árkártyák szerkesztő",
+            "vadaszapro-oldalak"      => "Oldalszerkesztő",
         ];
         $titles["vadaszapro-listings"]     = "Hirdetések";
         $titles["vadaszapro-listing-edit"] = "Hirdetés szerkesztése";
@@ -167,6 +204,14 @@ class VA_Admin {
                 <?php self::sb_item( "🧱", "Termékoldal", admin_url( "admin.php?page=vadaszapro-single-designer" ), $page === "vadaszapro-single-designer" ); ?>
                 <?php self::sb_item( "📱", "Social Media", admin_url( "admin.php?page=vadaszapro-social" ), $page === "vadaszapro-social" ); ?>
                 <?php self::sb_item( "💼", "Csomagok", admin_url( "admin.php?page=vadaszapro-plans" ), $page === "vadaszapro-plans" ); ?>
+                <?php self::sb_item( "💳", "Árkártyák", admin_url( "admin.php?page=vadaszapro-arkartyak" ), $page === "vadaszapro-arkartyak" ); ?>
+
+                <?php if ( $auctions_enabled ): ?>
+                <?php self::sb_item( "🔨", "Aukció beállítások", admin_url( "admin.php?page=vadaszapro-aukcio" ), $page === "vadaszapro-aukcio" ); ?>
+                <?php endif; ?>
+                <?php self::sb_item( "📧", "Email sablonok", admin_url( "admin.php?page=vadaszapro-emails" ), $page === "vadaszapro-emails" ); ?>
+
+                <?php self::sb_item( "📄", "Oldalak", admin_url( "admin.php?page=vadaszapro-oldalak" ), $page === "vadaszapro-oldalak" ); ?>
 
                 <span class="va-sb-sep">Tartalom</span>
 
@@ -246,13 +291,16 @@ class VA_Admin {
         if ( $auctions_enabled ) {
             add_submenu_page( "vadaszapro", "Aukció beállítások", "Aukciók",           "manage_options", "vadaszapro-aukcio",         [ VA_Settings_Page::class, "render_auctions"         ] );
         }
+        add_submenu_page( "vadaszapro", "Email sablonok",         "📧 Email sablonok", "manage_options", "vadaszapro-emails",         [ VA_Settings_Page::class, "render_emails"           ] );
         add_submenu_page( "vadaszapro", "Felhasználók",           "Felhasználók",      "manage_options", "vadaszapro-users",          [ VA_Settings_Page::class, "render_users"            ] );
         add_submenu_page( "vadaszapro", "Form szerkesztő",        "🧩 Form szerkesztő","manage_options", "va-form-builder",           [ VA_Form_Builder::class,  "render"                 ] );
         add_submenu_page( "vadaszapro", "Admin Panel beállítások", "Admin Panel",       "manage_options", "vadaszapro-adminpanel",     [ VA_Settings_Page::class, "render_adminpanel"      ] );
         add_submenu_page( "vadaszapro", "Termékoldal Designer",    "Termékoldal",       "manage_options", "vadaszapro-single-designer", [ VA_Settings_Page::class, "render_single_designer" ] );
         add_submenu_page( "vadaszapro", "Social Media",              "🌐 Social Media",   "manage_options", "vadaszapro-social",         [ VA_Settings_Page::class, "render_social"           ] );
         add_submenu_page( "vadaszapro", "Csomag beállítások",     "💼 Csomagok",       "manage_options", "vadaszapro-plans",          [ VA_Settings_Page::class, "render_plans"            ] );
+        add_submenu_page( "vadaszapro", "Árkártyák szerkesztő",   "💳 Árkártyák",      "manage_options", "vadaszapro-arkartyak",      [ VA_Settings_Page::class, "render_price_cards"      ] );
         add_submenu_page( "vadaszapro", "Statisztika",            "Statisztika",       "manage_options", "vadaszapro-stats",          [ VA_Settings_Page::class, "render_stats"            ] );
+        add_submenu_page( "vadaszapro", "Oldalszerkesztő",        "📄 Oldalak",        "manage_options", "vadaszapro-oldalak",        [ VA_Page_Builder::class,  "render"                  ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
         add_submenu_page( "vadaszapro", "Hirdetés szerkesztő", "", "edit_posts", "vadaszapro-listing-edit", [ VA_Listing_Edit::class, "render_edit" ] );

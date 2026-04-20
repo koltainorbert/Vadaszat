@@ -71,7 +71,37 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '</select>';
                 break;
             case 'description':
-                echo '<textarea id="va-desc" name="description" class="va-textarea" rows="6"' . $req_attr . ' placeholder="' . $ph . '">' . esc_textarea( (string) $val ) . '</textarea>';
+                $desc_val = wp_kses_post( (string) $val );
+                ?>
+                <div id="va-quill-editor"></div>
+                <textarea name="description" id="va-desc-hidden" style="display:none"><?php echo esc_textarea( $desc_val ); ?></textarea>
+                <style>
+                .ql-toolbar.ql-snow{background:#1e1e1e;border:1px solid rgba(255,255,255,.15)!important;border-bottom:none!important;border-radius:6px 6px 0 0;}
+                .ql-container.ql-snow{background:#111;border:1px solid rgba(255,255,255,.15)!important;border-radius:0 0 6px 6px;font-size:15px;}
+                .ql-editor{color:#e8e8e8;min-height:200px;line-height:1.7;font-family:system-ui,sans-serif;}
+                .ql-editor.ql-blank::before{color:rgba(255,255,255,.3);font-style:normal;}
+                .ql-snow .ql-stroke{stroke:#aaa!important;}
+                .ql-snow .ql-fill,.ql-snow .ql-stroke.ql-fill{fill:#aaa!important;}
+                .ql-snow .ql-picker{color:#bbb!important;}
+                .ql-snow .ql-picker-label{border-color:rgba(255,255,255,.15)!important;}
+                .ql-snow .ql-picker-options{background:#1e1e1e!important;border-color:rgba(255,255,255,.15)!important;}
+                .ql-snow .ql-picker-item{color:#bbb!important;}
+                .ql-snow .ql-picker-item:hover,.ql-snow .ql-picker-item.ql-selected{color:#fff!important;}
+                .ql-snow.ql-toolbar button:hover .ql-stroke,.ql-snow .ql-toolbar button:hover .ql-stroke{stroke:#ff4444!important;}
+                .ql-snow.ql-toolbar button.ql-active .ql-stroke,.ql-snow .ql-toolbar button.ql-active .ql-stroke{stroke:#ff4444!important;}
+                .ql-snow.ql-toolbar button:hover .ql-fill,.ql-snow .ql-toolbar button:hover .ql-fill{fill:#ff4444!important;}
+                .ql-snow.ql-toolbar button.ql-active .ql-fill{fill:#ff4444!important;}
+                .ql-snow .ql-picker.ql-header .ql-picker-label::before,.ql-snow .ql-picker.ql-header .ql-picker-item::before{color:#bbb!important;}
+                .ql-editor a{color:#ff4444;}
+                .ql-editor img{max-width:100%;border-radius:6px;}
+                .ql-editor blockquote{border-left:3px solid #ff4444;padding-left:12px;color:#aaa;margin:8px 0;}
+                .ql-editor h2,.ql-editor h3{color:#e8e8e8;}
+                .ql-editor ol,.ql-editor ul{color:#e8e8e8;}
+                .ql-snow .ql-tooltip{background:#1e1e1e!important;border-color:rgba(255,255,255,.15)!important;color:#e8e8e8!important;box-shadow:0 4px 20px rgba(0,0,0,.5)!important;}
+                .ql-snow .ql-tooltip input[type=text]{background:#111!important;border-color:rgba(255,255,255,.2)!important;color:#e8e8e8!important;}
+                .ql-snow .ql-tooltip a.ql-action,.ql-snow .ql-tooltip a.ql-remove{color:#ff4444!important;}
+                </style>
+                <?php
                 break;
             case 'images':
                 $max_img = absint( get_option( 'va_max_images_per_listing', 10 ) );
@@ -195,18 +225,28 @@ if ( is_user_logged_in() ) {
 
 $remaining_free = $free_limit === 0 ? 9999 : max( 0, $free_limit - $user_listings_count );
 
+// ── Azonnali átirányítás ha nincs szabad keret és nem szerkesztés ──
+if ( ! $edit_mode && is_user_logged_in() ) {
+    $has_any_allowance = $plan_has_allowance || $user_credit_balance > 0 || $remaining_free > 0;
+    if ( ! $has_any_allowance ) {
+        wp_redirect( $buy_url_submit );
+        exit;
+    }
+}
+
 wp_enqueue_style(  'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 wp_enqueue_script( 'va-submit',   VA_PLUGIN_URL . 'frontend/js/frontend.js',  [ 'jquery' ], VA_VERSION, true );
 wp_localize_script( 'va-submit', 'VA_Data', [
-    'ajax_url'    => admin_url( 'admin-ajax.php' ),
-    'nonce'       => wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ),
-    'post_id'     => $edit_post_id,
-    'edit_mode'   => $edit_mode,
-    'edit_images' => $edit_mode ? array_map( function( $id ) {
+    'ajax_url'       => admin_url( 'admin-ajax.php' ),
+    'nonce'          => wp_create_nonce( $edit_mode ? 'va_update_listing' : 'va_submit_listing' ),
+    'nonce_editor_img' => wp_create_nonce( 'va_upload_editor_image' ),
+    'post_id'        => $edit_post_id,
+    'edit_mode'      => $edit_mode,
+    'edit_images'    => $edit_mode ? array_map( function( $id ) {
         $src = wp_get_attachment_image_url( $id, 'thumbnail' );
         return [ 'id' => $id, 'url' => $src ?: '' ];
     }, $edit_gallery ?? [] ) : [],
-    'edit_thumb'  => $edit_mode ? $edit_thumb : 0,
+    'edit_thumb'     => $edit_mode ? $edit_thumb : 0,
 ]);
 ?>
 <div class="va-wrap">
@@ -226,20 +266,23 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         <?php if ( ! $edit_mode ): ?>
         <div class="va-notice va-notice--info" style="margin-bottom:16px;">
             <?php if ( $plan_has_allowance || $user_credit_balance > 0 ): ?>
-                <?php if ( $user_credit_balance > 0 ): ?>
-                    Előfizetett egyenleged: <strong><?php echo esc_html( (string) $user_credit_balance ); ?> db kredit</strong>. Ebből még tudsz hirdetést feladni.
-                <?php elseif ( is_int( $plan_remaining ) ): ?>
-                    Előfizetett csomagkeretedből még <strong><?php echo esc_html( (string) $plan_remaining ); ?> db</strong> hirdetést tudsz feladni.
+                <?php if ( $user_credit_balance > 0 && is_int( $plan_remaining ) && $plan_remaining > 0 ): ?>
+                    Egyenleged: <strong><?php echo esc_html( (string) $plan_remaining ); ?> plan + <?php echo esc_html( (string) $user_credit_balance ); ?> vásárolt kredit</strong>.
+                <?php elseif ( $user_credit_balance > 0 ): ?>
+                    Rendelkezésre álló kreditjeid: <strong><?php echo esc_html( (string) $user_credit_balance ); ?> db</strong>.
+                <?php elseif ( is_int( $plan_remaining ) && $plan_remaining > 0 ): ?>
+                    Csomagkeretedből még <strong><?php echo esc_html( (string) $plan_remaining ); ?> db</strong> hirdetést adhatsz fel.
                 <?php else: ?>
                     Az előfizetésed alapján jelenleg tudsz hirdetést feladni.
                 <?php endif; ?>
-            <?php elseif ( $free_limit === 0 ): ?>
-                Jelenleg korlátlan számú ingyenes hirdetés adható fel.
-            <?php else: ?>
-                <?php if ( $remaining_free > 0 ): ?>
-                    Még <strong><?php echo esc_html( (string) $remaining_free ); ?> db</strong> ingyenes hirdetésed van. Utána minden új hirdetés díja: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> (bankkártya).
+            <?php elseif ( $remaining_free > 0 ): ?>
+                <?php if ( $remaining_free === 1 ): ?>
+                    Ez az <strong>utolsó ingyenes</strong> hirdetésed. Utána minden új hirdetés díja <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> –
+                    <a href="<?php echo esc_url( $buy_url ); ?>" style="color:#ff6060;font-weight:700;">vásárolj most csomagot!</a>
                 <?php else: ?>
-                    Az ingyenes hirdetési limit elfogyott. A következő hirdetés díja: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft</strong> (bankkártya).
+                    Még <strong><?php echo esc_html( (string) $remaining_free ); ?> db</strong> ingyenes hirdetésed van.
+                    Utána: <strong><?php echo esc_html( number_format( $paid_price, 0, ',', ' ' ) ); ?> Ft / hirdetés</strong> –
+                    <a href="<?php echo esc_url( $buy_url ); ?>" style="color:#ff6060;font-weight:700;">csomagok megtekintése</a>
                 <?php endif; ?>
             <?php endif; ?>
         </div>
@@ -351,6 +394,9 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         </p>
     </form>
 </div>
+
+<link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -487,6 +533,114 @@ document.addEventListener('DOMContentLoaded', function() {
     /* ── Fájl input ──────────────────────────────────── */
     $input.on('change', function(){ addFiles(this.files); this.value = ''; });
 
+    /* ══ Quill editor init ═══════════════════════════════════════ */
+    var quillModules = {
+        toolbar: {
+            container: [
+                [{ header: [2, 3, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ list: 'ordered' }, { list: 'bullet' }],
+                ['blockquote'],
+                [{ align: [] }],
+                ['link', 'image'],
+                ['clean']
+            ],
+            handlers: {
+                image: function() {
+                    if (quill.root.querySelectorAll('img').length >= 2) {
+                        alert('Maximum 2 kép engedélyezett a leírásban.');
+                        return;
+                    }
+                    var input = document.createElement('input');
+                    input.setAttribute('type', 'file');
+                    input.setAttribute('accept', 'image/jpeg,image/png,image/webp,image/gif');
+                    input.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+                    document.body.appendChild(input);
+                    input.addEventListener('change', function() {
+                        var file = input.files[0];
+                        document.body.removeChild(input);
+                        if (!file) return;
+                        var reader = new FileReader();
+                        reader.onload = function(e) {
+                            var range = quill.getSelection(true);
+                            quill.insertEmbed(range ? range.index : quill.getLength(), 'image', e.target.result);
+                            quill.setSelection((range ? range.index : 0) + 1);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    input.click();
+                }
+            }
+        }
+    };
+    var quill = new Quill('#va-quill-editor', {
+        theme: 'snow',
+        placeholder: 'Írja le a hirdetett terméket részletesen...',
+        modules: quillModules
+    });
+
+    // Edit módban meglévő tartalom betöltése
+    var $hidden = $('#va-desc-hidden');
+    if ($hidden.val().trim()) {
+        quill.root.innerHTML = $hidden.val();
+    }
+
+    /* ══ Kép átméretezés ════════════════════════════════ */
+    (function(){
+        var activeImg = null, handle = null, startX, startW;
+        handle = document.createElement('div');
+        handle.style.cssText = 'position:absolute;width:12px;height:12px;background:#ff4444;border:2px solid #fff;border-radius:3px;cursor:se-resize;display:none;z-index:999;box-shadow:0 0 4px rgba(0,0,0,.6);';
+        document.body.appendChild(handle);
+
+        function positionHandle() {
+            if (!activeImg) return;
+            var r = activeImg.getBoundingClientRect();
+            handle.style.left = (r.right + window.scrollX - 8) + 'px';
+            handle.style.top  = (r.bottom + window.scrollY - 8) + 'px';
+        }
+
+        quill.root.addEventListener('click', function(e) {
+            if (e.target.tagName === 'IMG') {
+                activeImg = e.target;
+                if (!activeImg.style.width) activeImg.style.width = activeImg.offsetWidth + 'px';
+                activeImg.style.cursor = 'pointer';
+                positionHandle();
+                handle.style.display = 'block';
+            } else {
+                handle.style.display = 'none';
+                activeImg = null;
+            }
+        });
+
+        handle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            startX = e.clientX;
+            startW = activeImg ? activeImg.offsetWidth : 100;
+            document.addEventListener('mousemove', onMove);
+            document.addEventListener('mouseup', onUp);
+        });
+
+        function onMove(e) {
+            if (!activeImg) return;
+            var w = Math.max(40, startW + (e.clientX - startX));
+            activeImg.style.width = w + 'px';
+            activeImg.style.height = 'auto';
+            positionHandle();
+        }
+        function onUp() {
+            document.removeEventListener('mousemove', onMove);
+            document.removeEventListener('mouseup', onUp);
+        }
+        window.addEventListener('scroll', positionHandle);
+        window.addEventListener('resize', positionHandle);
+        document.addEventListener('click', function(e){
+            if (e.target !== activeImg && e.target !== handle) {
+                handle.style.display = 'none';
+                activeImg = null;
+            }
+        });
+    })();
+
     /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){
         e.preventDefault();
@@ -494,7 +648,24 @@ document.addEventListener('DOMContentLoaded', function() {
         var editMode = !! VA_Data.edit_mode;
         $btn.prop('disabled', true).text('Feltöltés...');
 
-        var formData = new FormData(this);
+        // Base64 képek feltöltése médiatárba, majd submit
+        var imgs = quill.root.querySelectorAll('img[src^="data:"]');
+        var uploads = [];
+        imgs.forEach(function(img) {
+            uploads.push($.ajax({
+                url: VA_Data.ajax_url,
+                type: 'POST',
+                data: { action: 'va_upload_editor_image', nonce: VA_Data.nonce_editor_img, post_id: VA_Data.post_id || 0, data_url: img.src },
+                success: function(res) { if (res.success) img.src = res.data.url; }
+            }));
+        });
+
+        $.when.apply($, uploads.length ? uploads : [$.Deferred().resolve()]).always(function(){
+            // Quill tartalom szinkronizálása a hidden textarea-ba submit előtt
+            $('#va-desc-hidden').val(quill.root.innerHTML);
+
+        var $form = $('#va-submit-form');
+        var formData = new FormData($form[0]);
 
         // Csak az új (File objektumos) képek feltöltése
         _files.forEach(function(item){
@@ -573,8 +744,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     window.va_toast('Hálózati hiba. Próbálja újra.', 'error');
                 }
             }
-        });
-    });
+        }); // $.ajax end
+        }); // $.when end
+    }); // submit end
 })(jQuery);
 }); // DOMContentLoaded
 </script>

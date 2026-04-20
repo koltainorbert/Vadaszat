@@ -81,6 +81,49 @@ class VA_User_Roles {
 
         // Boost sorrendezés a va_listing archívum/taxonómia oldalain
         add_filter( 'posts_clauses', [ __CLASS__, 'filter_posts_clauses' ], 10, 2 );
+
+        // Automatikus limit-érvényesítés bejelentkezett usereknél (naponta egyszer/user)
+        add_action( 'wp', [ __CLASS__, 'maybe_enforce_current_user_limits' ] );
+
+        // Ha bármi (admin, webhook, WC) frissíti a va_plan metát → azonnal enforce
+        add_action( 'update_user_meta', [ __CLASS__, 'on_plan_meta_updated' ], 10, 4 );
+        add_action( 'added_user_meta',  [ __CLASS__, 'on_plan_meta_updated' ], 10, 4 );
+
+        // Ha kredit jóváírás történik → felfüggesztett hirdetések visszaállítása
+        add_action( 'update_user_meta', [ __CLASS__, 'on_credits_meta_updated' ], 10, 4 );
+    }
+
+    /**
+     * Ha a va_plan user meta változik, azonnal enforce-olja a limitet.
+     * Ez elkapja az admin-mentést, webhookokat, WC-integrációt egyaránt.
+     */
+    public static function on_plan_meta_updated( int $meta_id, int $user_id, string $meta_key, mixed $meta_value ): void {
+        if ( $meta_key !== 'va_plan' ) return;
+        // Cache flush hogy az új plan érvényes legyen
+        self::flush_plan_cache();
+        delete_transient( 'va_enforce_ok_' . $user_id );
+        self::enforce_plan_limits( $user_id );
+    }
+
+    /**
+     * Ha a va_listing_credits user meta nő, enforce-olja a limitet (felold visszafelfüggesztetteket).
+     */
+    public static function on_credits_meta_updated( int $meta_id, int $user_id, string $meta_key, mixed $meta_value ): void {
+        if ( $meta_key !== 'va_listing_credits' ) return;
+        delete_transient( 'va_enforce_ok_' . $user_id );
+        self::enforce_plan_limits( $user_id );
+    }
+
+    /**
+     * Automatikus limit-érvényesítés bejelentkezett usereknél (naponta egyszer/user).
+     */
+    public static function maybe_enforce_current_user_limits(): void {
+        if ( ! is_user_logged_in() || is_admin() ) return;
+        $uid = get_current_user_id();
+        $key = 'va_enforce_ok_' . $uid;
+        if ( get_transient( $key ) ) return;
+        self::enforce_plan_limits( $uid );
+        set_transient( $key, 1, DAY_IN_SECONDS );
     }
 
     /* ══ Plan config – options overlay ════════════════════════ */
@@ -100,7 +143,9 @@ class VA_User_Roles {
             $override        = isset( $saved[ $slug ] ) && is_array( $saved[ $slug ] ) ? $saved[ $slug ] : [];
             $merged[ $slug ] = array_merge( $defaults, $override );
             // Típus kényszer
-            $merged[ $slug ]['monthly_limit']  = (int)  $merged[ $slug ]['monthly_limit'];
+            // Ha a mentett monthly_limit 0, de a default >0, a default marad (0 = "nem állítottam be")
+            $saved_limit = isset( $override['monthly_limit'] ) ? (int) $override['monthly_limit'] : -1;
+            $merged[ $slug ]['monthly_limit'] = ( $saved_limit > 0 ) ? $saved_limit : (int) $defaults['monthly_limit'];
             $merged[ $slug ]['boost_cooldown'] = (int)  $merged[ $slug ]['boost_cooldown'];
             $merged[ $slug ]['basis']          = in_array( $merged[ $slug ]['basis'], [ 'active', 'monthly' ], true )
                 ? $merged[ $slug ]['basis'] : $defaults['basis'];
@@ -373,6 +418,66 @@ class VA_User_Roles {
 
     /* ══ AJAX: Admin állítja a tervet ══════════════════════════ */
 
+    /**
+     * Csomaghoz illesztés: ha a felhasználónak több aktív hirdetése van mint a limit,
+     * a legrégebbieket felfüggeszti (private), NEM törli.
+     * A felfüggesztett hirdetéseken va_suspended_by_plan=1 meta van,
+     * hogy visszaállítható legyen ha újra megfelelő csomagot vesz.
+     *
+     * @return int Felfüggesztett hirdetések száma
+     */
+    public static function enforce_plan_limits( int $user_id ): int {
+        $plan = self::get_user_plan( $user_id );
+        $cfg  = self::get_plan_config( $plan, $user_id );
+
+        // Korlátlan plan → nincs mit felfüggeszteni
+        if ( $cfg['monthly_limit'] <= 0 ) {
+            return 0;
+        }
+
+        // Plan limit + megvásárolt kredit = összes engedélyezett aktív hirdetés
+        $purchased_credits = (int) get_user_meta( $user_id, 'va_listing_credits', true );
+        $limit = $cfg['monthly_limit'] + $purchased_credits;
+
+        // MINDEN hirdetés (aktiv és felfüggesztett) – legrégebbtől legújabbig
+        // Az ASC sorrend biztosítja hogy a legrégebbi ("igazi") hirdetések maradnak aktiv.
+        global $wpdb;
+        $posts = $wpdb->get_results( $wpdb->prepare(
+            "SELECT p.ID, p.post_title, p.post_status
+             FROM {$wpdb->posts} p
+             LEFT JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = 'va_suspended_by_plan'
+             WHERE p.post_type = 'va_listing'
+               AND p.post_author = %d
+               AND (
+                 p.post_status IN ('publish','pending')
+                 OR (p.post_status = 'private' AND pm.meta_value = '1')
+               )
+             ORDER BY p.post_date ASC
+             LIMIT 200",
+            $user_id
+        ) );
+
+        $suspended = 0;
+        foreach ( $posts as $i => $post ) {
+            if ( $i < $limit ) {
+                // Belül a limitben – ha korábban felfüggesztettük, visszaállítjuk
+                if ( get_post_meta( $post->ID, 'va_suspended_by_plan', true ) === '1' ) {
+                    wp_update_post( [ 'ID' => $post->ID, 'post_status' => 'publish' ] );
+                    delete_post_meta( $post->ID, 'va_suspended_by_plan' );
+                }
+            } else {
+                // Limit felett → felfüggesztés
+                if ( $post->post_status !== 'private' ) {
+                    wp_update_post( [ 'ID' => $post->ID, 'post_status' => 'private' ] );
+                    update_post_meta( $post->ID, 'va_suspended_by_plan', '1' );
+                    $suspended++;
+                }
+            }
+        }
+
+        return $suspended;
+    }
+
     public static function ajax_admin_set_plan(): void {
         if ( ! current_user_can( 'manage_options' ) ) {
             wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
@@ -414,13 +519,17 @@ class VA_User_Roles {
             }
         }
 
+        // Csomagváltás utáni limit érvényesítés (felesleges hirdetések felfüggesztése)
+        $suspended = self::enforce_plan_limits( $target_uid );
+
         $cfg = self::get_plan_config( $plan, $target_uid );
         wp_send_json_success( [
-            'message' => 'Terv sikeresen frissítve!',
-            'plan'    => $plan,
-            'label'   => $cfg['label'],
-            'icon'    => $cfg['icon'],
-            'color'   => $cfg['color'],
+            'message'   => 'Terv sikeresen frissítve!',
+            'plan'      => $plan,
+            'label'     => $cfg['label'],
+            'icon'      => $cfg['icon'],
+            'color'     => $cfg['color'],
+            'suspended' => $suspended,
         ] );
     }
 

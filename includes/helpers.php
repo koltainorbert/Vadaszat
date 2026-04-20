@@ -204,21 +204,40 @@ function va_user_watches( int $post_id ): bool {
 
 /* ── Felhasználó hirdetései ───────────────────────────── */
 function va_get_user_listings( int $user_id, string $status = 'any', int $per_page = 50, int $page = 1 ): array {
+    global $wpdb;
+
     $post_types = [ 'va_listing' ];
     if ( va_auctions_enabled() ) {
         $post_types[] = 'va_auction';
     }
 
-    return get_posts([
-        'post_type'      => $post_types,
-        'post_status'    => $status === 'any' ? [ 'publish', 'pending', 'draft', 'private' ] : $status,
-        'author'         => $user_id,
-        'posts_per_page' => $per_page,
-        'offset'         => ( $page - 1 ) * $per_page,
-        'orderby'        => 'date',
-        'order'          => 'DESC',
-        'no_found_rows'  => true,
-    ]);
+    // Direkt wpdb ID-lekérdezés – megkerüli a WP capability-szűrőt,
+    // hogy a felhasználó saját privát (felfüggesztett) hirdetéseit is lássa.
+    $statuses = ( $status === 'any' ) ? [ 'publish', 'pending', 'draft', 'private' ] : ( is_array( $status ) ? $status : [ $status ] );
+    $limit    = absint( $per_page );
+    $offset   = absint( ( $page - 1 ) * $per_page );
+
+    // Típusok és státuszok esc_sql()-lel védve, user_id és limit %d-vel
+    $type_in   = implode( ',', array_map( function( $t ) { return "'" . esc_sql( $t ) . "'"; }, $post_types ) );
+    $status_in = implode( ',', array_map( function( $s ) { return "'" . esc_sql( $s ) . "'"; }, $statuses ) );
+
+    // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+    $ids = $wpdb->get_col( $wpdb->prepare(
+        "SELECT ID FROM {$wpdb->posts}
+         WHERE post_type IN ($type_in)
+           AND post_status IN ($status_in)
+           AND post_author = %d
+         ORDER BY post_date DESC
+         LIMIT %d OFFSET %d",
+        $user_id,
+        $limit,
+        $offset
+    ) );
+
+    if ( empty( $ids ) ) return [];
+
+    // get_post() visszaad helyes WP_Post objektumot, amit a template vár
+    return array_values( array_filter( array_map( 'get_post', $ids ) ) );
 }
 
 /* ── Felhasználó watchlist-je ─────────────────────────── */

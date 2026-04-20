@@ -18,6 +18,7 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_apply_hf_preset', [ __CLASS__, 'handle_apply_hf_preset' ] );
         add_action( 'admin_post_va_apply_ap_preset',  [ __CLASS__, 'handle_apply_ap_preset'  ] );
         add_action( 'admin_post_va_apply_single_preset', [ __CLASS__, 'handle_apply_single_preset' ] );
+        add_action( 'admin_post_va_save_nav_items',   [ __CLASS__, 'handle_save_nav_items'   ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
@@ -42,6 +43,8 @@ class VA_Settings_Page {
             'va_auto_publish_listings' => '0',  // 0=jóváhagyás szükséges, 1=azonnal él
             'va_listing_validity_days' => 60,   // hirdetés lejárata (nap) feladáskor
             'va_max_images_per_listing' => 10,
+            'va_img_quality'            => 82,
+            'va_img_max_width'          => 1920,
             'va_require_phone'       => '1',
             'va_maintenance_mode'    => '0',
             'va_maintenance_msg'     => 'Az oldal karbantartás alatt van.',
@@ -195,6 +198,27 @@ class VA_Settings_Page {
             'va_weight_footer_title'       => '700',
             'va_weight_footer_link'        => '500',
 
+            // Hero badge színek
+            'va_color_hero_badge_bg'           => 'rgba(6,6,6,.56)',
+            'va_color_hero_badge_border'       => 'rgba(255,0,0,.55)',
+            'va_color_hero_badge_text'         => '#ffffff',
+
+            // Hero szöveg színek
+            'va_color_hero_title'              => '#ffffff',
+            'va_color_hero_sub'                => 'rgba(255,255,255,.80)',
+
+            // Hero primary gomb színek
+            'va_color_hero_btn_primary_bg'     => '#ff0000',
+            'va_color_hero_btn_primary_hover'  => '#cc0000',
+            'va_color_hero_btn_primary_text'   => '#ffffff',
+            'va_color_hero_btn_primary_glow'   => 'rgba(255,0,0,.45)',
+
+            // Hero ghost gomb színek
+            'va_color_hero_btn_ghost_bg'       => 'rgba(255,255,255,.08)',
+            'va_color_hero_btn_ghost_border'   => 'rgba(255,255,255,.22)',
+            'va_color_hero_btn_ghost_hover'    => 'rgba(255,255,255,.15)',
+            'va_color_hero_btn_ghost_text'     => '#ffffff',
+
             // Mobil skála (%)
             'va_mobile_factor_hero'        => 100,
             'va_mobile_factor_header'      => 100,
@@ -238,6 +262,8 @@ class VA_Settings_Page {
             'va_hf_header_btn_pad_x'               => 20,
             'va_hf_header_btn_glow_alpha'          => '0.40',
             'va_hf_header_btn_glow_color'          => 'rgba(255,0,0,.52)',
+            'va_color_header_submit_hover_bg'          => '#cc0000',
+            'va_color_header_submit_hover_text'        => '#ffffff',
             'va_hf_header_user_border_alpha'       => '0.12',
             'va_hf_header_user_bg_alpha'           => '0.06',
             'va_hf_header_mobile_show_search'      => '0',
@@ -333,6 +359,8 @@ class VA_Settings_Page {
             'va_hf_header_btn_pad_x',
             'va_hf_header_btn_glow_alpha',
             'va_hf_header_btn_glow_color',
+            'va_color_header_submit_hover_bg',
+            'va_color_header_submit_hover_text',
             'va_hf_header_user_border_alpha',
             'va_hf_header_user_bg_alpha',
             'va_hf_header_mobile_show_search',
@@ -555,12 +583,99 @@ class VA_Settings_Page {
 
         /* Aukciók */
         $auction_opts = [
-            'va_default_min_bid_step' => 500,
-            'va_auction_fee_pct'      => 0,
+            'va_default_min_bid_step'  => 500,
+            'va_auction_fee_pct'       => 0,
+            'va_email_outbid_subject'  => 'Túllicitáltak – {title}',
+            'va_email_outbid_heading'  => 'Túllicitáltak téged!',
+            'va_email_outbid_body'     => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Túllicitáltak a <strong>{title}</strong> aukción.</p>\n<p>Aktuális licit: <strong>{amount} Ft</strong></p>",
+            'va_email_outbid_btn'      => 'Licitáljon újra',
+            'va_email_winner_subject'  => 'Nyertél az aukción! – {title}',
+            'va_email_winner_heading'  => '🏆 Nyertél az aukción!',
+            'va_email_winner_body'     => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Gratulálunk! Nyertél a <strong>{title}</strong> aukción.</p>\n<p>Nyerő licit: <strong>{amount} Ft</strong></p>\n<p>A hirdetés feladójával hamarosan felveszi Önnel a kapcsolatot.</p>",
+            'va_email_winner_btn'      => 'Aukció megtekintése',
+            'va_email_seller_subject'  => 'Aukciód lezárult – {title}',
+            'va_email_seller_heading'  => 'Aukciód lezárult!',
+            'va_email_seller_body'     => "<p>Kedves <strong>{seller_name}</strong>,</p>\n<p>Lezárult a <strong>{title}</strong> aukciód.</p>\n<p>Nyerő licit: <strong>{amount} Ft</strong></p>\n<p>Nyertes: <strong>{winner_name}</strong> (<a href=\"mailto:{winner_email}\" style=\"color:#cc0000;\">{winner_email}</a>)</p>\n<p>Kérjük, vegye fel a kapcsolatot a nyertessel.</p>",
+            'va_email_seller_btn'      => 'Aukció megtekintése',
         ];
         foreach ( $auction_opts as $key => $default ) {
             self::$defaults[ $key ] = $default;
-            register_setting( 'va_auction_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            register_setting( 'va_auction_settings', $key, [ 'sanitize_callback' => 'wp_kses_post' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* Rendszer emailek */
+        $email_opts = [
+            'va_email_reg_enabled'        => '1',
+            'va_email_reg_subject'        => 'Üdvözlünk a {site_name} oldalon!',
+            'va_email_reg_heading'        => 'Sikeres regisztráció!',
+            'va_email_reg_body'           => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Sikeresen regisztráltál a <strong>{site_name}</strong> oldalra.</p>\n<p>Felhasználóneved: <strong>{username}</strong></p>\n<p>Jó hirdetezést!</p>",
+            'va_email_reg_btn'            => 'Fiókja megtekintése',
+            'va_email_listing_enabled'    => '1',
+            'va_email_listing_subject'    => 'Hirdetésed megjelent – {title}',
+            'va_email_listing_heading'    => 'Hirdetésed él!',
+            'va_email_listing_body'       => "<p>Kedves <strong>{name}</strong>,</p>\n<p>A <strong>{title}</strong> hirdetésed jóváhagyásra került és most élőben elérhető.</p>",
+            'va_email_listing_btn'        => 'Hirdetés megtekintése',
+            'va_email_del_listing_enabled'=> '1',
+            'va_email_del_listing_subject'=> 'Hirdetésed törölve – {title}',
+            'va_email_del_listing_heading'=> 'Hirdetésed törölve lett',
+            'va_email_del_listing_body'   => "<p>Kedves <strong>{name}</strong>,</p>\n<p>A <strong>{title}</strong> hirdetésedet sikeresen törölted.</p>",
+            'va_email_del_listing_btn'    => '',
+            'va_email_del_account_enabled'=> '1',
+            'va_email_del_account_subject'=> 'Fiókod törölve – {site_name}',
+            'va_email_del_account_heading'=> 'Fiókod törölve lett',
+            'va_email_del_account_body'   => "<p>Kedves <strong>{name}</strong>,</p>\n<p>Fiókod és összes adatod törölve lett a <strong>{site_name}</strong> rendszerből.</p>\n<p>Reméljük, hogy visszatérsz hozzánk!</p>",
+            'va_email_del_account_btn'    => '',
+        ];
+        foreach ( $email_opts as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_email_settings', $key, [ 'sanitize_callback' => 'wp_kses_post' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* Árkártyák (kredit vásárlás oldal) */
+        $card_int_keys = [];
+        for ( $n = 1; $n <= 4; $n++ ) {
+            $card_int_keys[] = "va_pc_{$n}_qty";
+            $card_int_keys[] = "va_pc_{$n}_price";
+        }
+        $default_card_qtys  = [ 1 => 1, 2 => 3, 3 => 5, 4 => 10 ];
+        $default_card_labels= [ 1 => 'Basic', 2 => 'Silver', 3 => 'Gold', 4 => 'Platinum' ];
+        $default_card_slugs = [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ];
+        $default_card_tags  = [ 1 => 'Belépő', 2 => 'Népszerű', 3 => 'Profi', 4 => 'Prémium' ];
+        $default_card_descs = [
+            1 => 'Ingyenes alap csomag minden regisztrált felhasználónak.',
+            2 => '3 hirdetési kredit kedvezményes áron.',
+            3 => '5 kredit – legjobb érték a profik számára.',
+            4 => '10 kredit – maximális értékcsomag vadász profiknak.',
+        ];
+        $default_card_prices = [ 1 => 0, 2 => 1791, 3 => 1592, 4 => 1393 ];
+        $default_card_badges = [ 1 => '', 2 => '–10%', 3 => '–20%', 4 => '–30%' ];
+        $default_card_themes = [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ];
+
+        $price_card_opts = [
+            'va_pc_eyebrow'  => 'Átlátható csomagok',
+            'va_pc_title'    => 'Rang Alapú Vásárlás',
+            'va_pc_subtitle' => 'Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.',
+        ];
+        for ( $n = 1; $n <= 4; $n++ ) {
+            $price_card_opts[ "va_pc_{$n}_enabled"   ] = '1';
+            $price_card_opts[ "va_pc_{$n}_label"     ] = $default_card_labels[ $n ];
+            $price_card_opts[ "va_pc_{$n}_plan_slug" ] = $default_card_slugs[ $n ];
+            $price_card_opts[ "va_pc_{$n}_tag"       ] = $default_card_tags[ $n ];
+            $price_card_opts[ "va_pc_{$n}_desc"      ] = $default_card_descs[ $n ];
+            $price_card_opts[ "va_pc_{$n}_qty"       ] = (string) $default_card_qtys[ $n ];
+            $price_card_opts[ "va_pc_{$n}_price"     ] = (string) $default_card_prices[ $n ];
+            $price_card_opts[ "va_pc_{$n}_badge"     ] = $default_card_badges[ $n ];
+            $price_card_opts[ "va_pc_{$n}_featured"  ] = ( $n === 3 ) ? '1' : '0';
+            $price_card_opts[ "va_pc_{$n}_free"      ] = ( $n === 1 ) ? '1' : '0';
+            $price_card_opts[ "va_pc_{$n}_btn_text"  ] = ( $n === 1 ) ? 'Mindenki számára elérhető' : 'Vásárlás →';
+            $price_card_opts[ "va_pc_{$n}_theme"     ] = $default_card_themes[ $n ];
+        }
+        foreach ( $price_card_opts as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            $sanitize = in_array( $key, $card_int_keys, true ) ? 'absint' : 'sanitize_text_field';
+            register_setting( 'va_price_cards_settings', $key, [ 'sanitize_callback' => $sanitize ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
@@ -691,6 +806,8 @@ class VA_Settings_Page {
                     <?php self::field_num(   'va_listings_per_page',    'Hirdetés / oldal', 5, 100 ); ?>
                     <?php self::field_num(   'va_listing_validity_days','Hirdetés érvényessége (nap)', 1, 365 ); ?>
                     <?php self::field_num(   'va_max_images_per_listing','Max. képek száma hirdetésenként', 1, 20 ); ?>
+                    <?php self::field_num(   'va_img_quality',           'Kép JPEG minőség (10–100, ajnl.: 82)', 10, 100 ); ?>
+                    <?php self::field_num(   'va_img_max_width',         'Kép max szélesség px (ajnl.: 1920)', 400, 4000 ); ?>
                     <?php self::field_toggle('va_auto_publish_listings', 'Hirdetések azonnali megjelenés (jóváhagyás nélkül)' ); ?>
                     <?php self::field_toggle('va_require_phone',         'Telefonszám kötelező' ); ?>
                     <?php self::field_toggle('va_maintenance_mode',      'Karbantartási mód' ); ?>
@@ -846,6 +963,23 @@ class VA_Settings_Page {
                     <?php self::field_color( 'va_color_content_links',    'Tartalom linkek' ); ?>
                 </table>
 
+                <h2>Hero badge és gombok színei</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_title',            'Hero cím szöveg szín' ); ?>
+                    <?php self::field_text(  'va_color_hero_sub',              'Hero alcím szöveg szín (rgba vagy hex)' ); ?>
+                    <?php self::field_text(  'va_color_hero_badge_bg',          'Hero badge háttér (rgba vagy hex)' ); ?>
+                    <?php self::field_text(  'va_color_hero_badge_border',       'Hero badge keret szín (rgba vagy hex)' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_text',         'Hero badge szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_bg',     'Primary gomb háttér' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_hover',  'Primary gomb hover háttér' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_text',   'Primary gomb szöveg szín' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_primary_glow',   'Primary gomb glow szín (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_bg',       'Ghost gomb háttér (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_border',   'Ghost gomb keret szín (rgba)' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_ghost_hover',    'Ghost gomb hover háttér (rgba)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_text',     'Ghost gomb szöveg szín' ); ?>
+                </table>
+
                 <h2>Hero szöveg méretek (összes oldal)</h2>
                 <table class="form-table">
                     <?php self::field_num( 'va_size_home_hero_badge',    'Főoldal hero badge méret (px)', 8, 32 ); ?>
@@ -995,6 +1129,8 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_hf_header_btn_pad_y',           'Header gombok függőleges padding (px)', 4, 20 ); ?>
                     <?php self::field_num( 'va_hf_header_btn_pad_x',           'Header gombok vízszintes padding (px)', 8, 40 ); ?>
                     <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Piros gomb glow opacitás (0-1)', 0, 1, 0.01 ); ?>
+                    <?php self::field_color( 'va_color_header_submit_hover_bg',   'CTA gomb hover háttér' ); ?>
+                    <?php self::field_color( 'va_color_header_submit_hover_text', 'CTA gomb hover szöveg szín' ); ?>
                     <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Felhasználó gomb keret opacitás (0-1)', 0, 1, 0.01 ); ?>
                     <?php self::field_decimal( 'va_hf_header_user_bg_alpha',   'Felhasználó gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
                     <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső megjelenjen mobilon is' ); ?>
@@ -1057,6 +1193,110 @@ class VA_Settings_Page {
 
                 <?php submit_button( 'Fejléc + Lábléc mentése' ); ?>
             </form>
+
+            <!-- ═══ Nav gombok szerkesztő (külön form, JSON mentés) ═══ -->
+            <hr style="margin:32px 0;">
+            <h2>🔗 Navigációs gombok szerkesztése</h2>
+            <p class="description">Rendezd, kapcsold ki/be, vagy adj hozzá új menüpontot. A sorrend drag &amp; drop-pal állítható.</p>
+            <?php
+            $nav_json = get_option( 'va_nav_items_json', '' );
+            $nav_items_saved = [];
+            if ( $nav_json ) {
+                $decoded = json_decode( $nav_json, true );
+                if ( is_array( $decoded ) ) $nav_items_saved = $decoded;
+            }
+            if ( empty( $nav_items_saved ) ) {
+                $nav_items_saved = [
+                    [ 'label' => 'Hirdetések', 'url' => '/va-hirdetes-kereses', 'enabled' => true ],
+                    [ 'label' => 'Kategóriák', 'url' => '/kategoria',           'enabled' => true ],
+                    [ 'label' => 'Kapcsolat',  'url' => '/kapcsolat',           'enabled' => true ],
+                ];
+            }
+            if ( isset( $_GET['va_nav_saved'] ) ): ?>
+                <div class="notice notice-success is-dismissible"><p>Navigációs gombok elmentve.</p></div>
+            <?php endif; ?>
+            <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" id="va-nav-form">
+                <?php wp_nonce_field( 'va_save_nav_items', 'va_nav_nonce' ); ?>
+                <input type="hidden" name="action" value="va_save_nav_items">
+                <input type="hidden" name="va_nav_json" id="va-nav-json-input" value="<?php echo esc_attr( $nav_json ?: wp_json_encode( $nav_items_saved ) ); ?>">
+
+                <div id="va-nav-list" style="max-width:700px;margin-bottom:16px;">
+                    <?php foreach ( $nav_items_saved as $idx => $item ): ?>
+                    <div class="va-nav-row" style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;" draggable="true">
+                        <span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>
+                        <input type="checkbox" class="va-nav-enabled" <?php checked( $item['enabled'] ?? true ); ?> title="Megjelenítés">
+                        <input type="text" class="va-nav-label regular-text" value="<?php echo esc_attr( $item['label'] ); ?>" placeholder="Felirat" style="width:200px;">
+                        <input type="text" class="va-nav-url regular-text" value="<?php echo esc_attr( $item['url'] ); ?>" placeholder="/url vagy https://..." style="flex:1;">
+                        <button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>
+                    </div>
+                    <?php endforeach; ?>
+                </div>
+                <button type="button" class="button" id="va-nav-add">+ Új gomb hozzáadása</button>
+                &nbsp;
+                <?php submit_button( 'Navigáció mentése', 'primary', 'va-nav-submit', false ); ?>
+            </form>
+            <script>
+            (function(){
+                var list = document.getElementById('va-nav-list');
+                var jsonInput = document.getElementById('va-nav-json-input');
+
+                function collectJSON() {
+                    var rows = list.querySelectorAll('.va-nav-row');
+                    var items = [];
+                    rows.forEach(function(row) {
+                        items.push({
+                            label:   row.querySelector('.va-nav-label').value.trim(),
+                            url:     row.querySelector('.va-nav-url').value.trim(),
+                            enabled: row.querySelector('.va-nav-enabled').checked
+                        });
+                    });
+                    jsonInput.value = JSON.stringify(items);
+                }
+
+                document.getElementById('va-nav-form').addEventListener('submit', collectJSON);
+
+                document.getElementById('va-nav-add').addEventListener('click', function(){
+                    var div = document.createElement('div');
+                    div.className = 'va-nav-row';
+                    div.draggable = true;
+                    div.style.cssText = 'display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;';
+                    div.innerHTML = '<span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>'
+                        + '<input type="checkbox" class="va-nav-enabled" checked title="Megjelenítés">'
+                        + '<input type="text" class="va-nav-label regular-text" value="" placeholder="Felirat" style="width:200px;">'
+                        + '<input type="text" class="va-nav-url regular-text" value="" placeholder="/url vagy https://..." style="flex:1;">'
+                        + '<button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>';
+                    list.appendChild(div);
+                    bindDel(div);
+                    bindDrag(div);
+                });
+
+                function bindDel(row) {
+                    row.querySelector('.va-nav-del').addEventListener('click', function(){
+                        row.remove();
+                    });
+                }
+                function bindDrag(row) {
+                    row.addEventListener('dragstart', function(e) {
+                        e.dataTransfer.effectAllowed = 'move';
+                        row.classList.add('va-nav-dragging');
+                        window._vaDragSrc = row;
+                    });
+                    row.addEventListener('dragend', function() { row.classList.remove('va-nav-dragging'); });
+                    row.addEventListener('dragover', function(e) {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        var src = window._vaDragSrc;
+                        if (src && src !== row) {
+                            var rect = row.getBoundingClientRect();
+                            var mid  = rect.top + rect.height / 2;
+                            if (e.clientY < mid) list.insertBefore(src, row);
+                            else list.insertBefore(src, row.nextSibling);
+                        }
+                    });
+                }
+                list.querySelectorAll('.va-nav-row').forEach(function(r){ bindDel(r); bindDrag(r); });
+            })();
+            </script>
         </div>
         <?php
     }
@@ -1648,16 +1888,143 @@ class VA_Settings_Page {
     /* ══ Aukció beállítások ═══════════════════════════════ */
     public static function render_auctions() {
         if ( ! current_user_can( 'manage_options' ) ) return;
+        $vars_outbid  = '{name}, {title}, {amount}';
+        $vars_winner  = '{name}, {title}, {amount}';
+        $vars_seller  = '{seller_name}, {title}, {amount}, {winner_name}, {winner_email}';
         ?>
         <div class="wrap va-admin-wrap">
             <h1>🔨 VadászApró – Aukció beállítások</h1>
             <?php settings_errors( 'va_auction_settings' ); ?>
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_auction_settings' ); ?>
+
+                <h2>Általános</h2>
                 <table class="form-table">
                     <?php self::field_num( 'va_default_min_bid_step', 'Alapértelmezett minimum licitlépés (Ft)', 1, 999999 ); ?>
                     <?php self::field_num( 'va_auction_fee_pct',       'Aukciós jutalék (%)', 0, 100 ); ?>
                 </table>
+
+                <h2 style="margin-top:32px;">📧 Email sablonok</h2>
+                <p style="color:#aaa;margin-bottom:24px;">
+                    A mezőkben HTML is használható. Az alábbi változókat a rendszer automatikusan behelyettesíti.
+                </p>
+
+                <h3>Túllicitálás értesítő (korábbi licitálónak)</h3>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code><?php echo esc_html( $vars_outbid ); ?></code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_outbid_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_outbid_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_outbid_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_outbid_btn',     'CTA gomb felirata' ); ?>
+                </table>
+
+                <h3 style="margin-top:24px;">Nyertes értesítő (nyertesnek)</h3>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code><?php echo esc_html( $vars_winner ); ?></code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_winner_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_winner_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_winner_body',    'Email törzs (HTML)', '', 7 ); ?>
+                    <?php self::field_text(    'va_email_winner_btn',     'CTA gomb felirata' ); ?>
+                </table>
+
+                <h3 style="margin-top:24px;">Aukció lezárult értesítő (eladónak)</h3>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code><?php echo esc_html( $vars_seller ); ?></code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_seller_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_seller_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_seller_body',    'Email törzs (HTML)', '', 8 ); ?>
+                    <?php self::field_text(    'va_email_seller_btn',     'CTA gomb felirata' ); ?>
+                </table>
+
+                <?php submit_button( 'Mentés' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
+    /* ══ Rendszer email sablonok ════════════════════════════════ */
+    public static function render_emails(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>📧 VadászApró – Email sablonok</h1>
+            <?php settings_errors( 'va_email_settings' ); ?>
+            <p style="color:#aaa;margin-bottom:4px;">
+                HTML használható a törzsben. A <code>{változók}</code> automatikusan behelyettesítésre kerülnek.
+                Ha a CTA gomb feliratát üresen hagyod, nem jelenik meg gomb.
+            </p>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_email_settings' ); ?>
+
+                <!-- Regisztráció -->
+                <h2 style="margin-top:28px; display:flex; align-items:center; gap:10px;">
+                    Regisztrációs levél
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_reg_enabled" value="0">
+                        <input type="checkbox" name="va_email_reg_enabled" value="1" <?php checked( get_option('va_email_reg_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {username}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_reg_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_reg_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_reg_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_reg_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
+                <!-- Hirdetés megjelent -->
+                <h2 style="margin-top:32px; display:flex; align-items:center; gap:10px;">
+                    Hirdetés megjelent értesítő
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_listing_enabled" value="0">
+                        <input type="checkbox" name="va_email_listing_enabled" value="1" <?php checked( get_option('va_email_listing_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {title}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_listing_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_listing_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_listing_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_listing_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
+                <!-- Hirdetés törölve -->
+                <h2 style="margin-top:32px; display:flex; align-items:center; gap:10px;">
+                    Hirdetés törlése értesítő
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_del_listing_enabled" value="0">
+                        <input type="checkbox" name="va_email_del_listing_enabled" value="1" <?php checked( get_option('va_email_del_listing_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {title}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_del_listing_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_del_listing_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_del_listing_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_del_listing_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
+                <!-- Fiók törölve -->
+                <h2 style="margin-top:32px; display:flex; align-items:center; gap:10px;">
+                    Fiók törlése értesítő
+                    <label style="font-size:13px;font-weight:400;display:flex;align-items:center;gap:5px;">
+                        <input type="hidden" name="va_email_del_account_enabled" value="0">
+                        <input type="checkbox" name="va_email_del_account_enabled" value="1" <?php checked( get_option('va_email_del_account_enabled','1'), '1' ); ?>>
+                        Bekapcsolva
+                    </label>
+                </h2>
+                <p class="description" style="margin-bottom:8px;">Elérhető változók: <code>{name}, {username}, {site_name}</code></p>
+                <table class="form-table">
+                    <?php self::field_text(    'va_email_del_account_subject', 'Tárgy' ); ?>
+                    <?php self::field_text(    'va_email_del_account_heading', 'Email fejléc szöveg' ); ?>
+                    <?php self::field_textarea('va_email_del_account_body',    'Email törzs (HTML)', '', 6 ); ?>
+                    <?php self::field_text(    'va_email_del_account_btn',     'CTA gomb felirata (üres = nincs gomb)' ); ?>
+                </table>
+
                 <?php submit_button( 'Mentés' ); ?>
             </form>
         </div>
@@ -1999,15 +2366,13 @@ class VA_Settings_Page {
                     .then(function(res){
                         btn.disabled = false;
                         if(res.success){
-                            if(status) { status.textContent = '✅ Mentve!'; status.style.color = '#00c850'; }
-                            // Badge frissítés
-                            var row   = btn.closest('tr.va-upm-row');
-                            var badge = row ? row.querySelector('.va-upm-plan-badge') : null;
-                            if(badge && res.data){
-                                badge.textContent = res.data.icon + ' ' + res.data.label;
-                                badge.style.setProperty('--pc', res.data.color);
+                            var msg = '✅ Mentve!';
+                            if(res.data && res.data.suspended > 0){
+                                msg += ' – ' + res.data.suspended + ' hirdetés felfüggesztve (limit felett).';
                             }
-                            setTimeout(function(){ if(ed) ed.style.display = 'none'; }, 1200);
+                            if(status) { status.textContent = msg; status.style.color = '#00c850'; }
+                            // Oldal újratöltés 1.5mp után – azonnal látszik minden változás
+                            setTimeout(function(){ window.location.reload(); }, 1500);
                         } else {
                             if(status) { status.textContent = '❌ ' + (res.data ? res.data.message : 'Hiba'); status.style.color = '#ff4444'; }
                         }
@@ -2641,15 +3006,24 @@ class VA_Settings_Page {
 
             <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
                 <h2>1) Export összes beállítás</h2>
-                <p>JSON fájl letöltése, amit másik oldalon vissza tudsz importálni. Opcionálisan teljes migrációs adatokkal (taxonómia + fix oldalak).</p>
+                <p>JSON fájl letöltése, amit friss WordPress telepítésen vissza tudsz importálni — <strong>mindent tartalmaz</strong>.</p>
+                <table class="widefat" style="margin-bottom:14px;">
+                    <thead><tr><th>Mit exportál</th><th>Mit jelent</th></tr></thead>
+                    <tbody>
+                        <tr><td>✅ Összes <code>va_*</code> opció</td><td>Plan limitek (Silver=5, Gold=10 stb.), admin panel színek, általános beállítások, hirdetési limitek, árak, minden</td></tr>
+                        <tr><td>✅ Taxonómiák (opcionális)</td><td>Kategóriák, megyék, állapot értékek — slug + szülő-gyerek kapcsolatok</td></tr>
+                        <tr><td>✅ Fix oldalak (opcionális)</td><td>Hirdetés feladás, bejelentkezés, regisztráció, fiók, kredit vásárlás, ASZF stb. oldalak tartalma</td></tr>
+                    </tbody>
+                </table>
+                <p style="color:#888;font-size:12px;">⚠ Nem exportál: hirdetések, felhasználók, feltöltött képek (ezek az adatbázisban vannak).</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
                     <input type="hidden" name="action" value="va_export_settings">
                     <?php wp_nonce_field( 'va_export_settings' ); ?>
                     <p>
-                        <label><input type="checkbox" name="va_export_taxonomies" value="1" checked> Taxonómiák exportálása is (kategória, megye, állapot)</label><br>
-                        <label><input type="checkbox" name="va_export_pages" value="1" checked> Fix oldalak exportálása is (slug + tartalom)</label>
+                        <label><input type="checkbox" name="va_export_taxonomies" value="1" checked> <strong>Taxonómiák exportálása is</strong> (kategória, megye, állapot)</label><br>
+                        <label><input type="checkbox" name="va_export_pages" value="1" checked> <strong>Fix oldalak exportálása is</strong> (slug + shortcode tartalom)</label>
                     </p>
-                    <?php submit_button( 'Összes beállítás exportálása', 'primary', 'submit', false ); ?>
+                    <?php submit_button( '⬇ Teljes konfiguráció exportálása (.json)', 'primary', 'submit', false ); ?>
                 </form>
             </div>
 
@@ -2791,6 +3165,32 @@ class VA_Settings_Page {
 
         $all_after = self::get_all_va_options();
         wp_safe_redirect( add_query_arg( [ 'va_tools_msg' => 'reset_ok', 'count' => count( $all_after ) ], admin_url( 'admin.php?page=vadaszapro-tools' ) ) );
+        exit;
+    }
+
+    public static function handle_save_nav_items(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
+        check_admin_referer( 'va_save_nav_items', 'va_nav_nonce' );
+
+        $raw = wp_unslash( $_POST['va_nav_json'] ?? '' );
+        $decoded = json_decode( $raw, true );
+        if ( ! is_array( $decoded ) ) $decoded = [];
+
+        $clean = [];
+        foreach ( $decoded as $item ) {
+            if ( ! is_array( $item ) ) continue;
+            $label = sanitize_text_field( (string) ( $item['label'] ?? '' ) );
+            $url   = sanitize_text_field( (string) ( $item['url']   ?? '' ) );
+            if ( $label === '' ) continue;
+            $clean[] = [
+                'label'   => $label,
+                'url'     => $url,
+                'enabled' => ! empty( $item['enabled'] ),
+            ];
+        }
+
+        update_option( 'va_nav_items_json', wp_json_encode( $clean, JSON_UNESCAPED_UNICODE ) );
+        wp_safe_redirect( add_query_arg( 'va_nav_saved', '1', admin_url( 'admin.php?page=vadaszapro-header-footer' ) ) );
         exit;
     }
 
@@ -3345,6 +3745,7 @@ class VA_Settings_Page {
             'va-regisztracio',
             'va-fiok',
             'va-aukciok',
+            'va-kredit-vasarlas',
             'aszf',
             'adatvedelmi-nyilatkozat',
             'sugo',
@@ -3527,6 +3928,14 @@ class VA_Settings_Page {
     private static function field_toggle( string $key, string $label ): void {
         $val = (string) self::get_display_option( $key, '0' );
         echo "<tr><th>{$label}</th><td><input type=\"hidden\" name=\"{$key}\" value=\"0\"><label class=\"va-toggle\"><input type=\"checkbox\" name=\"{$key}\" value=\"1\"" . checked( $val, '1', false ) . "><span class=\"va-toggle-slider\"></span></label></td></tr>";
+    }
+
+    private static function field_textarea( string $key, string $label, string $desc = '', int $rows = 6 ): void {
+        $val = esc_textarea( (string) self::get_display_option( $key, '' ) );
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
+        echo "<textarea id=\"{$key}\" name=\"{$key}\" rows=\"{$rows}\" class=\"large-text code\" style=\"font-size:13px;line-height:1.6;\">{$val}</textarea>";
+        if ( $desc ) echo "<p class=\"description\">{$desc}</p>";
+        echo "</td></tr>";
     }
 
     public static function render_single_designer(): void {
@@ -3818,6 +4227,286 @@ class VA_Settings_Page {
                 </div>
             </div>
         </div>
+        <?php
+    }
+
+    /* ══ Árkártyák szerkesztő ════════════════════════════════════ */
+    public static function render_price_cards(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+
+        $g = static fn( string $k, string $d = '' ) => (string) ( get_option( $k, $d ) ?: $d );
+        $gi = static fn( string $k, int $d = 0 ) => (int) ( get_option( $k, $d ) ?: $d );
+
+        $card_defaults = [
+            'labels'     => [ 1 => 'Basic', 2 => 'Silver', 3 => 'Gold', 4 => 'Platinum' ],
+            'slugs'      => [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ],
+            'tags'       => [ 1 => 'Belépő', 2 => 'Népszerű', 3 => 'Profi', 4 => 'Prémium' ],
+            'descs'      => [ 1 => 'Ingyenes alap csomag minden regisztrált felhasználónak.', 2 => '3 hirdetési kredit kedvezményes áron.', 3 => '5 kredit – legjobb érték a profik számára.', 4 => '10 kredit – maximális értékcsomag vadász profiknak.' ],
+            'qtys'       => [ 1 => 1, 2 => 3, 3 => 5, 4 => 10 ],
+            'prices'     => [ 1 => 0, 2 => 1791, 3 => 1592, 4 => 1393 ],
+            'badges'     => [ 1 => '', 2 => '–10%', 3 => '–20%', 4 => '–30%' ],
+            'themes'     => [ 1 => 'basic', 2 => 'silver', 3 => 'gold', 4 => 'platinum' ],
+            'btns'       => [ 1 => 'Mindenki számára elérhető', 2 => 'Vásárlás →', 3 => 'Vásárlás →', 4 => 'Vásárlás →' ],
+        ];
+
+        $theme_colors = [
+            'basic'    => [ 'accent' => '#6b7280', 'glow' => 'rgba(107,114,128,.25)', 'gradient' => 'linear-gradient(135deg,#1a1a1a,#111)' ],
+            'silver'   => [ 'accent' => '#94a3b8', 'glow' => 'rgba(148,163,184,.3)',  'gradient' => 'linear-gradient(135deg,#1e2a35,#111827)' ],
+            'gold'     => [ 'accent' => '#f59e0b', 'glow' => 'rgba(245,158,11,.35)',  'gradient' => 'linear-gradient(135deg,#2a1f0a,#1a1200)' ],
+            'platinum' => [ 'accent' => '#cc0000', 'glow' => 'rgba(204,0,0,.35)',     'gradient' => 'linear-gradient(135deg,#2a0a0a,#1a0000)' ],
+        ];
+
+        ?>
+        <style>
+        .va-pk-wrap { max-width:1400px; }
+        .va-pk-hero { background:linear-gradient(135deg,rgba(204,0,0,.08),rgba(0,0,0,0)),rgba(14,14,18,.95); border:1px solid rgba(255,255,255,.08); border-radius:16px; padding:28px 32px; margin-bottom:28px; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+        .va-pk-hero__text h1 { margin:0 0 6px; font-size:22px; color:#fff; font-weight:700; }
+        .va-pk-hero__text p  { margin:0; color:rgba(255,255,255,.5); font-size:13px; }
+        .va-pk-hero-section { background:rgba(14,14,18,.7); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:20px 24px; margin-bottom:24px; }
+        .va-pk-hero-section h2 { margin:0 0 16px; font-size:15px; color:#fff; font-weight:600; display:flex; align-items:center; gap:8px; }
+        .va-pk-hero-fields { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+        .va-pk-field { display:flex; flex-direction:column; gap:5px; }
+        .va-pk-field label { font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase; color:rgba(255,255,255,.45); }
+        .va-pk-field input, .va-pk-field textarea { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); border-radius:8px; padding:9px 12px; color:#e8e8f0; font-size:13px; width:100%; box-sizing:border-box; transition:border-color .15s; }
+        .va-pk-field input:focus, .va-pk-field textarea:focus { border-color:rgba(204,0,0,.6); outline:none; box-shadow:0 0 0 3px rgba(204,0,0,.1); }
+        .va-pk-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+        @media(max-width:1200px) { .va-pk-grid { grid-template-columns:repeat(2,1fr); } }
+        @media(max-width:700px)  { .va-pk-grid { grid-template-columns:1fr; } }
+        .va-pk-card { border-radius:16px; border:1px solid rgba(255,255,255,.1); overflow:hidden; transition:box-shadow .2s; }
+        .va-pk-card--featured { border-color:rgba(245,158,11,.4); }
+        .va-pk-card__header { padding:16px 16px 12px; position:relative; }
+        .va-pk-card__badge-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+        .va-pk-card__badge { font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:3px 8px; border-radius:20px; background:rgba(255,255,255,.08); color:rgba(255,255,255,.5); }
+        .va-pk-card__badge--tag { background:rgba(255,255,255,.1); color:#e8e8f0; }
+        .va-pk-card__enable-row { display:flex; align-items:center; justify-content:space-between; padding:10px 16px; background:rgba(0,0,0,.2); border-top:1px solid rgba(255,255,255,.06); }
+        .va-pk-card__enable-label { font-size:11px; color:rgba(255,255,255,.4); font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
+        .va-pk-toggle { position:relative; width:36px; height:20px; flex-shrink:0; }
+        .va-pk-toggle input { opacity:0; width:0; height:0; position:absolute; }
+        .va-pk-toggle__track { position:absolute; inset:0; border-radius:20px; background:rgba(255,255,255,.1); cursor:pointer; transition:background .15s; }
+        .va-pk-toggle input:checked+.va-pk-toggle__track { background:#cc0000; }
+        .va-pk-toggle__track::after { content:''; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .15s; }
+        .va-pk-toggle input:checked+.va-pk-toggle__track::after { transform:translateX(16px); }
+        .va-pk-toggle-row { display:flex; align-items:center; gap:8px; padding:4px 0; }
+        .va-pk-toggle-text { font-size:12px; color:rgba(255,255,255,.45); font-weight:500; text-transform:none; letter-spacing:0; }
+        .va-pk-card__fields { padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px; }
+        .va-pk-card__field-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+        .va-pk-card__field-row--3 { grid-template-columns:1fr 1fr 1fr; }
+        .va-pk-card__price-preview { text-align:center; padding:12px 0; }
+        .va-pk-card__price-preview .total { font-size:26px; font-weight:800; color:#fff; }
+        .va-pk-card__price-preview .unit  { font-size:12px; color:rgba(255,255,255,.4); margin-top:2px; }
+        .va-pk-card__price-preview .free-tag { font-size:16px; font-weight:700; color:#4ade80; }
+        .va-pk-save-bar { background:rgba(14,14,18,.95); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px 24px; display:flex; align-items:center; gap:14px; }
+        .va-pk-save-bar .button-primary { background:#cc0000 !important; border-color:#cc0000 !important; color:#fff !important; padding:8px 24px !important; height:auto !important; border-radius:8px !important; font-weight:600 !important; font-size:13px !important; }
+        .va-pk-save-bar .button-primary:hover { background:#aa0000 !important; border-color:#aa0000 !important; }
+        .va-pk-note { font-size:12px; color:rgba(255,255,255,.35); }
+        </style>
+
+        <div class="wrap va-admin-wrap va-pk-wrap">
+            <div class="va-pk-hero">
+                <div class="va-pk-hero__text">
+                    <h1>💳 Árkártyák szerkesztő</h1>
+                    <p>Szerkeszd az árkártyák megjelenését, szövegeit és árait. A változtatások azonnal megjelennek az oldalon mentés után.</p>
+                </div>
+            </div>
+
+            <?php settings_errors( 'va_price_cards_settings' ); ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_price_cards_settings' ); ?>
+
+                <!-- ─── Hero szövegek ─── -->
+                <div class="va-pk-hero-section">
+                    <h2>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                        Az oldal hero szövegei
+                    </h2>
+                    <div class="va-pk-hero-fields">
+                        <div class="va-pk-field">
+                            <label for="va_pc_eyebrow">Eyebrow (kis felirat fölött)</label>
+                            <input type="text" id="va_pc_eyebrow" name="va_pc_eyebrow" value="<?php echo esc_attr( $g('va_pc_eyebrow','Átlátható csomagok') ); ?>">
+                        </div>
+                        <div class="va-pk-field">
+                            <label for="va_pc_title">Főcím</label>
+                            <input type="text" id="va_pc_title" name="va_pc_title" value="<?php echo esc_attr( $g('va_pc_title','Rang Alapú Vásárlás') ); ?>">
+                        </div>
+                        <div class="va-pk-field">
+                            <label for="va_pc_subtitle">Alcím / leírás</label>
+                            <input type="text" id="va_pc_subtitle" name="va_pc_subtitle" value="<?php echo esc_attr( $g('va_pc_subtitle','Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.') ); ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ─── Kártya szerkesztők ─── -->
+                <div class="va-pk-grid">
+                <?php for ( $n = 1; $n <= 4; $n++ ):
+                    $label    = $g( "va_pc_{$n}_label",    $card_defaults['labels'][$n]  );
+                    $slug     = $g( "va_pc_{$n}_plan_slug",$card_defaults['slugs'][$n]   );
+                    $tag      = $g( "va_pc_{$n}_tag",      $card_defaults['tags'][$n]    );
+                    $desc     = $g( "va_pc_{$n}_desc",     $card_defaults['descs'][$n]   );
+                    $qty      = $gi( "va_pc_{$n}_qty",     $card_defaults['qtys'][$n]    );
+                    $price    = $gi( "va_pc_{$n}_price",   $card_defaults['prices'][$n]  );
+                    $badge    = $g( "va_pc_{$n}_badge",    $card_defaults['badges'][$n]  );
+                    $featured = $g( "va_pc_{$n}_featured", ( $n === 3 ) ? '1' : '0' ) === '1';
+                    $free     = $g( "va_pc_{$n}_free",     ( $n === 1 ) ? '1' : '0' ) === '1';
+                    $btn_text = $g( "va_pc_{$n}_btn_text", $card_defaults['btns'][$n]    );
+                    $theme    = $g( "va_pc_{$n}_theme",    $card_defaults['themes'][$n]  );
+                    $enabled  = $g( "va_pc_{$n}_enabled",  '1' ) === '1';
+
+                    $tc       = $theme_colors[ $theme ] ?? $theme_colors['basic'];
+                    $total    = $qty * $price;
+                ?>
+                <div class="va-pk-card<?php echo $featured ? ' va-pk-card--featured' : ''; ?>"
+                     style="background:<?php echo esc_attr( $tc['gradient'] ); ?>; box-shadow:<?php echo $featured ? '0 8px 40px ' . esc_attr( $tc['glow'] ) : 'none'; ?>;">
+                    <!-- Header preview -->
+                    <div class="va-pk-card__header" style="border-bottom:1px solid rgba(255,255,255,.06);">
+                        <div class="va-pk-card__badge-row">
+                            <span class="va-pk-card__badge va-pk-card__badge--tag" style="background:<?php echo esc_attr( $tc['glow'] ); ?>; color:<?php echo esc_attr( $tc['accent'] ); ?>;">
+                                <?php echo esc_html( $tag ); ?>
+                            </span>
+                            <?php if ( $badge ): ?>
+                            <span class="va-pk-card__badge" style="background:<?php echo esc_attr( $tc['glow'] ); ?>; color:<?php echo esc_attr( $tc['accent'] ); ?>;">
+                                <?php echo esc_html( $badge ); ?>
+                            </span>
+                            <?php endif; ?>
+                        </div>
+                        <div style="font-size:16px; font-weight:800; color:#fff; letter-spacing:.04em; margin-bottom:4px;">
+                            <?php echo esc_html( strtoupper( $label ) ); ?>
+                        </div>
+                        <div style="font-size:12px; color:rgba(255,255,255,.4);">
+                            <?php echo esc_html( $desc ); ?>
+                        </div>
+                        <!-- Ár preview -->
+                        <div class="va-pk-card__price-preview">
+                            <?php if ( $free ): ?>
+                            <div class="free-tag">Ingyenes</div>
+                            <?php else: ?>
+                            <div class="total" style="color:<?php echo esc_attr( $tc['accent'] ); ?>;">
+                                <span id="va-pk-total-<?php echo $n; ?>"><?php echo number_format( $total, 0, ',', ' ' ); ?></span> Ft
+                            </div>
+                            <div class="unit"><span id="va-pk-unit-<?php echo $n; ?>"><?php echo number_format( $price, 0, ',', ' ' ); ?></span> Ft / kredit · <?php echo esc_html( (string) $qty ); ?> db</div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <!-- Enable toggle -->
+                    <div class="va-pk-card__enable-row">
+                        <span class="va-pk-card__enable-label">Kártya aktív</span>
+                        <label class="va-pk-toggle">
+                            <input type="checkbox" name="va_pc_<?php echo $n; ?>_enabled" value="1"<?php checked( $enabled ); ?>>
+                            <span class="va-pk-toggle__track"></span>
+                        </label>
+                    </div>
+
+                    <!-- Fields -->
+                    <div class="va-pk-card__fields">
+                        <div class="va-pk-field">
+                            <label>Kártya neve (label)</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_label" value="<?php echo esc_attr( $label ); ?>" placeholder="Basic">
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <label>Tag (badge felirat)</label>
+                                <input type="text" name="va_pc_<?php echo $n; ?>_tag" value="<?php echo esc_attr( $tag ); ?>" placeholder="Népszerű">
+                            </div>
+                            <div class="va-pk-field">
+                                <label>Kedvezmény badge</label>
+                                <input type="text" name="va_pc_<?php echo $n; ?>_badge" value="<?php echo esc_attr( $badge ); ?>" placeholder="–20%">
+                            </div>
+                        </div>
+
+                        <div class="va-pk-field">
+                            <label>Leírás szöveg</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_desc" value="<?php echo esc_attr( $desc ); ?>">
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <label>Kredit mennyiség</label>
+                                <input type="number" name="va_pc_<?php echo $n; ?>_qty" value="<?php echo esc_attr( (string) $qty ); ?>" min="1" max="9999"
+                                       data-card="<?php echo $n; ?>" class="va-pk-qty-input">
+                            </div>
+                            <div class="va-pk-field">
+                                <label>Ár / kredit (Ft)</label>
+                                <input type="number" name="va_pc_<?php echo $n; ?>_price" value="<?php echo esc_attr( (string) $price ); ?>" min="0" max="99999"
+                                       data-card="<?php echo $n; ?>" class="va-pk-price-input">
+                            </div>
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <span class="va-pk-toggle-row">
+                                    <label class="va-pk-toggle">
+                                        <input type="checkbox" name="va_pc_<?php echo $n; ?>_featured" value="1"<?php checked( $featured ); ?>>
+                                        <span class="va-pk-toggle__track"></span>
+                                    </label>
+                                    <span class="va-pk-toggle-text">Kiemelt kártya</span>
+                                </span>
+                            </div>
+                            <div class="va-pk-field">
+                                <span class="va-pk-toggle-row">
+                                    <label class="va-pk-toggle">
+                                        <input type="checkbox" name="va_pc_<?php echo $n; ?>_free" value="1"<?php checked( $free ); ?>>
+                                        <span class="va-pk-toggle__track"></span>
+                                    </label>
+                                    <span class="va-pk-toggle-text">Ingyenes kártya</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="va-pk-field">
+                            <label>Gomb felirat</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_btn_text" value="<?php echo esc_attr( $btn_text ); ?>" placeholder="Vásárlás →">
+                        </div>
+
+                        <div class="va-pk-card__field-row">
+                            <div class="va-pk-field">
+                                <label>Plan slug (aktív det.)</label>
+                                <input type="text" name="va_pc_<?php echo $n; ?>_plan_slug" value="<?php echo esc_attr( $slug ); ?>" placeholder="gold">
+                            </div>
+                            <div class="va-pk-field">
+                                <label>Téma / szín</label>
+                                <select name="va_pc_<?php echo $n; ?>_theme" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 10px;color:#e8e8f0;font-size:13px;width:100%;box-sizing:border-box;">
+                                    <?php foreach ( $theme_colors as $t_key => $_ ): ?>
+                                    <option value="<?php echo esc_attr( $t_key ); ?>"<?php selected( $theme, $t_key ); ?>><?php echo esc_html( ucfirst( $t_key ) ); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php endfor; ?>
+                </div>
+
+                <!-- ─── Mentés ─── -->
+                <div class="va-pk-save-bar">
+                    <?php submit_button( 'Mentés', 'primary', 'submit', false ); ?>
+                    <span class="va-pk-note">Mentés után az árkártyák azonnal frissülnek a vásárlás oldalon.</span>
+                </div>
+            </form>
+        </div>
+
+        <script>
+        (function(){
+            function formatHu(n){
+                return n.toLocaleString('hu-HU');
+            }
+            document.querySelectorAll('.va-pk-qty-input,.va-pk-price-input').forEach(function(el){
+                el.addEventListener('input', function(){
+                    var card = this.dataset.card;
+                    var qtyEl   = document.querySelector('.va-pk-qty-input[data-card="'+card+'"]');
+                    var priceEl = document.querySelector('.va-pk-price-input[data-card="'+card+'"]');
+                    var totalEl = document.getElementById('va-pk-total-'+card);
+                    var unitEl  = document.getElementById('va-pk-unit-'+card);
+                    if (!qtyEl||!priceEl||!totalEl) return;
+                    var qty   = parseInt(qtyEl.value)||0;
+                    var price = parseInt(priceEl.value)||0;
+                    totalEl.textContent = formatHu(qty*price);
+                    if(unitEl) unitEl.textContent = formatHu(price);
+                });
+            });
+        })();
+        </script>
         <?php
     }
 
