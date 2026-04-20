@@ -46,7 +46,9 @@ Az irodai gépen minden működik (apro.local). A repo naprakész. A vásárlás
 - [ ] Hirdetés feladás form UX javítás
 - [ ] Mobilon hero videó tesztelés (poster kép iOS-re)
 - [ ] va_hero_video_url beállítás WP adminba (Settings oldalra)
-=======
+
+---
+
 ## 2026. 04. 19. – Session #113 (Árkártyák admin, Toggle fix, Oldalszerkesztő)
 
 ### Elvégzett feladatok
@@ -1606,7 +1608,6 @@ Az irodai gépen minden működik (apro.local). A repo naprakész. A vásárlás
 - [x] Kategóriák alatti videó URL admin beállításból vezérelhető
 - [x] Új mezők: Általános beállítások oldalon (`va_home_hero_video_url`, `va_contact_hero_video_url`, `va_category_video_url`)
 - [x] Sablonok átvezetve opció alapú URL-re fallbackkel
->>>>>>> 8c652428e13f250afce45cf6d7b9e6fe6198bca5
 
 ---
 
