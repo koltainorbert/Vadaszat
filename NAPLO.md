@@ -2,6 +2,62 @@
 
 ---
 
+## 2026. 04. 20. – Session #5 (délután, irodai gép) — BEFEJEZETLEN, OTTHON FOLYTATNI
+
+### Mit csináltunk [x]
+- [x] Hero szekció teljes admin oldal létrehozva (`vadaszapro-hero` slug)
+- [x] `class-admin.php` — Hero szekció menüpont hozzáadva
+- [x] `class-settings-page.php` — `va_hero_settings` group, 50+ beállítás regisztrálva + `render_hero()` metódus
+- [x] `functions.php` — IIFE blokk: overlay, stripe, badge dot, badge, title, sub, primary btn, ghost btn, scroll jelző CSS változók
+- [x] Header submit gomb hover szín beállítás hozzáadva
+- [x] `php.ini.hbs` — `opcache.validate_timestamps=1` + `opcache.revalidate_freq=0` hozzáadva
+- [x] Minden fájl deployolva LocalWP-be, push megtörtént
+- [ ] **OPcache probléma: a LocalWP PHP-FPM nem vette fel az új php.ini.hbs-t!**
+
+### Probléma (OPcache)
+Az irodai gépen a LocalWP PHP-FPM cachelve tartja a régi PHP bytecode-ot.  
+`php.ini.hbs`-be írt `opcache.validate_timestamps=1` még nem lépett életbe mert a PHP-FPM nem restarolt.  
+A Hero szekció admin menüpont és az összes kód **ott van a fájlokban**, csak az OPcache blokkolja.
+
+### ⚠️ OTTHONI TEENDŐK (OLVASD EL ELŐSZÖR!)
+
+**1. lépés — git pull + deploy:**
+```powershell
+# VS Code-ban: Push task (vagy terminálban):
+git pull
+. ".vscode\local-config.ps1" ; Copy-Item "wp-plugin\vadaszapro-core\*" $LOCAL_WP_PLUGIN -Recurse -Force ; Copy-Item "wp-theme\vadaszapro-theme\*" $LOCAL_WP_THEME -Recurse -Force
+```
+
+**2. lépés — php.ini.hbs fix az OTTHONI gépen is:**
+```
+D:\LocalWP\[site-mappa]\conf\php\php.ini.hbs
+```
+Keresd az `opcache.enable_cli=1` sort, utána add hozzá:
+```
+opcache.validate_timestamps=1
+opcache.revalidate_freq=0
+```
+
+**3. lépés — LocalWP teljes újraindítás:**
+- LocalWP alkalmazást **teljesen zárd be** (tálcán is jobb klikk → Quit/Kilépés)
+- Nyisd meg újra
+- Start Site
+
+**4. lépés — Ellenőrzés:**
+- `http://[site].local/wp-admin/admin.php?page=vadaszapro-hero` → meg kell jelennie a Hero szekció oldalnak
+
+### Hol tartunk
+Minden kód kész és pusholva. Az irodai gépen OPcache blokkol. Otthon a fenti 4 lépéssel rögtön menni fog.
+
+### Nyitott TODO-k (folytatás otthon)
+- [ ] Hero szekció beállítások tesztelése (működik-e minden szín/toggle)
+- [ ] Főoldal hirdetés grid / category kártyák szekció a hero alá
+- [ ] archive.php grid kártya dizájn egységesítés
+- [ ] Hirdetés feladás form UX javítás
+- [ ] va_hero_video_url beállítás WP adminba
+
+---
+
 ## 2026. 04. 20. – Session #114 (Irodai gép szinkronizálás)
 
 ### Mit csináltunk [x]
