@@ -2,6 +2,38 @@
 
 ---
 
+## 2026. 04. 20. – Session #4 (délelőtt, irodai gép)
+
+### Mit csináltunk [x]
+- [x] Irodai gépen beállított LocalWP (apro.local, port 10017) szinkronizálva
+- [x] Plugin + téma deployolva a repóból LocalWP-be
+- [x] Felderítve hogy a LocalWP-n lévő zip-es verzió fejlettebb mint a repo (4 plusz includes fájl, admin fájlok, CSS/JS)
+- [x] Teljes szinkronizálás: LocalWP → repo (plugin + téma minden fájl)
+- [x] Push: minden fájl fent van GitHubon (commit: Mentes_2026.04.20_11.04)
+- [x] WP oldalak shortcode-jai javítva MySQL-en keresztül (va-regisztracio, va-bejelentkezes, va-hirdetes-feladas, va-fiok, va-aukciok, va-hirdetes-kereses)
+- [x] Megállapítva: va_create_default_pages() már benne van az aktiválási hook-ban → új telepítésnél automatikusan létrejönnek az oldalak
+
+### Hol tartunk
+Az irodai gépen minden működik (apro.local). A repo naprakész. A vásárlás gomb bejelentkezéshez köti a csomagvásárlást — ez szándékos viselkedés.
+
+### Plugin extra fájlok (LocalWP-ből jöttek, most már repóban is):
+- `includes/class-mailer.php` – email értesítések
+- `includes/class-page-renderer.php` – oldal renderelés
+- `includes/class-updater.php` – frissítési logika
+- `includes/class-user-roles.php` – rang rendszer (Basic/Silver/Gold/Platinum)
+- `admin/class-dashboard.php`, `class-form-builder.php`, `class-listing-edit.php`, `class-page-builder.php`
+- `frontend/css/user.css`, `frontend/js/user.js`
+- `theme/page-kapcsolat.php`, `page-kategoria.php`, `page-vadasz-naptar.php`
+
+### Nyitott TODO-k
+- [ ] Főoldal hirdetés grid / category kártyák szekció a hero alá
+- [ ] archive.php grid kártya dizájn egységesítés
+- [ ] Hirdetés feladás form UX javítás
+- [ ] Mobilon hero videó tesztelés (poster kép iOS-re)
+- [ ] va_hero_video_url beállítás WP adminba (Settings oldalra)
+
+---
+
 ## 2026. 04. 17. – Session #3 (délelőtt + délután)
 
 ### Mit csináltunk [x]
