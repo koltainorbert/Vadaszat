@@ -13,15 +13,15 @@
                 var defColor = $input.attr('data-default-color') || $input.val();
 
                 var $wrap = $input.closest('.wp-picker-container');
+                var $btn  = $wrap.find('.wp-color-result');
                 function syncDot() {
                     var val = ($input.val() || '').trim();
-                    var dot = $wrap.find('.va-clr-dot')[0];
-                    if (dot) dot.style.background = val || 'transparent';
-                }
-
-                // Külső színkör a gomb után
-                if (!$wrap.find('.va-clr-dot').length) {
-                    $wrap.append('<span class="va-clr-dot"></span>');
+                    if (!$btn[0]) return;
+                    if (val) {
+                        $btn[0].style.setProperty('--va-sw', val);
+                    } else {
+                        $btn[0].style.removeProperty('--va-sw');
+                    }
                 }
 
                 $input.wpColorPicker({
@@ -29,8 +29,6 @@
                     clear:  function() { syncDot(); }
                 });
 
-                $input.on('input change', syncDot);
-                setTimeout(syncDot, 50);
                 syncDot();
 
                 // Default gomb bal border színe
