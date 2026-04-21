@@ -11,99 +11,87 @@
             $(".va-color-input").each(function () {
                 var $input = $(this);
 
-                // Parse initial rgba → separate rgb + alpha
-                var initVal = $input.val().trim();
+                // Ha rgba → kivesszük az alpha értéket, hexet adunk az irisnek
+                var initVal   = $input.val().trim();
                 var initAlpha = 1;
                 var initRgb   = null;
                 var m = initVal.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/i);
                 if (m) {
                     initRgb   = { r: +m[1], g: +m[2], b: +m[3] };
-                    initAlpha = m[4] !== undefined ? +m[4] : 1;
-                    // Show hex to iris so it doesn't choke on rgba
+                    initAlpha = m[4] !== undefined ? parseFloat(m[4]) : 1;
                     $input.val(vaRgbToHex(initRgb.r, initRgb.g, initRgb.b));
                 }
 
                 $input.wpColorPicker({
                     palettes: ['#ff2020','#ff7a22','#e5b843','#36d487','#57b0ff','#c75cff','#ffffff','#000000'],
-                    width: 270,
+                    width: 260,
                     change: function (event, ui) {
                         var c = ui.color._rgba;
                         $input.data('va-rgb', { r: Math.round(c[0]), g: Math.round(c[1]), b: Math.round(c[2]) });
+                        vaUpdateAlphaFill($input.data('va-$range'), $input.data('va-rgb'));
                         vaCommitRgba($input);
                     }
                 });
 
-                // After iris wraps the input, inject alpha slider + fix position
                 setTimeout(function () {
                     var $container = $input.closest('.wp-picker-container');
                     if (!$container.length) return;
 
-                    // Store initial rgb from hex that iris may have set
+                    // Init rgb from hex if rgba nem volt
                     if (!initRgb) {
-                        var hex = $input.val().replace('#', '');
+                        var hex = $input.val().replace('#','');
                         if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
                         initRgb = {
-                            r: parseInt(hex.substr(0,2),16)||255,
-                            g: parseInt(hex.substr(2,2),16)||255,
-                            b: parseInt(hex.substr(4,2),16)||255
+                            r: parseInt(hex.substr(0,2),16)||0,
+                            g: parseInt(hex.substr(2,2),16)||0,
+                            b: parseInt(hex.substr(4,2),16)||0
                         };
                     }
                     $input.data('va-rgb',   initRgb);
                     $input.data('va-alpha', initAlpha);
 
-                    // Alpha slider row inside the iris picker
+                    // Alpha sort a palette-container UTÁN szúrjuk be
                     var pct  = Math.round(initAlpha * 100);
                     var $row = $('<div class="va-alpha-row">' +
                         '<span class="va-alpha-label">Átlátszóság</span>' +
                         '<div class="va-alpha-track">' +
                             '<div class="va-alpha-fill"></div>' +
                             '<input type="range" class="va-alpha-range" min="0" max="100" step="1" value="' + pct + '">' +
+                            '<div class="va-alpha-thumb"></div>' +
                         '</div>' +
                         '<span class="va-alpha-num">' + pct + '%</span>' +
                     '</div>');
-                    $container.find('.iris-picker').append($row);
-                    vaUpdateAlphaFill($row.find('.va-alpha-range'), initRgb);
 
-                    $row.find('.va-alpha-range').on('input change', function () {
-                        var a = $(this).val() / 100;
-                        $(this).closest('.va-alpha-row').find('.va-alpha-num').text(Math.round(a*100) + '%');
+                    var $palette = $container.find('.iris-palette-container');
+                    if ($palette.length) { $row.insertAfter($palette); }
+                    else                 { $container.find('.iris-picker').append($row); }
+
+                    var $range = $row.find('.va-alpha-range');
+                    $input.data('va-$range', $range);
+                    vaUpdateAlphaFill($range, initRgb);
+                    vaUpdateAlphaThumb($range);
+
+                    $range.on('input', function () {
+                        var a   = $(this).val() / 100;
+                        $row.find('.va-alpha-num').text(Math.round(a * 100) + '%');
                         $input.data('va-alpha', a);
-                        var rgb = $input.data('va-rgb') || initRgb;
-                        vaUpdateAlphaFill($(this), rgb);
+                        vaUpdateAlphaFill($(this), $input.data('va-rgb') || initRgb);
+                        vaUpdateAlphaThumb($(this));
                         vaCommitRgba($input);
                     });
 
-                    // Reposition picker so it stays within viewport
+                    // Frissítés minden megnyitáskor
                     $container.find('.wp-color-result').on('click', function () {
                         setTimeout(function () {
-                            var $picker = $container.find('.iris-picker');
-                            if (!$picker.is(':visible')) return;
-                            var rect = $container[0].getBoundingClientRect();
-                            var pW = $picker.outerWidth() || 270;
-                            var pH = $picker.outerHeight() || 300;
-                            var winW = window.innerWidth;
-                            var winH = window.innerHeight;
-                            var left = rect.left;
-                            var top  = rect.bottom + 4;
-                            if (left + pW > winW - 16) { left = winW - pW - 16; }
-                            if (left < 10) { left = 10; }
-                            if (top + pH > winH - 16) { top = rect.top - pH - 4; }
-                            if (top < 10) { top = 10; }
-                            $picker.css({ position: 'fixed', top: top + 'px', left: left + 'px' });
-                        }, 30);
+                            var a2   = $input.data('va-alpha');
+                            if (a2 === undefined) a2 = 1;
+                            $range.val(Math.round(a2 * 100));
+                            $row.find('.va-alpha-num').text(Math.round(a2 * 100) + '%');
+                            vaUpdateAlphaFill($range, $input.data('va-rgb') || initRgb);
+                            vaUpdateAlphaThumb($range);
+                        }, 20);
                     });
-
-                    // Restore alpha display on open
-                    $container.find('.wp-color-result').on('click', function () {
-                        var a = $input.data('va-alpha');
-                        if (a === undefined) a = 1;
-                        var pct2 = Math.round(a * 100);
-                        $row.find('.va-alpha-range').val(pct2);
-                        $row.find('.va-alpha-num').text(pct2 + '%');
-                        var rgb2 = $input.data('va-rgb') || initRgb;
-                        vaUpdateAlphaFill($row.find('.va-alpha-range'), rgb2);
-                    });
-                }, 50);
+                }, 80);
             });
         }
 
@@ -176,18 +164,24 @@
         var alpha = $input.data('va-alpha');
         if (!rgb) return;
         if (alpha === undefined) alpha = 1;
+        alpha = Math.round(alpha * 100) / 100;
         var val = alpha >= 1
             ? vaRgbToHex(rgb.r, rgb.g, rgb.b)
-            : 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + (Math.round(alpha * 100) / 100) + ')';
-        // Write back into the actual form field (wp-color-picker = original input)
+            : 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + alpha + ')';
         $input.val(val);
     }
 
     function vaUpdateAlphaFill($range, rgb) {
-        var $fill = $range.siblings('.va-alpha-fill');
-        $fill.css('background',
-            'linear-gradient(to right, rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0) 0%, ' +
+        if (!$range || !$range.length || !rgb) return;
+        $range.siblings('.va-alpha-fill').css('background',
+            'linear-gradient(to right,rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',0) 0%,' +
             'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',1) 100%)');
+    }
+
+    function vaUpdateAlphaThumb($range) {
+        if (!$range || !$range.length) return;
+        var pct = $range.val() + '%';
+        $range.siblings('.va-alpha-thumb').css('left', pct);
     }
 
     /* ── Toast helper ─────────────────────────────────────────── */
