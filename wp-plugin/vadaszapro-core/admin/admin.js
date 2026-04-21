@@ -14,6 +14,19 @@
 
                 $input.wpColorPicker();
 
+                // WP inline background-color felülírása !important-tal
+                var btn = $input.closest('.wp-picker-container').find('.wp-color-result')[0];
+                function forceBtnStyle() {
+                    if (btn) {
+                        btn.style.setProperty('background-color', '#000', 'important');
+                        btn.style.setProperty('color', '#fff', 'important');
+                    }
+                }
+                forceBtnStyle();
+                if (btn && window.MutationObserver) {
+                    new MutationObserver(forceBtnStyle).observe(btn, { attributes: true, attributeFilter: ['style'] });
+                }
+
                 // Default gomb bal border színe
                 var $defBtn = $input.closest('.wp-picker-container').find('.wp-picker-default');
                 if (defColor && $defBtn[0]) {
