@@ -518,6 +518,11 @@ html body .wp-color-result.button .wp-color-result-text {
     display: inline !important;
     visibility: visible !important;
     color: #fff !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
 }
 
 /* Popup holder */

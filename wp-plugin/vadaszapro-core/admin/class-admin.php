@@ -338,7 +338,7 @@ class VA_Admin {
         wp_enqueue_style(  "va-admin", VA_PLUGIN_URL . "admin/admin.css", [ "wp-color-picker" ], VA_VERSION );
         // Color picker gomb: fekete háttér, fehér szöveg – inline inject LEGVÉGÉN, semmi sem bírja felülírni
         wp_add_inline_style( "va-admin",
-            '.wp-color-result.button,.wp-color-result.button:hover,.wp-color-result.button:focus,.wp-color-result.button:active{background:#000!important;background-color:#000!important;color:#fff!important;}'
+            '.wp-color-result.button,.wp-color-result.button:hover,.wp-color-result.button:focus,.wp-color-result.button:active{background:#000!important;background-color:#000!important;color:#fff!important;}.wp-color-result.button .wp-color-result-text{background:transparent!important;background-color:transparent!important;border:0!important;color:#fff!important;}'
         );
         wp_enqueue_script( "va-admin", VA_PLUGIN_URL . "admin/admin.js", [ "jquery", "wp-color-picker" ], VA_VERSION, true );
     }

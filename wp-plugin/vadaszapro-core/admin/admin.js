@@ -23,6 +23,12 @@
                     if (btn) {
                         btn.style.setProperty('background-color', '#000000', 'important');
                         btn.style.setProperty('color', '#ffffff', 'important');
+                        var txt = btn.querySelector('.wp-color-result-text');
+                        if (txt) {
+                            txt.style.setProperty('background-color', 'transparent', 'important');
+                            txt.style.setProperty('color', '#ffffff', 'important');
+                            txt.style.setProperty('border', '0', 'important');
+                        }
                     }
                     forcing = false;
                 }
