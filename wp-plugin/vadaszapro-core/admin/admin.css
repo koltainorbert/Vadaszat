@@ -448,12 +448,12 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
 /* ── Color picker ──────────────────────────────────────────────── */
-body.va-admin-page .wp-picker-container { display: inline-flex; align-items: center; gap: 6px; }
+body.va-admin-page .wp-picker-container { display: inline-flex; align-items: center; gap: 6px; position: relative; }
 body.va-admin-page .wp-color-result { border-radius: 6px !important; border: 1px solid rgba(255,255,255,.15) !important; box-shadow: none !important; padding: 5px 10px !important; font-size: 12px !important; cursor: pointer; }
 body.va-admin-page .wp-picker-input-wrap input { min-width: 90px !important; max-width: 130px !important; font-size: 12px !important; padding: 6px 10px !important; }
-/* iris picker – sötét UI + fix pozicionálás */
+/* iris picker – sötét UI, középre igazítva */
 body.va-admin-page .iris-picker,
-body.va-admin-page .iris-picker.ui-widget-content { background: var(--va-bg2) !important; border: 1px solid var(--va-border) !important; border-radius: 10px !important; box-shadow: 0 8px 32px rgba(0,0,0,.7) !important; padding: 10px !important; z-index: 999999 !important; }
+body.va-admin-page .iris-picker.ui-widget-content { background: var(--va-bg2) !important; border: 1px solid var(--va-border) !important; border-radius: 10px !important; box-shadow: 0 8px 32px rgba(0,0,0,.7) !important; padding: 10px !important; z-index: 999999 !important; position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
 body.va-admin-page .iris-picker .ui-widget-content { background: transparent !important; border: none !important; }
 body.va-admin-page .iris-picker .iris-picker-inner { border-radius: 6px !important; overflow: hidden; border: none !important; }
 body.va-admin-page .iris-picker .iris-slider-offset { background: transparent !important; border: none !important; }
