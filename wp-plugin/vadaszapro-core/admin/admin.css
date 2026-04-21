@@ -451,9 +451,9 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 body.va-admin-page .wp-picker-container { display: inline-flex; align-items: center; gap: 6px; }
 body.va-admin-page .wp-color-result { border-radius: 6px !important; border: 1px solid rgba(255,255,255,.15) !important; box-shadow: none !important; padding: 5px 10px !important; font-size: 12px !important; cursor: pointer; }
 body.va-admin-page .wp-picker-input-wrap input { min-width: 90px !important; max-width: 130px !important; font-size: 12px !important; padding: 6px 10px !important; }
-/* iris picker – fehér keret eltávolítása, sötét UI */
+/* iris picker – sötét UI + fix pozicionálás */
 body.va-admin-page .iris-picker,
-body.va-admin-page .iris-picker.ui-widget-content { background: var(--va-bg2) !important; border: 1px solid var(--va-border) !important; border-radius: 10px !important; box-shadow: 0 8px 32px rgba(0,0,0,.6) !important; padding: 10px !important; }
+body.va-admin-page .iris-picker.ui-widget-content { background: var(--va-bg2) !important; border: 1px solid var(--va-border) !important; border-radius: 10px !important; box-shadow: 0 8px 32px rgba(0,0,0,.7) !important; padding: 10px !important; z-index: 999999 !important; }
 body.va-admin-page .iris-picker .ui-widget-content { background: transparent !important; border: none !important; }
 body.va-admin-page .iris-picker .iris-picker-inner { border-radius: 6px !important; overflow: hidden; border: none !important; }
 body.va-admin-page .iris-picker .iris-slider-offset { background: transparent !important; border: none !important; }
@@ -465,6 +465,13 @@ body.va-admin-page .iris-picker .ui-slider { background: rgba(255,255,255,.12) !
 body.va-admin-page .iris-picker .ui-slider-handle { background: #fff !important; border: none !important; border-radius: 50% !important; box-shadow: 0 1px 4px rgba(0,0,0,.5) !important; width: 14px !important; height: 14px !important; top: -3px !important; outline: none !important; }
 body.va-admin-page .iris-picker .iris-strip { border-radius: 4px !important; border: none !important; outline: none !important; }
 body.va-admin-page .iris-picker .iris-strip-square { border: none !important; outline: none !important; }
+/* ── Alpha slider ────────────────────────────────────────────── */
+.va-alpha-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.08); }
+.va-alpha-label { font-size: 11px; color: rgba(255,255,255,.45); white-space: nowrap; flex-shrink: 0; }
+.va-alpha-track { position: relative; flex: 1; height: 14px; border-radius: 999px; background: repeating-linear-gradient(45deg,#555 0,#555 3px,#333 3px,#333 6px); overflow: hidden; }
+.va-alpha-fill { position: absolute; inset: 0; border-radius: 999px; pointer-events: none; }
+.va-alpha-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; }
+.va-alpha-num { font-size: 11px; color: rgba(255,255,255,.6); min-width: 32px; text-align: right; flex-shrink: 0; }
 
 /* ── Settings kártyák ──────────────────────────────────────────── */
 body.va-admin-page .va-settings-card { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px 24px; margin-bottom: 16px; }
