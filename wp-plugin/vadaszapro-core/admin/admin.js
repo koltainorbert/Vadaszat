@@ -25,38 +25,34 @@
 
             var pct = Math.round(alpha * 100);
 
-            // Build custom picker UI
+            // UI: swatch gomb + rejtett native picker + alpha slider
             var $wrap = $(
                 '<div class="va-cpick">' +
-                  '<button type="button" class="va-cpick__btn">'+
-                    '<span class="va-cpick__swatch"></span>'+
-                    '<span class="va-cpick__label"></span>'+
-                  '</button>'+
-                  '<div class="va-cpick__panel" style="display:none">'+
-                    '<input type="color" class="va-cpick__wheel">'+
-                    '<div class="va-cpick__alpha-wrap">'+
-                      '<span class="va-cpick__alpha-label">Átlátszóság</span>'+
-                      '<div class="va-cpick__alpha-track">'+
-                        '<div class="va-cpick__alpha-fill"></div>'+
-                        '<input type="range" class="va-cpick__alpha-range" min="0" max="100" step="1" value="'+pct+'">'+
-                      '</div>'+
-                      '<span class="va-cpick__alpha-num">'+pct+'%</span>'+
-                    '</div>'+
-                    '<input type="text" class="va-cpick__hex" maxlength="25" spellcheck="false">'+
-                  '</div>'+
+                  '<div class="va-cpick__row">' +
+                    '<label class="va-cpick__btn">' +
+                      '<span class="va-cpick__swatch"></span>' +
+                      '<input type="color" class="va-cpick__wheel">' +
+                    '</label>' +
+                    '<input type="text" class="va-cpick__hex" maxlength="25" spellcheck="false">' +
+                  '</div>' +
+                  '<div class="va-cpick__alpha-wrap">' +
+                    '<span class="va-cpick__alpha-label">Átlátszóság</span>' +
+                    '<div class="va-cpick__alpha-track">' +
+                      '<div class="va-cpick__alpha-fill"></div>' +
+                      '<input type="range" class="va-cpick__alpha-range" min="0" max="100" step="1" value="'+pct+'">' +
+                    '</div>' +
+                    '<span class="va-cpick__alpha-num">'+pct+'%</span>' +
+                  '</div>' +
                 '</div>'
             );
             $hidden.after($wrap);
 
-            var $btn   = $wrap.find('.va-cpick__btn');
-            var $panel = $wrap.find('.va-cpick__panel');
             var $wheel = $wrap.find('.va-cpick__wheel');
             var $aRange= $wrap.find('.va-cpick__alpha-range');
             var $aFill = $wrap.find('.va-cpick__alpha-fill');
             var $aNum  = $wrap.find('.va-cpick__alpha-num');
             var $hexIn = $wrap.find('.va-cpick__hex');
             var $swatch= $wrap.find('.va-cpick__swatch');
-            var $lbl   = $wrap.find('.va-cpick__label');
 
             function syncUI(h, a) {
                 $wheel.val(h);
@@ -67,40 +63,21 @@
                 var rgb = vaHexToRgb(h);
                 $aFill.css('background',
                     'linear-gradient(to right,rgba('+rgb.r+','+rgb.g+','+rgb.b+',0),rgba('+rgb.r+','+rgb.g+','+rgb.b+',1))');
-                var display = a >= 1 ? h : 'rgba('+rgb.r+','+rgb.g+','+rgb.b+','+a+')';
+                var display = a >= 1 ? h : 'rgba('+rgb.r+','+rgb.g+','+rgb.b+','+Math.round(a*100)/100+')';
                 $hexIn.val(display);
-                $lbl.text(display);
                 $hidden.val(display);
             }
             syncUI(hex, alpha);
 
-            // Toggle panel
-            $btn.on('click', function (e) {
-                e.stopPropagation();
-                var open = $panel.is(':visible');
-                $('.va-cpick__panel:visible').hide();
-                if (!open) $panel.show();
-            });
-            $(document).on('click.vacpick', function (e) {
-                if (!$(e.target).closest('.va-cpick').length) {
-                    $('.va-cpick__panel:visible').hide();
-                }
-            });
-
-            // Color wheel change
             $wheel.on('input', function () {
                 hex = $(this).val();
-                var a = $aRange.val() / 100;
-                syncUI(hex, a);
+                syncUI(hex, $aRange.val() / 100);
             });
 
-            // Alpha range change
             $aRange.on('input', function () {
-                var a = $(this).val() / 100;
-                syncUI(hex, a);
+                syncUI(hex, $(this).val() / 100);
             });
 
-            // Hex / rgba text input
             $hexIn.on('change blur', function () {
                 var v = $(this).val().trim();
                 var pm = v.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/i);
