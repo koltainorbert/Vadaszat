@@ -8,35 +8,16 @@
     /* ── Color picker init ────────────────────────────────────── */
     $(function () {
         if ($.fn.wpColorPicker) {
-            $(".va-color-input").each(function() {
-                var $input   = $(this);
-                var defColor = $input.attr('data-default-color') || $input.val();
-
-                var $wrap = $input.closest('.wp-picker-container');
-                var $btn  = $wrap.find('.wp-color-result');
-                function syncDot() {
-                    var val = ($input.val() || '').trim();
-                    if (!$btn[0]) return;
-                    if (val) {
-                        $btn[0].style.setProperty('--va-sw', val);
-                    } else {
-                        $btn[0].style.removeProperty('--va-sw');
-                    }
-                }
-
-                $input.wpColorPicker({
-                    change: function() { syncDot(); },
-                    clear:  function() { syncDot(); }
-                });
-
-                syncDot();
-
-                // Default gomb bal border színe
-                var $defBtn = $wrap.find('.wp-picker-default');
-                if (defColor && $defBtn[0]) {
-                    $defBtn[0].style.setProperty('--va-sw-def', defColor);
+            $(".va-color-input").wpColorPicker({
+                change: function(event, ui) {
+                    var $btn = $(this).closest('.wp-picker-container').find('.wp-color-result');
+                    vaUpdateSwatch($btn, ui.color.toString());
                 }
             });
+            // Init után swatch-ok frissítése
+            setTimeout(function() {
+                $('.wp-color-result').each(function() { vaUpdateSwatch($(this), null); });
+            }, 200);
         }
 
         /* ── Media picker ─────────────────────────────────────── */
@@ -113,15 +94,10 @@
 
     /* ── Toast helper ─────────────────────────────────────────── */
 
-    /* ── Color swatch frissítő ───────────────────────────────── */
+    /* ── Color swatch frissítő (CSS var, nincs DOM manip) ───── */
     window.vaUpdateSwatch = function($btn, color) {
         var bg = color || ($btn[0] && $btn[0].style && $btn[0].style.backgroundColor);
-        if (!bg) return;
-        // Üres / transparent esetén töröljük (transparent ::before = nincs csúnya négyzet)
-        if (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent' || bg === '') {
-            if ($btn[0]) $btn[0].style.removeProperty('--va-sw');
-            return;
-        }
+        if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') return;
         if ($btn[0]) $btn[0].style.setProperty('--va-sw', bg);
     };
 

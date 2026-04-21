@@ -471,70 +471,65 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
 /* ── Color picker ──────────────────────────────────────────────── */
-html body .wp-picker-container {
+body.va-admin-page .wp-picker-container,
+.va-settings-form .wp-picker-container {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    overflow: visible;
+}
+
+/* Fő szín gomb – body.va-admin-page ÉS .wp-picker-container szelektoros kettős override */
+body.va-admin-page .wp-color-result.button,
+.va-settings-form .wp-color-result.button,
+.wp-picker-container .wp-color-result.button {
     display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
-    flex-wrap: nowrap !important;
-    overflow: visible !important;
-}
-
-html body .wp-color-result.button,
-html body .wp-color-result.button:hover,
-html body .wp-color-result.button:focus,
-html body .wp-color-result.button:active,
-html body .wp-color-result.button:visited {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 6px 18px !important;
-    width: auto !important;
+    padding: 6px 14px 6px 8px !important;
     min-width: 130px !important;
+    background: #1c1c28 !important;
+    border: 1px solid rgba(255,255,255,.14) !important;
+    border-radius: 8px !important;
+    color: rgba(255,255,255,.85) !important;
+    font-size: 12px !important;
     height: auto !important;
     line-height: 1.4 !important;
-    background: #1a1a2e !important;
-    background-color: #1a1a2e !important;
-    border: 1px solid rgba(255,255,255,.22) !important;
-    border-radius: 8px !important;
-    color: #fff !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
     cursor: pointer !important;
+    transition: background .15s, border-color .15s !important;
     box-shadow: none !important;
     outline: none !important;
     text-shadow: none !important;
-    filter: none !important;
-    -webkit-appearance: none !important;
-    appearance: none !important;
 }
-html body .wp-color-result.button::before {
-    content: '' !important;
-    display: inline-block !important;
-    width: 18px !important;
-    height: 18px !important;
-    margin-right: 8px !important;
-    border-radius: 50% !important;
-    background: var(--va-sw, transparent) !important;
-    border: 1px solid rgba(255,255,255,.22) !important;
-    flex-shrink: 0 !important;
-    pointer-events: none !important;
-}
-html body .wp-color-result.button::after {
-    display: none !important;
-    content: none !important;
-}
-html body .wp-color-result.button .wp-color-result-text {
-    display: inline !important;
-    visibility: visible !important;
+body.va-admin-page .wp-color-result.button:hover,
+body.va-admin-page .wp-color-result.button:focus,
+body.va-admin-page .wp-color-result.button:active,
+.wp-picker-container .wp-color-result.button:hover,
+.wp-picker-container .wp-color-result.button:focus,
+.wp-picker-container .wp-color-result.button:active {
+    background: #24243a !important;
     color: #fff !important;
-    background: transparent !important;
-    border: 0 !important;
+    border-color: rgba(255,255,255,.25) !important;
     box-shadow: none !important;
-    text-shadow: none !important;
+    outline: none !important;
+}
+/* Swatch négyzet ::before – CSS var-ból tölti JS */
+body.va-admin-page .wp-color-result.button::before,
+.wp-picker-container .wp-color-result.button::before {
+    content: '';
+    display: inline-block;
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    background: var(--va-sw, rgba(255,255,255,.15)) !important;
+    border: 1px solid rgba(255,255,255,.2);
+    flex-shrink: 0;
+    pointer-events: none;
 }
 
 /* Popup holder */
-html body .wp-picker-holder {
+body.va-admin-page .wp-picker-holder,
+.wp-picker-container .wp-picker-holder {
     z-index: 999999 !important;
     background: #13131e !important;
     border: 1px solid rgba(255,255,255,.14) !important;
@@ -543,42 +538,42 @@ html body .wp-picker-holder {
     padding: 12px !important;
     overflow: visible !important;
 }
-html body .wp-picker-holder .iris-picker {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-html body .wp-picker-holder .iris-picker-inner {
-    border: none !important;
-    box-shadow: none !important;
-}
-html body .wp-picker-holder .iris-square { border-radius: 6px !important; overflow: hidden; }
-html body .wp-picker-holder .iris-palette-container .iris-palette {
+body.va-admin-page .wp-picker-holder .iris-picker,
+.wp-picker-container .wp-picker-holder .iris-picker { background: transparent !important; }
+body.va-admin-page .wp-picker-holder .iris-square,
+.wp-picker-container .wp-picker-holder .iris-square { border-radius: 6px !important; overflow: hidden; }
+body.va-admin-page .wp-picker-holder .iris-palette-container .iris-palette,
+.wp-picker-container .wp-picker-holder .iris-palette-container .iris-palette {
     border-radius: 3px !important;
     width: 22px !important; height: 22px !important;
 }
-html body .wp-picker-input-wrap {
+body.va-admin-page .wp-picker-input-wrap,
+.wp-picker-container .wp-picker-input-wrap {
     display: flex; align-items: center; gap: 6px; margin-top: 8px;
 }
-html body .wp-picker-input-wrap input[type="text"] {
+body.va-admin-page .wp-picker-input-wrap input[type="text"],
+.wp-picker-container .wp-picker-input-wrap input[type="text"] {
     min-width: 80px !important; max-width: 100px !important;
     font-size: 12px !important; padding: 5px 8px !important;
 }
-html body .wp-picker-input-wrap .button {
+body.va-admin-page .wp-picker-input-wrap .button,
+.wp-picker-container .wp-picker-input-wrap .button {
     font-size: 11px !important; padding: 5px 10px !important;
     min-width: auto !important; pointer-events: auto !important;
 }
 
-/* "Alapértelmezett" visszaállítás gomb */
-html body .wp-picker-default {
+/* "Alapértelmezett" visszaállítás karika gomb */
+body.va-admin-page .wp-picker-default,
+.wp-picker-container .wp-picker-default {
     display: inline-flex !important;
     align-items: center !important;
-    padding: 5px 10px 5px 7px !important;
+    gap: 6px !important;
+    padding: 4px 10px 4px 6px !important;
+    margin-top: 2px !important;
     background: rgba(255,255,255,.04) !important;
     border: 1px solid rgba(255,255,255,.10) !important;
-    border-left: 3px solid var(--va-sw-def, rgba(255,255,255,.2)) !important;
     border-radius: 6px !important;
-    color: rgba(255,255,255,.6) !important;
+    color: rgba(255,255,255,.55) !important;
     font-size: 11px !important;
     cursor: pointer !important;
     box-shadow: none !important;
@@ -588,12 +583,24 @@ html body .wp-picker-default {
     min-width: auto !important;
     transition: background .15s !important;
 }
-html body .wp-picker-default:hover {
+body.va-admin-page .wp-picker-default:hover,
+.wp-picker-container .wp-picker-default:hover {
     background: rgba(255,255,255,.09) !important;
-    color: rgba(255,255,255,.85) !important;
+    color: rgba(255,255,255,.8) !important;
+    border-color: rgba(255,255,255,.18) !important;
     box-shadow: none !important;
 }
-html body .wp-picker-default::before { display: none !important; }
+/* A karika a gombon belül */
+body.va-admin-page .wp-picker-default::before,
+.wp-picker-container .wp-picker-default::before {
+    content: '';
+    display: inline-block;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--va-sw, rgba(255,255,255,.2)) !important;
+    border: 1px solid rgba(255,255,255,.2);
+    flex-shrink: 0;
+}
 /* ── Number spinner elrejtés + custom stepper ──────────────────── */
 body.va-admin-page input[type="number"] {
     -moz-appearance: textfield !important;
