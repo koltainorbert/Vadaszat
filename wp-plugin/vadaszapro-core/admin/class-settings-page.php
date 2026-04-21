@@ -1218,49 +1218,373 @@ class VA_Settings_Page {
             <?php endif; ?>
             <?php settings_errors( 'va_header_footer_settings' ); ?>
 
-            <h2>🎛️ Egy kattintásos modern presetek</h2>
-            <p class="description">10 előre összehangolt fejléc + lábléc paletta, árnyék és glow beállítással.</p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;max-width:1200px;margin:10px 0 18px;">
-                <?php foreach ( $presets as $preset_key => $preset ): ?>
-                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="border:1px solid #dcdcde;border-radius:8px;padding:12px;background:#fff;">
-                        <input type="hidden" name="action" value="va_apply_hf_preset">
-                        <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
-                        <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
-                        <strong><?php echo esc_html( $preset['label'] ); ?></strong>
-                        <div style="margin:8px 0 10px;color:#50575e;"><?php echo esc_html( $preset['desc'] ); ?></div>
-                        <button type="submit" class="button button-secondary">Preset alkalmazása</button>
-                    </form>
-                <?php endforeach; ?>
+            <!-- ──────── PRESETEK ──────── -->
+            <div class="va-settings-card" style="margin-bottom:28px;">
+                <div class="va-settings-card__head">
+                    <span class="va-settings-card__icon">🎛️</span>
+                    <span class="va-settings-card__title">Egy kattintásos modern presetek</span>
+                    <span class="va-settings-card__desc">10 összehangolt paletta, árnyék és glow kombóval</span>
+                </div>
+                <div style="padding:20px;">
+                    <div class="va-preset-grid">
+                        <?php foreach ( $presets as $preset_key => $preset ):
+                            $swatch_a = $preset['opts']['va_hf_header_color_base'] ?? '#0a0a0a';
+                            $swatch_b = $preset['opts']['va_hf_header_glow_color'] ?? 'rgba(255,0,0,.4)';
+                        ?>
+                            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="va-preset-card">
+                                <div class="va-preset-card__swatch" style="background:linear-gradient(90deg,<?php echo esc_attr($swatch_a); ?> 40%,<?php echo esc_attr($swatch_b); ?>);"></div>
+                                <input type="hidden" name="action" value="va_apply_hf_preset">
+                                <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
+                                <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
+                                <strong><?php echo esc_html( $preset['label'] ); ?></strong>
+                                <p><?php echo esc_html( $preset['desc'] ); ?></p>
+                                <button type="submit" class="button button-secondary">Alkalmazás</button>
+                            </form>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
 
+            <!-- ──────── FŐ FORM ──────── -->
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_header_footer_settings' ); ?>
 
-                <h2>Fejléc/Lábléc: alapszínek (tipográfia + linkek)</h2>
-                <table class="form-table">
-                    <?php self::field_text(  'va_color_header_bg',     'Fejléc háttér (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_header_text',   'Fejléc szöveg szín' ); ?>
-                    <?php self::field_color( 'va_color_header_accent', 'Fejléc accent szín' ); ?>
-                    <?php self::field_color( 'va_color_footer_bg',       'Lábléc háttér alapszín' ); ?>
-                    <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg szín (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsor szín' ); ?>
-                    <?php self::field_color( 'va_color_footer_links',    'Lábléc link alapszín' ); ?>
-                </table>
+                <!-- FEJLÉC ALAPSZÍNEK -->
+                <div class="va-settings-grid">
 
-                <h2>Fejléc: alap layout és üveg-hatás</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_header_height',              'Fejléc magasság (px)', 50, 120 ); ?>
-                    <?php self::field_num( 'va_hf_header_max_width',           'Fejléc belső max szélesség (px)', 960, 2200 ); ?>
-                    <?php self::field_num( 'va_hf_header_padding_x',           'Fejléc belső vízszintes padding (px)', 0, 80 ); ?>
-                    <?php self::field_num( 'va_hf_header_padding_top',         'Fejléc belső felső padding (px)', 0, 30 ); ?>
-                    <?php self::field_num( 'va_hf_header_padding_bottom',      'Fejléc belső alsó padding (px)', 0, 30 ); ?>
-                    <?php self::field_num( 'va_hf_header_gap',                 'Fejléc elemek közti gap (px)', 0, 40 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_bg_opacity',      'Fejléc háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_bg_opacity_scrolled', 'Fejléc háttér opacitás scroll után (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_num( 'va_hf_header_blur',                'Fejléc blur (px)', 0, 40 ); ?>
-                    <?php self::field_num( 'va_hf_header_blur_scrolled',       'Fejléc blur scroll után (px)', 0, 44 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_shadow_alpha',    'Fejléc árnyék opacitás (0-1)', 0, 1, 0.01 ); ?>
-                </table>
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🎨</span>
+                            <span class="va-settings-card__title">Fejléc alapszínek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_text(  'va_color_header_bg',     'Háttér (hex vagy rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_text',   'Szöveg szín' ); ?>
+                                <?php self::field_color( 'va_color_header_accent', 'Accent szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔗</span>
+                            <span class="va-settings-card__title">Nav link hover</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_color_header_nav_link',  'Nav link alap szín' ); ?>
+                                <?php self::field_color( 'va_color_header_nav_hover', 'Nav link hover szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FEJLÉC LAYOUT -->
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📐</span>
+                            <span class="va-settings-card__title">Fejléc layout</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_header_height',         'Magasság (px)', 50, 120 ); ?>
+                                <?php self::field_num( 'va_hf_header_max_width',       'Belső max szélesség (px)', 960, 2200 ); ?>
+                                <?php self::field_num( 'va_hf_header_padding_x',       'Vízszintes padding (px)', 0, 80 ); ?>
+                                <?php self::field_num( 'va_hf_header_padding_top',     'Felső padding (px)', 0, 30 ); ?>
+                                <?php self::field_num( 'va_hf_header_padding_bottom',  'Alsó padding (px)', 0, 30 ); ?>
+                                <?php self::field_num( 'va_hf_header_gap',             'Elemek közti gap (px)', 0, 40 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🪟</span>
+                            <span class="va-settings-card__title">Üveg-hatás &amp; árnyék</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_decimal( 'va_hf_header_bg_opacity',          'Háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_bg_opacity_scrolled', 'Opacitás scroll után (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_num( 'va_hf_header_blur',                    'Blur (px)', 0, 40 ); ?>
+                                <?php self::field_num( 'va_hf_header_blur_scrolled',           'Blur scroll után (px)', 0, 44 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_shadow_alpha',        'Árnyék opacitás (0-1)', 0, 1, 0.01 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- FEJLÉC SZÍNPALETTA -->
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">✨</span>
+                            <span class="va-settings-card__title">Fejléc neon &amp; glow</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_hf_header_color_base',    'Gradient alap szín' ); ?>
+                                <?php self::field_color( 'va_hf_header_color_alt',     'Gradient másodlagos szín' ); ?>
+                                <?php self::field_color( 'va_hf_header_border_color',  'Alsó border szín' ); ?>
+                                <?php self::field_text(  'va_hf_header_shadow_color',  'Fő árnyék szín (hex/rgba)' ); ?>
+                                <?php self::field_text(  'va_hf_header_glow_color',    'Fejléc neon glow (hex/rgba)' ); ?>
+                                <?php self::field_text(  'va_hf_header_search_glow_color', 'Kereső glow szín (hex/rgba)' ); ?>
+                                <?php self::field_text(  'va_hf_header_btn_glow_color',    'CTA gomb glow szín (hex/rgba)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔍</span>
+                            <span class="va-settings-card__title">Kereső részletes vezérlés</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_header_search_max_width',              'Max szélesség (px)', 220, 760 ); ?>
+                                <?php self::field_num( 'va_hf_header_search_height',                 'Magasság (px)', 30, 64 ); ?>
+                                <?php self::field_num( 'va_hf_header_search_radius',                 'Lekerekítés (px)', 8, 999 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_border_alpha',       'Keret opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_bg_alpha',           'Háttér opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_hover_border_alpha', 'Keret opacitás hover', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_focus_border_alpha', 'Keret opacitás fókusz', 0, 1, 0.01 ); ?>
+                                <?php self::field_num( 'va_hf_header_search_icon_size',              'Nagyító ikon méret (px)', 10, 28 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_icon_bg_alpha',       'Nagyító háttér opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_icon_bg_hover_alpha', 'Nagyító háttér hover opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_text( 'va_hf_header_search_placeholder',           'Placeholder szöveg' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- GOMBOK HOVER -->
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔴</span>
+                            <span class="va-settings-card__title">CTA gomb (+ Hirdetés feladása)</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_header_btn_radius',          'Lekerekítés (px)', 8, 999 ); ?>
+                                <?php self::field_num( 'va_hf_header_btn_pad_y',           'Függőleges padding (px)', 4, 20 ); ?>
+                                <?php self::field_num( 'va_hf_header_btn_pad_x',           'Vízszintes padding (px)', 8, 40 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Glow opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_text(  'va_color_header_submit_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_submit_hover_text', 'Hover szöveg szín' ); ?>
+                                <?php self::field_text( 'va_hf_header_submit_text',           'Felirat (bejelentkezve)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">👤</span>
+                            <span class="va-settings-card__title">Bejelentkezés gomb hover</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_text(  'va_color_header_login_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_login_hover_text', 'Hover szöveg szín' ); ?>
+                                <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Keret opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_user_bg_alpha',     'Háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_text( 'va_hf_header_login_text',            'Felirat (vendégként)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📝</span>
+                            <span class="va-settings-card__title">Regisztráció gomb hover</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_text(  'va_color_header_register_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_register_hover_text', 'Hover szöveg szín' ); ?>
+                                <?php self::field_text( 'va_hf_header_register_text',            'Felirat (vendégként)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TIPOGRÁFIA & MOBIL -->
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔤</span>
+                            <span class="va-settings-card__title">Fejléc tipográfia</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_select( 'va_weight_header_brand', 'Brand név súly', $weights ); ?>
+                                <?php self::field_select( 'va_weight_header_nav',   'Navigáció súly', $weights ); ?>
+                                <?php self::field_num( 'va_size_header_brand',      'Brand név méret (px)', 10, 44 ); ?>
+                                <?php self::field_num( 'va_size_header_nav',        'Navigáció méret (px)', 10, 34 ); ?>
+                                <?php self::field_num( 'va_size_header_search',     'Kereső szövegméret (px)', 10, 30 ); ?>
+                                <?php self::field_num( 'va_size_header_btn',        'Gomb szövegméret (px)', 10, 30 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📱</span>
+                            <span class="va-settings-card__title">Mobil viselkedés</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső mobilon is' ); ?>
+                                <?php self::field_toggle( 'va_hf_header_mobile_show_submit', 'CTA gomb mobilon is' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- LÁBLÉC -->
+                <h2 style="margin:36px 0 20px;font-size:15px !important;color:#fff !important;text-transform:none !important;letter-spacing:0 !important;border-bottom:1px solid var(--va-border) !important;padding-bottom:12px !important;">🦶 Lábléc beállítások</h2>
+
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📐</span>
+                            <span class="va-settings-card__title">Lábléc layout &amp; spacing</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_footer_top_padding',        'Felső padding (px)', 12, 120 ); ?>
+                                <?php self::field_num( 'va_hf_footer_bottom_padding',     'Alsó padding (px)', 8, 80 ); ?>
+                                <?php self::field_num( 'va_hf_footer_grid_gap',           'Oszlop gap (px)', 8, 80 ); ?>
+                                <?php self::field_num( 'va_hf_footer_col_min_width',      'Oszlop min szélesség (px)', 120, 420 ); ?>
+                                <?php self::field_num( 'va_hf_footer_title_gap',          'Oszlopcím alsó margó (px)', 4, 36 ); ?>
+                                <?php self::field_num( 'va_hf_footer_link_pad_y',         'Link függőleges térköz (px)', 0, 20 ); ?>
+                                <?php self::field_num( 'va_hf_footer_bottom_top_padding', 'Alsó sor felső padding (px)', 6, 40 ); ?>
+                                <?php self::field_num( 'va_hf_footer_max_width',          'Tartalom max szélesség (px)', 800, 2200 ); ?>
+                                <?php self::field_decimal( 'va_hf_footer_border_alpha',        'Felső keret opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_footer_bottom_border_alpha', 'Alsó sor keret opacitás', 0, 1, 0.01 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🎨</span>
+                            <span class="va-settings-card__title">Lábléc színek &amp; glow</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_color_footer_bg',       'Háttér alapszín' ); ?>
+                                <?php self::field_text(  'va_color_footer_text',     'Szöveg szín (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_footer_headings', 'Oszlop cím szín' ); ?>
+                                <?php self::field_color( 'va_color_footer_links',    'Link alapszín' ); ?>
+                                <?php self::field_color( 'va_hf_footer_color_base',  'Gradient alap' ); ?>
+                                <?php self::field_color( 'va_hf_footer_color_alt',   'Gradient másodlagos' ); ?>
+                                <?php self::field_color( 'va_hf_footer_border_color',     'Border szín' ); ?>
+                                <?php self::field_text(  'va_hf_footer_shadow_color',     'Árnyék szín (hex/rgba)' ); ?>
+                                <?php self::field_text(  'va_hf_footer_glow_color',       'Glow szín (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_hf_footer_link_hover_color', 'Link hover szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔤</span>
+                            <span class="va-settings-card__title">Lábléc tipográfia</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_select( 'va_weight_footer_title', 'Oszlopcím súly', $weights ); ?>
+                                <?php self::field_select( 'va_weight_footer_link',  'Link súly', $weights ); ?>
+                                <?php self::field_num( 'va_size_footer_title',      'Oszlopcím méret (px)', 10, 34 ); ?>
+                                <?php self::field_num( 'va_size_footer_link',       'Link méret (px)', 10, 30 ); ?>
+                                <?php self::field_num( 'va_size_footer_bottom',     'Alsó sor méret (px)', 10, 28 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🖼️</span>
+                            <span class="va-settings-card__title">Lábléc logó &amp; szövegek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_media( 'va_hf_footer_logo_url',         'Logó (opcionális)' ); ?>
+                                <?php self::field_num(   'va_hf_footer_logo_height',       'Logó magasság (px)', 20, 180 ); ?>
+                                <?php self::field_text( 'va_hf_footer_brand_title',          'Brand oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_col_categories_title', 'Kategóriák oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_col_account_title',    'Fiók oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_col_legal_title',      'Jogi oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_aszf',            'ÁSZF link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_privacy',         'Adatvédelem link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_contact',         'Kapcsolat link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_help',            'Súgó link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_copy_text',            'Copyright szöveg' ); ?>
+                                <?php self::field_text( 'va_hf_footer_privacy_text',         'Alsó sor adatvédelem felirat' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <?php submit_button( 'Fejléc + Lábléc mentése' ); ?>
+            </form>
+
+            <!-- ═══ Nav gombok szerkesztő (külön form, JSON mentés) ═══ -->
+            <div class="va-settings-card" style="margin-top:32px;">
+                <div class="va-settings-card__head">
+                    <span class="va-settings-card__icon">🔗</span>
+                    <span class="va-settings-card__title">Navigációs gombok szerkesztése</span>
+                    <span class="va-settings-card__desc">Drag &amp; drop sorrendezés</span>
+                </div>
+                <div style="padding:20px;">
+            <?php
+            $nav_json = get_option( 'va_nav_items_json', '' );
+            $nav_items_saved = [];
+            if ( $nav_json ) {
+                $decoded = json_decode( $nav_json, true );
+                if ( is_array( $decoded ) ) $nav_items_saved = $decoded;
+            }
+            if ( empty( $nav_items_saved ) ) {
+                $nav_items_saved = [
+                    [ 'label' => 'Hirdetések', 'url' => '/va-hirdetes-kereses', 'enabled' => true ],
+                    [ 'label' => 'Kategóriák', 'url' => '/kategoria',           'enabled' => true ],
+                    [ 'label' => 'Kapcsolat',  'url' => '/kapcsolat',           'enabled' => true ],
+                ];
+            }
+            if ( isset( $_GET['va_nav_saved'] ) ): ?>
+                <div class="notice notice-success is-dismissible"><p>Navigációs gombok elmentve.</p></div>
+            <?php endif; ?>
+            <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" id="va-nav-form">
+                <?php wp_nonce_field( 'va_save_nav_items', 'va_nav_nonce' ); ?>
+                <input type="hidden" name="action" value="va_save_nav_items">
+                <input type="hidden" name="va_nav_json" id="va-nav-json-input" value="<?php echo esc_attr( $nav_json ?: wp_json_encode( $nav_items_saved ) ); ?>">
+
+                <div id="va-nav-list" style="max-width:700px;margin-bottom:16px;">
+                    <?php foreach ( $nav_items_saved as $idx => $item ): ?>
+                    <div class="va-nav-row va-nav-row-modern" draggable="true">
+                        <span class="va-nav-drag">&#8597;</span>
+                        <input type="checkbox" class="va-nav-enabled" <?php checked( $item['enabled'] ?? true ); ?> title="Megjelenítés">
+                        <input type="text" class="va-nav-label regular-text" value="<?php echo esc_attr( $item['label'] ); ?>" placeholder="Felirat" style="width:200px;">
+                        <input type="text" class="va-nav-url regular-text" value="<?php echo esc_attr( $item['url'] ); ?>" placeholder="/url vagy https://..." style="flex:1;">
+                        <button type="button" class="button va-nav-del va-nav-del-btn" title="Törlés">&times;</button>
 
                 <h2>Fejléc: modern színpaletta és árnyékok</h2>
                 <table class="form-table">
