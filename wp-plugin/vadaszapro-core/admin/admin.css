@@ -494,7 +494,7 @@ html body .wp-color-result.button:visited {
     line-height: 1.4 !important;
     border: 1px solid rgba(255,255,255,.3) !important;
     border-radius: 8px !important;
-    color: #111 !important;
+    color: #fff !important;
     font-size: 12px !important;
     font-weight: 600 !important;
     cursor: pointer !important;
@@ -509,12 +509,18 @@ html body .wp-color-result.button:visited {
 html body .wp-color-result.button .wp-color-result-text {
     display: inline !important;
     visibility: visible !important;
-    color: inherit !important;
+    color: #fff !important;
     background: transparent !important;
     background-color: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
     text-shadow: none !important;
+}
+html body .wp-color-result.button::before,
+html body .wp-color-result.button::after,
+html body .wp-color-result.button .color-alpha {
+    display: none !important;
+    content: none !important;
 }
 
 /* Popup holder */
