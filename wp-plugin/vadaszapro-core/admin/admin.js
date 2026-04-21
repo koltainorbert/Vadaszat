@@ -12,31 +12,9 @@
                 var $input   = $(this);
                 var defColor = $input.attr('data-default-color') || $input.val();
 
-                var $btn = $input.closest('.wp-picker-container').find('.wp-color-result');
+                $input.wpColorPicker();
 
-                // Init: aktuális érték → CSS változó (ha üres/fehér: transparent)
-                var initColor = $input.val();
-                if (initColor && initColor !== '#ffffff' && initColor !== '#fff') {
-                    if ($btn[0]) $btn[0].style.setProperty('--va-btn-bg', initColor);
-                }
-
-                $input.wpColorPicker({
-                    change: function(event, ui) {
-                        var color = ui.color.toString();
-                        if ($btn[0]) {
-                            if (!color || color === '#ffffff' || color === 'rgba(255,255,255,1)') {
-                                $btn[0].style.removeProperty('--va-btn-bg');
-                            } else {
-                                $btn[0].style.setProperty('--va-btn-bg', color);
-                            }
-                        }
-                    },
-                    clear: function() {
-                        if ($btn[0]) $btn[0].style.removeProperty('--va-btn-bg');
-                    }
-                });
-
-                // Default gomb bal border színe = az alapalapértelmezett szín
+                // Default gomb bal border színe
                 var $defBtn = $input.closest('.wp-picker-container').find('.wp-picker-default');
                 if (defColor && $defBtn[0]) {
                     $defBtn[0].style.setProperty('--va-sw-def', defColor);
