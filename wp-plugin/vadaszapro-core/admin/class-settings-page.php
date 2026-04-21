@@ -4259,14 +4259,25 @@ class VA_Settings_Page {
         echo "</td></tr>";
     }
 
+    private static function spin_wrap( string $key, string $input_html ): string {
+        return '<div class="va-num-wrap">'
+            . $input_html
+            . '<div class="va-num-spin">'
+            . '<button type="button" tabindex="-1" onclick="(function(el){var v=parseFloat(el.value)||0;el.value=Math.min(' . '9999' . ',v+1);el.dispatchEvent(new Event(\"change\",{bubbles:true}))})(document.getElementById(\"' . $key . '\"))">&#9652;</button>'
+            . '<button type="button" tabindex="-1" onclick="(function(el){var v=parseFloat(el.value)||0;el.value=Math.max(-9999,v-1);el.dispatchEvent(new Event(\"change\",{bubbles:true}))})(document.getElementById(\"' . $key . '\"))">&#9662;</button>'
+            . '</div></div>';
+    }
+
     private static function field_num( string $key, string $label, int $min = 0, int $max = 9999 ): void {
         $val = esc_attr( (string) self::get_display_option( $key, '' ) );
-        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" class=\"small-text\"></td></tr>";
+        $input = "<input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" class=\"small-text\">";
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>" . self::spin_wrap( $key, $input ) . "</td></tr>";
     }
 
     private static function field_decimal( string $key, string $label, float $min = 0.1, float $max = 5, float $step = 0.01 ): void {
         $val = esc_attr( (string) self::get_display_option( $key, '' ) );
-        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" step=\"{$step}\" class=\"small-text\"></td></tr>";
+        $input = "<input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" step=\"{$step}\" class=\"small-text\">";
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>" . self::spin_wrap( $key, $input ) . "</td></tr>";
     }
 
     private static function field_select( string $key, string $label, array $options ): void {
