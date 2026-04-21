@@ -1148,7 +1148,7 @@ class VA_Settings_Page {
                 <h2>🔴 Piros (primary) gomb</h2>
                 <table class="form-table">
                     <?php self::field_color( 'va_color_hero_btn_primary_bg',         'Háttér' ); ?>
-                    <?php self::field_color( 'va_color_hero_btn_primary_hover',      'Hover háttér' ); ?>
+                    <?php self::field_text(  'va_color_hero_btn_primary_hover',      'Hover háttér (hex vagy rgba – pl. rgba(255,0,0,0.3) üveg hatáshoz)' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_text',       'Szöveg szín' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_hover_text', 'Hover szöveg szín' ); ?>
                     <?php self::field_text(  'va_color_hero_btn_primary_glow',       'Glow szín (rgba)' ); ?>
