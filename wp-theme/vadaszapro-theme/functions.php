@@ -906,8 +906,11 @@ add_action( 'wp_enqueue_scripts', function () {
         $css .= '.vh__title span{color:' . $title_span_color . ' !important;}';
         $css .= '.vh__sub{color:' . $sub_color . ' !important;}';
 
+        $btn_p_hover_is_rgba = (bool) preg_match( '/^rgba?\(/i', $btn_p_hover );
         $css .= '.vh__btn--primary{background:' . $btn_p_bg . ' !important;color:' . $btn_p_text . ' !important;box-shadow:0 0 28px ' . $btn_p_glow . ' !important;}';
-        $css .= '.vh__btn--primary:hover{background:' . $btn_p_hover . ' !important;color:' . $btn_p_hover_text . ' !important;}';
+        $css .= '.vh__btn--primary:hover{background:' . $btn_p_hover . ' !important;color:' . $btn_p_hover_text . ' !important;'
+              . ( $btn_p_hover_is_rgba ? 'backdrop-filter:blur(8px) !important;-webkit-backdrop-filter:blur(8px) !important;' : '' )
+              . '}';
         $css .= '.vh__btn--ghost{background:' . $btn_g_bg . ' !important;border-color:' . $btn_g_border . ' !important;color:' . $btn_g_text . ' !important;}';
         $css .= '.vh__btn--ghost:hover{background:' . $btn_g_hover . ' !important;color:' . $btn_g_hover_text . ' !important;}';
 
