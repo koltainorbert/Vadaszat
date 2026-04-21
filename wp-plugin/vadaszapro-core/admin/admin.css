@@ -428,9 +428,65 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
 /* ── Color picker ──────────────────────────────────────────────── */
-body.va-admin-page .wp-picker-container { display: inline-flex; align-items: center; gap: 6px; }
-body.va-admin-page .wp-color-result { border-radius: 6px !important; border: 1px solid rgba(255,255,255,.15) !important; box-shadow: none !important; padding: 5px 10px !important; font-size: 12px !important; cursor: pointer; }
+body.va-admin-page .wp-picker-container {
+    display: inline-flex; align-items: center; gap: 6px;
+    position: relative;
+}
+body.va-admin-page .wp-picker-holder {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    background: var(--va-bg3) !important;
+    border: 1px solid var(--va-border2) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,.6) !important;
+    padding: 10px !important;
+}
+body.va-admin-page .wp-color-result {
+    border-radius: 6px !important;
+    border: 1px solid rgba(255,255,255,.15) !important;
+    box-shadow: none !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    cursor: pointer;
+}
 body.va-admin-page .wp-picker-input-wrap input { min-width: 90px !important; max-width: 130px !important; font-size: 12px !important; padding: 6px 10px !important; }
+
+/* ── Number spinner elrejtés + custom stepper ──────────────────── */
+body.va-admin-page input[type="number"] {
+    -moz-appearance: textfield !important;
+    appearance: textfield !important;
+    padding-right: 28px !important;
+}
+body.va-admin-page input[type="number"]::-webkit-inner-spin-button,
+body.va-admin-page input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+/* Wrapper a szám inputhoz */
+.va-num-wrap {
+    position: relative; display: inline-flex; align-items: center;
+}
+.va-num-wrap input[type="number"] {
+    padding-right: 28px !important;
+    min-width: 100px;
+}
+.va-num-btns {
+    position: absolute; right: 0; top: 0; bottom: 0;
+    display: flex; flex-direction: column;
+    width: 26px; border-left: 1px solid rgba(255,255,255,.08);
+}
+.va-num-btn {
+    flex: 1; background: transparent; border: none; cursor: pointer;
+    color: rgba(255,255,255,.35); font-size: 9px; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .1s, color .1s;
+    padding: 0;
+}
+.va-num-btn:hover { background: rgba(255,255,255,.06); color: #fff; }
+.va-num-btn:first-child { border-radius: 0 var(--va-radius-sm) 0 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+.va-num-btn:last-child  { border-radius: 0 0 var(--va-radius-sm) 0; }
 
 /* ── Settings kártyák ──────────────────────────────────────────── */
 body.va-admin-page .va-settings-card { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px 24px; margin-bottom: 16px; }
