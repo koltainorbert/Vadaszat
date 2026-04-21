@@ -471,65 +471,64 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
 /* ── Color picker ──────────────────────────────────────────────── */
-body.va-admin-page .wp-picker-container,
-.va-settings-form .wp-picker-container {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    overflow: visible;
+/* html body prefix = legmagasabb specificitás, legyőzi WP width:30px/height:26px-t */
+html body .wp-picker-container {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+    overflow: visible !important;
 }
 
-/* Fő szín gomb – body.va-admin-page ÉS .wp-picker-container szelektoros kettős override */
-body.va-admin-page .wp-color-result.button,
-.va-settings-form .wp-color-result.button,
-.wp-picker-container .wp-color-result.button {
+html body .wp-color-result.button {
     display: inline-flex !important;
     align-items: center !important;
     gap: 8px !important;
     padding: 6px 14px 6px 8px !important;
+    width: auto !important;
     min-width: 130px !important;
+    height: auto !important;
+    line-height: 1.4 !important;
     background: #1c1c28 !important;
     border: 1px solid rgba(255,255,255,.14) !important;
     border-radius: 8px !important;
     color: rgba(255,255,255,.85) !important;
     font-size: 12px !important;
-    height: auto !important;
-    line-height: 1.4 !important;
     cursor: pointer !important;
     transition: background .15s, border-color .15s !important;
     box-shadow: none !important;
     outline: none !important;
     text-shadow: none !important;
+    overflow: visible !important;
 }
-body.va-admin-page .wp-color-result.button:hover,
-body.va-admin-page .wp-color-result.button:focus,
-body.va-admin-page .wp-color-result.button:active,
-.wp-picker-container .wp-color-result.button:hover,
-.wp-picker-container .wp-color-result.button:focus,
-.wp-picker-container .wp-color-result.button:active {
+html body .wp-color-result.button:hover,
+html body .wp-color-result.button:focus,
+html body .wp-color-result.button:active {
     background: #24243a !important;
     color: #fff !important;
     border-color: rgba(255,255,255,.25) !important;
     box-shadow: none !important;
     outline: none !important;
 }
-/* Swatch négyzet ::before – CSS var-ból tölti JS, transparent fallback (nincs ronda fehér) */
-body.va-admin-page .wp-color-result.button::before,
-.wp-picker-container .wp-color-result.button::before {
-    content: '';
-    display: inline-block;
-    width: 18px; height: 18px;
-    border-radius: 4px;
+/* Swatch ::before – border is csak akkor látszik ha van szín (var fallback = transparent) */
+html body .wp-color-result.button::before {
+    content: '' !important;
+    display: inline-block !important;
+    width: 18px !important; height: 18px !important;
+    border-radius: 4px !important;
     background: var(--va-sw, transparent) !important;
-    border: 1px solid rgba(255,255,255,.18);
-    flex-shrink: 0;
-    pointer-events: none;
+    border: 1px solid var(--va-sw, transparent) !important;  /* nincs ring ha nincs szín */
+    flex-shrink: 0 !important;
+    pointer-events: none !important;
+}
+/* Szöveg span mindig látható */
+html body .wp-color-result.button .wp-color-result-text {
+    display: inline !important;
+    visibility: visible !important;
 }
 
 /* Popup holder */
-body.va-admin-page .wp-picker-holder,
-.wp-picker-container .wp-picker-holder {
+html body .wp-picker-holder {
     z-index: 999999 !important;
     background: #13131e !important;
     border: 1px solid rgba(255,255,255,.14) !important;
