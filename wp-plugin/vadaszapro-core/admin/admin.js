@@ -66,21 +66,6 @@
                 $(this).addClass("active");
             }
         });
-        /* ── Custom number stepper ────────────────────────────── */
-        $(document).on("click", ".va-num-up, .va-num-dn", function () {
-            var $btn   = $(this);
-            var $input = $btn.closest(".va-num-wrap").find("input[type='number']");
-            var step   = parseFloat($input.attr("step") || "1");
-            var min    = parseFloat($input.attr("min") != null ? $input.attr("min") : "-Infinity");
-            var max    = parseFloat($input.attr("max") != null ? $input.attr("max") : "Infinity");
-            var val    = parseFloat($input.val() || "0");
-            if ($btn.hasClass("va-num-up")) val = Math.min(max, Math.round((val + step) / step) * step);
-            else                             val = Math.max(min, Math.round((val - step) / step) * step);
-            // tizedesjegy kezelés
-            var decimals = (step.toString().split(".")[1] || "").length;
-            $input.val(val.toFixed(decimals)).trigger("change");
-        });
-
     });
 
     /* ── Toast helper ─────────────────────────────────────────── */
