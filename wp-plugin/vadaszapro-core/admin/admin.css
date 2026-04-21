@@ -471,7 +471,6 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
 /* ── Color picker ──────────────────────────────────────────────── */
-/* html body prefix = legmagasabb specificitás, legyőzi WP width:30px/height:26px-t */
 html body .wp-picker-container {
     display: inline-flex !important;
     align-items: center !important;
@@ -480,51 +479,50 @@ html body .wp-picker-container {
     overflow: visible !important;
 }
 
+/* WP maga állítja a background-color-t inline – azt megtartjuk, csak a keretet/szöveget fixuljuk */
 html body .wp-color-result.button {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 8px !important;
-    padding: 6px 14px 6px 8px !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: 6px 14px !important;
     width: auto !important;
     min-width: 130px !important;
     height: auto !important;
     line-height: 1.4 !important;
-    background: #1c1c28 !important;
-    border: 1px solid rgba(255,255,255,.14) !important;
+    border: 1px solid rgba(255,255,255,.2) !important;
     border-radius: 8px !important;
-    color: rgba(255,255,255,.85) !important;
+    color: #fff !important;          /* fehér szöveg mindig */
     font-size: 12px !important;
+    font-weight: 600 !important;
     cursor: pointer !important;
-    transition: background .15s, border-color .15s !important;
+    transition: filter .15s !important;
     box-shadow: none !important;
     outline: none !important;
-    text-shadow: none !important;
-    overflow: visible !important;
+    text-shadow: 0 1px 3px rgba(0,0,0,.6) !important;
+    overflow: hidden !important;
 }
-html body .wp-color-result.button:hover,
+html body .wp-color-result.button:hover {
+    filter: brightness(1.15) !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
 html body .wp-color-result.button:focus,
 html body .wp-color-result.button:active {
-    background: #24243a !important;
-    color: #fff !important;
-    border-color: rgba(255,255,255,.25) !important;
     box-shadow: none !important;
     outline: none !important;
 }
-/* Swatch ::before – border is csak akkor látszik ha van szín (var fallback = transparent) */
-html body .wp-color-result.button::before {
-    content: '' !important;
-    display: inline-block !important;
-    width: 18px !important; height: 18px !important;
-    border-radius: 4px !important;
-    background: var(--va-sw, transparent) !important;
-    border: 1px solid var(--va-sw, transparent) !important;  /* nincs ring ha nincs szín */
-    flex-shrink: 0 !important;
-    pointer-events: none !important;
+/* ::before TELJESEN ELTÁVOLÍTVA – nem kell, WP a gomb háttere maga a szín */
+html body .wp-color-result.button::before,
+html body .wp-color-result.button::after {
+    display: none !important;
+    content: none !important;
 }
-/* Szöveg span mindig látható */
+/* Szöveg span látható */
 html body .wp-color-result.button .wp-color-result-text {
     display: inline !important;
     visibility: visible !important;
+    color: #fff !important;
 }
 
 /* Popup holder */
