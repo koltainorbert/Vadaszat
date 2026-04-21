@@ -32,6 +32,20 @@ A color picker gomb most az aktuálisan beállított színt mutatja, és az alap
 
 ---
 
+## 2026. 04. 21. – Session #117 (Fehér felirat + kör eltávolítás)
+
+### Mit csináltunk [x]
+- [x] `admin.css`: a color picker gomb felirata minden állapotban fehér (`#fff`)
+- [x] `admin.css`: `::before`, `::after` és `.color-alpha` elemek letiltva a gombon
+- [x] `admin.js`: az aktuális szín szinkron maradt, de feliratszín fixen fehér
+- [x] Cache bust: `VA_VERSION` `1.0.7`
+- [x] Deploy LocalWP-be kész
+
+### Hol tartunk
+A gomb az aktuális színt mutatja, a felirat fehér, a kamu kör elemek eltávolítva.
+
+---
+
 ## 2026. 04. 20. – Session #5 (délután, irodai gép) — BEFEJEZETLEN, OTTHON FOLYTATNI
 
 ### Mit csináltunk [x]
