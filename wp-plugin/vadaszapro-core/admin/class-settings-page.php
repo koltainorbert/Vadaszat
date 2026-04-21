@@ -1585,138 +1585,6 @@ class VA_Settings_Page {
                         <input type="text" class="va-nav-label regular-text" value="<?php echo esc_attr( $item['label'] ); ?>" placeholder="Felirat" style="width:200px;">
                         <input type="text" class="va-nav-url regular-text" value="<?php echo esc_attr( $item['url'] ); ?>" placeholder="/url vagy https://..." style="flex:1;">
                         <button type="button" class="button va-nav-del va-nav-del-btn" title="Törlés">&times;</button>
-
-                <h2>Fejléc: modern színpaletta és árnyékok</h2>
-                <table class="form-table">
-                    <?php self::field_color( 'va_hf_header_color_base',    'Fejléc alapszín (gradient 1)' ); ?>
-                    <?php self::field_color( 'va_hf_header_color_alt',     'Fejléc másodlagos szín (gradient 2)' ); ?>
-                    <?php self::field_color( 'va_hf_header_border_color',  'Fejléc alsó border szín' ); ?>
-                    <?php self::field_text(  'va_hf_header_shadow_color',  'Fejléc fő árnyék szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_header_glow_color',    'Fejléc neon glow szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_header_search_glow_color', 'Kereső glow szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_header_btn_glow_color',    'CTA gomb glow szín (hex/rgba)' ); ?>
-                </table>
-
-                <h2>Fejléc: kereső részletes vezérlés</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_header_search_max_width',        'Kereső max szélesség (px)', 220, 760 ); ?>
-                    <?php self::field_num( 'va_hf_header_search_height',           'Kereső magasság (px)', 30, 64 ); ?>
-                    <?php self::field_num( 'va_hf_header_search_radius',           'Kereső lekerekítés (px)', 8, 999 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_border_alpha', 'Kereső keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_bg_alpha',     'Kereső háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_hover_border_alpha', 'Kereső keret opacitás hover (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_focus_border_alpha', 'Kereső keret opacitás fókusz (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_num( 'va_hf_header_search_icon_size',        'Nagyító ikon méret (px)', 10, 28 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_icon_bg_alpha', 'Nagyító gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_icon_bg_hover_alpha', 'Nagyító gomb háttér opacitás hover (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_text( 'va_hf_header_search_placeholder',      'Kereső placeholder szöveg' ); ?>
-                </table>
-
-                <h2>Fejléc: gombok, feliratok és mobil viselkedés</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_header_btn_radius',          'Header gombok lekerekítés (px)', 8, 999 ); ?>
-                    <?php self::field_num( 'va_hf_header_btn_pad_y',           'Header gombok függőleges padding (px)', 4, 20 ); ?>
-                    <?php self::field_num( 'va_hf_header_btn_pad_x',           'Header gombok vízszintes padding (px)', 8, 40 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Piros gomb glow opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_color( 'va_color_header_submit_hover_bg',   'CTA gomb hover háttér' ); ?>
-                    <?php self::field_color( 'va_color_header_submit_hover_text', 'CTA gomb hover szöveg szín' ); ?>
-                    <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Felhasználó gomb keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_user_bg_alpha',   'Felhasználó gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső megjelenjen mobilon is' ); ?>
-                    <?php self::field_toggle( 'va_hf_header_mobile_show_submit', 'Piros CTA gomb megjelenjen mobilon is' ); ?>
-                    <?php self::field_text( 'va_hf_header_submit_text',        'CTA gomb szöveg (bejelentkezve)' ); ?>
-                    <?php self::field_text( 'va_hf_header_register_text',      'CTA gomb szöveg (vendég)' ); ?>
-                    <?php self::field_text( 'va_hf_header_login_text',         'Belépés gomb szöveg (vendég)' ); ?>
-                    <?php self::field_select( 'va_weight_header_brand', 'Brand név súly/típus', $weights ); ?>
-                    <?php self::field_select( 'va_weight_header_nav',   'Navigáció súly/típus', $weights ); ?>
-                    <?php self::field_num( 'va_size_header_brand',      'Brand név méret (px)', 10, 44 ); ?>
-                    <?php self::field_num( 'va_size_header_nav',        'Navigáció méret (px)', 10, 34 ); ?>
-                    <?php self::field_num( 'va_size_header_search',     'Kereső szövegméret (px)', 10, 30 ); ?>
-                    <?php self::field_num( 'va_size_header_btn',        'Fejléc gomb szövegméret (px)', 10, 30 ); ?>
-                </table>
-
-                <h2>Lábléc: layout, spacing, tipográfia</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_footer_top_padding',        'Lábléc felső padding (px)', 12, 120 ); ?>
-                    <?php self::field_num( 'va_hf_footer_bottom_padding',     'Lábléc alsó padding (px)', 8, 80 ); ?>
-                    <?php self::field_num( 'va_hf_footer_grid_gap',           'Lábléc oszlop gap (px)', 8, 80 ); ?>
-                    <?php self::field_num( 'va_hf_footer_col_min_width',      'Lábléc oszlop minimum szélesség (px)', 120, 420 ); ?>
-                    <?php self::field_num( 'va_hf_footer_title_gap',          'Lábléc oszlopcím alsó margó (px)', 4, 36 ); ?>
-                    <?php self::field_num( 'va_hf_footer_link_pad_y',         'Lábléc link függőleges térköz (px)', 0, 20 ); ?>
-                    <?php self::field_num( 'va_hf_footer_bottom_top_padding', 'Lábléc alsó sor felső padding (px)', 6, 40 ); ?>
-                    <?php self::field_decimal( 'va_hf_footer_border_alpha',   'Lábléc felső keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_footer_bottom_border_alpha', 'Lábléc alsó sor keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_num( 'va_hf_footer_max_width',          'Lábléc tartalom max szélesség (px)', 800, 2200 ); ?>
-                    <?php self::field_select( 'va_weight_footer_title', 'Lábléc címsor súly/típus', $weights ); ?>
-                    <?php self::field_select( 'va_weight_footer_link',  'Lábléc link súly/típus', $weights ); ?>
-                    <?php self::field_num( 'va_size_footer_title',      'Lábléc oszlopcím méret (px)', 10, 34 ); ?>
-                    <?php self::field_num( 'va_size_footer_link',       'Lábléc link méret (px)', 10, 30 ); ?>
-                    <?php self::field_num( 'va_size_footer_bottom',     'Lábléc alsó sor méret (px)', 10, 28 ); ?>
-                </table>
-
-                <h2>Lábléc: modern színpaletta és árnyékok</h2>
-                <table class="form-table">
-                    <?php self::field_color( 'va_hf_footer_color_base',       'Lábléc alapszín (gradient 1)' ); ?>
-                    <?php self::field_color( 'va_hf_footer_color_alt',        'Lábléc másodlagos szín (gradient 2)' ); ?>
-                    <?php self::field_color( 'va_hf_footer_border_color',     'Lábléc border szín' ); ?>
-                    <?php self::field_text(  'va_hf_footer_shadow_color',     'Lábléc árnyék szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_footer_glow_color',       'Lábléc glow szín (hex/rgba)' ); ?>
-                    <?php self::field_color( 'va_hf_footer_link_hover_color', 'Lábléc link hover szín' ); ?>
-                    <?php self::field_media( 'va_hf_footer_logo_url',         'Lábléc logó (opcionális)' ); ?>
-                    <?php self::field_num(   'va_hf_footer_logo_height',      'Lábléc logó magasság (px)', 20, 180 ); ?>
-                </table>
-
-                <h2>Lábléc: összes felirat és link címke</h2>
-                <table class="form-table">
-                    <?php self::field_text( 'va_hf_footer_brand_title',          'Brand oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_col_categories_title', 'Kategóriák oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_col_account_title',    'Fiók oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_col_legal_title',      'Jogi oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_aszf',            'ÁSZF link felirat' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_privacy',         'Adatvédelem link felirat (jogi oszlop)' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_contact',         'Kapcsolat link felirat' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_help',            'Súgó link felirat' ); ?>
-                    <?php self::field_text( 'va_hf_footer_copy_text',            'Copyright szöveg (év után)' ); ?>
-                    <?php self::field_text( 'va_hf_footer_privacy_text',         'Alsó sor adatvédelem link felirat' ); ?>
-                </table>
-
-                <?php submit_button( 'Fejléc + Lábléc mentése' ); ?>
-            </form>
-
-            <!-- ═══ Nav gombok szerkesztő (külön form, JSON mentés) ═══ -->
-            <hr style="margin:32px 0;">
-            <h2>🔗 Navigációs gombok szerkesztése</h2>
-            <p class="description">Rendezd, kapcsold ki/be, vagy adj hozzá új menüpontot. A sorrend drag &amp; drop-pal állítható.</p>
-            <?php
-            $nav_json = get_option( 'va_nav_items_json', '' );
-            $nav_items_saved = [];
-            if ( $nav_json ) {
-                $decoded = json_decode( $nav_json, true );
-                if ( is_array( $decoded ) ) $nav_items_saved = $decoded;
-            }
-            if ( empty( $nav_items_saved ) ) {
-                $nav_items_saved = [
-                    [ 'label' => 'Hirdetések', 'url' => '/va-hirdetes-kereses', 'enabled' => true ],
-                    [ 'label' => 'Kategóriák', 'url' => '/kategoria',           'enabled' => true ],
-                    [ 'label' => 'Kapcsolat',  'url' => '/kapcsolat',           'enabled' => true ],
-                ];
-            }
-            if ( isset( $_GET['va_nav_saved'] ) ): ?>
-                <div class="notice notice-success is-dismissible"><p>Navigációs gombok elmentve.</p></div>
-            <?php endif; ?>
-            <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" id="va-nav-form">
-                <?php wp_nonce_field( 'va_save_nav_items', 'va_nav_nonce' ); ?>
-                <input type="hidden" name="action" value="va_save_nav_items">
-                <input type="hidden" name="va_nav_json" id="va-nav-json-input" value="<?php echo esc_attr( $nav_json ?: wp_json_encode( $nav_items_saved ) ); ?>">
-
-                <div id="va-nav-list" style="max-width:700px;margin-bottom:16px;">
-                    <?php foreach ( $nav_items_saved as $idx => $item ): ?>
-                    <div class="va-nav-row" style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;" draggable="true">
-                        <span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>
-                        <input type="checkbox" class="va-nav-enabled" <?php checked( $item['enabled'] ?? true ); ?> title="Megjelenítés">
-                        <input type="text" class="va-nav-label regular-text" value="<?php echo esc_attr( $item['label'] ); ?>" placeholder="Felirat" style="width:200px;">
-                        <input type="text" class="va-nav-url regular-text" value="<?php echo esc_attr( $item['url'] ); ?>" placeholder="/url vagy https://..." style="flex:1;">
-                        <button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -1746,14 +1614,13 @@ class VA_Settings_Page {
 
                 document.getElementById('va-nav-add').addEventListener('click', function(){
                     var div = document.createElement('div');
-                    div.className = 'va-nav-row';
+                    div.className = 'va-nav-row va-nav-row-modern';
                     div.draggable = true;
-                    div.style.cssText = 'display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;';
-                    div.innerHTML = '<span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>'
+                    div.innerHTML = '<span class="va-nav-drag">&#8597;</span>'
                         + '<input type="checkbox" class="va-nav-enabled" checked title="Megjelenítés">'
                         + '<input type="text" class="va-nav-label regular-text" value="" placeholder="Felirat" style="width:200px;">'
                         + '<input type="text" class="va-nav-url regular-text" value="" placeholder="/url vagy https://..." style="flex:1;">'
-                        + '<button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>';
+                        + '<button type="button" class="button va-nav-del va-nav-del-btn" title="Törlés">&times;</button>';
                     list.appendChild(div);
                     bindDel(div);
                     bindDrag(div);
@@ -1786,7 +1653,9 @@ class VA_Settings_Page {
                 list.querySelectorAll('.va-nav-row').forEach(function(r){ bindDel(r); bindDrag(r); });
             })();
             </script>
-        </div>
+                </div><!-- end padding div -->
+            </div><!-- end va-settings-card -->
+        </div><!-- end wrap -->
         <?php
     }
 
