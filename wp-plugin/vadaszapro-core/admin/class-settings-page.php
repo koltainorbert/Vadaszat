@@ -1228,11 +1228,12 @@ class VA_Settings_Page {
                 <div style="padding:20px;">
                     <div class="va-preset-grid">
                         <?php foreach ( $presets as $preset_key => $preset ):
-                            $swatch_a = $preset['opts']['va_hf_header_color_base'] ?? '#0a0a0a';
-                            $swatch_b = $preset['opts']['va_hf_header_glow_color'] ?? 'rgba(255,0,0,.4)';
+                            $sw_base   = $preset['options']['va_hf_header_color_base']   ?? '#0a0a0a';
+                            $sw_alt    = $preset['options']['va_hf_header_color_alt']    ?? '#1a1a1a';
+                            $sw_accent = $preset['options']['va_hf_header_border_color'] ?? '#ff2020';
                         ?>
                             <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="va-preset-card">
-                                <div class="va-preset-card__swatch" style="background:linear-gradient(90deg,<?php echo esc_attr($swatch_a); ?> 40%,<?php echo esc_attr($swatch_b); ?>);"></div>
+                                <div class="va-preset-card__swatch" style="background:linear-gradient(135deg,<?php echo esc_attr($sw_base); ?> 0%,<?php echo esc_attr($sw_alt); ?> 55%,<?php echo esc_attr($sw_accent); ?> 100%);"></div>
                                 <input type="hidden" name="action" value="va_apply_hf_preset">
                                 <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
                                 <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
