@@ -94,14 +94,11 @@
 
     /* ── Toast helper ─────────────────────────────────────────── */
 
-    /* ── Color swatch frissítő ───────────────────────────────── */
+    /* ── Color swatch frissítő (CSS var, nincs DOM manip) ───── */
     window.vaUpdateSwatch = function($btn, color) {
         var bg = color || ($btn[0] && $btn[0].style && $btn[0].style.backgroundColor);
         if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') return;
-        if (!$btn.find('.va-swatch-dot').length) {
-            $btn.prepend('<span class="va-swatch-dot"></span>');
-        }
-        $btn.find('.va-swatch-dot').css('background', bg);
+        if ($btn[0]) $btn[0].style.setProperty('--va-sw', bg);
     };
 
     window.vaAdminToast = function (msg, type) {
