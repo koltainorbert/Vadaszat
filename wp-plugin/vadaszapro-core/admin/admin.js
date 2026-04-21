@@ -12,39 +12,27 @@
                 var $input   = $(this);
                 var defColor = $input.attr('data-default-color') || $input.val();
 
-                function syncCurrentButton() {
-                    var val = ($input.val() || '').trim();
-                    var $wrap = $input.closest('.wp-picker-container');
-                    var $btn  = $wrap.find('.wp-color-result');
-                    var $dot  = $wrap.find('.va-current-color-dot');
-                    if (!$btn[0]) return;
-                    if (val) {
-                        $btn[0].style.setProperty('background-color', val);
-                        $btn[0].style.setProperty('color', '#ffffff');
-                        if ($dot[0]) $dot[0].style.setProperty('background-color', val);
-                    } else {
-                        $btn[0].style.removeProperty('background-color');
-                        $btn[0].style.setProperty('color', '#ffffff');
-                        if ($dot[0]) $dot[0].style.setProperty('background-color', 'transparent');
-                    }
-                }
-
                 $input.wpColorPicker({
-                    change: function() {
-                        syncCurrentButton();
-                    },
-                    clear: function() {
-                        syncCurrentButton();
-                    }
+                    change: function() { syncSwatch(); },
+                    clear:  function() { syncSwatch(); }
                 });
 
-                // Saját külső kör jelző: mindig az aktuális színt mutatja
-                var $wrap = $input.closest('.wp-picker-container');
-                if ($wrap.length && !$wrap.find('.va-current-color-dot').length) {
-                    $('<span class="va-current-color-dot" aria-hidden="true"></span>').insertAfter($wrap.find('.wp-color-result'));
+                // Swatch injektálás a gomb belsejébe
+                var $wrap   = $input.closest('.wp-picker-container');
+                var $btn    = $wrap.find('.wp-color-result');
+                if ($btn.length && !$btn.find('.va-color-swatch').length) {
+                    $btn.prepend('<span class="va-color-swatch" aria-hidden="true"></span>');
                 }
 
-                syncCurrentButton();
+                function syncSwatch() {
+                    var val = ($input.val() || '').trim();
+                    var $sw = $wrap.find('.va-color-swatch');
+                    if ($sw[0]) {
+                        $sw[0].style.setProperty('background-color', val || 'transparent');
+                    }
+                }
+
+                syncSwatch();
 
                 // Default gomb bal border színe
                 var $defBtn = $wrap.find('.wp-picker-default');

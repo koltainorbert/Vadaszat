@@ -474,19 +474,13 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 html body .wp-picker-container {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 8px !important;
-    flex-wrap: wrap !important;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
     overflow: visible !important;
 }
-html body .wp-picker-container .va-current-color-dot {
-    width: 22px !important;
-    height: 22px !important;
-    border-radius: 50% !important;
-    border: 1px solid rgba(255,255,255,.32) !important;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,.35), 0 0 0 4px rgba(29,36,58,.25) !important;
-    background: transparent !important;
-    display: inline-block !important;
-    flex-shrink: 0 !important;
+/* Minden stray elem a containeren belül el van rejtve kivéve a gombot és a popup-ot */
+html body .wp-picker-container > *:not(.wp-color-result):not(.wp-picker-holder) {
+    display: none !important;
 }
 
 html body .wp-color-result.button,
@@ -496,13 +490,14 @@ html body .wp-color-result.button:active,
 html body .wp-color-result.button:visited {
     display: inline-flex !important;
     align-items: center !important;
-    justify-content: center !important;
-    padding: 6px 14px !important;
+    gap: 8px !important;
+    padding: 5px 14px 5px 8px !important;
     width: auto !important;
     min-width: 130px !important;
     height: auto !important;
     line-height: 1.4 !important;
-    border: 1px solid rgba(255,255,255,.3) !important;
+    background: #1a1a2e !important;
+    border: 1px solid rgba(255,255,255,.22) !important;
     border-radius: 8px !important;
     color: #fff !important;
     font-size: 12px !important;
@@ -515,20 +510,28 @@ html body .wp-color-result.button:visited {
     -webkit-appearance: none !important;
     appearance: none !important;
 }
-/* Szöveg span látható */
+/* Belső swatch négyzet – ez mutatja az aktuális színt */
+html body .wp-color-result.button .va-color-swatch {
+    width: 16px !important;
+    height: 16px !important;
+    border-radius: 4px !important;
+    border: 1px solid rgba(255,255,255,.35) !important;
+    background: transparent !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    pointer-events: none !important;
+}
+/* Szöveg span */
 html body .wp-color-result.button .wp-color-result-text {
     display: inline !important;
     visibility: visible !important;
     color: #fff !important;
     background: transparent !important;
-    background-color: transparent !important;
     border: 0 !important;
     box-shadow: none !important;
-    text-shadow: none !important;
 }
 html body .wp-color-result.button::before,
-html body .wp-color-result.button::after,
-html body .wp-color-result.button .color-alpha {
+html body .wp-color-result.button::after {
     display: none !important;
     content: none !important;
 }
