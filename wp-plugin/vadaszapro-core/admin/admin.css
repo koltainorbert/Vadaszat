@@ -399,14 +399,14 @@ body.va-admin-page input[type="checkbox"],
 body.va-admin-page input[type="radio"] { min-width: auto; accent-color: var(--va-accent); width: 16px; height: 16px; cursor: pointer; }
 
 /* ── Number spin wrapper ───────────────────────────────────────── */
-.va-num-wrap { display: inline-flex; align-items: center; gap: 0; }
+.va-num-wrap { display: inline-flex; align-items: stretch; gap: 0; }
 .va-num-wrap input[type="number"] { border-radius: var(--va-radius-sm) 0 0 var(--va-radius-sm) !important; min-width: 80px; }
 .va-num-spin { display: flex; flex-direction: column; }
 .va-num-spin button {
     background: rgba(255,255,255,.06) !important;
     border: 1px solid rgba(255,255,255,.12) !important;
     color: rgba(255,255,255,.5) !important;
-    width: 26px; height: 19px;
+    width: 26px; flex: 1; min-height: 0;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; padding: 0; font-size: 10px; line-height: 1;
     transition: background .12s, color .12s;

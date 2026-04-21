@@ -4260,11 +4260,13 @@ class VA_Settings_Page {
     }
 
     private static function spin_wrap( string $key, string $input_html ): string {
+        $up   = "var i=this.closest('.va-num-wrap').querySelector('input');var s=parseFloat(i.step)||1;var v=parseFloat(i.value)||0;var mx=i.max!==''?parseFloat(i.max):9999;i.value=Math.min(mx,Math.round((v+s)*10000)/10000);i.dispatchEvent(new Event('change',{bubbles:true}))";
+        $down = "var i=this.closest('.va-num-wrap').querySelector('input');var s=parseFloat(i.step)||1;var v=parseFloat(i.value)||0;var mn=i.min!==''?parseFloat(i.min):0;i.value=Math.max(mn,Math.round((v-s)*10000)/10000);i.dispatchEvent(new Event('change',{bubbles:true}))";
         return '<div class="va-num-wrap">'
             . $input_html
             . '<div class="va-num-spin">'
-            . '<button type="button" tabindex="-1" onclick="(function(el){var v=parseFloat(el.value)||0;el.value=Math.min(' . '9999' . ',v+1);el.dispatchEvent(new Event(\"change\",{bubbles:true}))})(document.getElementById(\"' . $key . '\"))">&#9652;</button>'
-            . '<button type="button" tabindex="-1" onclick="(function(el){var v=parseFloat(el.value)||0;el.value=Math.max(-9999,v-1);el.dispatchEvent(new Event(\"change\",{bubbles:true}))})(document.getElementById(\"' . $key . '\"))">&#9662;</button>'
+            . '<button type="button" tabindex="-1" onclick="' . esc_attr( $up )   . '">&#9652;</button>'
+            . '<button type="button" tabindex="-1" onclick="' . esc_attr( $down ) . '">&#9662;</button>'
             . '</div></div>';
     }
 
