@@ -512,7 +512,8 @@ html body .wp-color-result.button:visited {
     appearance: none !important;
 }
 html body .wp-color-result.button::before,
-html body .wp-color-result.button::after {
+html body .wp-color-result.button::after,
+html body .wp-color-result.button > *:not(.wp-color-result-text) {
     display: none !important;
     content: none !important;
 }
