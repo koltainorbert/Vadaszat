@@ -485,17 +485,26 @@ body.va-admin-page .wp-color-result.button {
     padding: 6px 14px 6px 8px !important;
     min-width: 130px !important;
     background: rgba(255,255,255,.06) !important;
-    border: 1px solid rgba(255,255,255,.15) !important;
+    border: 1px solid rgba(255,255,255,.12) !important;
     border-radius: 8px !important;
     color: rgba(255,255,255,.85) !important;
     font-size: 12px !important;
     height: auto !important;
+    line-height: 1.4 !important;
     cursor: pointer !important;
     transition: background .15s !important;
+    box-shadow: none !important;
+    outline: none !important;
+    text-shadow: none !important;
 }
-body.va-admin-page .wp-color-result.button:hover {
+body.va-admin-page .wp-color-result.button:hover,
+body.va-admin-page .wp-color-result.button:focus,
+body.va-admin-page .wp-color-result.button:active {
     background: rgba(255,255,255,.10) !important;
     color: #fff !important;
+    border-color: rgba(255,255,255,.2) !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 /* Swatch - CSS custom property-vel tolti JS */
 body.va-admin-page .wp-color-result.button::before {
