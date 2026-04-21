@@ -8,16 +8,7 @@
     /* ── Color picker init ────────────────────────────────────── */
     $(function () {
         if ($.fn.wpColorPicker) {
-            $(".va-color-input").wpColorPicker({
-                change: function(event, ui) {
-                    var $btn = $(this).closest('.wp-picker-container').find('.wp-color-result');
-                    vaUpdateSwatch($btn, ui.color.toString());
-                }
-            });
-            // Init után swatch-ok frissítése
-            setTimeout(function() {
-                $('.wp-color-result').each(function() { vaUpdateSwatch($(this), null); });
-            }, 200);
+            $(".va-color-input").wpColorPicker();
         }
 
         /* ── Media picker ─────────────────────────────────────── */
@@ -93,14 +84,6 @@
     });
 
     /* ── Toast helper ─────────────────────────────────────────── */
-
-    /* ── Color swatch frissítő (CSS var, nincs DOM manip) ───── */
-    window.vaUpdateSwatch = function($btn, color) {
-        var bg = color || ($btn[0] && $btn[0].style && $btn[0].style.backgroundColor);
-        if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') return;
-        if ($btn[0]) $btn[0].style.setProperty('--va-sw', bg);
-    };
-
     window.vaAdminToast = function (msg, type) {
         type = type || "success";
         var $toast = $("<div class=\"va-admin-toast va-admin-toast--" + type + "\">" + msg + "</div>");

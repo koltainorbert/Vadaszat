@@ -312,70 +312,27 @@ body.va-admin-page .va-admin-wrap h2 {
 /* Preset kártyák modernizálása */
 .va-preset-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 14px;
-    margin: 16px 0 28px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 12px 0 28px;
 }
 .va-preset-card {
     background: var(--va-bg3);
     border: 1px solid var(--va-border);
-    border-radius: 14px;
-    overflow: hidden;
-    display: flex; flex-direction: column;
-    transition: border-color .2s, transform .15s, box-shadow .2s;
-    cursor: pointer;
+    border-radius: 12px;
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 8px;
+    transition: border-color .2s, transform .15s;
 }
-.va-preset-card:hover {
-    border-color: var(--va-border2);
-    transform: translateY(-3px);
-    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+.va-preset-card:hover { border-color: var(--va-border2); transform: translateY(-2px); }
+.va-preset-card__swatch {
+    width: 100%; height: 6px; border-radius: 3px; margin-bottom: 4px;
 }
-/* Felső preview panel */
-.va-preset-preview {
-    height: 80px;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    padding: 10px 12px;
-    overflow: hidden;
-    flex-shrink: 0;
-}
-.va-preset-preview__bg {
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, var(--c1) 0%, var(--c2) 100%);
-}
-.va-preset-preview__border {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    height: 3px;
-    background: var(--ca);
-    box-shadow: 0 0 12px var(--ca);
-}
-.va-preset-preview__glow {
-    position: absolute; bottom: 10px; right: 10px;
-    width: 50px; height: 50px; border-radius: 50%;
-    background: var(--cg);
-    filter: blur(16px);
-    opacity: .7;
-}
-.va-preset-preview__dots {
-    position: relative; z-index: 1;
-    display: flex; gap: 5px;
-}
-.va-preset-preview__dot {
-    width: 8px; height: 8px; border-radius: 50%;
-    background: rgba(255,255,255,.2);
-}
-.va-preset-preview__dot:first-child { width: 10px; height: 10px; background: var(--ca); box-shadow: 0 0 6px var(--ca); }
-/* Info rész */
-.va-preset-info {
-    padding: 12px 14px 14px;
-    display: flex; flex-direction: column; gap: 6px; flex: 1;
-}
-.va-preset-info strong { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.2; }
-.va-preset-info p { font-size: 11px; color: var(--va-muted); margin: 0; line-height: 1.5; flex: 1; }
-.va-preset-info .button {
-    align-self: flex-start; margin-top: 6px;
-    font-size: 11px !important; padding: 5px 14px !important;
+.va-preset-card strong { font-size: 13px; font-weight: 700; color: #fff; }
+.va-preset-card p { font-size: 12px; color: var(--va-muted); margin: 0; line-height: 1.5; }
+.va-preset-card .button {
+    margin-top: auto; align-self: flex-start;
+    font-size: 11px !important; padding: 5px 12px !important;
 }
 
 /* Nav szerkesztő sor modernizálás */
@@ -471,136 +428,31 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
 /* ── Color picker ──────────────────────────────────────────────── */
-body.va-admin-page .wp-picker-container,
-.va-settings-form .wp-picker-container {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    overflow: visible;
+body.va-admin-page .wp-picker-container {
+    display: inline-flex; align-items: center; gap: 6px;
+    position: relative;
 }
-
-/* Fő szín gomb – body.va-admin-page ÉS .wp-picker-container szelektoros kettős override */
-body.va-admin-page .wp-color-result.button,
-.va-settings-form .wp-color-result.button,
-.wp-picker-container .wp-color-result.button {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    padding: 6px 14px 6px 8px !important;
-    min-width: 130px !important;
-    background: #1c1c28 !important;
-    border: 1px solid rgba(255,255,255,.14) !important;
-    border-radius: 8px !important;
-    color: rgba(255,255,255,.85) !important;
-    font-size: 12px !important;
-    height: auto !important;
-    line-height: 1.4 !important;
-    cursor: pointer !important;
-    transition: background .15s, border-color .15s !important;
-    box-shadow: none !important;
-    outline: none !important;
-    text-shadow: none !important;
+body.va-admin-page .wp-picker-holder {
+    position: absolute !important;
+    top: calc(100% + 6px) !important;
+    left: 0 !important;
+    z-index: 9999 !important;
+    background: var(--va-bg3) !important;
+    border: 1px solid var(--va-border2) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 12px 40px rgba(0,0,0,.6) !important;
+    padding: 10px !important;
 }
-body.va-admin-page .wp-color-result.button:hover,
-body.va-admin-page .wp-color-result.button:focus,
-body.va-admin-page .wp-color-result.button:active,
-.wp-picker-container .wp-color-result.button:hover,
-.wp-picker-container .wp-color-result.button:focus,
-.wp-picker-container .wp-color-result.button:active {
-    background: #24243a !important;
-    color: #fff !important;
-    border-color: rgba(255,255,255,.25) !important;
-    box-shadow: none !important;
-    outline: none !important;
-}
-/* Swatch négyzet ::before – CSS var-ból tölti JS */
-body.va-admin-page .wp-color-result.button::before,
-.wp-picker-container .wp-color-result.button::before {
-    content: '';
-    display: inline-block;
-    width: 18px; height: 18px;
-    border-radius: 4px;
-    background: var(--va-sw, rgba(255,255,255,.15)) !important;
-    border: 1px solid rgba(255,255,255,.2);
-    flex-shrink: 0;
-    pointer-events: none;
-}
-
-/* Popup holder */
-body.va-admin-page .wp-picker-holder,
-.wp-picker-container .wp-picker-holder {
-    z-index: 999999 !important;
-    background: #13131e !important;
-    border: 1px solid rgba(255,255,255,.14) !important;
-    border-radius: 12px !important;
-    box-shadow: 0 20px 60px rgba(0,0,0,.85) !important;
-    padding: 12px !important;
-    overflow: visible !important;
-}
-body.va-admin-page .wp-picker-holder .iris-picker,
-.wp-picker-container .wp-picker-holder .iris-picker { background: transparent !important; }
-body.va-admin-page .wp-picker-holder .iris-square,
-.wp-picker-container .wp-picker-holder .iris-square { border-radius: 6px !important; overflow: hidden; }
-body.va-admin-page .wp-picker-holder .iris-palette-container .iris-palette,
-.wp-picker-container .wp-picker-holder .iris-palette-container .iris-palette {
-    border-radius: 3px !important;
-    width: 22px !important; height: 22px !important;
-}
-body.va-admin-page .wp-picker-input-wrap,
-.wp-picker-container .wp-picker-input-wrap {
-    display: flex; align-items: center; gap: 6px; margin-top: 8px;
-}
-body.va-admin-page .wp-picker-input-wrap input[type="text"],
-.wp-picker-container .wp-picker-input-wrap input[type="text"] {
-    min-width: 80px !important; max-width: 100px !important;
-    font-size: 12px !important; padding: 5px 8px !important;
-}
-body.va-admin-page .wp-picker-input-wrap .button,
-.wp-picker-container .wp-picker-input-wrap .button {
-    font-size: 11px !important; padding: 5px 10px !important;
-    min-width: auto !important; pointer-events: auto !important;
-}
-
-/* "Alapértelmezett" visszaállítás karika gomb */
-body.va-admin-page .wp-picker-default,
-.wp-picker-container .wp-picker-default {
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    padding: 4px 10px 4px 6px !important;
-    margin-top: 2px !important;
-    background: rgba(255,255,255,.04) !important;
-    border: 1px solid rgba(255,255,255,.10) !important;
+body.va-admin-page .wp-color-result {
     border-radius: 6px !important;
-    color: rgba(255,255,255,.55) !important;
-    font-size: 11px !important;
-    cursor: pointer !important;
+    border: 1px solid rgba(255,255,255,.15) !important;
     box-shadow: none !important;
-    outline: none !important;
-    height: auto !important;
-    text-shadow: none !important;
-    min-width: auto !important;
-    transition: background .15s !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    cursor: pointer;
 }
-body.va-admin-page .wp-picker-default:hover,
-.wp-picker-container .wp-picker-default:hover {
-    background: rgba(255,255,255,.09) !important;
-    color: rgba(255,255,255,.8) !important;
-    border-color: rgba(255,255,255,.18) !important;
-    box-shadow: none !important;
-}
-/* A karika a gombon belül */
-body.va-admin-page .wp-picker-default::before,
-.wp-picker-container .wp-picker-default::before {
-    content: '';
-    display: inline-block;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: var(--va-sw, rgba(255,255,255,.2)) !important;
-    border: 1px solid rgba(255,255,255,.2);
-    flex-shrink: 0;
-}
+body.va-admin-page .wp-picker-input-wrap input { min-width: 90px !important; max-width: 130px !important; font-size: 12px !important; padding: 6px 10px !important; }
+
 /* ── Number spinner elrejtés + custom stepper ──────────────────── */
 body.va-admin-page input[type="number"] {
     -moz-appearance: textfield !important;
