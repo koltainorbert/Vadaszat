@@ -505,12 +505,6 @@ html body .wp-color-result.button:visited {
     -webkit-appearance: none !important;
     appearance: none !important;
 }
-/* ::before TELJESEN ELTÁVOLÍTVA – nem kell, WP a gomb háttere maga a szín */
-html body .wp-color-result.button::before,
-html body .wp-color-result.button::after {
-    display: none !important;
-    content: none !important;
-}
 /* Szöveg span látható */
 html body .wp-color-result.button .wp-color-result-text {
     display: inline !important;

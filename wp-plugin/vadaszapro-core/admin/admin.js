@@ -11,11 +11,46 @@
             $(".va-color-input").each(function() {
                 var $input   = $(this);
                 var defColor = $input.attr('data-default-color') || $input.val();
+                var $wrap    = $input.closest('.wp-picker-container');
+                var $btn      = $wrap.find('.wp-color-result');
 
-                $input.wpColorPicker();
+                function vaContrastText(hex) {
+                    if (!hex || hex.charAt(0) !== '#') return '#ffffff';
+                    var c = hex.replace('#', '');
+                    if (c.length === 3) c = c.charAt(0) + c.charAt(0) + c.charAt(1) + c.charAt(1) + c.charAt(2) + c.charAt(2);
+                    if (c.length !== 6) return '#ffffff';
+                    var r = parseInt(c.substr(0, 2), 16);
+                    var g = parseInt(c.substr(2, 2), 16);
+                    var b = parseInt(c.substr(4, 2), 16);
+                    var y = (r * 299 + g * 587 + b * 114) / 1000;
+                    return y >= 160 ? '#111111' : '#ffffff';
+                }
+
+                function syncCurrentButton() {
+                    var val = ($input.val() || '').trim();
+                    if (!$btn[0]) return;
+                    if (val) {
+                        $btn[0].style.setProperty('background-color', val);
+                        $btn[0].style.setProperty('color', vaContrastText(val));
+                    } else {
+                        $btn[0].style.removeProperty('background-color');
+                        $btn[0].style.setProperty('color', '#ffffff');
+                    }
+                }
+
+                $input.wpColorPicker({
+                    change: function() {
+                        syncCurrentButton();
+                    },
+                    clear: function() {
+                        syncCurrentButton();
+                    }
+                });
+
+                syncCurrentButton();
 
                 // Default gomb bal border színe
-                var $defBtn = $input.closest('.wp-picker-container').find('.wp-picker-default');
+                var $defBtn = $wrap.find('.wp-picker-default');
                 if (defColor && $defBtn[0]) {
                     $defBtn[0].style.setProperty('--va-sw-def', defColor);
                 }

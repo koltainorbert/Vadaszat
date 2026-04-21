@@ -17,6 +17,21 @@ A color picker ismét a kiválasztott aktuális színt mutatja, az alapértelmez
 
 ---
 
+## 2026. 04. 21. – Session #116 (Color picker aktuális szín szinkron)
+
+### Mit csináltunk [x]
+- [x] `admin.js`: a `wpColorPicker` change/clear eseményre az aktuális input szín közvetlenül rákerül a `.wp-color-result` gombra
+- [x] Dinamikus kontraszt szövegszín (világos háttérnél sötét, sötét háttérnél fehér)
+- [x] `admin.css`: eltávolítva a `.wp-color-result` pseudo-elemek tiltása
+- [x] Alapértelmezett gomb színjelzése (`--va-sw-def`) megtartva
+- [x] Cache bust: `VA_VERSION` `1.0.6`
+- [x] Deploy LocalWP-be kész
+
+### Hol tartunk
+A color picker gomb most az aktuálisan beállított színt mutatja, és az alapértelmezett szín jelzése is megmarad.
+
+---
+
 ## 2026. 04. 20. – Session #5 (délután, irodai gép) — BEFEJEZETLEN, OTTHON FOLYTATNI
 
 ### Mit csináltunk [x]
