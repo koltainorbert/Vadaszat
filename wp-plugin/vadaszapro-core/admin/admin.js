@@ -98,10 +98,15 @@
 
     /* ── Toast helper ─────────────────────────────────────────── */
 
-    /* ── Color swatch frissítő (CSS var, nincs DOM manip) ───── */
+    /* ── Color swatch frissítő ───────────────────────────────── */
     window.vaUpdateSwatch = function($btn, color) {
         var bg = color || ($btn[0] && $btn[0].style && $btn[0].style.backgroundColor);
-        if (!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent') return;
+        if (!bg) return;
+        // Üres / transparent esetén töröljük (transparent ::before = nincs csúnya négyzet)
+        if (bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent' || bg === '') {
+            if ($btn[0]) $btn[0].style.removeProperty('--va-sw');
+            return;
+        }
         if ($btn[0]) $btn[0].style.setProperty('--va-sw', bg);
     };
 
