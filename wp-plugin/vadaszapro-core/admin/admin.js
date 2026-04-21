@@ -13,26 +13,22 @@
                 var defColor = $input.attr('data-default-color') || $input.val();
 
                 $input.wpColorPicker({
-                    change: function() { syncSwatch(); },
-                    clear:  function() { syncSwatch(); }
+                    change: function() { syncDot(); },
+                    clear:  function() { syncDot(); }
                 });
 
-                // Swatch injektálás a gomb belsejébe
-                var $wrap   = $input.closest('.wp-picker-container');
-                var $btn    = $wrap.find('.wp-color-result');
-                if ($btn.length && !$btn.find('.va-color-swatch').length) {
-                    $btn.prepend('<span class="va-color-swatch" aria-hidden="true"></span>');
+                // Külső színkör a gomb után
+                var $wrap = $input.closest('.wp-picker-container');
+                if (!$wrap.find('.va-clr-dot').length) {
+                    $wrap.append('<span class="va-clr-dot"></span>');
                 }
 
-                function syncSwatch() {
+                function syncDot() {
                     var val = ($input.val() || '').trim();
-                    var $sw = $wrap.find('.va-color-swatch');
-                    if ($sw[0]) {
-                        $sw[0].style.setProperty('background-color', val || 'transparent');
-                    }
+                    var dot = $wrap.find('.va-clr-dot')[0];
+                    if (dot) dot.style.background = val || 'transparent';
                 }
-
-                syncSwatch();
+                syncDot();
 
                 // Default gomb bal border színe
                 var $defBtn = $wrap.find('.wp-picker-default');
