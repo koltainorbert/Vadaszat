@@ -448,24 +448,26 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
 /* ── Custom VA Color Picker ────────────────────────────────────── */
-.va-cpick { position: relative; display: inline-block; }
-.va-cpick__btn { display: inline-flex; align-items: center; gap: 8px; background: var(--va-bg4); border: 1px solid var(--va-border); border-radius: var(--va-radius-sm); padding: 5px 10px; cursor: pointer; color: #fff; font-size: 12px; transition: border-color .15s; }
-.va-cpick__btn:hover { border-color: var(--va-border2); }
-.va-cpick__swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(255,255,255,.15); flex-shrink: 0; }
-.va-cpick__label { font-size: 11px; color: rgba(255,255,255,.5); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.va-cpick__panel { position: absolute; top: calc(100% + 6px); left: 0; z-index: 99999; background: var(--va-bg2); border: 1px solid var(--va-border); border-radius: 10px; padding: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.7); min-width: 220px; }
-.va-cpick__wheel { display: block; width: 100%; height: 140px; border: none; border-radius: 8px; cursor: pointer; background: none; padding: 0; }
-.va-cpick__wheel::-webkit-color-swatch-wrapper { padding: 0; border-radius: 8px; }
-.va-cpick__wheel::-webkit-color-swatch { border: none; border-radius: 8px; }
-.va-cpick__alpha-wrap { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; }
+.va-cpick { display: inline-flex; flex-direction: column; gap: 6px; vertical-align: top; }
+.va-cpick__row { display: flex; align-items: center; gap: 6px; }
+/* Swatch = label, kattintásra nyitja a natív OS pickert */
+.va-cpick__btn { display: flex; align-items: center; cursor: pointer; padding: 0; border: none; background: none; flex-shrink: 0; }
+.va-cpick__swatch { display: block; width: 36px; height: 30px; border-radius: var(--va-radius-sm); border: 2px solid rgba(255,255,255,.18); box-shadow: 0 2px 8px rgba(0,0,0,.4); transition: border-color .15s; }
+.va-cpick__btn:hover .va-cpick__swatch { border-color: var(--va-accent); }
+/* Rejtett natív OS color picker — a label-en belül, invisible */
+.va-cpick__wheel { position: absolute; width: 0; height: 0; padding: 0; border: none; opacity: 0; pointer-events: none; }
+/* Hex/rgba szövegmező */
+.va-cpick__hex { background: var(--va-bg4) !important; border: 1px solid var(--va-border) !important; border-radius: var(--va-radius-sm) !important; color: #fff !important; font-size: 12px !important; padding: 5px 9px !important; font-family: monospace; width: 140px !important; min-width: 0 !important; }
+.va-cpick__hex:focus { border-color: var(--va-accent) !important; outline: none !important; }
+/* Alpha slider sor */
+.va-cpick__alpha-wrap { display: flex; align-items: center; gap: 7px; }
 .va-cpick__alpha-label { font-size: 11px; color: rgba(255,255,255,.4); white-space: nowrap; flex-shrink: 0; }
-.va-cpick__alpha-track { position: relative; flex: 1; height: 12px; border-radius: 999px; background: repeating-linear-gradient(45deg,rgba(255,255,255,.07) 0,rgba(255,255,255,.07) 3px,transparent 3px,transparent 6px); overflow: visible; }
+.va-cpick__alpha-track { position: relative; flex: 1; min-width: 80px; height: 12px; border-radius: 999px; background: repeating-linear-gradient(45deg,rgba(255,255,255,.07) 0,rgba(255,255,255,.07) 3px,transparent 3px,transparent 6px); }
 .va-cpick__alpha-fill { position: absolute; inset: 0; border-radius: 999px; pointer-events: none; }
-.va-cpick__alpha-range { -webkit-appearance: none; appearance: none; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; background: transparent; cursor: pointer; z-index: 2; }
-.va-cpick__alpha-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6); border: none; cursor: pointer; }
-.va-cpick__alpha-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6); border: none; cursor: pointer; }
-.va-cpick__alpha-num { font-size: 11px; color: rgba(255,255,255,.55); min-width: 30px; text-align: right; font-variant-numeric: tabular-nums; flex-shrink: 0; }
-.va-cpick__hex { display: block; width: 100%; margin-top: 8px; background: var(--va-bg4) !important; border: 1px solid var(--va-border) !important; border-radius: var(--va-radius-sm) !important; color: #fff !important; font-size: 12px !important; padding: 5px 8px !important; font-family: monospace; box-sizing: border-box; }
+.va-cpick__alpha-range { -webkit-appearance: none; appearance: none; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; background: transparent; cursor: pointer; }
+.va-cpick__alpha-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,.6); border: none; }
+.va-cpick__alpha-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,.6); border: none; }
+.va-cpick__alpha-num { font-size: 11px; color: rgba(255,255,255,.5); min-width: 30px; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
 
 /* ── Settings kártyák ──────────────────────────────────────────── */
 body.va-admin-page .va-settings-card { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px 24px; margin-bottom: 16px; }
