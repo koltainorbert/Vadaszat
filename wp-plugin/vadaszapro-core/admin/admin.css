@@ -478,6 +478,16 @@ html body .wp-picker-container {
     flex-wrap: wrap !important;
     overflow: visible !important;
 }
+html body .wp-picker-container .va-current-color-dot {
+    width: 22px !important;
+    height: 22px !important;
+    border-radius: 50% !important;
+    border: 1px solid rgba(255,255,255,.32) !important;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.35), 0 0 0 4px rgba(29,36,58,.25) !important;
+    background: transparent !important;
+    display: inline-block !important;
+    flex-shrink: 0 !important;
+}
 
 html body .wp-color-result.button,
 html body .wp-color-result.button:hover,
