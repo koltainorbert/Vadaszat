@@ -525,7 +525,6 @@ body.va-admin-page .wp-color-result.button::before,
     border: 1px solid rgba(255,255,255,.18);
     flex-shrink: 0;
     pointer-events: none;
-    flex-shrink: 0;
 }
 
 /* Popup holder */
@@ -540,7 +539,16 @@ body.va-admin-page .wp-picker-holder,
     overflow: visible !important;
 }
 body.va-admin-page .wp-picker-holder .iris-picker,
-.wp-picker-container .wp-picker-holder .iris-picker { background: transparent !important; }
+.wp-picker-container .wp-picker-holder .iris-picker {
+    background: transparent !important;
+    border: none !important;           /* 3. fehér belső border eltávolítása */
+    box-shadow: none !important;
+}
+body.va-admin-page .wp-picker-holder .iris-picker-inner,
+.wp-picker-container .wp-picker-holder .iris-picker-inner {
+    border: none !important;
+    box-shadow: none !important;
+}
 body.va-admin-page .wp-picker-holder .iris-square,
 .wp-picker-container .wp-picker-holder .iris-square { border-radius: 6px !important; overflow: hidden; }
 body.va-admin-page .wp-picker-holder .iris-palette-container .iris-palette,
@@ -563,18 +571,18 @@ body.va-admin-page .wp-picker-input-wrap .button,
     min-width: auto !important; pointer-events: auto !important;
 }
 
-/* "Alapértelmezett" visszaállítás karika gomb */
+/* "Alapértelmezett" visszaállítás gomb – szine = default szín */
 body.va-admin-page .wp-picker-default,
 .wp-picker-container .wp-picker-default {
     display: inline-flex !important;
     align-items: center !important;
     gap: 6px !important;
-    padding: 4px 10px 4px 6px !important;
-    margin-top: 2px !important;
+    padding: 5px 10px 5px 7px !important;
     background: rgba(255,255,255,.04) !important;
     border: 1px solid rgba(255,255,255,.10) !important;
+    border-left: 3px solid var(--va-sw-def, rgba(255,255,255,.2)) !important; /* 1. default szín */
     border-radius: 6px !important;
-    color: rgba(255,255,255,.55) !important;
+    color: rgba(255,255,255,.6) !important;
     font-size: 11px !important;
     cursor: pointer !important;
     box-shadow: none !important;
@@ -587,21 +595,12 @@ body.va-admin-page .wp-picker-default,
 body.va-admin-page .wp-picker-default:hover,
 .wp-picker-container .wp-picker-default:hover {
     background: rgba(255,255,255,.09) !important;
-    color: rgba(255,255,255,.8) !important;
-    border-color: rgba(255,255,255,.18) !important;
+    color: rgba(255,255,255,.85) !important;
     box-shadow: none !important;
 }
-/* A karika a gombon belül */
+/* 2. karika eltávolítása */
 body.va-admin-page .wp-picker-default::before,
-.wp-picker-container .wp-picker-default::before {
-    content: '';
-    display: inline-block;
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: var(--va-sw, rgba(255,255,255,.2)) !important;
-    border: 1px solid rgba(255,255,255,.2);
-    flex-shrink: 0;
-}
+.wp-picker-container .wp-picker-default::before { display: none !important; }
 /* ── Number spinner elrejtés + custom stepper ──────────────────── */
 body.va-admin-page input[type="number"] {
     -moz-appearance: textfield !important;

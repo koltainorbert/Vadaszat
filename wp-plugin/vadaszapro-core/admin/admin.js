@@ -10,16 +10,43 @@
         if ($.fn.wpColorPicker) {
             $(".va-color-input").each(function() {
                 var $input = $(this);
+                var $container = $input.closest('.wp-picker-container');
+
+                // 1. Default szín a bal border-en a default gombon
+                var defColor = $input.attr('data-default-color') || $input.val();
+
                 $input.wpColorPicker({
                     change: function(event, ui) {
-                        var $btn = $input.closest('.wp-picker-container').find('.wp-color-result');
-                        vaUpdateSwatch($btn, ui.color.toString());
+                        var color = ui.color.toString();
+                        var $btn  = $input.closest('.wp-picker-container').find('.wp-color-result');
+                        // 4. WP inline background-color eltávolítása (MutationObserver kezeli)
+                        vaUpdateSwatch($btn, color);
                     }
                 });
-                // Szinkron init: WP már létrehozta a .wp-color-result gombot,
-                // azonnal beállítjuk a swatch-ot (nincs fehér villanás)
+
+                // 4. MutationObserver: WP inline background-color érkézik → eltávolítás + swatch set
                 var $btn = $input.closest('.wp-picker-container').find('.wp-color-result');
-                var initColor = $input.val() || ($btn[0] && $btn[0].style.backgroundColor);
+                if ($btn[0] && window.MutationObserver) {
+                    new MutationObserver(function(mutations) {
+                        mutations.forEach(function(m) {
+                            var el = m.target;
+                            if (el.style.backgroundColor) {
+                                var c = el.style.backgroundColor;
+                                el.style.removeProperty('background-color');
+                                vaUpdateSwatch($btn, c);
+                            }
+                        });
+                    }).observe($btn[0], { attributes: true, attributeFilter: ['style'] });
+                }
+
+                // 1. Default gomb színének beállítása
+                var $defBtn = $input.closest('.wp-picker-container').find('.wp-picker-default');
+                if (defColor && $defBtn[0]) {
+                    $defBtn[0].style.setProperty('--va-sw-def', defColor);
+                }
+
+                // Init: jelenlegi érték swatch-ként
+                var initColor = $input.val();
                 if (initColor) vaUpdateSwatch($btn, initColor);
             });
         }
