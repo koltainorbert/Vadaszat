@@ -478,10 +478,6 @@ html body .wp-picker-container {
     flex-wrap: nowrap !important;
     overflow: visible !important;
 }
-/* Minden stray elem elrejtve (eredeti input, stb.) */
-html body .wp-picker-container > *:not(.wp-color-result):not(.wp-picker-holder):not(.va-clr-dot) {
-    display: none !important;
-}
 
 html body .wp-color-result.button,
 html body .wp-color-result.button:hover,
