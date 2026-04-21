@@ -46,6 +46,21 @@ A gomb az aktuális színt mutatja, a felirat fehér, a kamu kör elemek eltávo
 
 ---
 
+## 2026. 04. 21. – Session #118 (Külső aktuális színkör szinkron)
+
+### Mit csináltunk [x]
+- [x] `admin.js`: color picker elemek lekérése javítva init UTÁN (valós `.wp-picker-container`)
+- [x] `admin.js`: új `.va-current-color-dot` kör hozzáadása a gomb mellé minden `va-color-input` mezőhöz
+- [x] `admin.js`: kör és gomb háttér mindig az aktuális kiválasztott színre frissül (`change`/`clear` + init)
+- [x] `admin.css`: `.va-current-color-dot` stílus (kerek, kerettel, látható)
+- [x] Cache bust: `VA_VERSION` `1.0.8`
+- [x] Deploy LocalWP-be kész
+
+### Hol tartunk
+A gomb mellett lévő kis kör mostantól mindig az aktuálisan beállított színt mutatja.
+
+---
+
 ## 2026. 04. 20. – Session #5 (délután, irodai gép) — BEFEJEZETLEN, OTTHON FOLYTATNI
 
 ### Mit csináltunk [x]
