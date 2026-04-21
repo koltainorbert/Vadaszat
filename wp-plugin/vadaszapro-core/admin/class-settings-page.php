@@ -1614,14 +1614,13 @@ class VA_Settings_Page {
 
                 document.getElementById('va-nav-add').addEventListener('click', function(){
                     var div = document.createElement('div');
-                    div.className = 'va-nav-row';
+                    div.className = 'va-nav-row va-nav-row-modern';
                     div.draggable = true;
-                    div.style.cssText = 'display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;';
-                    div.innerHTML = '<span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>'
+                    div.innerHTML = '<span class="va-nav-drag">&#8597;</span>'
                         + '<input type="checkbox" class="va-nav-enabled" checked title="Megjelenítés">'
                         + '<input type="text" class="va-nav-label regular-text" value="" placeholder="Felirat" style="width:200px;">'
                         + '<input type="text" class="va-nav-url regular-text" value="" placeholder="/url vagy https://..." style="flex:1;">'
-                        + '<button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>';
+                        + '<button type="button" class="button va-nav-del va-nav-del-btn" title="Törlés">&times;</button>';
                     list.appendChild(div);
                     bindDel(div);
                     bindDrag(div);
@@ -1654,7 +1653,9 @@ class VA_Settings_Page {
                 list.querySelectorAll('.va-nav-row').forEach(function(r){ bindDel(r); bindDrag(r); });
             })();
             </script>
-        </div>
+                </div><!-- end padding div -->
+            </div><!-- end va-settings-card -->
+        </div><!-- end wrap -->
         <?php
     }
 
