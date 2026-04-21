@@ -479,7 +479,8 @@ html body .wp-picker-container {
     overflow: visible !important;
 }
 
-/* WP maga állítja a background-color-t inline – azt megtartjuk, csak a keretet/szöveget fixuljuk */
+/* WP inline background-color-t felülírjuk !important-tal, JS állítja --va-btn-bg változót.
+   Ha nincs szín (init / transparent): gomb átlátszó. */
 html body .wp-color-result.button {
     display: inline-flex !important;
     align-items: center !important;
@@ -490,6 +491,7 @@ html body .wp-color-result.button {
     min-width: 130px !important;
     height: auto !important;
     line-height: 1.4 !important;
+    background-color: var(--va-btn-bg, transparent) !important;  /* JS állítja, default: transparent */
     border: 1px solid rgba(255,255,255,.2) !important;
     border-radius: 8px !important;
     color: #fff !important;          /* fehér szöveg mindig */
