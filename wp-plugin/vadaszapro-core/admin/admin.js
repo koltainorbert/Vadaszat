@@ -14,13 +14,17 @@
 
                 $input.wpColorPicker();
 
-                // WP inline background-color felülírása !important-tal
+                // WP inline background-color felülírása – guard flag az infinite loop ellen
                 var btn = $input.closest('.wp-picker-container').find('.wp-color-result')[0];
+                var forcing = false;
                 function forceBtnStyle() {
+                    if (forcing) return;
+                    forcing = true;
                     if (btn) {
-                        btn.style.setProperty('background-color', '#000', 'important');
-                        btn.style.setProperty('color', '#fff', 'important');
+                        btn.style.setProperty('background-color', '#000000', 'important');
+                        btn.style.setProperty('color', '#ffffff', 'important');
                     }
+                    forcing = false;
                 }
                 forceBtnStyle();
                 if (btn && window.MutationObserver) {
