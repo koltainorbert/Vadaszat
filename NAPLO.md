@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 04. 21. – Session #115 (Color picker visszaállítás)
+
+### Mit csináltunk [x]
+- [x] Eltávolítva a színválasztó gomb fekete kényszerítése (JS + inline style)
+- [x] Visszaállítva a WordPress natív aktuális-szín megjelenítés
+- [x] „Alapértelmezett” visszaállítás gomb működése megtartva
+- [x] Color result szöveg-blokk fehér hátterének tiltása (`transparent`), border törlés
+- [x] Asset cache bust: `VA_VERSION` emelve `1.0.5`-re
+- [x] Plugin deploy LocalWP-be megtörtént
+
+### Hol tartunk
+A color picker ismét a kiválasztott aktuális színt mutatja, az alapértelmezett visszaállítás használható.
+
+---
+
 ## 2026. 04. 20. – Session #5 (délután, irodai gép) — BEFEJEZETLEN, OTTHON FOLYTATNI
 
 ### Mit csináltunk [x]
