@@ -272,6 +272,14 @@ class VA_Settings_Page {
             'va_hf_header_register_text'           => 'Regisztráció',
             'va_hf_header_login_text'              => 'Bejelentkezés',
 
+            // Fejléc nav link és gomb hover színek
+            'va_color_header_nav_link'             => '#ffffff',
+            'va_color_header_nav_hover'            => '#ff2020',
+            'va_color_header_login_hover_bg'       => 'rgba(255,255,255,.08)',
+            'va_color_header_login_hover_text'     => '#ffffff',
+            'va_color_header_register_hover_bg'    => '#cc0000',
+            'va_color_header_register_hover_text'  => '#ffffff',
+
             // Lábléc layout/kinézet
             'va_hf_footer_top_padding'             => 48,
             'va_hf_footer_bottom_padding'          => 24,
@@ -361,6 +369,12 @@ class VA_Settings_Page {
             'va_hf_header_btn_glow_color',
             'va_color_header_submit_hover_bg',
             'va_color_header_submit_hover_text',
+            'va_color_header_nav_link',
+            'va_color_header_nav_hover',
+            'va_color_header_login_hover_bg',
+            'va_color_header_login_hover_text',
+            'va_color_header_register_hover_bg',
+            'va_color_header_register_hover_text',
             'va_hf_header_user_border_alpha',
             'va_hf_header_user_bg_alpha',
             'va_hf_header_mobile_show_search',
