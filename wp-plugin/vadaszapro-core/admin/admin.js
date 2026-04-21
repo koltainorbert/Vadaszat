@@ -8,16 +8,20 @@
     /* ── Color picker init ────────────────────────────────────── */
     $(function () {
         if ($.fn.wpColorPicker) {
-            $(".va-color-input").wpColorPicker({
-                change: function(event, ui) {
-                    var $btn = $(this).closest('.wp-picker-container').find('.wp-color-result');
-                    vaUpdateSwatch($btn, ui.color.toString());
-                }
+            $(".va-color-input").each(function() {
+                var $input = $(this);
+                $input.wpColorPicker({
+                    change: function(event, ui) {
+                        var $btn = $input.closest('.wp-picker-container').find('.wp-color-result');
+                        vaUpdateSwatch($btn, ui.color.toString());
+                    }
+                });
+                // Szinkron init: WP már létrehozta a .wp-color-result gombot,
+                // azonnal beállítjuk a swatch-ot (nincs fehér villanás)
+                var $btn = $input.closest('.wp-picker-container').find('.wp-color-result');
+                var initColor = $input.val() || ($btn[0] && $btn[0].style.backgroundColor);
+                if (initColor) vaUpdateSwatch($btn, initColor);
             });
-            // Init után swatch-ok frissítése
-            setTimeout(function() {
-                $('.wp-color-result').each(function() { vaUpdateSwatch($(this), null); });
-            }, 200);
         }
 
         /* ── Media picker ─────────────────────────────────────── */

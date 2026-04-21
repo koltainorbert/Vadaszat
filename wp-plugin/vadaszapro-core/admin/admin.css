@@ -514,17 +514,18 @@ body.va-admin-page .wp-color-result.button:active,
     box-shadow: none !important;
     outline: none !important;
 }
-/* Swatch négyzet ::before – CSS var-ból tölti JS */
+/* Swatch négyzet ::before – CSS var-ból tölti JS, transparent fallback (nincs ronda fehér) */
 body.va-admin-page .wp-color-result.button::before,
 .wp-picker-container .wp-color-result.button::before {
     content: '';
     display: inline-block;
     width: 18px; height: 18px;
     border-radius: 4px;
-    background: var(--va-sw, rgba(255,255,255,.15)) !important;
-    border: 1px solid rgba(255,255,255,.2);
+    background: var(--va-sw, transparent) !important;
+    border: 1px solid rgba(255,255,255,.18);
     flex-shrink: 0;
     pointer-events: none;
+    flex-shrink: 0;
 }
 
 /* Popup holder */
