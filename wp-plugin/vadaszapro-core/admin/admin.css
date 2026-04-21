@@ -447,32 +447,25 @@ body.va-admin-page .button-primary:hover { background: var(--va-accent2) !import
 .va-media-field .va-media-input { min-width: 320px !important; }
 .va-media-preview { width: 60px; height: 60px; object-fit: contain; background: var(--va-bg2); border: 1px solid var(--va-border2); border-radius: 8px; padding: 4px; display: block; }
 
-/* ── Color picker ──────────────────────────────────────────────── */
-body.va-admin-page .wp-picker-container { display: inline-flex; align-items: center; gap: 6px; position: relative; }
-body.va-admin-page .wp-color-result { border-radius: 6px !important; border: 1px solid rgba(255,255,255,.15) !important; box-shadow: none !important; padding: 5px 10px !important; font-size: 12px !important; cursor: pointer; }
-body.va-admin-page .wp-picker-input-wrap input { min-width: 90px !important; max-width: 130px !important; font-size: 12px !important; padding: 6px 10px !important; }
-/* iris picker – sötét UI, középre igazítva */
-body.va-admin-page .iris-picker,
-body.va-admin-page .iris-picker.ui-widget-content { background: var(--va-bg2) !important; border: 1px solid var(--va-border) !important; border-radius: 10px !important; box-shadow: 0 8px 32px rgba(0,0,0,.7) !important; padding: 10px !important; z-index: 999999 !important; position: absolute !important; left: 50% !important; transform: translateX(-50%) !important; }
-body.va-admin-page .iris-picker .ui-widget-content { background: transparent !important; border: none !important; }
-body.va-admin-page .iris-picker .iris-picker-inner { border-radius: 6px !important; overflow: hidden; border: none !important; }
-body.va-admin-page .iris-picker .iris-slider-offset { background: transparent !important; border: none !important; }
-body.va-admin-page .iris-picker .iris-square { border-radius: 6px !important; border: none !important; outline: none !important; }
-body.va-admin-page .iris-picker .iris-palette-container { padding: 6px 0 2px !important; background: transparent !important; border: none !important; }
-body.va-admin-page .iris-picker .iris-palette { border-radius: 4px !important; border: none !important; outline: 2px solid transparent !important; transition: outline .12s; box-shadow: none !important; }
-body.va-admin-page .iris-picker .iris-palette:hover { outline: 2px solid rgba(255,255,255,.5) !important; }
-body.va-admin-page .iris-picker .ui-slider { background: rgba(255,255,255,.12) !important; border: none !important; border-radius: 999px !important; outline: none !important; }
-body.va-admin-page .iris-picker .ui-slider-handle { background: #fff !important; border: none !important; border-radius: 50% !important; box-shadow: 0 1px 4px rgba(0,0,0,.5) !important; width: 14px !important; height: 14px !important; top: -3px !important; outline: none !important; }
-body.va-admin-page .iris-picker .iris-strip { border-radius: 4px !important; border: none !important; outline: none !important; }
-body.va-admin-page .iris-picker .iris-strip-square { border: none !important; outline: none !important; }
-/* ── Alpha slider ────────────────────────────────────────────── */
-.va-alpha-row { display: flex; align-items: center; gap: 8px; margin: 10px 4px 2px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.09); }
-.va-alpha-label { font-size: 11px; color: rgba(255,255,255,.4); white-space: nowrap; flex-shrink: 0; }
-.va-alpha-track { position: relative; flex: 1; height: 12px; border-radius: 999px; background: repeating-linear-gradient(45deg,rgba(255,255,255,.08) 0,rgba(255,255,255,.08) 3px,transparent 3px,transparent 6px); }
-.va-alpha-fill { position: absolute; inset: 0; border-radius: 999px; pointer-events: none; }
-.va-alpha-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; z-index: 2; }
-.va-alpha-thumb { position: absolute; top: 50%; transform: translate(-50%,-50%); width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6); pointer-events: none; z-index: 1; transition: left .05s; }
-.va-alpha-num { font-size: 11px; color: rgba(255,255,255,.55); min-width: 30px; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+/* ── Custom VA Color Picker ────────────────────────────────────── */
+.va-cpick { position: relative; display: inline-block; }
+.va-cpick__btn { display: inline-flex; align-items: center; gap: 8px; background: var(--va-bg4); border: 1px solid var(--va-border); border-radius: var(--va-radius-sm); padding: 5px 10px; cursor: pointer; color: #fff; font-size: 12px; transition: border-color .15s; }
+.va-cpick__btn:hover { border-color: var(--va-border2); }
+.va-cpick__swatch { width: 18px; height: 18px; border-radius: 4px; border: 1px solid rgba(255,255,255,.15); flex-shrink: 0; }
+.va-cpick__label { font-size: 11px; color: rgba(255,255,255,.5); max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.va-cpick__panel { position: absolute; top: calc(100% + 6px); left: 0; z-index: 99999; background: var(--va-bg2); border: 1px solid var(--va-border); border-radius: 10px; padding: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.7); min-width: 220px; }
+.va-cpick__wheel { display: block; width: 100%; height: 140px; border: none; border-radius: 8px; cursor: pointer; background: none; padding: 0; }
+.va-cpick__wheel::-webkit-color-swatch-wrapper { padding: 0; border-radius: 8px; }
+.va-cpick__wheel::-webkit-color-swatch { border: none; border-radius: 8px; }
+.va-cpick__alpha-wrap { display: flex; align-items: center; gap: 8px; margin: 10px 0 0; }
+.va-cpick__alpha-label { font-size: 11px; color: rgba(255,255,255,.4); white-space: nowrap; flex-shrink: 0; }
+.va-cpick__alpha-track { position: relative; flex: 1; height: 12px; border-radius: 999px; background: repeating-linear-gradient(45deg,rgba(255,255,255,.07) 0,rgba(255,255,255,.07) 3px,transparent 3px,transparent 6px); overflow: visible; }
+.va-cpick__alpha-fill { position: absolute; inset: 0; border-radius: 999px; pointer-events: none; }
+.va-cpick__alpha-range { -webkit-appearance: none; appearance: none; position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; background: transparent; cursor: pointer; z-index: 2; }
+.va-cpick__alpha-range::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6); border: none; cursor: pointer; }
+.va-cpick__alpha-range::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.6); border: none; cursor: pointer; }
+.va-cpick__alpha-num { font-size: 11px; color: rgba(255,255,255,.55); min-width: 30px; text-align: right; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+.va-cpick__hex { display: block; width: 100%; margin-top: 8px; background: var(--va-bg4) !important; border: 1px solid var(--va-border) !important; border-radius: var(--va-radius-sm) !important; color: #fff !important; font-size: 12px !important; padding: 5px 8px !important; font-family: monospace; box-sizing: border-box; }
 
 /* ── Settings kártyák ──────────────────────────────────────────── */
 body.va-admin-page .va-settings-card { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 20px 24px; margin-bottom: 16px; }
