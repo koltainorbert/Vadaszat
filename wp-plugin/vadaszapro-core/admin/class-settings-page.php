@@ -1228,17 +1228,31 @@ class VA_Settings_Page {
                 <div style="padding:20px;">
                     <div class="va-preset-grid">
                         <?php foreach ( $presets as $preset_key => $preset ):
-                            $swatch_a = $preset['opts']['va_hf_header_color_base'] ?? '#0a0a0a';
-                            $swatch_b = $preset['opts']['va_hf_header_glow_color'] ?? 'rgba(255,0,0,.4)';
+                            $o  = $preset['options'] ?? [];
+                            $c1 = esc_attr( $o['va_hf_header_color_base']      ?? '#0a0a0a' );
+                            $c2 = esc_attr( $o['va_hf_header_color_alt']       ?? '#1a0a0a' );
+                            $ca = esc_attr( $o['va_hf_header_border_color']    ?? '#ff2020' );
+                            $cg = esc_attr( $o['va_hf_header_glow_color']      ?? 'rgba(255,0,0,.4)' );
                         ?>
                             <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="va-preset-card">
-                                <div class="va-preset-card__swatch" style="background:linear-gradient(90deg,<?php echo esc_attr($swatch_a); ?> 40%,<?php echo esc_attr($swatch_b); ?>);"></div>
-                                <input type="hidden" name="action" value="va_apply_hf_preset">
-                                <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
-                                <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
-                                <strong><?php echo esc_html( $preset['label'] ); ?></strong>
-                                <p><?php echo esc_html( $preset['desc'] ); ?></p>
-                                <button type="submit" class="button button-secondary">Alkalmazás</button>
+                                <div class="va-preset-preview" style="--c1:<?php echo $c1; ?>;--c2:<?php echo $c2; ?>;--ca:<?php echo $ca; ?>;--cg:<?php echo $cg; ?>;">
+                                    <div class="va-preset-preview__bg"></div>
+                                    <div class="va-preset-preview__glow"></div>
+                                    <div class="va-preset-preview__border"></div>
+                                    <div class="va-preset-preview__dots">
+                                        <div class="va-preset-preview__dot"></div>
+                                        <div class="va-preset-preview__dot" style="background:rgba(255,255,255,.1)"></div>
+                                        <div class="va-preset-preview__dot" style="background:rgba(255,255,255,.06)"></div>
+                                    </div>
+                                </div>
+                                <div class="va-preset-info">
+                                    <input type="hidden" name="action" value="va_apply_hf_preset">
+                                    <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
+                                    <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
+                                    <strong><?php echo esc_html( $preset['label'] ); ?></strong>
+                                    <p><?php echo esc_html( $preset['desc'] ); ?></p>
+                                    <button type="submit" class="button button-secondary">Alkalmazás</button>
+                                </div>
                             </form>
                         <?php endforeach; ?>
                     </div>
