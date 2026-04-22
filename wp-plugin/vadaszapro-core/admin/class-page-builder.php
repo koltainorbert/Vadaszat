@@ -796,14 +796,8 @@ class VA_Page_Builder {
             head.textContent = (def ? def.label : block.type) + ' beállítások';
             body.innerHTML = buildSettingsForm(block, def);
 
-            // Szín picker szinkron
-            body.querySelectorAll('.pb-color-picker').forEach(function(picker) {
-                picker.addEventListener('input', function() {
-                    var textId = this.getAttribute('data-for');
-                    var txt = document.getElementById(textId);
-                    if (txt) { txt.value = this.value; onFieldChange(textId, this.value); }
-                });
-            });
+            // VA Color Picker inicializálás
+            if (window.vaInitColorPickers) { window.vaInitColorPickers($(body)); }
 
             // Input change events
             body.querySelectorAll('.pb-input[data-key]').forEach(function(input) {
@@ -868,9 +862,7 @@ class VA_Page_Builder {
                     break;
                 case 'color': {
                     var hexVal = String(value||'#000000');
-                    var isHex = /^#[0-9a-fA-F]{3,8}$/.test(hexVal);
-                    var pickerVal = isHex ? hexVal : '#000000';
-                    input = '<div class="pb-color-wrap"><input type="color" class="pb-color-picker" data-for="' + id + '" value="' + escAttr(pickerVal) + '"><input type="text" id="' + id + '" class="pb-input pb-color-text" data-key="' + field.key + '"' + da + ' value="' + escAttr(hexVal) + '" placeholder="#000000"></div>';
+                    input = '<input type="text" id="' + id + '" class="pb-input pb-color-text va-color-input" data-key="' + field.key + '"' + da + ' value="' + escAttr(hexVal) + '" placeholder="#000000">';
                     break;
                 }
                 case 'number':
