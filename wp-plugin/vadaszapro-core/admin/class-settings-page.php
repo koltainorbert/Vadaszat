@@ -1379,7 +1379,7 @@ class VA_Settings_Page {
                                 <?php self::field_num( 'va_hf_header_btn_pad_y',           'Függőleges padding (px)', 4, 20 ); ?>
                                 <?php self::field_num( 'va_hf_header_btn_pad_x',           'Vízszintes padding (px)', 8, 40 ); ?>
                                 <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Glow opacitás (0-1)', 0, 1, 0.01 ); ?>
-                                <?php self::field_color( '\',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_submit_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
                                 <?php self::field_color( 'va_color_header_submit_hover_text', 'Hover szöveg szín' ); ?>
                                 <?php self::field_text( 'va_hf_header_submit_text',           'Felirat (bejelentkezve)' ); ?>
                             </table>
@@ -1393,7 +1393,7 @@ class VA_Settings_Page {
                         </div>
                         <div class="va-settings-card__body">
                             <table class="form-table">
-                                <?php self::field_color( '\',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_login_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
                                 <?php self::field_color( 'va_color_header_login_hover_text', 'Hover szöveg szín' ); ?>
                                 <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Keret opacitás (0-1)', 0, 1, 0.01 ); ?>
                                 <?php self::field_decimal( 'va_hf_header_user_bg_alpha',     'Háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
@@ -1409,7 +1409,7 @@ class VA_Settings_Page {
                         </div>
                         <div class="va-settings-card__body">
                             <table class="form-table">
-                                <?php self::field_color( '\',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_register_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
                                 <?php self::field_color( 'va_color_header_register_hover_text', 'Hover szöveg szín' ); ?>
                                 <?php self::field_text( 'va_hf_header_register_text',            'Felirat (vendégként)' ); ?>
                             </table>
