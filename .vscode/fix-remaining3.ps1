@@ -2,7 +2,7 @@ $file = "d:\Vadaszat2026\wp-plugin\vadaszapro-core\admin\class-settings-page.php
 $lines = [System.IO.File]::ReadAllLines($file, [System.Text.Encoding]::UTF8)
 
 $o = [char]0x00F6  # o umlaut
-$O1 = [char]0x0151 # o double acute (o")
+$O1 = [char]0x0171 # u double acute (u")
 $a = [char]0x00E1  # a acute
 $e = [char]0x00E9  # e acute
 $i = [char]0x00ED  # i acute
