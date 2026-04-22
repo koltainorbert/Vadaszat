@@ -1147,8 +1147,8 @@ class VA_Settings_Page {
 
                 <h2>🏷️ Badge háttér és keret</h2>
                 <table class="form-table">
-                    <?php self::field_color( '\',     'Háttér szín (rgba vagy hex)' ); ?>
-                    <?php self::field_color( '\', 'Keret szín (rgba vagy hex)' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_bg',         'Hatter szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_border',      'Keret szin' ); ?>
                     <?php self::field_color( 'va_color_hero_badge_text',   'Szöveg szín' ); ?>
                 </table>
 
@@ -1156,23 +1156,23 @@ class VA_Settings_Page {
                 <table class="form-table">
                     <?php self::field_color( 'va_color_hero_title',      'Cím szöveg szín' ); ?>
                     <?php self::field_color( 'va_color_hero_title_span', 'Cím kiemelt szó szín (span)' ); ?>
-                    <?php self::field_color( '\',        'Alcím szín (rgba vagy hex)' ); ?>
+                    <?php self::field_color( 'va_color_hero_sub',               'Alcim szin' ); ?>
                 </table>
 
                 <h2>🔴 Piros (primary) gomb</h2>
                 <table class="form-table">
                     <?php self::field_color( 'va_color_hero_btn_primary_bg',         'Háttér' ); ?>
-                    <?php self::field_color( '\',      'Hover háttér (hex vagy rgba – pl. rgba(255,0,0,0.3) üveg hatáshoz)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_hover', 'Hover hatter' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_text',       'Szöveg szín' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_hover_text', 'Hover szöveg szín' ); ?>
-                    <?php self::field_color( '\',       'Glow szín (rgba)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_glow',  'Glow szin' ); ?>
                 </table>
 
                 <h2>👻 Ghost gomb</h2>
                 <table class="form-table">
-                    <?php self::field_color( '\',          'Háttér (rgba)' ); ?>
-                    <?php self::field_color( '\',       'Keret szín (rgba)' ); ?>
-                    <?php self::field_color( '\',        'Hover háttér (rgba)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_bg',      'Hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_border',  'Keret szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_hover',   'Hover hatter' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_ghost_text',         'Szöveg szín' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_ghost_hover_text',   'Hover szöveg szín' ); ?>
                 </table>
@@ -1260,7 +1260,7 @@ class VA_Settings_Page {
                         </div>
                         <div class="va-settings-card__body">
                             <table class="form-table">
-                                <?php self::field_color( '\',     'Háttér (hex vagy rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_bg',     'Hatter' ); ?>
                                 <?php self::field_color( 'va_color_header_text',   'Szöveg szín' ); ?>
                                 <?php self::field_color( 'va_color_header_accent', 'Accent szín' ); ?>
                             </table>
@@ -1333,10 +1333,10 @@ class VA_Settings_Page {
                                 <?php self::field_color( 'va_hf_header_color_base',    'Gradient alap szín' ); ?>
                                 <?php self::field_color( 'va_hf_header_color_alt',     'Gradient másodlagos szín' ); ?>
                                 <?php self::field_color( 'va_hf_header_border_color',  'Alsó border szín' ); ?>
-                                <?php self::field_color( '\',  'Fő árnyék szín (hex/rgba)' ); ?>
-                                <?php self::field_color( '\',    'Fejléc neon glow (hex/rgba)' ); ?>
-                                <?php self::field_color( '\', 'Kereső glow szín (hex/rgba)' ); ?>
-                                <?php self::field_color( '\',    'CTA gomb glow szín (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_hf_header_shadow_color',      'Fo arnyak szin' ); ?>
+                                <?php self::field_color( 'va_hf_header_glow_color',        'Fejlec neon glow' ); ?>
+                                <?php self::field_color( 'va_hf_header_search_glow_color', 'Kereso glow szin' ); ?>
+                                <?php self::field_color( 'va_hf_header_btn_glow_color',    'CTA gomb glow szin' ); ?>
                             </table>
                         </div>
                     </div>
@@ -1487,7 +1487,7 @@ class VA_Settings_Page {
                         <div class="va-settings-card__body">
                             <table class="form-table">
                                 <?php self::field_color( 'va_color_footer_bg',       'Háttér alapszín' ); ?>
-                                <?php self::field_color( '\',     'Szöveg szín (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_footer_text',     'Szoveg szin' ); ?>
                                 <?php self::field_color( 'va_color_footer_headings', 'Oszlop cím szín' ); ?>
                                 <?php self::field_color( 'va_color_footer_links',    'Link alapszín' ); ?>
                                 <?php self::field_color( 'va_hf_footer_color_base',  'Gradient alap' ); ?>
