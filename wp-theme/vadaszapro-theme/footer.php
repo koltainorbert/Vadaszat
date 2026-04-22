@@ -178,42 +178,32 @@
 <?php
 /* ── Back-to-top gomb ──────────────────────────────────────── */
 if ( get_option( 'va_btt_enabled', '1' ) === '1' ) :
-    $btt_style    = sanitize_key( (string) get_option( 'va_btt_style',      'circle' ) );
-    $btt_icon_key = sanitize_key( (string) get_option( 'va_btt_icon',       'chevron' ) );
-    $btt_color    = va_design_css_color( (string) get_option( 'va_btt_color',    '#ff0000' ), '#ff0000' );
-    $btt_txtcolor = va_design_css_color( (string) get_option( 'va_btt_text_color','#ffffff' ), '#ffffff' );
-    $btt_size     = max( 32, min( 80, absint( get_option( 'va_btt_size',     48 ) ) ) );
+    $btt_style    = sanitize_key( (string) get_option( 'va_btt_style',        'circle' ) );
+    $btt_icon_cls = strip_tags( trim( (string) get_option( 'va_btt_icon',     'fa-solid fa-chevron-up' ) ) );
+    $btt_color    = va_design_css_color( (string) get_option( 'va_btt_color',         '#ff0000' ), '#ff0000' );
+    $btt_border   = va_design_css_color( (string) get_option( 'va_btt_border_color',  '#ff0000' ), '#ff0000' );
+    $btt_txtcolor = va_design_css_color( (string) get_option( 'va_btt_text_color',    '#ffffff' ), '#ffffff' );
+    $btt_size     = max( 32, min( 80, absint( get_option( 'va_btt_size',       48 ) ) ) );
     $btt_pos      = get_option( 'va_btt_position', 'right' ) === 'left' ? 'left' : 'right';
-    $btt_ox       = max( 0, min( 120, absint( get_option( 'va_btt_offset_x', 28 ) ) ) );
-    $btt_oy       = max( 0, min( 120, absint( get_option( 'va_btt_offset_y', 28 ) ) ) );
+    $btt_ox       = max( 0, min( 120, absint( get_option( 'va_btt_offset_x',  28 ) ) ) );
+    $btt_oy       = max( 0, min( 120, absint( get_option( 'va_btt_offset_y',  28 ) ) ) );
     $btt_after    = max( 0, absint( get_option( 'va_btt_show_after', 300 ) ) );
 
-    $btt_icons = [
-        'chevron' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>',
-        'arrow'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>',
-        'rocket'  => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c-1 0-3 2.5-3 7v1.5l-2.5 3.5H9V16a3 3 0 006 0v-2h2.5L15 10.5V9c0-4.5-2-7-3-7zm0 15a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>',
-        'home'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-        'star'    => '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
-        'flame'   => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s-4 5-4 10a4 4 0 008 0c0-2-1-4-1-4s-1 2-3 2c-2 0-2-2-2-2s2-3 2-6z"/></svg>',
-        'paw'     => '<svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="7" cy="5" rx="2" ry="3"/><ellipse cx="17" cy="5" rx="2" ry="3"/><ellipse cx="3.5" cy="12" rx="1.5" ry="2"/><ellipse cx="20.5" cy="12" rx="1.5" ry="2"/><path d="M12 11c-4 0-6 3-6 5.5 0 2 1.5 2.5 3 1.5l3-1.5 3 1.5c1.5 1 3 .5 3-1.5 0-2.5-2-5.5-6-5.5z"/></svg>',
-        'deer'    => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4c0 0-1-2.5-3-1.5S7.5 6 9 7L7 8c-2-.5-3 1.5-2 2.5l2 .5-1 3H5l-2 3h4l1-2h4l1 2h4l-2-3h-1l-1-3 2-.5C16 9.5 15 7.5 13 8l-2-1c1.5-1.5 3.5-3.5 1-4z"/></svg>',
-        'gun'     => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 13v2h2v1h3v-1h8v1l3-1v-3H2zm15-4v2H3V9h14zm1 0h2l1-2h-3v2z"/></svg>',
-        'leaf'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8C8 10 5.9 16.17 3.82 22a10 10 0 0014.18-14.18z"/><line x1="3.82" y1="22" x2="12" y2="13"/></svg>',
-    ];
-    $btt_svg = $btt_icons[ $btt_icon_key ] ?? $btt_icons['chevron'];
+    // FA ikon osztály whitelist: csak betű, szám, - és szóköz engedélyezett
+    $btt_icon_cls = preg_replace( '/[^a-zA-Z0-9\- ]/', '', $btt_icon_cls );
 
     // Stílus-specifikus CSS
     $btt_extra_css = [
-        'circle'   => 'border-radius:50%;',
-        'rounded'  => 'border-radius:14px;',
-        'square'   => 'border-radius:4px;',
-        'pill'     => 'border-radius:999px;width:auto;padding:0 20px;',
-        'ghost'    => 'border-radius:50%;background:transparent !important;border:2px solid ' . $btt_color . ';color:' . $btt_color . ' !important;',
-        'glass'    => 'border-radius:50%;background:rgba(255,255,255,.12) !important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);',
-        'neon'     => 'border-radius:50%;box-shadow:0 0 18px ' . $btt_color . ',0 0 36px ' . $btt_color . '88 !important;',
-        'minimal'  => 'border-radius:50%;background:transparent !important;color:' . $btt_color . ' !important;box-shadow:none !important;',
-        'floating' => 'border-radius:50%;box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 16px ' . $btt_color . '55 !important;',
-        'arrow'    => 'border-radius:0 0 50% 50% / 0 0 20px 20px;border-top:3px solid ' . $btt_color . ';',
+        'circle'   => 'border-radius:50%;border:2px solid ' . $btt_border . ';',
+        'rounded'  => 'border-radius:14px;border:2px solid ' . $btt_border . ';',
+        'square'   => 'border-radius:4px;border:2px solid ' . $btt_border . ';',
+        'pill'     => 'border-radius:999px;width:auto;padding:0 20px;border:2px solid ' . $btt_border . ';',
+        'ghost'    => 'border-radius:50%;background:transparent !important;border:2px solid ' . $btt_border . ';color:' . $btt_txtcolor . ' !important;',
+        'glass'    => 'border-radius:50%;background:rgba(255,255,255,.12) !important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid ' . $btt_border . ';',
+        'neon'     => 'border-radius:50%;border:2px solid ' . $btt_border . ';box-shadow:0 0 18px ' . $btt_color . ',0 0 36px ' . $btt_color . '88;',
+        'minimal'  => 'border-radius:50%;background:transparent !important;border:none;box-shadow:none !important;color:' . $btt_txtcolor . ' !important;',
+        'floating' => 'border-radius:50%;border:2px solid ' . $btt_border . ';box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 16px ' . $btt_color . '55;',
+        'arrow'    => 'border-radius:0 0 50% 50% / 0 0 20px 20px;border:none;border-top:3px solid ' . $btt_border . ';',
     ];
     $extra = $btt_extra_css[ $btt_style ] ?? $btt_extra_css['circle'];
     ?>
@@ -221,10 +211,11 @@ if ( get_option( 'va_btt_enabled', '1' ) === '1' ) :
         style="position:fixed;<?php echo $btt_pos; ?>:<?php echo $btt_ox; ?>px;bottom:<?php echo $btt_oy; ?>px;
                width:<?php echo $btt_size; ?>px;height:<?php echo $btt_size; ?>px;
                background:<?php echo $btt_color; ?>;color:<?php echo $btt_txtcolor; ?>;
-               border:none;cursor:pointer;display:none;align-items:center;justify-content:center;
+               cursor:pointer;display:none;align-items:center;justify-content:center;
                z-index:9999;transition:opacity .25s,transform .25s;opacity:0;
+               font-size:<?php echo round($btt_size*0.4); ?>px;line-height:1;
                <?php echo $extra; ?>">
-        <span style="width:<?php echo round($btt_size*0.45); ?>px;height:<?php echo round($btt_size*0.45); ?>px;display:flex;align-items:center;justify-content:center;"><?php echo $btt_svg; ?></span>
+        <i class="<?php echo esc_attr( $btt_icon_cls ); ?>" aria-hidden="true"></i>
     </button>
     <script>
     (function(){

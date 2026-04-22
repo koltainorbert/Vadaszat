@@ -6080,18 +6080,6 @@ class VA_Settings_Page {
             'floating' => [ 'label' => 'Floating – lebegő árnyék',    'preview' => '🎈' ],
             'arrow'    => [ 'label' => 'Arrow – nyíl badge',          'preview' => '▲' ],
         ];
-        $icons = [
-            'chevron' => [ 'label' => 'Chevron nyíl',   'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>' ],
-            'arrow'   => [ 'label' => 'Sima nyíl',      'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>' ],
-            'rocket'  => [ 'label' => 'Rakéta 🚀',      'svg' => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8 2 5 7 5 12v1l-2 3h4v1a3 3 0 006 0v-1h4l-2-3v-1c0-5-3-10-3-10zm0 14a1 1 0 110-2 1 1 0 010 2z"/></svg>' ],
-            'home'    => [ 'label' => 'Ház 🏠',         'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>' ],
-            'star'    => [ 'label' => 'Csillag ⭐',     'svg' => '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>' ],
-            'flame'   => [ 'label' => 'Láng 🔥',        'svg' => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2s-4 5-4 10a4 4 0 008 0c0-2-1-4-1-4s-1 2-3 2-2-2-2-2 2-3 2-6z"/></svg>' ],
-            'paw'     => [ 'label' => 'Mancs 🐾',       'svg' => '<svg viewBox="0 0 24 24" fill="currentColor"><ellipse cx="7" cy="4" rx="2" ry="3"/><ellipse cx="17" cy="4" rx="2" ry="3"/><ellipse cx="3.5" cy="10" rx="1.5" ry="2.5"/><ellipse cx="20.5" cy="10" rx="1.5" ry="2.5"/><path d="M12 10c-4 0-7 3-7 6 0 2 2 3 4 2l3-1.5L15 18c2 1 4 0 4-2 0-3-3-6-7-6z"/></svg>' ],
-            'deer'    => [ 'label' => 'Szarvas 🦌',     'svg' => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c0 0-1-2-3-1s0 3 1 4l-2 1c-2-1-3 1-2 2l2 1-1 3H8l-2 3h4l1-2h2l1 2h4l-2-3h-1l-1-3 2-1c1-1 0-3-2-2l-2-1c1-1 4-3 1-4z"/></svg>' ],
-            'gun'     => [ 'label' => 'Puska 🔫',       'svg' => '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v2h12v-2l2-4H3v4zm14-5h2l1-2h-3v2z"/></svg>' ],
-            'leaf'    => [ 'label' => 'Levél 🍃',       'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8C8 10 5.9 16.17 3.82 22a10 10 0 0014.18-14.18z"/><line x1="3.82" y1="22" x2="12" y2="13"/></svg>' ],
-        ];
 
         $cur_style       = self::get_display_option( 'va_btt_style',        'circle' );
         $cur_icon        = self::get_display_option( 'va_btt_icon',          'fa-solid fa-chevron-up' );
