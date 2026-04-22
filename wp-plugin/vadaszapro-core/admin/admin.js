@@ -149,24 +149,40 @@
         });
     });
 
-    /* ── Color picker helpers ─────────────────────────────────── */
+    /* ── Color math helpers ─────────────────────────────────── */
+    function vaHsvToRgb(h, s, v) {
+        var i = Math.floor(h / 60) % 6, f = h/60 - Math.floor(h/60);
+        var p = v*(1-s), q = v*(1-f*s), t = v*(1-(1-f)*s);
+        var r,g,b;
+        switch(i){case 0:r=v;g=t;b=p;break;case 1:r=q;g=v;b=p;break;case 2:r=p;g=v;b=t;break;case 3:r=p;g=q;b=v;break;case 4:r=t;g=p;b=v;break;default:r=v;g=p;b=q;}
+        return {r:Math.round(r*255),g:Math.round(g*255),b:Math.round(b*255)};
+    }
+    function vaRgbToHsv(r,g,b) {
+        r/=255;g/=255;b/=255;
+        var max=Math.max(r,g,b),min=Math.min(r,g,b),d=max-min,h,s=max?d/max:0,v=max;
+        if(!d){h=0;}else if(max===r){h=(g-b)/d+(g<b?6:0);}else if(max===g){h=(b-r)/d+2;}else{h=(r-g)/d+4;}
+        return {h:h/6*360,s:s,v:v};
+    }
     function vaRgbToHex(r, g, b) {
-        return '#' + [r, g, b].map(function (v) {
-            return ('0' + Math.max(0, Math.min(255, Math.round(v))).toString(16)).slice(-2);
-        }).join('');
+        return '#' + [r,g,b].map(function(v){return ('0'+Math.max(0,Math.min(255,Math.round(v))).toString(16)).slice(-2);}).join('');
     }
-
     function vaHexToRgb(hex) {
-        hex = hex.replace('#','');
-        if (hex.length === 3) hex = hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
-        return { r: parseInt(hex.substr(0,2),16)||0, g: parseInt(hex.substr(2,2),16)||0, b: parseInt(hex.substr(4,2),16)||0 };
+        hex=hex.replace('#','');
+        if(hex.length===3)hex=hex[0]+hex[0]+hex[1]+hex[1]+hex[2]+hex[2];
+        return{r:parseInt(hex.substr(0,2),16)||0,g:parseInt(hex.substr(2,2),16)||0,b:parseInt(hex.substr(4,2),16)||0};
+    }
+    function vaCpickParse(val) {
+        var m=val.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+))?\s*\)/i);
+        var r,g,b,a=1;
+        if(m){r=+m[1];g=+m[2];b=+m[3];a=m[4]!==undefined?parseFloat(m[4]):1;}
+        else if(/^#[0-9a-f]{3,8}$/i.test(val)){var rgb=vaHexToRgb(val);r=rgb.r;g=rgb.g;b=rgb.b;}
+        else return null;
+        var hsv=vaRgbToHsv(r,g,b);
+        return{h:hsv.h,s:hsv.s,v:hsv.v,a:a};
     }
 
-    // (legacy stub, unused)
-    function vaCommitRgba() {
-        var unused = null;
-        $input.val(val);
-    }
+    // (legacy stub)
+    function vaCommitRgba() {}
 
 
 
