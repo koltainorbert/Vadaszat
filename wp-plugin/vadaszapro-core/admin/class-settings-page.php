@@ -5976,7 +5976,7 @@ class VA_Settings_Page {
                     var slug = panel.dataset.slug;
                     var item = {};
                     panel.querySelectorAll('[data-key]').forEach(function(field){
-                        if(field.type === 'color'){
+                        if(field.classList.contains('va-cpick__swatch')){
                             return;
                         }
                         item[field.dataset.key] = field.value;
