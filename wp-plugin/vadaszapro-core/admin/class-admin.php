@@ -337,6 +337,7 @@ class VA_Admin {
 
         wp_enqueue_media();
         wp_enqueue_style(  "wp-color-picker" );
+        wp_enqueue_style(  "font-awesome", "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css", [], "6.5.2" );
         wp_enqueue_style(  "va-admin", VA_PLUGIN_URL . "admin/admin.css", [ "wp-color-picker" ], VA_VERSION );
         wp_enqueue_script( "va-admin", VA_PLUGIN_URL . "admin/admin.js", [ "jquery", "wp-color-picker" ], VA_VERSION, true );
     }
