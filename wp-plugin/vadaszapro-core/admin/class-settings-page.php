@@ -5926,7 +5926,6 @@ class VA_Settings_Page {
                     updatePlanPreview(input.dataset.slug);
                 });
                 input.addEventListener('change', function(){
-                    var panel = input.closest('.va-pc-panel');
                     updatePlanPreview(input.dataset.slug);
                 });
             });
@@ -6039,6 +6038,9 @@ class VA_Settings_Page {
                 updatePlanPreview(panel.dataset.slug);
             });
             setActivePanel('va-pc-panel-<?php echo esc_js( $first_slug ); ?>');
+            if(typeof window.vaInitColorPickers === 'function'){
+                window.vaInitColorPickers(document.querySelector('.va-pc-wrap'));
+            }
         })();
         </script>
         <?php
