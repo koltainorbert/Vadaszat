@@ -5193,8 +5193,8 @@ class VA_Settings_Page {
                             <section class="va-pc-card">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Kozös boost logika</h2>
-                                        <p class="va-pc-card__text">A csomagszintu cooldown mellett ez szabja meg, hogy a badge meddig latszik es egyaltalan aktiv-e a szolgaltatas.</p>
+                                        <h2 class="va-pc-card__title">KĂ¶zĂ¶s boost logika</h2>
+                                        <p class="va-pc-card__text">A csomagszintĹ± cooldown mellett ez szabja meg, hogy a badge meddig lĂˇtszik Ă©s egyĂˇltalĂˇn aktĂ­v-e a szolgĂˇltatĂˇs.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid">
