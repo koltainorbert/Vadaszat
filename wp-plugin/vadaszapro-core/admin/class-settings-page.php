@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Settings oldal – minden beállítás egy helyen
  * Lapok: Általános | Reklámzónák | Hirdetések | Aukciók | Felhasználók | Statisztika
@@ -5193,7 +5193,7 @@ class VA_Settings_Page {
                             <section class="va-pc-card">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Kozös boost logika</h2>
+                                        <h2 class="va-pc-card__title">Kozös boost logika</h2>
                                         <p class="va-pc-card__text">A csomagszintu cooldown mellett ez szabja meg, hogy a badge meddig latszik es egyaltalan aktiv-e a szolgaltatas.</p>
                                     </div>
                                 </div>
