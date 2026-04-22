@@ -830,6 +830,25 @@ class VA_Settings_Page {
                 update_option( $key, $default );
             }
         }
+
+        /* Back-to-top gomb (va_btt_*) */
+        $btt = [
+            'va_btt_enabled'    => '1',
+            'va_btt_style'      => 'circle',   // circle|rounded|square|pill|ghost|glass|neon|minimal|floating|arrow
+            'va_btt_icon'       => 'chevron',  // chevron|arrow|rocket|home|star|flame|paw|deer|gun|leaf
+            'va_btt_color'      => '#ff0000',
+            'va_btt_text_color' => '#ffffff',
+            'va_btt_size'       => '48',
+            'va_btt_position'   => 'right',    // right|left
+            'va_btt_offset_x'   => '28',
+            'va_btt_offset_y'   => '28',
+            'va_btt_show_after' => '300',      // px scroll után jelenik meg
+        ];
+        foreach ( $btt as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_btt_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
     }
 
     private static function get_display_option( string $key, $fallback = '' ) {
