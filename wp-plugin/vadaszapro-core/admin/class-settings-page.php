@@ -1036,17 +1036,17 @@ class VA_Settings_Page {
                 <h2>Hero badge és gombok színei</h2>
                 <table class="form-table">
                     <?php self::field_color( 'va_color_hero_title',            'Hero cím szöveg szín' ); ?>
-                    <?php self::field_color( 'va_color_hero_sub',              'Hero alcim szoveg szin (rgba vagy hex)' ); ?>
-                    <?php self::field_color( 'va_color_hero_badge_bg',          'Hero badge hatter (rgba vagy hex)' ); ?>
-                    <?php self::field_color( 'va_color_hero_badge_border',       'Hero badge keret szin (rgba vagy hex)' ); ?>
+                    <?php self::field_color( 'va_color_hero_sub',             'Hero alcim szoveg szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_bg',         'Hero badge hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_border',      'Hero badge keret szin' ); ?>
                     <?php self::field_color( 'va_color_hero_badge_text',         'Hero badge szöveg szín' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_bg',     'Primary gomb háttér' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_hover',  'Primary gomb hover háttér' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_text',   'Primary gomb szöveg szín' ); ?>
-                    <?php self::field_color( 'va_color_hero_btn_primary_glow',   'Primary gomb glow szin (rgba)' ); ?>
-                    <?php self::field_color( 'va_color_hero_btn_ghost_bg',       'Ghost gomb hatter (rgba)' ); ?>
-                    <?php self::field_color( 'va_color_hero_btn_ghost_border',   'Ghost gomb keret szin (rgba)' ); ?>
-                    <?php self::field_color( 'va_color_hero_btn_ghost_hover',    'Ghost gomb hover hatter (rgba)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_glow',  'Primary gomb glow szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_bg',      'Ghost gomb hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_border',  'Ghost gomb keret szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_hover',   'Ghost gomb hover hatter' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_ghost_text',     'Ghost gomb szöveg szín' ); ?>
                 </table>
 
