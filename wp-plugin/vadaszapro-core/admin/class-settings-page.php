@@ -833,16 +833,17 @@ class VA_Settings_Page {
 
         /* Back-to-top gomb (va_btt_*) */
         $btt = [
-            'va_btt_enabled'    => '1',
-            'va_btt_style'      => 'circle',   // circle|rounded|square|pill|ghost|glass|neon|minimal|floating|arrow
-            'va_btt_icon'       => 'chevron',  // chevron|arrow|rocket|home|star|flame|paw|deer|gun|leaf
-            'va_btt_color'      => '#ff0000',
-            'va_btt_text_color' => '#ffffff',
-            'va_btt_size'       => '48',
-            'va_btt_position'   => 'right',    // right|left
-            'va_btt_offset_x'   => '28',
-            'va_btt_offset_y'   => '28',
-            'va_btt_show_after' => '300',      // px scroll után jelenik meg
+            'va_btt_enabled'      => '1',
+            'va_btt_style'        => 'circle',
+            'va_btt_icon'         => 'fa-solid fa-chevron-up',
+            'va_btt_color'        => '#ff0000',
+            'va_btt_border_color' => '#ff0000',
+            'va_btt_text_color'   => '#ffffff',
+            'va_btt_size'         => '48',
+            'va_btt_position'     => 'right',
+            'va_btt_offset_x'     => '28',
+            'va_btt_offset_y'     => '28',
+            'va_btt_show_after'   => '300',
         ];
         foreach ( $btt as $key => $default ) {
             self::$defaults[ $key ] = $default;
@@ -6092,16 +6093,17 @@ class VA_Settings_Page {
             'leaf'    => [ 'label' => 'Levél 🍃',       'svg' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 8C8 10 5.9 16.17 3.82 22a10 10 0 0014.18-14.18z"/><line x1="3.82" y1="22" x2="12" y2="13"/></svg>' ],
         ];
 
-        $cur_style    = self::get_display_option( 'va_btt_style',    'circle' );
-        $cur_icon     = self::get_display_option( 'va_btt_icon',     'chevron' );
-        $cur_color    = self::get_display_option( 'va_btt_color',    '#ff0000' );
-        $cur_txtcolor = self::get_display_option( 'va_btt_text_color','#ffffff' );
-        $cur_size     = self::get_display_option( 'va_btt_size',     '48' );
-        $cur_pos      = self::get_display_option( 'va_btt_position', 'right' );
-        $cur_ox       = self::get_display_option( 'va_btt_offset_x', '28' );
-        $cur_oy       = self::get_display_option( 'va_btt_offset_y', '28' );
-        $cur_after    = self::get_display_option( 'va_btt_show_after','300' );
-        $cur_enabled  = self::get_display_option( 'va_btt_enabled',  '1' );
+        $cur_style       = self::get_display_option( 'va_btt_style',        'circle' );
+        $cur_icon        = self::get_display_option( 'va_btt_icon',          'fa-solid fa-chevron-up' );
+        $cur_color       = self::get_display_option( 'va_btt_color',         '#ff0000' );
+        $cur_border      = self::get_display_option( 'va_btt_border_color',  '#ff0000' );
+        $cur_txtcolor    = self::get_display_option( 'va_btt_text_color',    '#ffffff' );
+        $cur_size        = self::get_display_option( 'va_btt_size',          '48' );
+        $cur_pos         = self::get_display_option( 'va_btt_position',      'right' );
+        $cur_ox          = self::get_display_option( 'va_btt_offset_x',      '28' );
+        $cur_oy          = self::get_display_option( 'va_btt_offset_y',      '28' );
+        $cur_after       = self::get_display_option( 'va_btt_show_after',    '300' );
+        $cur_enabled     = self::get_display_option( 'va_btt_enabled',       '1' );
         ?>
         <div class="wrap va-admin-wrap">
             <h1>⬆ Tetejére gomb</h1>
@@ -6125,19 +6127,49 @@ class VA_Settings_Page {
                         <?php endforeach; ?>
                         </div>
                     </td></tr>
-                    <tr><th>Ikon</th><td>
-                        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
-                        <?php foreach ( $icons as $key => $ic ) : ?>
-                            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:10px;border:2px solid <?php echo $cur_icon === $key ? 'var(--va-accent)' : 'var(--va-border)'; ?>;border-radius:10px;background:var(--va-bg3);min-width:72px;text-align:center;">
-                                <input type="radio" name="va_btt_icon" value="<?php echo esc_attr($key); ?>" <?php checked($cur_icon, $key); ?> style="display:none;">
-                                <span style="width:22px;height:22px;display:block;color:var(--va-accent);"><?php echo $ic['svg']; ?></span>
-                                <span style="font-size:11px;color:var(--va-muted);"><?php echo esc_html($ic['label']); ?></span>
-                            </label>
+                    <tr><th>Font Awesome ikon</th><td>
+                        <p class="description" style="margin-bottom:8px;">Írj be egy <a href="https://fontawesome.com/icons" target="_blank">Font Awesome 6</a> ikonnevet, pl. <code>fa-solid fa-chevron-up</code> – vagy kattints az alábbi előre beállítottak egyikére:</p>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                            <input type="text" id="va_btt_icon_input" name="va_btt_icon" value="<?php echo esc_attr($cur_icon); ?>" style="width:260px;" placeholder="pl. fa-solid fa-chevron-up">
+                            <span style="font-size:22px;"><i id="va_btt_icon_preview" class="<?php echo esc_attr($cur_icon); ?>" style="color:var(--va-accent);"></i></span>
+                        </div>
+                        <?php
+                        $fa_suggestions = [
+                            'fa-solid fa-chevron-up'    => 'Chevron',
+                            'fa-solid fa-arrow-up'      => 'Nyíl',
+                            'fa-solid fa-rocket'        => 'Rakéta',
+                            'fa-solid fa-house'         => 'Ház',
+                            'fa-solid fa-star'          => 'Csillag',
+                            'fa-solid fa-fire'          => 'Láng',
+                            'fa-solid fa-paw'           => 'Mancs',
+                            'fa-solid fa-leaf'          => 'Levél',
+                            'fa-solid fa-circle-up'     => 'Kör nyíl',
+                            'fa-solid fa-angles-up'     => 'Dupla nyíl',
+                            'fa-solid fa-gun'           => 'Puska',
+                            'fa-solid fa-feather'       => 'Toll',
+                            'fa-solid fa-tree'          => 'Fa',
+                            'fa-solid fa-crow'          => 'Varjú',
+                            'fa-solid fa-fish'          => 'Hal',
+                            'fa-solid fa-dog'           => 'Kutya',
+                            'fa-solid fa-horse'         => 'Ló',
+                            'fa-solid fa-bug'           => 'Bogár',
+                            'fa-solid fa-khanda'        => 'Khanda',
+                            'fa-regular fa-circle-up'   => 'Kör nyíl (körvonal)',
+                        ];
+                        ?>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                        <?php foreach ( $fa_suggestions as $cls => $lbl ) : ?>
+                            <button type="button" class="va-btt-fa-pick" data-cls="<?php echo esc_attr($cls); ?>"
+                                style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 12px;border:2px solid <?php echo $cur_icon === $cls ? 'var(--va-accent)' : 'var(--va-border)'; ?>;border-radius:10px;background:var(--va-bg3);cursor:pointer;min-width:64px;">
+                                <i class="<?php echo esc_attr($cls); ?>" style="font-size:20px;color:var(--va-accent);"></i>
+                                <span style="font-size:10px;color:var(--va-muted);"><?php echo esc_html($lbl); ?></span>
+                            </button>
                         <?php endforeach; ?>
                         </div>
                     </td></tr>
-                    <?php self::field_color( 'va_btt_color',      'Gomb háttér színe',   $cur_color ); ?>
-                    <?php self::field_color( 'va_btt_text_color', 'Ikon / szöveg színe', $cur_txtcolor ); ?>
+                    <?php self::field_color( 'va_btt_color',        'Gomb háttér színe',   $cur_color ); ?>
+                    <?php self::field_color( 'va_btt_border_color', 'Keret (border) színe',$cur_border ); ?>
+                    <?php self::field_color( 'va_btt_text_color',   'Ikon színe',          $cur_txtcolor ); ?>
                     <tr><th>Méret (px)</th><td>
                         <input type="number" name="va_btt_size" value="<?php echo esc_attr($cur_size); ?>" min="32" max="80" class="small-text">
                         <p class="description">A gomb átmérője pixelben (32–80).</p>
@@ -6164,12 +6196,31 @@ class VA_Settings_Page {
             </form>
         </div>
         <script>
-        document.querySelectorAll('[name="va_btt_style"],[name="va_btt_icon"]').forEach(function(r){
+        // Stílus radio kártya highlight
+        document.querySelectorAll('[name="va_btt_style"]').forEach(function(r){
             r.addEventListener('change',function(){
-                var nm = r.getAttribute('name');
-                document.querySelectorAll('[name="'+nm+'"]').forEach(function(x){
+                document.querySelectorAll('[name="va_btt_style"]').forEach(function(x){
                     x.closest('label').style.borderColor = x.checked ? 'var(--va-accent)' : 'var(--va-border)';
                 });
+            });
+        });
+        // FA ikon gyors választó
+        var iconInput   = document.getElementById('va_btt_icon_input');
+        var iconPreview = document.getElementById('va_btt_icon_preview');
+        document.querySelectorAll('.va-btt-fa-pick').forEach(function(btn){
+            btn.addEventListener('click', function(){
+                var cls = btn.dataset.cls;
+                iconInput.value = cls;
+                iconPreview.className = cls;
+                document.querySelectorAll('.va-btt-fa-pick').forEach(function(b){
+                    b.style.borderColor = b.dataset.cls === cls ? 'var(--va-accent)' : 'var(--va-border)';
+                });
+            });
+        });
+        iconInput && iconInput.addEventListener('input', function(){
+            iconPreview.className = iconInput.value.trim();
+            document.querySelectorAll('.va-btt-fa-pick').forEach(function(b){
+                b.style.borderColor = b.dataset.cls === iconInput.value.trim() ? 'var(--va-accent)' : 'var(--va-border)';
             });
         });
         if(typeof window.vaInitColorPickers === 'function') window.vaInitColorPickers();

@@ -379,6 +379,11 @@ add_action( 'wp_enqueue_scripts', function () {
             'post_id'  => is_singular() ? get_the_ID() : 0,
         ] );
     }
+
+    // Font Awesome – back-to-top gomb ikonjához (ha BTT engedélyezve)
+    if ( get_option( 'va_btt_enabled', '1' ) === '1' ) {
+        wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css', [], '6.5.2' );
+    }
 });
 
 function va_design_font_map(): array {
