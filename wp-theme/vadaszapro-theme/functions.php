@@ -836,7 +836,7 @@ add_action( 'wp_enqueue_scripts', function () {
     '}' .
     '.va-footer__col-title{color:' . $footer_headings . ';}' .
     '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' .
-    '.va-footer__link:hover,.va-footer__bottom a:hover{color:' . $hf_footer_link_hover_color . ';}' .
+    '.va-footer__link:hover,.va-footer__bottom a:hover{color:' . $hf_footer_link_hover_color . ';}';
 
     // Hero badge + gomb színek
     $hero_badge_bg          = va_design_css_color( (string) get_option( 'va_color_hero_badge_bg',          'rgba(6,6,6,.56)' ),          'rgba(6,6,6,.56)' );
@@ -862,7 +862,7 @@ add_action( 'wp_enqueue_scripts', function () {
     $header_register_hover_text = va_design_css_color( (string) get_option( 'va_color_header_register_hover_text', '#ffffff' ),          '#ffffff' );
 
     // Hero méretek – összes oldal
-    '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;background:' . $hero_badge_bg . ' !important;border-color:' . $hero_badge_border . ' !important;color:' . $hero_badge_text . ' !important;}' .
+    $css .= '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;background:' . $hero_badge_bg . ' !important;border-color:' . $hero_badge_border . ' !important;color:' . $hero_badge_text . ' !important;}' .
     '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;color:' . $hero_title_color . ' !important;}' .
     '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;color:' . $hero_sub_color . ' !important;}' .
     '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
