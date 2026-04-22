@@ -116,6 +116,7 @@ body.va-admin-page #wpwrap { background: var(--va-bg); }
     transition: background .15s, color .15s, border-color .15s;
 }
 .va-sb-item:hover { background: rgba(255,255,255,.04); color: rgba(255,255,255,.9) !important; }
+.va-sb-item:focus, .va-sb-item:focus-visible { outline: none !important; box-shadow: none !important; }
 .va-sb-item.active { background: rgba(255,30,30,.1); border-left-color: var(--va-accent); color: #fff !important; }
 .va-sb-item__icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
 .va-sb-item__label { flex: 1; }
