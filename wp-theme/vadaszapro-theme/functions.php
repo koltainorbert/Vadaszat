@@ -906,6 +906,13 @@ add_action( 'wp_enqueue_scripts', function () {
         '.va-header__submit-btn{display:' . ( $hf_mobile_show_submit ? 'inline-flex' : 'none' ) . ' !important;}' .
     '}' ;
 
+    // Hero dekoratív elemek: bal csík, badge-dot, scroll jelző – accent színnel
+    $css .=
+    '.vh__overlay::before{background:linear-gradient(to bottom,transparent,' . $global_accent . ' 40%,' . $global_accent . ' 60%,transparent) !important;}' .
+    '.vcp-hero__badge-dot{background:' . $global_accent . ' !important;}' .
+    '.vh__scroll-line{background:linear-gradient(to bottom,transparent,' . $global_accent . ') !important;}' .
+    '.vh__scroll-dot{background:' . $global_accent . ' !important;box-shadow:0 0 6px ' . $global_accent . ' !important;}';
+
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );
 
