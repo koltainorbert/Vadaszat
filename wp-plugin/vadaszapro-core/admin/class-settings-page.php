@@ -1021,7 +1021,7 @@ class VA_Settings_Page {
                 <table class="form-table">
                     <?php self::field_color( 'va_color_global_bg',     'Globális háttér' ); ?>
                     <?php self::field_color( 'va_color_global_text',   'Globális fő szöveg' ); ?>
-                    <?php self::field_color( '\',  'Globális halvány szöveg (pl. rgba...)' ); ?>
+                    <?php self::field_color( 'va_color_global_muted',  'Globális halvány szöveg (pl. rgba...)' ); ?>
                     <?php self::field_color( 'va_color_global_accent', 'Globális accent szín' ); ?>
                 </table>
 
