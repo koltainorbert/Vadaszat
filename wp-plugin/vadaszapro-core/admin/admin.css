@@ -1203,3 +1203,22 @@ body.va-admin-page .media-sidebar::-webkit-scrollbar-thumb {
 .va-cpick__palette { display: grid; grid-template-columns: repeat(8,1fr); gap: 5px; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.08); }
 .va-cpick__pal-swatch { display: block; width: 100%; aspect-ratio: 1; border-radius: 4px; cursor: pointer; border: 1.5px solid rgba(255,255,255,.12); transition: transform .1s, border-color .1s; }
 .va-cpick__pal-swatch:hover { transform: scale(1.18); border-color: rgba(255,255,255,.55); z-index: 1; position: relative; }
+
+/* ── Settings oldal h2 szekció fejlécek ──────────────────────── */
+.va-admin-wrap form h2,
+.va-admin-wrap > .wrap h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 6px !important;
+    padding: 10px 16px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #fff !important;
+    text-transform: uppercase !important;
+    letter-spacing: .06em !important;
+    background: linear-gradient(90deg, rgba(255,0,0,.12) 0%, rgba(255,0,0,.04) 60%, transparent 100%) !important;
+    border-left: 3px solid var(--va-accent, #ff0000) !important;
+    border-bottom: none !important;
+    border-radius: 0 6px 6px 0 !important;
+}
