@@ -5022,7 +5022,7 @@ class VA_Settings_Page {
 
                         <div class="va-pc-overview-grid">
                             <div class="va-pc-overview-card">
-                                <span class="va-pc-overview-card__label">Hasznalati logika</span>
+                                <span class="va-pc-overview-card__label">Használati logika</span>
                                 <strong class="va-pc-overview-card__value" data-summary-basis-card><?php echo esc_html( $basis_label ); ?></strong>
                             </div>
                             <div class="va-pc-overview-card">
@@ -5034,7 +5034,7 @@ class VA_Settings_Page {
                                 <strong class="va-pc-overview-card__value" data-summary-cooldown-card><?php echo esc_html( (string) (int) $plan['boost_cooldown'] ); ?> nap</strong>
                             </div>
                             <div class="va-pc-overview-card">
-                                <span class="va-pc-overview-card__label">Badge szin</span>
+                                <span class="va-pc-overview-card__label">Badge szín</span>
                                 <strong class="va-pc-overview-card__value" data-summary-color-card><?php echo esc_html( $plan['color'] ); ?></strong>
                             </div>
                         </div>
@@ -5043,8 +5043,8 @@ class VA_Settings_Page {
                             <section class="va-pc-card va-pc-card--appearance">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Megjelenes</h2>
-                                        <p class="va-pc-card__text">Ez hatarozza meg a badge vizualis karakteret es az adminban, frontendben latszo rovid szoveget.</p>
+                                        <h2 class="va-pc-card__title">Megjelenés</h2>
+                                        <p class="va-pc-card__text">Ez határozza meg a badge vizuális karakterét és az adminban, frontendben látszó rövid szöveget.</p>
                                     </div>
                                     <div class="va-pc-livebadge" data-preview-badge>
                                         <span class="va-pc-livebadge__icon" data-preview-icon><?php echo esc_html( $plan['icon'] ); ?></span>
@@ -5053,7 +5053,7 @@ class VA_Settings_Page {
                                 </div>
                                 <div class="va-pc-form-grid va-pc-form-grid--appearance">
                                     <label class="va-pc-field va-pc-field--wide">
-                                        <span class="va-pc-field__label">Megnevezes</span>
+                                        <span class="va-pc-field__label">Megnevezés</span>
                                         <input type="text" class="va-pc-input" data-key="label" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['label'] ); ?>" placeholder="<?php echo esc_attr( $default['label'] ); ?>">
                                     </label>
                                     <label class="va-pc-field va-pc-field--icon">
@@ -5061,18 +5061,17 @@ class VA_Settings_Page {
                                         <input type="text" class="va-pc-input va-pc-input--icon" data-key="icon" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['icon'] ); ?>" placeholder="<?php echo esc_attr( $default['icon'] ); ?>" maxlength="8">
                                     </label>
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Szin</span>
+                                        <span class="va-pc-field__label">Szín</span>
                                         <span class="va-pc-color-field">
-                                            <input type="color" class="va-pc-colorpicker" data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( preg_match( '/^#[0-9a-fA-F]{6}$/', $plan['color'] ) ? $plan['color'] : $default['color'] ); ?>">
-                                            <input type="text" class="va-pc-input va-pc-input--color" data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['color'] ); ?>" placeholder="<?php echo esc_attr( $default['color'] ); ?>">
+                                            <input type="text" class="va-pc-input va-pc-input--color va-color-input" data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['color'] ); ?>" placeholder="<?php echo esc_attr( $default['color'] ); ?>">
                                         </span>
                                     </label>
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Hatter RGBA</span>
+                                        <span class="va-pc-field__label">Háttér RGBA</span>
                                         <input type="text" class="va-pc-input" data-key="bg" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['bg'] ); ?>" placeholder="<?php echo esc_attr( $default['bg'] ); ?>">
                                     </label>
                                     <label class="va-pc-field va-pc-field--full">
-                                        <span class="va-pc-field__label">Leiras</span>
+                                        <span class="va-pc-field__label">Leírás</span>
                                         <input type="text" class="va-pc-input" data-key="description" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['description'] ); ?>" placeholder="<?php echo esc_attr( $default['description'] ); ?>">
                                     </label>
                                     <?php if ( $slug === 'platinum' ): ?>
@@ -5088,22 +5087,22 @@ class VA_Settings_Page {
                             <section class="va-pc-card">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Hirdetesi limit</h2>
-                                        <p class="va-pc-card__text">Itt dol el, hogy egyszerre aktiv darabszamot vagy havi feladast szamoljon a rendszer.</p>
+                                        <h2 class="va-pc-card__title">Hirdetési limit</h2>
+                                        <p class="va-pc-card__text">Azt határozza meg, hogy egyszerre aktív darabszámot vagy havi feladást számláljon a rendszer.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid va-pc-form-grid--compact">
                                     <label class="va-pc-field">
                                         <span class="va-pc-field__label">Limit</span>
-                                        <span class="va-pc-field__hint">0 = korlatlan</span>
+                                        <span class="va-pc-field__hint">0 = korlátlan</span>
                                         <input type="number" class="va-pc-input va-pc-input--number" data-key="monthly_limit" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( (string) $limit_value ); ?>" min="0" max="9999">
                                     </label>
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Szamlalas modja</span>
-                                        <span class="va-pc-field__hint">aktiv vagy havi</span>
+                                        <span class="va-pc-field__label">Számlálás módja</span>
+                                        <span class="va-pc-field__hint">aktív vagy havi</span>
                                         <select class="va-pc-select" data-key="basis" data-slug="<?php echo esc_attr( $slug ); ?>">
-                                            <option value="active" <?php selected( $plan['basis'], 'active' ); ?>>Aktiv hirdetesek egyszerre</option>
-                                            <option value="monthly" <?php selected( $plan['basis'], 'monthly' ); ?>>Havi feladott hirdetesek</option>
+                                            <option value="active" <?php selected( $plan['basis'], 'active' ); ?>>Aktív hirdetések egyszerre</option>
+                                            <option value="monthly" <?php selected( $plan['basis'], 'monthly' ); ?>>Havi feladott hirdetések</option>
                                         </select>
                                     </label>
                                 </div>
@@ -5112,14 +5111,14 @@ class VA_Settings_Page {
                             <section class="va-pc-card">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Boost / Kiemeles</h2>
-                                        <p class="va-pc-card__text">A cooldown csomag-specifikus. A globalis badge es kapcsolo a kulon panelen allithato.</p>
+                                        <h2 class="va-pc-card__title">Boost / Kiemelés</h2>
+                                        <p class="va-pc-card__text">A cooldown csomag-specifikus. A globális badge és kapcsoló a külön panelen állítható.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid va-pc-form-grid--compact">
                                     <label class="va-pc-field">
                                         <span class="va-pc-field__label">Cooldown</span>
-                                        <span class="va-pc-field__hint">napokban merve</span>
+                                        <span class="va-pc-field__hint">napokban mérve</span>
                                         <input type="number" class="va-pc-input va-pc-input--number" data-key="boost_cooldown" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( (string) (int) $plan['boost_cooldown'] ); ?>" min="1" max="365">
                                     </label>
                                 </div>
@@ -5128,22 +5127,22 @@ class VA_Settings_Page {
                             <section class="va-pc-card va-pc-card--marketing">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Ar es marketing</h2>
-                                        <p class="va-pc-card__text">Nem a fizetesi logikat kezeli, hanem a kommunikacios szovegeket es badge tartalmakat.</p>
+                                        <h2 class="va-pc-card__title">Ár és marketing</h2>
+                                        <p class="va-pc-card__text">Nem a fizetési logikát kezeli, hanem a kommunikációs szövegeket és badge tartalmakat.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid">
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Havi ar</span>
-                                        <input type="text" class="va-pc-input" data-key="price_monthly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_monthly'] ?? '' ); ?>" placeholder="pl. 990 Ft/ho">
+                                        <span class="va-pc-field__label">Havi ár</span>
+                                        <input type="text" class="va-pc-input" data-key="price_monthly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_monthly'] ?? '' ); ?>" placeholder="pl. 990 Ft/hó">
                                     </label>
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Eves ar</span>
-                                        <input type="text" class="va-pc-input" data-key="price_yearly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_yearly'] ?? '' ); ?>" placeholder="pl. 9900 Ft/ev">
+                                        <span class="va-pc-field__label">Éves ár</span>
+                                        <input type="text" class="va-pc-input" data-key="price_yearly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_yearly'] ?? '' ); ?>" placeholder="pl. 9900 Ft/év">
                                     </label>
                                     <label class="va-pc-field va-pc-field--full">
-                                        <span class="va-pc-field__label">Promo badge szoveg</span>
-                                        <input type="text" class="va-pc-input" data-key="badge_text" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['badge_text'] ?? '' ); ?>" placeholder="opcionalis kiemeles, pl. Legjobb ar">
+                                        <span class="va-pc-field__label">Promo badge szöveg</span>
+                                        <input type="text" class="va-pc-input" data-key="badge_text" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['badge_text'] ?? '' ); ?>" placeholder="opcionális kiemelés, pl. Legjobb ár">
                                     </label>
                                 </div>
                             </section>
@@ -5165,9 +5164,9 @@ class VA_Settings_Page {
                                         'price_yearly'   => '',
                                         'badge_text'     => '',
                                     ] ) ); ?>">
-                                Alapertekek visszaallitasa
+                                Alapértékek visszaállítása
                             </button>
-                            <span class="va-pc-footerbar__note">A visszaallitas csak a jelenlegi panel mezoihez nyul. Mentes utan irjuk felul az adatbazist.</span>
+                            <span class="va-pc-footerbar__note">A visszaállítás csak a jelenlegi panel mezőihez nyúl. Mentés után írjuk felül az adatbázist.</span>
                         </div>
                     </div>
                     <?php endforeach; ?>
@@ -5179,8 +5178,8 @@ class VA_Settings_Page {
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg>
                                 </span>
                                 <div>
-                                    <div class="va-pc-planchip__title">Globalis boost beallitasok</div>
-                                    <div class="va-pc-planchip__desc">Itt tudod vezerezni a badge lathatosagat, a rendszer be-kikapcsolasat es a kozos feliratot.</div>
+                                    <div class="va-pc-planchip__title">Globális boost beállítások</div>
+                                    <div class="va-pc-planchip__desc">A badge láthatóságát, a rendszer be-/kikapcsolását és a közös feliratot itt vezérelheted.</div>
                                 </div>
                             </div>
                             <div class="va-pc-panel__hero-meta">
@@ -5200,13 +5199,13 @@ class VA_Settings_Page {
                                 </div>
                                 <div class="va-pc-form-grid">
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Badge lathatosag</span>
+                                        <span class="va-pc-field__label">Badge láthatóság</span>
                                         <span class="va-pc-field__hint">napban megadva</span>
                                         <input type="number" id="va-pc-global-window" class="va-pc-input va-pc-input--number" value="<?php echo esc_attr( (string) (int) $global['boost_badge_window'] ); ?>" min="1" max="365">
                                     </label>
                                     <label class="va-pc-field va-pc-field--wide">
-                                        <span class="va-pc-field__label">Badge szoveg</span>
-                                        <input type="text" id="va-pc-global-badgetext" class="va-pc-input" value="<?php echo esc_attr( $global['boost_badge_text'] ); ?>" placeholder="pl. Elore teve">
+                                        <span class="va-pc-field__label">Badge szöveg</span>
+                                        <input type="text" id="va-pc-global-badgetext" class="va-pc-input" value="<?php echo esc_attr( $global['boost_badge_text'] ); ?>" placeholder="pl. Előre téve">
                                     </label>
                                     <label class="va-pc-field va-pc-field--switch">
                                         <span class="va-pc-field__label">Boost rendszer</span>
@@ -5863,14 +5862,14 @@ class VA_Settings_Page {
                 }
                 var label = panel.querySelector('[data-key="label"]');
                 var icon = panel.querySelector('[data-key="icon"]');
-                var color = panel.querySelector('.va-pc-colorpicker[data-key="color"]');
+                var color = panel.querySelector('.va-pc-input[data-key="color"]');
                 var limit = panel.querySelector('[data-key="monthly_limit"]');
                 var basis = panel.querySelector('[data-key="basis"]');
                 var cooldown = panel.querySelector('[data-key="boost_cooldown"]');
                 var title = nav.querySelector('.va-pc-nav__title');
                 var navIcon = nav.querySelector('.va-pc-nav__icon');
                 var meta = nav.querySelectorAll('.va-pc-nav__meta span');
-                var basisText = basis && basis.value === 'active' ? 'aktiv' : 'havi';
+                var basisText = basis && basis.value === 'active' ? 'aktív' : 'havi';
                 var limitText = limit && parseInt(limit.value || '0', 10) > 0 ? limit.value : 'Korlátlan';
                 var cooldownText = cooldown ? (cooldown.value || '0') : '0';
                 if(title && label){ title.textContent = label.value || ''; }
@@ -5891,15 +5890,14 @@ class VA_Settings_Page {
                 var iconInput = panel.querySelector('[data-key="icon"]');
                 var labelInput = panel.querySelector('[data-key="label"]');
                 var descInput = panel.querySelector('[data-key="description"]');
-                var colorInput = panel.querySelector('.va-pc-colorpicker[data-key="color"]');
+                var colorInput = panel.querySelector('.va-pc-input[data-key="color"]');
                 var limitInput = panel.querySelector('[data-key="monthly_limit"]');
                 var basisInput = panel.querySelector('[data-key="basis"]');
                 var cooldownInput = panel.querySelector('[data-key="boost_cooldown"]');
-                var colorText = panel.querySelector('.va-pc-input[data-key="color"]');
-                var color = colorInput ? colorInput.value : (colorText ? colorText.value : '#ffffff');
+                var color = colorInput ? colorInput.value : '#ffffff';
                 var limitValue = limitInput ? parseInt(limitInput.value || '0', 10) : 0;
                 var limitText = limitValue > 0 ? String(limitValue) : 'Korlátlan';
-                var basisText = basisInput && basisInput.value === 'active' ? 'Aktiv hirdetesek' : 'Havi feladas';
+                var basisText = basisInput && basisInput.value === 'active' ? 'Aktív hirdetések' : 'Havi feladás';
                 var cooldownText = cooldownInput ? (cooldownInput.value || '0') + ' nap' : '0 nap';
 
                 panel.style.setProperty('--plan-color', color);
@@ -5923,24 +5921,12 @@ class VA_Settings_Page {
                 updateSidebarSummary(slug, panel);
             }
 
-            document.querySelectorAll('.va-pc-colorpicker').forEach(function(picker){
-                picker.addEventListener('input', function(){
-                    var panel = picker.closest('.va-pc-panel');
-                    var text = panel ? panel.querySelector('.va-pc-input[data-key="color"]') : null;
-                    if(text){
-                        text.value = picker.value;
-                    }
-                    updatePlanPreview(picker.dataset.slug);
-                });
-            });
-
             document.querySelectorAll('.va-pc-input[data-key="color"]').forEach(function(input){
                 input.addEventListener('input', function(){
+                    updatePlanPreview(input.dataset.slug);
+                });
+                input.addEventListener('change', function(){
                     var panel = input.closest('.va-pc-panel');
-                    var picker = panel ? panel.querySelector('.va-pc-colorpicker[data-key="color"]') : null;
-                    if(picker && /^#[0-9a-fA-F]{6}$/.test(input.value)){
-                        picker.value = input.value;
-                    }
                     updatePlanPreview(input.dataset.slug);
                 });
             });
@@ -5968,10 +5954,7 @@ class VA_Settings_Page {
                             field.value = defaults[key];
                         }
                         if(key === 'color'){
-                            var picker = panel.querySelector('.va-pc-colorpicker[data-key="color"]');
-                            if(picker && /^#[0-9a-fA-F]{6}$/.test(defaults[key])){
-                                picker.value = defaults[key];
-                            }
+                            updatePlanPreview(button.dataset.slug);
                         }
                     });
                     updatePlanPreview(button.dataset.slug);
