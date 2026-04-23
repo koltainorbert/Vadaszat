@@ -4281,6 +4281,17 @@ class VA_Settings_Page {
         echo " placeholder=\"https://.../video.mp4\"></td></tr>";
     }
 
+    private static function field_video( string $key, string $label ): void {
+        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
+        echo "<div class=\"va-media-field\">";
+        echo "<input type=\"url\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text code va-media-input\" placeholder=\"https://.../video.mp4\">";
+        echo "<button type=\"button\" class=\"button va-media-video-btn\" data-target=\"{$key}\">Tallózás</button>";
+        echo "<button type=\"button\" class=\"button va-media-video-clear\" data-target=\"{$key}\">Törlés</button>";
+        echo "</div>";
+        echo "</td></tr>";
+    }
+
     private static function field_media( string $key, string $label ): void {
         $val     = esc_attr( (string) self::get_display_option( $key, '' ) );
         $img_id  = $key . '_img';
