@@ -2177,6 +2177,19 @@ class VA_Settings_Page {
                 const name = form.querySelector('[name="va_ap_panel_name"]');
                 if (iconEl && icon && icon.value) iconEl.textContent = icon.value;
                 if (nameEl && name && name.value) nameEl.textContent = name.value;
+
+                // Logo URL + magasság live preview
+                const logoUrl = form.querySelector('[name="va_ap_logo_url"]');
+                const logoH   = form.querySelector('[name="va_ap_logo_height"]');
+                const prevIcon = document.querySelector('.va-aps-prev-icon');
+                if (prevIcon) {
+                    if (logoUrl && logoUrl.value) {
+                        const h = (logoH && parseInt(logoH.value)) ? Math.min(parseInt(logoH.value), 60) + 'px' : '32px';
+                        prevIcon.innerHTML = '<img src="' + logoUrl.value + '" style="height:' + h + ';max-width:100%;object-fit:contain;display:block;" alt="">';
+                    } else {
+                        prevIcon.textContent = icon ? icon.value || '🎯' : '🎯';
+                    }
+                }
             }
 
             form.addEventListener('input',  sync);
