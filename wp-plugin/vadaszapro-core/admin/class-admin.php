@@ -61,29 +61,6 @@ class VA_Admin {
 
         echo '<style id="va-admin-theme-vars">' . $vars . '</style>' . "\n";
 
-        // Google Font betöltése az admin fejlécből
-        $google_map = [
-            'inter'         => 'Inter:wght@400;500;600;700;800;900',
-            'roboto'        => 'Roboto:wght@400;500;700;900',
-            'montserrat'    => 'Montserrat:wght@400;500;600;700;800;900',
-            'nunito'        => 'Nunito:wght@400;500;600;700;800;900',
-            'poppins'       => 'Poppins:wght@400;500;600;700;800;900',
-            'raleway'       => 'Raleway:wght@400;500;600;700;800;900',
-            'dm-sans'       => 'DM+Sans:wght@400;500;700;900',
-            'manrope'       => 'Manrope:wght@400;500;600;700;800',
-            'work-sans'     => 'Work+Sans:wght@400;500;600;700;800;900',
-            'rubik'         => 'Rubik:wght@400;500;700;900',
-            'source-sans-3' => 'Source+Sans+3:wght@400;500;600;700;800;900',
-            'fira-sans'     => 'Fira+Sans:wght@400;500;600;700;800;900',
-            'oswald'        => 'Oswald:wght@400;500;600;700',
-        ];
-        if ( isset( $google_map[ $font_slug ] ) ) {
-            $gf_url = 'https://fonts.googleapis.com/css2?family=' . $google_map[ $font_slug ] . '&display=swap';
-            echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
-            echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
-            echo '<link rel="stylesheet" href="' . esc_url( $gf_url ) . '">' . "\n";
-        }
-
         // TinyMCE editor sötétítés az admin hirdetés szerkesztőben
         echo '<style id="va-tinymce-dark">
 /* Wrapper és tab gombok */
@@ -362,5 +339,27 @@ class VA_Admin {
         wp_enqueue_style(  "wp-color-picker" );
         wp_enqueue_style(  "va-admin", VA_PLUGIN_URL . "admin/admin.css", [ "wp-color-picker" ], VA_VERSION );
         wp_enqueue_script( "va-admin", VA_PLUGIN_URL . "admin/admin.js", [ "jquery", "wp-color-picker" ], VA_VERSION, true );
+
+        // Google Font betöltése wp_enqueue_style-lal
+        $google_map = [
+            'inter'         => 'Inter:wght@400;500;600;700;800;900',
+            'roboto'        => 'Roboto:wght@400;500;700;900',
+            'montserrat'    => 'Montserrat:wght@400;500;600;700;800;900',
+            'nunito'        => 'Nunito:wght@400;500;600;700;800;900',
+            'poppins'       => 'Poppins:wght@400;500;600;700;800;900',
+            'raleway'       => 'Raleway:wght@400;500;600;700;800;900',
+            'dm-sans'       => 'DM+Sans:wght@400;500;700;900',
+            'manrope'       => 'Manrope:wght@400;500;600;700;800',
+            'work-sans'     => 'Work+Sans:wght@400;500;600;700;800;900',
+            'rubik'         => 'Rubik:wght@400;500;700;900',
+            'source-sans-3' => 'Source+Sans+3:wght@400;500;600;700;800;900',
+            'fira-sans'     => 'Fira+Sans:wght@400;500;600;700;800;900',
+            'oswald'        => 'Oswald:wght@400;500;600;700',
+        ];
+        $ap_font = sanitize_key( (string) ( get_option( 'va_ap_font', 'montserrat' ) ?: 'montserrat' ) );
+        if ( isset( $google_map[ $ap_font ] ) ) {
+            $gf_url = 'https://fonts.googleapis.com/css2?family=' . $google_map[ $ap_font ] . '&display=swap';
+            wp_enqueue_style( 'va-admin-font', esc_url_raw( $gf_url ), [], null );
+        }
     }
 }

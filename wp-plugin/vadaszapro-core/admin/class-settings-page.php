@@ -2078,7 +2078,7 @@ class VA_Settings_Page {
         .va-aps-section .form-table input[type=color] { width:44px; height:34px; border-radius:var(--va-radius-sm); border:1px solid var(--va-border2); background:transparent; cursor:pointer; padding:2px; }
 
         /* Preview column */
-        .va-aps-preview-col { position:sticky; top:72px; }
+        .va-aps-preview-col { position:sticky; top:72px; align-self:start; }
         .va-aps-preview-sticky { display:flex; flex-direction:column; gap:0; }
         .va-aps-preview-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--va-muted); margin-bottom:6px; }
         .va-aps-preview-note { font-size:10px; color:var(--va-muted); margin-top:8px; text-align:center; }

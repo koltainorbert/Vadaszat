@@ -34,6 +34,16 @@ body.va-admin-page {
     font-size: var(--va-font-size, 13px) !important;
     overflow-x: hidden;
 }
+body.va-admin-page p,
+body.va-admin-page span,
+body.va-admin-page td,
+body.va-admin-page th,
+body.va-admin-page label,
+body.va-admin-page li,
+body.va-admin-page div {
+    font-family: var(--va-font) !important;
+    font-size: var(--va-font-size, 13px);
+}
 body.va-admin-page #wpadminbar,
 body.va-admin-page #adminmenuback,
 body.va-admin-page #adminmenuwrap,
