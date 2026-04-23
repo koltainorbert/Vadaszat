@@ -745,7 +745,7 @@ class VA_Settings_Page {
         }
         foreach ( $price_card_opts as $key => $default ) {
             self::$defaults[ $key ] = $default;
-            $sanitize = in_array( $key, $card_int_keys, true ) ? 'absint' : 'sanitize_text_field';
+            $sanitize = in_array( $key, $card_int_keys, true ) || $key === 'va_pc_count' ? 'absint' : 'sanitize_text_field';
             register_setting( 'va_price_cards_settings', $key, [ 'sanitize_callback' => $sanitize ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
@@ -4679,6 +4679,11 @@ class VA_Settings_Page {
         .va-pk-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
         @media(max-width:1200px) { .va-pk-grid { grid-template-columns:repeat(2,1fr); } }
         @media(max-width:700px)  { .va-pk-grid { grid-template-columns:1fr; } }
+        .va-pk-card--hidden { display:none; }
+        .va-pk-add-row { display:flex; justify-content:center; margin-bottom:16px; }
+        .va-pk-add-btn { background:rgba(255,255,255,.06); border:1px dashed rgba(255,255,255,.2); border-radius:12px; color:rgba(255,255,255,.6); font-size:13px; font-weight:600; padding:12px 28px; cursor:pointer; transition:.2s; }
+        .va-pk-add-btn:hover { background:rgba(204,0,0,.12); border-color:rgba(204,0,0,.4); color:#fff; }
+        .va-pk-add-btn:disabled { opacity:.3; cursor:default; }
         .va-pk-card { border-radius:16px; border:1px solid rgba(255,255,255,.1); overflow:hidden; transition:box-shadow .2s; }
         .va-pk-card--featured { border-color:rgba(245,158,11,.4); }
         .va-pk-card__header { padding:16px 16px 12px; position:relative; }
@@ -4744,25 +4749,30 @@ class VA_Settings_Page {
                 </div>
 
                 <!-- ─── Kártya szerkesztők ─── -->
-                <div class="va-pk-grid">
-                <?php for ( $n = 1; $n <= 4; $n++ ):
-                    $label    = $g( "va_pc_{$n}_label",    $card_defaults['labels'][$n]  );
-                    $slug     = $g( "va_pc_{$n}_plan_slug",$card_defaults['slugs'][$n]   );
-                    $tag      = $g( "va_pc_{$n}_tag",      $card_defaults['tags'][$n]    );
-                    $desc     = $g( "va_pc_{$n}_desc",     $card_defaults['descs'][$n]   );
-                    $qty      = $gi( "va_pc_{$n}_qty",     $card_defaults['qtys'][$n]    );
-                    $price    = $gi( "va_pc_{$n}_price",   $card_defaults['prices'][$n]  );
-                    $badge    = $g( "va_pc_{$n}_badge",    $card_defaults['badges'][$n]  );
+                <?php
+                $pc_count = max( 4, min( 8, $gi( 'va_pc_count', 4 ) ) );
+                ?>
+                <input type="hidden" name="va_pc_count" id="va-pk-count" value="<?php echo $pc_count; ?>">
+                <div class="va-pk-grid" id="va-pk-grid">
+                <?php for ( $n = 1; $n <= 8; $n++ ):
+                    $label    = $g( "va_pc_{$n}_label",    $card_defaults['labels'][$n]  ?? '' );
+                    $slug     = $g( "va_pc_{$n}_plan_slug",$card_defaults['slugs'][$n]   ?? '' );
+                    $tag      = $g( "va_pc_{$n}_tag",      $card_defaults['tags'][$n]    ?? '' );
+                    $desc     = $g( "va_pc_{$n}_desc",     $card_defaults['descs'][$n]   ?? '' );
+                    $qty      = $gi( "va_pc_{$n}_qty",     $card_defaults['qtys'][$n]    ?? 1  );
+                    $price    = $gi( "va_pc_{$n}_price",   $card_defaults['prices'][$n]  ?? 0  );
+                    $badge    = $g( "va_pc_{$n}_badge",    $card_defaults['badges'][$n]  ?? '' );
                     $featured = $g( "va_pc_{$n}_featured", ( $n === 3 ) ? '1' : '0' ) === '1';
                     $free     = $g( "va_pc_{$n}_free",     ( $n === 1 ) ? '1' : '0' ) === '1';
-                    $btn_text = $g( "va_pc_{$n}_btn_text", $card_defaults['btns'][$n]    );
-                    $theme    = $g( "va_pc_{$n}_theme",    $card_defaults['themes'][$n]  );
-                    $enabled  = $g( "va_pc_{$n}_enabled",  '1' ) === '1';
+                    $btn_text = $g( "va_pc_{$n}_btn_text", $card_defaults['btns'][$n]    ?? 'Vásárlás →' );
+                    $theme    = $g( "va_pc_{$n}_theme",    $card_defaults['themes'][$n]  ?? 'basic' );
+                    $enabled  = $g( "va_pc_{$n}_enabled",  $n <= 4 ? '1' : '0' ) === '1';
+                    $is_hidden = $n > $pc_count;
 
                     $tc       = $theme_colors[ $theme ] ?? $theme_colors['basic'];
                     $total    = $qty * $price;
                 ?>
-                <div class="va-pk-card<?php echo $featured ? ' va-pk-card--featured' : ''; ?>"
+                <div class="va-pk-card<?php echo $featured ? ' va-pk-card--featured' : ''; ?><?php echo $is_hidden ? ' va-pk-card--hidden' : ''; ?>" data-card-n="<?php echo $n; ?>"
                      style="background:<?php echo esc_attr( $tc['gradient'] ); ?>; box-shadow:<?php echo $featured ? '0 8px 40px ' . esc_attr( $tc['glow'] ) : 'none'; ?>;">
                     <!-- Header preview -->
                     <div class="va-pk-card__header" style="border-bottom:1px solid rgba(255,255,255,.06);">
@@ -4866,23 +4876,26 @@ class VA_Settings_Page {
                             <input type="text" name="va_pc_<?php echo $n; ?>_btn_text" value="<?php echo esc_attr( $btn_text ); ?>" placeholder="Vásárlás →">
                         </div>
 
-                        <div class="va-pk-card__field-row">
-                            <div class="va-pk-field">
-                                <label>Plan slug (aktív det.)</label>
-                                <input type="text" name="va_pc_<?php echo $n; ?>_plan_slug" value="<?php echo esc_attr( $slug ); ?>" placeholder="gold">
-                            </div>
-                            <div class="va-pk-field">
-                                <label>Téma / szín</label>
-                                <select name="va_pc_<?php echo $n; ?>_theme" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 10px;color:#e8e8f0;font-size:13px;width:100%;box-sizing:border-box;">
-                                    <?php foreach ( $theme_colors as $t_key => $_ ): ?>
-                                    <option value="<?php echo esc_attr( $t_key ); ?>"<?php selected( $theme, $t_key ); ?>><?php echo esc_html( ucfirst( $t_key ) ); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
+                        <div class="va-pk-field">
+                            <label>Plan slug (aktív det.)</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_plan_slug" value="<?php echo esc_attr( $slug ); ?>" placeholder="gold">
+                        </div>
+                        <div class="va-pk-field">
+                            <label>Téma / szín</label>
+                            <select name="va_pc_<?php echo $n; ?>_theme" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 10px;color:#e8e8f0;font-size:13px;width:100%;box-sizing:border-box;">
+                                <?php foreach ( $theme_colors as $t_key => $_ ): ?>
+                                <option value="<?php echo esc_attr( $t_key ); ?>"<?php selected( $theme, $t_key ); ?>><?php echo esc_html( ucfirst( $t_key ) ); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <?php endfor; ?>
+                </div>
+
+                <!-- ─── Kártya hozzáadása ─── -->
+                <div class="va-pk-add-row">
+                    <button type="button" id="va-pk-add-card" class="va-pk-add-btn"<?php echo $pc_count >= 8 ? ' disabled' : ''; ?>>+ Üres kártya hozzáadása</button>
                 </div>
 
                 <!-- ─── Mentés ─── -->
@@ -4912,6 +4925,23 @@ class VA_Settings_Page {
                     if(unitEl) unitEl.textContent = formatHu(price);
                 });
             });
+
+            // + Kártya hozzáadása
+            var addBtn   = document.getElementById('va-pk-add-card');
+            var countEl  = document.getElementById('va-pk-count');
+            if (addBtn && countEl) {
+                addBtn.addEventListener('click', function(){
+                    var cur = parseInt(countEl.value) || 4;
+                    if (cur >= 8) { addBtn.disabled = true; return; }
+                    var next = cur + 1;
+                    var card = document.querySelector('[data-card-n="'+next+'"]');
+                    if (card) {
+                        card.classList.remove('va-pk-card--hidden');
+                        countEl.value = next;
+                        if (next >= 8) addBtn.disabled = true;
+                    }
+                });
+            }
         })();
         </script>
         <?php
