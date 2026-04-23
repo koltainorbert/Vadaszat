@@ -31,6 +31,7 @@ body.va-admin-page {
     background: var(--va-bg) !important;
     color: var(--va-text) !important;
     font-family: var(--va-font) !important;
+    font-size: var(--va-font-size, 13px) !important;
     overflow-x: hidden;
 }
 body.va-admin-page #wpadminbar,
