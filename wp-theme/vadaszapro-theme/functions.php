@@ -484,19 +484,19 @@ function va_design_scaled_ratio( float $base_ratio, int $factor_percent ): float
 }
 
 add_action( 'wp_enqueue_scripts', function () {
-    $font_keys = [
-        'va_font_global',
-        'va_font_headings',
-        'va_font_header',
-        'va_font_content',
-        'va_font_footer',
+    $font_defaults = [
+        'va_font_global'   => 'system',
+        'va_font_headings' => 'montserrat',
+        'va_font_header'   => 'montserrat',
+        'va_font_content'  => 'source-sans-3',
+        'va_font_footer'   => 'source-sans-3',
     ];
 
     $font_map = va_design_font_map();
     $google_families = [];
 
-    foreach ( $font_keys as $key ) {
-        $slug = sanitize_key( (string) get_option( $key, 'system' ) );
+    foreach ( $font_defaults as $key => $default_slug ) {
+        $slug = sanitize_key( (string) get_option( $key, $default_slug ) );
         if ( isset( $font_map[ $slug ] ) && $font_map[ $slug ]['google'] !== '' ) {
             $google_families[] = $font_map[ $slug ]['google'];
         }
