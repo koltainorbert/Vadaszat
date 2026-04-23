@@ -405,20 +405,26 @@ body.va-admin-page input[type="radio"] { min-width: auto; accent-color: var(--va
 /* ── Number spin wrapper ───────────────────────────────────────── */
 .va-num-wrap { display: inline-flex; align-items: stretch; gap: 0; }
 .va-num-wrap input[type="number"] { border-radius: var(--va-radius-sm) 0 0 var(--va-radius-sm) !important; min-width: 80px; }
-.va-num-spin { display: flex; flex-direction: column; }
+.va-num-spin { display: flex; flex-direction: column; width: 30px; }
 .va-num-spin button {
-    background: rgba(255,255,255,.06) !important;
-    border: 1px solid rgba(255,255,255,.12) !important;
-    color: rgba(255,255,255,.5) !important;
-    width: 26px; flex: 1; min-height: 0;
+    background: rgba(255,255,255,.07) !important;
+    border: 1px solid rgba(255,255,255,.15) !important;
+    color: rgba(255,255,255,.65) !important;
+    width: 30px; flex: 1 1 50%; min-height: 0; height: 50%;
     display: flex; align-items: center; justify-content: center;
-    cursor: pointer; padding: 0; font-size: 10px; line-height: 1;
-    transition: background .12s, color .12s;
+    cursor: pointer; padding: 0; font-size: 9px; line-height: 1;
+    transition: background .12s, color .12s, border-color .12s;
     box-shadow: none !important;
 }
-.va-num-spin button:first-child { border-radius: 0 var(--va-radius-sm) 0 0 !important; border-bottom-width: 0.5px !important; }
-.va-num-spin button:last-child  { border-radius: 0 0 var(--va-radius-sm) 0 !important; border-top-width: 0.5px !important; }
-.va-num-spin button:hover { background: rgba(255,30,30,.18) !important; color: #fff !important; border-color: rgba(255,30,30,.35) !important; }
+.va-num-spin button:first-child {
+    border-radius: 0 var(--va-radius-sm) 0 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,.08) !important;
+}
+.va-num-spin button:last-child {
+    border-radius: 0 0 var(--va-radius-sm) 0 !important;
+    border-top: none !important;
+}
+.va-num-spin button:hover { background: rgba(255,30,30,.22) !important; color: #fff !important; border-color: rgba(255,30,30,.4) !important; }
 
 /* ── Toggle switch ─────────────────────────────────────────────── */
 .va-toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }

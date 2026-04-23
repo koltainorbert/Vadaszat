@@ -884,10 +884,10 @@ class VA_Settings_Page {
                     <?php self::field_num(   'va_hero_logo_height',     'Hero logó magasság (px)', 30, 260 ); ?>
                     <?php self::field_select('va_hero_logo_position',   'Hero logó pozíció', [ 'left' => 'Bal', 'center' => 'Közép', 'right' => 'Jobb' ] ); ?>
                     <?php self::field_select('va_home_hero_align',      'Főoldal hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
-                    <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
-                    <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
-                    <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
-                    <?php self::field_url(   'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
+                    <?php self::field_video(  'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
+                    <?php self::field_video(  'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
+                    <?php self::field_video(  'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
+                    <?php self::field_video(  'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
                     <?php self::field_select('va_kategoria_hero_align', 'Kategória hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_select('va_tax_hero_align',       'Alkategória hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_select('va_contact_hero_align',   'Kapcsolat hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
