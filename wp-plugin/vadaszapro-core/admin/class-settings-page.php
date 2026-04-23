@@ -2006,7 +2006,7 @@ class VA_Settings_Page {
         .va-aps-swatches span { width:14px; height:14px; border-radius:50%; border:1px solid rgba(255,255,255,.12); }
 
         /* Main layout */
-        .va-aps-main { display:grid; grid-template-columns:1fr 260px; gap:24px; align-items:start; }
+        .va-aps-main { display:grid; grid-template-columns:1fr; gap:24px; align-items:start; }
 
         /* Sections */
         .va-aps-section { background:var(--va-bg2); border:1px solid var(--va-border); border-radius:var(--va-radius); overflow:hidden; margin-bottom:16px; }
