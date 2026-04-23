@@ -413,8 +413,10 @@ body.va-admin-page input[type="radio"] { min-width: auto; accent-color: var(--va
     border: none !important;
     border-right: 1px solid rgba(255,255,255,.1) !important;
     border-radius: 0 !important;
-    min-width: 80px;
+    outline: none !important;
     box-shadow: none !important;
+    margin: 0 !important;
+    min-width: 80px;
 }
 .va-num-spin { display: flex; flex-direction: column; width: 30px; }
 .va-num-spin button {
