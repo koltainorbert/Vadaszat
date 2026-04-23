@@ -177,15 +177,6 @@
 
 <!-- ── Scroll-progress pill videó widget ──────────────────── -->
 <div id="va-scroll-ring" role="button" aria-label="Vissza a tetejére" tabindex="0">
-    <!-- progress border SVG (pill alak) – pathLength=100 → nincs kerület-hiba -->
-    <svg id="va-ring-svg" viewBox="0 0 178 66" width="178" height="66" aria-hidden="true" style="position:absolute;top:0;left:0;pointer-events:none;z-index:3;">
-        <rect x="2" y="2" width="174" height="62" rx="31" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="1.5" pathLength="100"/>
-        <rect id="va-ring-el" x="2" y="2" width="174" height="62" rx="31" fill="none"
-            stroke="#00e676" stroke-width="1.8" stroke-linecap="round"
-            pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
-            transform="rotate(180 89 33)"
-            style="transition:stroke-dashoffset .12s linear;"/>
-    </svg>
 
     <!-- videó + bal arrow réteg -->
     <div id="va-ring-inner">
@@ -265,14 +256,8 @@
 </style>
 <script>
 (function(){
-    var ring  = document.getElementById('va-scroll-ring');
-    var el    = document.getElementById('va-ring-el');
-    var perim = 100;
+    var ring = document.getElementById('va-scroll-ring');
     function update() {
-        var doc     = document.documentElement;
-        var scrollH = doc.scrollHeight - doc.clientHeight;
-        var pct     = scrollH > 0 ? window.scrollY / scrollH : 0;
-        el.style.strokeDashoffset = perim * (1 - pct);
         ring.classList.toggle('va-ring--visible', window.scrollY > 80);
     }
     window.addEventListener('scroll', update, {passive:true});
