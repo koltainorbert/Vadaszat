@@ -175,70 +175,79 @@
 
 <?php wp_footer(); ?>
 
-<?php
-/* ── Back-to-top gomb ──────────────────────────────────────── */
-if ( get_option( 'va_btt_enabled', '1' ) === '1' ) :
-    $btt_style    = sanitize_key( (string) get_option( 'va_btt_style',        'circle' ) );
-    $btt_icon_cls = strip_tags( trim( (string) get_option( 'va_btt_icon',     'fa-solid fa-chevron-up' ) ) );
-    $btt_color    = va_design_css_color( (string) get_option( 'va_btt_color',         '#ff0000' ), '#ff0000' );
-    $btt_border   = va_design_css_color( (string) get_option( 'va_btt_border_color',  '#ff0000' ), '#ff0000' );
-    $btt_txtcolor = va_design_css_color( (string) get_option( 'va_btt_text_color',    '#ffffff' ), '#ffffff' );
-    $btt_size     = max( 32, min( 80, absint( get_option( 'va_btt_size',       48 ) ) ) );
-    $btt_pos      = get_option( 'va_btt_position', 'right' ) === 'left' ? 'left' : 'right';
-    $btt_ox       = max( 0, min( 120, absint( get_option( 'va_btt_offset_x',  28 ) ) ) );
-    $btt_oy       = max( 0, min( 120, absint( get_option( 'va_btt_offset_y',  28 ) ) ) );
-    $btt_after    = max( 0, absint( get_option( 'va_btt_show_after', 300 ) ) );
-
-    // FA ikon osztály whitelist: csak betű, szám, - és szóköz engedélyezett
-    $btt_icon_cls = preg_replace( '/[^a-zA-Z0-9\- ]/', '', $btt_icon_cls );
-
-    // Stílus-specifikus CSS
-    $btt_extra_css = [
-        'circle'   => 'border-radius:50%;border:2px solid ' . $btt_border . ';',
-        'rounded'  => 'border-radius:14px;border:2px solid ' . $btt_border . ';',
-        'square'   => 'border-radius:4px;border:2px solid ' . $btt_border . ';',
-        'pill'     => 'border-radius:999px;width:auto;padding:0 20px;border:2px solid ' . $btt_border . ';',
-        'ghost'    => 'border-radius:50%;background:transparent !important;border:2px solid ' . $btt_border . ';color:' . $btt_txtcolor . ' !important;',
-        'glass'    => 'border-radius:50%;background:rgba(255,255,255,.12) !important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid ' . $btt_border . ';',
-        'neon'     => 'border-radius:50%;border:2px solid ' . $btt_border . ';box-shadow:0 0 18px ' . $btt_color . ',0 0 36px ' . $btt_color . '88;',
-        'minimal'  => 'border-radius:50%;background:transparent !important;border:none;box-shadow:none !important;color:' . $btt_txtcolor . ' !important;',
-        'floating' => 'border-radius:50%;border:2px solid ' . $btt_border . ';box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 16px ' . $btt_color . '55;',
-        'arrow'    => 'border-radius:0 0 50% 50% / 0 0 20px 20px;border:none;border-top:3px solid ' . $btt_border . ';',
-    ];
-    $extra = $btt_extra_css[ $btt_style ] ?? $btt_extra_css['circle'];
-    ?>
-    <button id="va-btt" aria-label="Vissza a tetejére"
-        style="position:fixed;<?php echo $btt_pos; ?>:<?php echo $btt_ox; ?>px;bottom:<?php echo $btt_oy; ?>px;
-               width:<?php echo $btt_size; ?>px;height:<?php echo $btt_size; ?>px;
-               background:<?php echo $btt_color; ?>;color:<?php echo $btt_txtcolor; ?>;
-               cursor:pointer;display:none;align-items:center;justify-content:center;
-               z-index:9999;transition:opacity .25s,transform .25s;opacity:0;
-               font-size:<?php echo round($btt_size*0.4); ?>px;line-height:1;
-               <?php echo $extra; ?>">
-        <i class="<?php echo esc_attr( $btt_icon_cls ); ?>" aria-hidden="true"></i>
-    </button>
-    <script>
-    (function(){
-        var btn = document.getElementById('va-btt');
-        if(!btn) return;
-        var after = <?php echo $btt_after; ?>;
-        window.addEventListener('scroll', function(){
-            if(window.scrollY > after){
-                btn.style.display='flex';
-                setTimeout(function(){ btn.style.opacity='1'; btn.style.transform='translateY(0)'; },10);
-            } else {
-                btn.style.opacity='0';
-                btn.style.transform='translateY(10px)';
-                setTimeout(function(){ if(window.scrollY<=after) btn.style.display='none'; },260);
-            }
-        }, {passive:true});
-        btn.addEventListener('click', function(){
-            window.scrollTo({top:0, behavior:'smooth'});
-        });
-        btn.addEventListener('mouseenter', function(){ btn.style.transform='scale(1.1)'; });
-        btn.addEventListener('mouseleave', function(){ btn.style.transform='scale(1)'; });
-    })();
-    </script>
-<?php endif; ?>
+<!-- ── Scroll-progress videó oval ─────────────────────────── -->
+<div id="va-scroll-ring" title="Vissza a tetejére" role="button" aria-label="Vissza a tetejére" tabindex="0">
+    <svg id="va-ring-svg" viewBox="0 0 68 82" width="68" height="82" aria-hidden="true">
+        <!-- háttér ellipszis -->
+        <ellipse cx="34" cy="41" rx="31" ry="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3"/>
+        <!-- haladás ellipszis -->
+        <ellipse id="va-ring-el" cx="34" cy="41" rx="31" ry="38" fill="none"
+            stroke="#00e676" stroke-width="3.5" stroke-linecap="round"
+            stroke-dasharray="217" stroke-dashoffset="217"
+            style="transform:rotate(-90deg);transform-origin:34px 41px;transition:stroke-dashoffset .15s linear;"/>
+    </svg>
+    <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
+        <source src="<?php echo esc_url( content_url('uploads/2026/04/0_Ride_Street_1920x1080.mp4') ); ?>" type="video/mp4">
+    </video>
+</div>
+<style>
+#va-scroll-ring {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    width: 68px;
+    height: 82px;
+    z-index: 9999;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity .3s, transform .3s;
+    -webkit-tap-highlight-color: transparent;
+}
+#va-scroll-ring.va-ring--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+#va-scroll-ring svg {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+}
+#va-scroll-ring video {
+    position: absolute;
+    top: 7px;
+    left: 6px;
+    width: 56px;
+    height: 68px;
+    border-radius: 50% / 42%;
+    object-fit: cover;
+    display: block;
+}
+#va-scroll-ring:hover #va-ring-el {
+    stroke: #69f0ae;
+}
+</style>
+<script>
+(function(){
+    var ring  = document.getElementById('va-scroll-ring');
+    var el    = document.getElementById('va-ring-el');
+    var perim = 217;
+    function update() {
+        var doc   = document.documentElement;
+        var scrollH = doc.scrollHeight - doc.clientHeight;
+        var pct   = scrollH > 0 ? window.scrollY / scrollH : 0;
+        el.style.strokeDashoffset = perim * (1 - pct);
+        if (window.scrollY > 80) {
+            ring.classList.add('va-ring--visible');
+        } else {
+            ring.classList.remove('va-ring--visible');
+        }
+    }
+    window.addEventListener('scroll', update, {passive:true});
+    ring.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+    ring.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') window.scrollTo({top:0,behavior:'smooth'}); });
+    update();
+})();
+</script>
 </body>
 </html>

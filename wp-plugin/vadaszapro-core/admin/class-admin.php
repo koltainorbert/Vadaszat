@@ -205,7 +205,6 @@ class VA_Admin {
                 <?php self::sb_item( "🖥️", "Admin Panel", admin_url( "admin.php?page=vadaszapro-adminpanel" ), $page === "vadaszapro-adminpanel" ); ?>
                 <?php self::sb_item( "🧱", "Termékoldal", admin_url( "admin.php?page=vadaszapro-single-designer" ), $page === "vadaszapro-single-designer" ); ?>
                 <?php self::sb_item( "📱", "Social Media", admin_url( "admin.php?page=vadaszapro-social" ), $page === "vadaszapro-social" ); ?>
-                <?php self::sb_item( "⬆", "Tetejére gomb", admin_url( "admin.php?page=vadaszapro-btt" ), $page === "vadaszapro-btt" ); ?>
                 <?php self::sb_item( "💼", "Csomagok", admin_url( "admin.php?page=vadaszapro-plans" ), $page === "vadaszapro-plans" ); ?>
                 <?php self::sb_item( "💳", "Árkártyák", admin_url( "admin.php?page=vadaszapro-arkartyak" ), $page === "vadaszapro-arkartyak" ); ?>
 
@@ -304,7 +303,6 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Csomag beállítások",     "💼 Csomagok",       "manage_options", "vadaszapro-plans",          [ VA_Settings_Page::class, "render_plans"            ] );
         add_submenu_page( "vadaszapro", "Árkártyák szerkesztő",   "💳 Árkártyák",      "manage_options", "vadaszapro-arkartyak",      [ VA_Settings_Page::class, "render_price_cards"      ] );
         add_submenu_page( "vadaszapro", "Statisztika",            "Statisztika",       "manage_options", "vadaszapro-stats",          [ VA_Settings_Page::class, "render_stats"            ] );
-        add_submenu_page( "vadaszapro", "Tetejére gomb",          "⬆ Tetejére gomb",  "manage_options", "vadaszapro-btt",            [ VA_Settings_Page::class, "render_btt"               ] );
         add_submenu_page( "vadaszapro", "Oldalszerkesztő",        "📄 Oldalak",        "manage_options", "vadaszapro-oldalak",        [ VA_Page_Builder::class,  "render"                  ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
@@ -337,7 +335,6 @@ class VA_Admin {
 
         wp_enqueue_media();
         wp_enqueue_style(  "wp-color-picker" );
-        wp_enqueue_style(  "font-awesome", "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css", [], "6.5.2" );
         wp_enqueue_style(  "va-admin", VA_PLUGIN_URL . "admin/admin.css", [ "wp-color-picker" ], VA_VERSION );
         wp_enqueue_script( "va-admin", VA_PLUGIN_URL . "admin/admin.js", [ "jquery", "wp-color-picker" ], VA_VERSION, true );
     }
