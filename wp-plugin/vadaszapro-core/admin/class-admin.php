@@ -54,10 +54,35 @@ class VA_Admin {
         $vars .= '--va-topbar-h:'  . (int) $g( 'va_ap_topbar_height', '60' )  . 'px;';
         $vars .= '--va-radius:'    . (int) $g( 'va_ap_radius',    '12' ) . 'px;';
         $vars .= '--va-radius-sm:' . (int) $g( 'va_ap_radius_sm', '8' )  . 'px;';
+        $font_size  = max( 10, min( 20, (int) $g( 'va_ap_font_size', '13' ) ) );
         $vars .= '--va-font:'      . $font_stack . ';';
+        $vars .= '--va-font-size:' . $font_size . 'px;';
         $vars .= '}';
 
         echo '<style id="va-admin-theme-vars">' . $vars . '</style>' . "\n";
+
+        // Google Font betöltése az admin fejlécből
+        $google_map = [
+            'inter'         => 'Inter:wght@400;500;600;700;800;900',
+            'roboto'        => 'Roboto:wght@400;500;700;900',
+            'montserrat'    => 'Montserrat:wght@400;500;600;700;800;900',
+            'nunito'        => 'Nunito:wght@400;500;600;700;800;900',
+            'poppins'       => 'Poppins:wght@400;500;600;700;800;900',
+            'raleway'       => 'Raleway:wght@400;500;600;700;800;900',
+            'dm-sans'       => 'DM+Sans:wght@400;500;700;900',
+            'manrope'       => 'Manrope:wght@400;500;600;700;800',
+            'work-sans'     => 'Work+Sans:wght@400;500;600;700;800;900',
+            'rubik'         => 'Rubik:wght@400;500;700;900',
+            'source-sans-3' => 'Source+Sans+3:wght@400;500;600;700;800;900',
+            'fira-sans'     => 'Fira+Sans:wght@400;500;600;700;800;900',
+            'oswald'        => 'Oswald:wght@400;500;600;700',
+        ];
+        if ( isset( $google_map[ $font_slug ] ) ) {
+            $gf_url = 'https://fonts.googleapis.com/css2?family=' . $google_map[ $font_slug ] . '&display=swap';
+            echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+            echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+            echo '<link rel="stylesheet" href="' . esc_url( $gf_url ) . '">' . "\n";
+        }
 
         // TinyMCE editor sötétítés az admin hirdetés szerkesztőben
         echo '<style id="va-tinymce-dark">

@@ -794,6 +794,7 @@ class VA_Settings_Page {
             'va_ap_radius'        => 12,
             'va_ap_radius_sm'     => 8,
             'va_ap_font'          => 'montserrat',
+            'va_ap_font_size'     => 13,
         ];
         foreach ( $adminpanel as $key => $default ) {
             self::$defaults[ $key ] = $default;
@@ -1971,8 +1972,7 @@ class VA_Settings_Page {
                             </div>
                             <table class="form-table">
                                 <?php self::field_select( 'va_ap_font', 'Admin betűtípus', $fonts ); ?>
-                            </table>
-                        </div>
+                                <?php self::field_num( 'va_ap_font_size', 'Admin betűméret (px)', 10, 20 ); ?>
 
                         <div style="margin-top:8px;">
                             <?php submit_button( '💾 Admin Panel beállítások mentése', 'primary', 'submit', false ); ?>
