@@ -176,17 +176,13 @@
 <?php wp_footer(); ?>
 
 <!-- ── Scroll-progress pill videó widget ──────────────────── -->
-<!--
-    pill: 178×66  –  rx=33
-    kerület: 2*(178-66) + 2*π*33 = 224 + 207.3 ≈ 431
--->
 <div id="va-scroll-ring" role="button" aria-label="Vissza a tetejére" tabindex="0">
-    <!-- progress border SVG (pill alak) -->
+    <!-- progress border SVG (pill alak) – pathLength=100 → nincs kerület-hiba -->
     <svg id="va-ring-svg" viewBox="0 0 178 66" width="178" height="66" aria-hidden="true" style="position:absolute;top:0;left:0;pointer-events:none;z-index:3;">
-        <rect x="2" y="2" width="174" height="62" rx="31" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="3"/>
+        <rect x="2" y="2" width="174" height="62" rx="31" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="1.5" pathLength="100"/>
         <rect id="va-ring-el" x="2" y="2" width="174" height="62" rx="31" fill="none"
-            stroke="#00e676" stroke-width="3.5" stroke-linecap="round"
-            stroke-dasharray="431" stroke-dashoffset="431"
+            stroke="#00e676" stroke-width="1.8" stroke-linecap="round"
+            pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
             style="transition:stroke-dashoffset .12s linear;"/>
     </svg>
 
@@ -197,7 +193,7 @@
         </video>
         <!-- bal oldali sötét átmenet + felfelé nyíl -->
         <div id="va-ring-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="18 15 12 9 6 15"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><polyline points="18 16 12 8 6 16"/></svg>
         </div>
     </div>
 </div>
@@ -253,7 +249,7 @@
 (function(){
     var ring  = document.getElementById('va-scroll-ring');
     var el    = document.getElementById('va-ring-el');
-    var perim = 431;
+    var perim = 100;
     function update() {
         var doc     = document.documentElement;
         var scrollH = doc.scrollHeight - doc.clientHeight;
