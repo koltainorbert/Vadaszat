@@ -191,9 +191,12 @@
         <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
             <source src="<?php echo esc_url( content_url('uploads/2026/04/0_Ride_Street_1920x1080.mp4') ); ?>" type="video/mp4">
         </video>
-        <!-- bal oldali sötét átmenet + felfelé nyíl -->
+        <!-- bal oldali sötét átmenet + nyil -->
         <div id="va-ring-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24"><polyline points="18 16 12 8 6 16"/></svg>
+            <div class="va-arr">
+                <svg viewBox="0 0 32 20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" width="32" height="20"><polyline points="4 16 16 4 28 16"/></svg>
+                <svg viewBox="0 0 32 20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" width="32" height="20" style="opacity:.35"><polyline points="4 16 16 4 28 16"/></svg>
+            </div>
         </div>
     </div>
 </div>
@@ -236,13 +239,28 @@
 #va-ring-arrow {
     position: absolute;
     top: 0; left: 0;
-    width: 58px;
+    width: 62px;
     height: 100%;
-    background: linear-gradient(to right, rgba(0,0,0,.72) 55%, transparent);
+    background: linear-gradient(to right, rgba(0,0,0,.78) 50%, transparent);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+}
+.va-arr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    animation: va-arr-bounce 1.4s ease-in-out infinite;
+}
+.va-arr svg:first-child { animation: va-arr-fade 1.4s ease-in-out infinite; }
+@keyframes va-arr-bounce {
+    0%,100% { transform: translateY(2px); }
+    50%      { transform: translateY(-4px); }
+}
+@keyframes va-arr-fade {
+    0%,100% { opacity: 1; }
+    50%      { opacity: .6; }
 }
 </style>
 <script>
