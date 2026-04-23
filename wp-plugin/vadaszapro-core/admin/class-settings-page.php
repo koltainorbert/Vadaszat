@@ -2067,81 +2067,11 @@ class VA_Settings_Page {
         .va-aps-prev-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:8px; }
         .va-aps-prev-kpi { background:var(--pv-bg3); border:1px solid var(--pv-border,rgba(255,255,255,.07)); border-radius:var(--pv-radius,8px); padding:6px 8px; display:flex; flex-direction:column; align-items:center; gap:1px; font-size:9px; color:var(--pv-muted,rgba(255,255,255,.45)); }
         .va-aps-prev-kpi span { font-size:13px; }
-        .va-aps-prev-kpi strong { font-size:13px; font-weight:700; color:var(--pv-accent,#ff2020); }
-        .va-aps-prev-table-row { background:var(--pv-bg3); border:1px solid var(--pv-border,rgba(255,255,255,.07)); border-radius:var(--pv-radius,8px); overflow:hidden; }
-        .va-aps-prev-tr { display:flex; align-items:center; gap:6px; padding:5px 8px; border-bottom:1px solid var(--pv-border,rgba(255,255,255,.07)); }
-        .va-aps-prev-tr:last-child { border-bottom:none; }
-        .va-aps-prev-td--img { width:24px; height:24px; background:var(--pv-bg,#070709); border-radius:4px; flex-shrink:0; }
-        .va-aps-prev-td--title { flex:1; height:8px; background:var(--pv-border2,rgba(255,255,255,.12)); border-radius:3px; }
-        .va-aps-prev-td--price { width:36px; height:8px; background:var(--pv-accent,#ff2020); opacity:.6; border-radius:3px; }
-
-        @media (max-width:1100px) {
-            .va-aps-main { grid-template-columns:1fr; }
-            .va-aps-preview-col { position:static; }
-        }
         @media (max-width:680px) {
             .va-aps-presets-grid { gap:6px; }
             .va-aps-preset { min-width:130px; }
         }
         </style>
-
-        <script>
-        (function () {
-            const form    = document.getElementById('va-aps-form');
-            const sidebar = document.getElementById('va-aps-prev-sidebar');
-            const topbar  = document.getElementById('va-aps-prev-topbar');
-            const content = document.getElementById('va-aps-prev-content');
-            const iconEl  = document.getElementById('va-aps-prev-icon');
-            const nameEl  = document.getElementById('va-aps-prev-name');
-            if (!form || !sidebar) return;
-
-            const colorMap = {
-                'va_ap_color_bg':      '--pv-bg',
-                'va_ap_color_bg2':     '--pv-bg2',
-                'va_ap_color_bg3':     '--pv-bg3',
-                'va_ap_color_bg4':     '--pv-bg4',
-                'va_ap_color_text':    '--pv-text',
-                'va_ap_color_muted':   '--pv-muted',
-                'va_ap_color_accent':  '--pv-accent',
-                'va_ap_color_accent2': '--pv-accent2',
-                'va_ap_color_border':  '--pv-border',
-                'va_ap_color_border2': '--pv-border2',
-            };
-            const allPrevEls = [sidebar, topbar, content].filter(Boolean);
-
-            function sync() {
-                for (const [key, prop] of Object.entries(colorMap)) {
-                    const el = form.querySelector('[name="' + key + '"]');
-                    if (!el) continue;
-                    const val = el.value;
-                    allPrevEls.forEach(n => n && n.style.setProperty(prop, val));
-                }
-                const r = form.querySelector('[name="va_ap_radius"]');
-                if (r && content) content.style.setProperty('--pv-radius', r.value + 'px');
-
-                const icon = form.querySelector('[name="va_ap_panel_icon"]');
-                const name = form.querySelector('[name="va_ap_panel_name"]');
-                if (iconEl && icon && icon.value) iconEl.textContent = icon.value;
-                if (nameEl && name && name.value) nameEl.textContent = name.value;
-
-                // Logo URL + magasság live preview
-                const logoUrl = form.querySelector('[name="va_ap_logo_url"]');
-                const logoH   = form.querySelector('[name="va_ap_logo_height"]');
-                const prevIcon = document.querySelector('.va-aps-prev-icon');
-                if (prevIcon) {
-                    if (logoUrl && logoUrl.value) {
-                        const h = (logoH && parseInt(logoH.value)) ? Math.min(parseInt(logoH.value), 60) + 'px' : '32px';
-                        prevIcon.innerHTML = '<img src="' + logoUrl.value + '" style="height:' + h + ';max-width:100%;object-fit:contain;display:block;" alt="">';
-                    } else {
-                        prevIcon.textContent = icon ? icon.value || '🎯' : '🎯';
-                    }
-                }
-            }
-
-            form.addEventListener('input',  sync);
-            form.addEventListener('change', sync);
-        })();
-        </script>
         <?php
     }
 
