@@ -5125,7 +5125,7 @@ class VA_Settings_Page {
                                         <span class="va-pc-field__label">Ikon</span>
                                         <input type="text" class="va-pc-input va-pc-input--icon" data-key="icon" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['icon'] ); ?>" placeholder="<?php echo esc_attr( $default['icon'] ); ?>" maxlength="8">
                                     </label>
-                                    <label class="va-pc-field">
+                                    <label class="va-pc-field va-pc-field--color">
                                         <span class="va-pc-field__label">Szín</span>
                                         <span class="va-pc-color-field">
                                             <input type="text" class="va-pc-input va-pc-input--color va-color-input" data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['color'] ); ?>" placeholder="<?php echo esc_attr( $default['color'] ); ?>">
@@ -5684,6 +5684,11 @@ class VA_Settings_Page {
         }
         .va-pc-field--icon {
             max-width: 120px;
+        }
+        .va-pc-field--color {
+            align-items: flex-start;
+            justify-content: center;
+            padding-left: 18px;
         }
         .va-pc-field__label {
             font-size: 12px;
