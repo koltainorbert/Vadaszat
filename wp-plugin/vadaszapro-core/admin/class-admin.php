@@ -61,6 +61,15 @@ class VA_Admin {
 
         echo '<style id="va-admin-theme-vars">' . $vars . '</style>' . "\n";
 
+        // Google Font betöltése közvetlen <link> taggal (megbízhatóbb mint wp_enqueue_style)
+        $gf_map = self::get_google_font_map();
+        if ( isset( $gf_map[ $font_slug ] ) ) {
+            $gf_url = esc_url( 'https://fonts.googleapis.com/css2?family=' . $gf_map[ $font_slug ] . '&display=swap' );
+            echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+            echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+            echo '<link rel="stylesheet" href="' . $gf_url . '">' . "\n";
+        }
+
         // TinyMCE editor sötétítés az admin hirdetés szerkesztőben
         echo '<style id="va-tinymce-dark">
 /* Wrapper és tab gombok */
@@ -94,6 +103,25 @@ class VA_Admin {
 .quicktags-toolbar input.ed_button { background: #252525 !important; color: #ccc !important; border-color: rgba(255,255,255,.15) !important; border-radius: 3px; }
 .quicktags-toolbar input.ed_button:hover { background: #333 !important; color: #fff !important; }
 </style>' . "\n";
+    }
+
+    /* ── Google Font map ────────────────────────────────────── */
+    private static function get_google_font_map(): array {
+        return [
+            'inter'         => 'Inter:wght@400;500;600;700;800;900',
+            'roboto'        => 'Roboto:wght@400;500;700;900',
+            'montserrat'    => 'Montserrat:wght@400;500;600;700;800;900',
+            'nunito'        => 'Nunito:wght@400;500;600;700;800;900',
+            'poppins'       => 'Poppins:wght@400;500;600;700;800;900',
+            'raleway'       => 'Raleway:wght@400;500;600;700;800;900',
+            'dm-sans'       => 'DM+Sans:wght@400;500;700;900',
+            'manrope'       => 'Manrope:wght@400;500;600;700;800',
+            'work-sans'     => 'Work+Sans:wght@400;500;600;700;800;900',
+            'rubik'         => 'Rubik:wght@400;500;700;900',
+            'source-sans-3' => 'Source+Sans+3:wght@400;500;600;700;800;900',
+            'fira-sans'     => 'Fira+Sans:wght@400;500;600;700;800;900',
+            'oswald'        => 'Oswald:wght@400;500;600;700',
+        ];
     }
 
     /* ── Body class ─────────────────────────────────────────── */
