@@ -4503,7 +4503,7 @@ class VA_Settings_Page {
 
         .va-single-preview {
             --sp-accent:#ff2a2a; --sp-glass:rgba(255,255,255,.07); --sp-border:rgba(255,255,255,.12);
-            --sp-gap:20px; --sp-radius:12px; --sp-pad:18px; --sp-side:38%; --sp-ratio:4/3; --sp-thumb:74px;
+            --sp-gap:20px; --sp-radius:12px; --sp-pad:18px; --sp-side:0.6fr; --sp-ratio:4/3; --sp-thumb:74px;
             background:#080808; border:1px solid var(--sp-border); border-radius:16px; padding:12px;
         }
         .va-single-preview .sp-top { height:8px; width:120px; background:rgba(255,255,255,.15); border-radius:999px; margin-bottom:12px; }
@@ -4546,7 +4546,7 @@ class VA_Settings_Page {
             function syncPreview() {
                 const mode = val('va_single_layout_mode', 'split');
                 preview.classList.toggle('sp-stacked', mode === 'stacked');
-                preview.style.setProperty('--sp-side', Math.max(28, Math.min(52, Number(val('va_single_sidebar_width', 390)) / 10)) + '%');
+                preview.style.setProperty('--sp-side', (Math.max(0.3, Math.min(0.8, Number(val('va_single_sidebar_width', 380)) / 800))).toFixed(2) + 'fr');
                 preview.style.setProperty('--sp-gap', Math.max(8, Math.min(40, Number(val('va_single_layout_gap', 24)))) + 'px');
                 preview.style.setProperty('--sp-radius', Math.max(0, Math.min(40, Number(val('va_single_card_radius', 14)))) + 'px');
                 preview.style.setProperty('--sp-pad', Math.max(8, Math.min(40, Number(val('va_single_card_padding', 22)))) + 'px');
