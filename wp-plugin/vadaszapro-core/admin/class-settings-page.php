@@ -1980,61 +1980,6 @@ class VA_Settings_Page {
                     </form>
                 </div><!-- .va-aps-form-col -->
 
-                <!-- Live Preview -->
-                <div class="va-aps-preview-col">
-                    <div class="va-aps-preview-sticky">
-                        <div class="va-aps-preview-label">👁 Élő előnézet</div>
-
-                        <!-- Topbar -->
-                        <div class="va-aps-prev-topbar" id="va-aps-prev-topbar"
-                             style="--pv-bg2:<?php echo esc_attr($g('va_ap_color_bg2','#0d0d11')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;">
-                            <span class="va-aps-topbar-title">Irányítópult <small>VadászApró</small></span>
-                            <span class="va-aps-topbar-btn">+ Új hirdetés</span>
-                        </div>
-
-                        <!-- Sidebar -->
-                        <div class="va-aps-prev-sidebar" id="va-aps-prev-sidebar"
-                             style="--pv-bg:<?php echo esc_attr($g('va_ap_color_bg','#070709')); ?>;--pv-bg2:<?php echo esc_attr($g('va_ap_color_bg2','#0d0d11')); ?>;--pv-bg3:<?php echo esc_attr($g('va_ap_color_bg3','#111118')); ?>;--pv-bg4:<?php echo esc_attr($g('va_ap_color_bg4','#161620')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-accent2:<?php echo esc_attr($g('va_ap_color_accent2','#ff5050')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;">
-                            <div class="va-aps-prev-logo">
-                                <div class="va-aps-prev-icon" id="va-aps-prev-icon"><?php echo esc_html( $g('va_ap_panel_icon','🎯') ); ?></div>
-                                <div>
-                                    <div class="va-aps-prev-name" id="va-aps-prev-name"><?php echo esc_html( $g('va_ap_panel_name','VadászApró') ); ?></div>
-                                    <div class="va-aps-prev-sub">Admin Panel</div>
-                                </div>
-                            </div>
-                            <nav class="va-aps-prev-nav">
-                                <a class="va-aps-prev-item va-aps-prev-item--active"><span>📊</span>Irányítópult</a>
-                                <a class="va-aps-prev-item"><span>📋</span>Hirdetések <span class="va-aps-prev-badge">3</span></a>
-                                <a class="va-aps-prev-item"><span>👥</span>Felhasználók</a>
-                                <div class="va-aps-prev-sep">Beállítások</div>
-                                <a class="va-aps-prev-item"><span>⚙️</span>Általános</a>
-                                <a class="va-aps-prev-item"><span>🎨</span>Design</a>
-                                <a class="va-aps-prev-item va-aps-prev-item--current"><span>🖥️</span>Admin Panel</a>
-                                <div class="va-aps-prev-sep">Tartalom</div>
-                                <a class="va-aps-prev-item"><span>📢</span>Reklámzónák</a>
-                                <a class="va-aps-prev-item"><span>📈</span>Statisztika</a>
-                            </nav>
-                        </div>
-
-                        <!-- Content area snippet -->
-                        <div class="va-aps-prev-content" id="va-aps-prev-content"
-                             style="--pv-bg:<?php echo esc_attr($g('va_ap_color_bg','#070709')); ?>;--pv-bg3:<?php echo esc_attr($g('va_ap_color_bg3','#111118')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;--pv-radius:<?php echo (int)$g('va_ap_radius','12'); ?>px;">
-                            <div class="va-aps-prev-kpi-row">
-                                <div class="va-aps-prev-kpi"><span>📋</span><strong>1 247</strong><small>Aktív hird.</small></div>
-                                <div class="va-aps-prev-kpi"><span>👥</span><strong>384</strong><small>Felhasználó</small></div>
-                                <div class="va-aps-prev-kpi"><span>👁</span><strong>42 k</strong><small>Megtekintés</small></div>
-                            </div>
-                            <div class="va-aps-prev-table-row">
-                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
-                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
-                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
-                            </div>
-                        </div>
-
-                        <div class="va-aps-preview-note">Az előnézet automatikusan frissül gépelés közben.</div>
-                    </div>
-                </div><!-- .va-aps-preview-col -->
-
             </div><!-- .va-aps-main -->
         </div><!-- .va-aps-wrap -->
 
