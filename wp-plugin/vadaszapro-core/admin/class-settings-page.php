@@ -1975,7 +1975,7 @@ class VA_Settings_Page {
                                 <?php self::field_num( 'va_ap_font_size', 'Admin betűméret (px)', 10, 20 ); ?>
 
                         <div style="margin-top:8px;">
-                            <?php submit_button( '💾 Admin Panel beállítások mentése', 'primary', 'submit', false ); ?>
+                            <?php submit_button( '💾 Admin Panel beállítások mentése', 'primary', 'submit' ); ?>
                         </div>
                     </form>
                 </div><!-- .va-aps-form-col -->

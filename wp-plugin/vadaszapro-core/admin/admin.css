@@ -61,6 +61,23 @@ body.va-admin-page .wp-header-end,
 body.va-admin-page .postbox-header .handlediv { display: none !important; }
 
 body.va-admin-page #wpcontent { margin-left: 0 !important; float: none !important; }
+
+/* ── Fix mentés gomb – mindig fent látható ─────────────────────── */
+body.va-admin-page p.submit {
+    position: fixed;
+    top: calc(var(--va-topbar-h, 60px) + 8px);
+    right: 28px;
+    z-index: 99900;
+    margin: 0;
+    padding: 6px 10px;
+    background: var(--va-bg2, #0d0d11);
+    border: 1px solid var(--va-border2, rgba(255,255,255,.14));
+    border-radius: var(--va-radius-sm, 8px);
+    box-shadow: 0 4px 24px rgba(0,0,0,.55);
+}
+body.va-admin-page p.submit input[type="submit"] {
+    margin: 0 !important;
+}
 body.va-admin-page #wpbody { padding-top: 0 !important; background: var(--va-bg); }
 body.va-admin-page #wpbody-content {
     padding: 0 !important;
