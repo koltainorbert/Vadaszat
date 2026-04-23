@@ -183,6 +183,7 @@
         <rect id="va-ring-el" x="2" y="2" width="174" height="62" rx="31" fill="none"
             stroke="#00e676" stroke-width="1.8" stroke-linecap="round"
             pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
+            transform="rotate(180 89 33)"
             style="transition:stroke-dashoffset .12s linear;"/>
     </svg>
 
@@ -195,7 +196,6 @@
         <div id="va-ring-arrow">
             <div class="va-arr">
                 <svg viewBox="0 0 32 20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" width="32" height="20"><polyline points="4 16 16 4 28 16"/></svg>
-                <svg viewBox="0 0 32 20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" width="32" height="20" style="opacity:.35"><polyline points="4 16 16 4 28 16"/></svg>
             </div>
         </div>
     </div>
@@ -251,16 +251,16 @@
     flex-direction: column;
     align-items: center;
     gap: 0px;
-    animation: va-arr-bounce 1.4s ease-in-out infinite;
+    animation: va-arr-bounce 2.8s ease-in-out infinite;
 }
-.va-arr svg:first-child { animation: va-arr-fade 1.4s ease-in-out infinite; }
+.va-arr svg:first-child { animation: va-arr-fade 2.8s ease-in-out infinite; }
 @keyframes va-arr-bounce {
     0%,100% { transform: translateY(2px); }
     50%      { transform: translateY(-4px); }
 }
 @keyframes va-arr-fade {
     0%,100% { opacity: 1; }
-    50%      { opacity: .6; }
+    50%      { opacity: .5; }
 }
 </style>
 <script>
