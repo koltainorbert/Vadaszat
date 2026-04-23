@@ -1889,7 +1889,7 @@ class VA_Settings_Page {
                                 <?php self::field_text(  'va_ap_panel_name',  'Panel neve (sidebar fejléc)' ); ?>
                                 <?php self::field_text(  'va_ap_panel_icon',  'Panel ikon (emoji, pl. 🎯)' ); ?>
                                 <?php self::field_media( 'va_ap_logo_url',    'Sidebar logó kép (opcionális – ha van, az ikon helyére kerül)' ); ?>
-                                <?php self::field_num(   'va_ap_logo_height', 'Logó magasság (px)', 16, 80 ); ?>
+                                <?php self::field_num(   'va_ap_logo_height', 'Logó magasság (px)', 16, 200 ); ?>
                             </table>
                         </div>
 
