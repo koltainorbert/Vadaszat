@@ -4268,15 +4268,16 @@ class VA_Settings_Page {
     }
 
     private static function field_media( string $key, string $label ): void {
-        $val = esc_attr( (string) self::get_display_option( $key, '' ) );
-        $preview = $val !== '' ? '<img src="' . $val . '" alt="" class="va-media-preview">' : '';
+        $val     = esc_attr( (string) self::get_display_option( $key, '' ) );
+        $img_id  = $key . '_img';
+        $img_vis = $val !== '' ? '' : ' style="display:none"';
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
         echo "<div class=\"va-media-field\">";
         echo "<input type=\"url\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text code va-media-input\" placeholder=\"https://.../logo.png\">";
-        echo "<button type=\"button\" class=\"button va-media-pick\" data-target=\"{$key}\">Tallózás</button>";
-        echo "<button type=\"button\" class=\"button va-media-clear\" data-target=\"{$key}\">Törlés</button>";
+        echo "<button type=\"button\" class=\"button va-media-btn\" data-target=\"{$key}\" data-preview=\"{$img_id}\">Tallózás</button>";
+        echo "<button type=\"button\" class=\"button va-media-clear\" data-target=\"{$key}\" data-preview=\"{$img_id}\">Törlés</button>";
         echo "</div>";
-        echo "<div class=\"va-media-preview-wrap\" id=\"{$key}_preview\">{$preview}</div>";
+        echo "<div class=\"va-media-preview-wrap\"><img id=\"{$img_id}\" src=\"{$val}\" alt=\"\" class=\"va-media-preview\"{$img_vis}></div>";
         echo "</td></tr>";
     }
 
