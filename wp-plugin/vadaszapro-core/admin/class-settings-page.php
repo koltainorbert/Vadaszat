@@ -4510,7 +4510,7 @@ class VA_Settings_Page {
         .va-single-preview .sp-grid { display:grid; grid-template-columns:1fr var(--sp-side); gap:var(--sp-gap); }
         .va-single-preview.sp-stacked .sp-grid { grid-template-columns:1fr; }
         .va-single-preview .sp-main,
-        .va-single-preview .sp-side { background:var(--sp-glass); border:1px solid var(--sp-border); border-radius:var(--sp-radius); padding:var(--sp-pad); }
+        .va-single-preview .sp-side { background:var(--sp-glass); border:1px solid var(--sp-border); border-radius:var(--sp-radius); padding:var(--sp-pad); min-width:0; overflow:hidden; }
         .va-single-preview .sp-hero { aspect-ratio:var(--sp-ratio); border-radius:calc(var(--sp-radius) - 2px); background:linear-gradient(130deg, rgba(255,255,255,.16), rgba(255,255,255,.05)); }
         .va-single-preview .sp-thumbs { display:flex; gap:8px; margin-top:10px; }
         .va-single-preview .sp-thumbs i { width:var(--sp-thumb); height:calc(var(--sp-thumb) * .75); border-radius:8px; background:rgba(255,255,255,.16); }
