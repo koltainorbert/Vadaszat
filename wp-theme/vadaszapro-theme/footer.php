@@ -96,17 +96,6 @@
         </div>
     </footer>
 
-    <button class="va-scrolltop" id="va-scrolltop" type="button" aria-label="Ugrás az oldal tetejére">
-        <svg class="va-scrolltop__track" viewBox="0 0 62 62" aria-hidden="true">
-            <circle cx="31" cy="31" r="27"></circle>
-        </svg>
-        <svg class="va-scrolltop__ring" viewBox="0 0 62 62" aria-hidden="true">
-            <circle id="va-scrolltop-ring" cx="31" cy="31" r="27"></circle>
-        </svg>
-        <span class="va-scrolltop__core" aria-hidden="true">
-            <span class="va-scrolltop__arrow"></span>
-        </span>
-    </button>
 
 </div><!-- .va-site-wrap -->
 
@@ -116,35 +105,15 @@
     var hdr  = document.querySelector('.va-header');
     var hbtn = document.getElementById('va-hamburger');
     var nav  = document.getElementById('va-main-nav');
-    var scrollTopBtn = document.getElementById('va-scrolltop');
-    var scrollTopRing = document.getElementById('va-scrolltop-ring');
-    var ringLength = 169.65;
 
     // Scroll: header glass-effect bekapcsol
     function onScroll(){
         if( window.scrollY > 40 ) hdr.classList.add('scrolled');
         else hdr.classList.remove('scrolled');
-
-        if (scrollTopBtn && scrollTopRing) {
-            var top = window.pageYOffset || document.documentElement.scrollTop || 0;
-            var height = document.documentElement.scrollHeight - window.innerHeight;
-            var pct = height > 0 ? (top / height) : 0;
-            if (pct < 0) pct = 0;
-            if (pct > 1) pct = 1;
-
-            scrollTopBtn.classList.toggle('is-visible', top > 220);
-            scrollTopRing.style.strokeDashoffset = String(ringLength * (1 - pct));
-        }
     }
     window.addEventListener('scroll', onScroll, {passive:true});
     window.addEventListener('resize', onScroll);
     onScroll();
-
-    if (scrollTopBtn) {
-        scrollTopBtn.addEventListener('click', function(){
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
 
     // Hamburger toggle
     if(hbtn && nav){
