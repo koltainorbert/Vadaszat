@@ -4694,8 +4694,8 @@ class VA_Settings_Page {
         .va-pk-card__enable-label { font-size:11px; color:rgba(255,255,255,.4); font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
         .va-pk-toggle { position:relative; width:36px; height:20px; flex-shrink:0; }
         .va-pk-toggle input { opacity:0; width:0; height:0; position:absolute; }
-        .va-pk-toggle__track { position:absolute; inset:0; border-radius:20px; background:rgba(255,255,255,.1); cursor:pointer; transition:background .15s; }
-        .va-pk-toggle input:checked+.va-pk-toggle__track { background:#cc0000; }
+        .va-pk-toggle__track { position:absolute; inset:0; border-radius:20px; background:#8b1a1a; cursor:pointer; transition:background .15s; }
+        .va-pk-toggle input:checked+.va-pk-toggle__track { background:#1a7a2e; box-shadow:0 0 8px rgba(0,200,60,.3); }
         .va-pk-toggle__track::after { content:''; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .15s; }
         .va-pk-toggle input:checked+.va-pk-toggle__track::after { transform:translateX(16px); }
         .va-pk-toggle-row { display:flex; align-items:center; gap:8px; padding:4px 0; }
