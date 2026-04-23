@@ -175,77 +175,97 @@
 
 <?php wp_footer(); ?>
 
-<!-- ── Scroll-progress videó oval ─────────────────────────── -->
-<div id="va-scroll-ring" title="Vissza a tetejére" role="button" aria-label="Vissza a tetejére" tabindex="0">
-    <svg id="va-ring-svg" viewBox="0 0 68 82" width="68" height="82" aria-hidden="true">
-        <!-- háttér ellipszis -->
-        <ellipse cx="34" cy="41" rx="31" ry="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="3"/>
-        <!-- haladás ellipszis -->
-        <ellipse id="va-ring-el" cx="34" cy="41" rx="31" ry="38" fill="none"
+<!-- ── Scroll-progress pill videó widget ──────────────────── -->
+<!--
+    pill: 178×66  –  rx=33
+    kerület: 2*(178-66) + 2*π*33 = 224 + 207.3 ≈ 431
+-->
+<div id="va-scroll-ring" role="button" aria-label="Vissza a tetejére" tabindex="0">
+    <!-- progress border SVG (pill alak) -->
+    <svg id="va-ring-svg" viewBox="0 0 178 66" width="178" height="66" aria-hidden="true" style="position:absolute;top:0;left:0;pointer-events:none;z-index:3;">
+        <rect x="2" y="2" width="174" height="62" rx="31" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="3"/>
+        <rect id="va-ring-el" x="2" y="2" width="174" height="62" rx="31" fill="none"
             stroke="#00e676" stroke-width="3.5" stroke-linecap="round"
-            stroke-dasharray="217" stroke-dashoffset="217"
-            style="transform:rotate(-90deg);transform-origin:34px 41px;transition:stroke-dashoffset .15s linear;"/>
+            stroke-dasharray="431" stroke-dashoffset="431"
+            style="transition:stroke-dashoffset .12s linear;"/>
     </svg>
-    <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
-        <source src="<?php echo esc_url( content_url('uploads/2026/04/0_Ride_Street_1920x1080.mp4') ); ?>" type="video/mp4">
-    </video>
+
+    <!-- videó + bal arrow réteg -->
+    <div id="va-ring-inner">
+        <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="<?php echo esc_url( content_url('uploads/2026/04/0_Ride_Street_1920x1080.mp4') ); ?>" type="video/mp4">
+        </video>
+        <!-- bal oldali sötét átmenet + felfelé nyíl -->
+        <div id="va-ring-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><polyline points="18 15 12 9 6 15"/></svg>
+        </div>
+    </div>
 </div>
+
 <style>
 #va-scroll-ring {
     position: fixed;
-    right: 20px;
-    bottom: 20px;
-    width: 68px;
-    height: 82px;
+    right: 18px;
+    bottom: 18px;
+    width: 178px;
+    height: 66px;
     z-index: 9999;
     cursor: pointer;
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(14px);
     transition: opacity .3s, transform .3s;
     -webkit-tap-highlight-color: transparent;
+    user-select: none;
 }
 #va-scroll-ring.va-ring--visible {
     opacity: 1;
     transform: translateY(0);
 }
-#va-scroll-ring svg {
+#va-scroll-ring:hover #va-ring-el { stroke: #69f0ae; }
+#va-scroll-ring:hover #va-ring-inner { transform: scale(1.03); }
+
+#va-ring-inner {
     position: absolute;
-    top: 0; left: 0;
-    pointer-events: none;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    border-radius: 28px;
+    overflow: hidden;
+    transition: transform .2s;
 }
-#va-scroll-ring video {
-    position: absolute;
-    top: 7px;
-    left: 6px;
-    width: 56px;
-    height: 68px;
-    border-radius: 50% / 42%;
+#va-ring-inner video {
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     display: block;
 }
-#va-scroll-ring:hover #va-ring-el {
-    stroke: #69f0ae;
+#va-ring-arrow {
+    position: absolute;
+    top: 0; left: 0;
+    width: 58px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,.72) 55%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
 }
 </style>
 <script>
 (function(){
     var ring  = document.getElementById('va-scroll-ring');
     var el    = document.getElementById('va-ring-el');
-    var perim = 217;
+    var perim = 431;
     function update() {
-        var doc   = document.documentElement;
+        var doc     = document.documentElement;
         var scrollH = doc.scrollHeight - doc.clientHeight;
-        var pct   = scrollH > 0 ? window.scrollY / scrollH : 0;
+        var pct     = scrollH > 0 ? window.scrollY / scrollH : 0;
         el.style.strokeDashoffset = perim * (1 - pct);
-        if (window.scrollY > 80) {
-            ring.classList.add('va-ring--visible');
-        } else {
-            ring.classList.remove('va-ring--visible');
-        }
+        ring.classList.toggle('va-ring--visible', window.scrollY > 80);
     }
     window.addEventListener('scroll', update, {passive:true});
     ring.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
-    ring.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') window.scrollTo({top:0,behavior:'smooth'}); });
+    ring.addEventListener('keydown', function(e){
+        if(e.key==='Enter'||e.key===' '){ window.scrollTo({top:0,behavior:'smooth'}); }
+    });
     update();
 })();
 </script>
