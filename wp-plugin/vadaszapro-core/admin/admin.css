@@ -423,9 +423,9 @@ body.va-admin-page input[type="radio"] { min-width: auto; accent-color: var(--va
 /* ── Toggle switch ─────────────────────────────────────────────── */
 .va-toggle { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
 .va-toggle input { opacity: 0; width: 0; height: 0; }
-.va-toggle-slider { position: absolute; cursor: pointer; inset: 0; background: rgba(255,255,255,.1); border-radius: 24px; border: 1px solid rgba(255,255,255,.12); transition: .25s; }
-.va-toggle-slider:before { content: ""; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: rgba(255,255,255,.5); border-radius: 50%; transition: .25s; }
-.va-toggle input:checked + .va-toggle-slider { background: var(--va-accent); border-color: transparent; box-shadow: 0 0 10px rgba(255,0,0,.35); }
+.va-toggle-slider { position: absolute; cursor: pointer; inset: 0; background: #8b1a1a; border-radius: 24px; border: 1px solid rgba(255,255,255,.12); transition: .25s; }
+.va-toggle-slider:before { content: ""; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #fff; border-radius: 50%; transition: .25s; }
+.va-toggle input:checked + .va-toggle-slider { background: #1a7a2e; border-color: transparent; box-shadow: 0 0 10px rgba(0,200,60,.35); }
 .va-toggle input:checked + .va-toggle-slider:before { transform: translateX(20px); background: #fff; }
 
 /* ── Gombok ────────────────────────────────────────────────────── */
