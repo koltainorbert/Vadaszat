@@ -6220,6 +6220,348 @@ class VA_Settings_Page {
         </script>
         <?php
     }
-}
 
+    /* ══════════════════════════════════════════════════════════
+     * PILL / BADGE STÍLUSOK
+     * ══════════════════════════════════════════════════════════ */
+
+    public static function get_pill_defaults(): array {
+        return [
+            'cat_pill' => [
+                'label'    => 'Kategória jelölő',
+                'desc'     => 'A hirdetés kategóriájának pill-je (pl. SUZUKI)',
+                'selector' => '.sl__cat-pill',
+                'example'  => 'Vadászfegyver',
+                'text'     => '#ff4444', 'bg' => 'rgba(255,0,0,.12)', 'border' => 'rgba(255,0,0,.25)',
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 3,
+            ],
+            'featured_pill' => [
+                'label'    => 'Kiemelt hirdetés',
+                'desc'     => 'A kiemelt hirdetések jelölője a cím mellett',
+                'selector' => '.sl__featured-pill',
+                'example'  => '⭐ Kiemelt',
+                'text'     => '#ffd060', 'bg' => 'rgba(255,180,0,.15)', 'border' => 'rgba(255,180,0,.3)',
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0,
+            ],
+            'verified_pill' => [
+                'label'    => 'Ellenőrzött hirdető',
+                'desc'     => 'A megerősített hirdetők jelölője a cím mellett',
+                'selector' => '.sl__verified-pill',
+                'example'  => '✓ Ellenőrzött',
+                'text'     => '#4dffaa', 'bg' => 'rgba(0,210,120,.12)', 'border' => 'rgba(0,210,120,.3)',
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0,
+            ],
+            'badge_damage_no' => [
+                'label'    => 'Nincs korábbi kár',
+                'desc'     => 'Jármű esetén: nincsen baleseti előélet',
+                'selector' => '.sl__badge--damage-no',
+                'example'  => '✓ Nincs korábbi kár',
+                'text'     => '#4dffaa', 'bg' => 'rgba(0,200,100,.12)', 'border' => 'rgba(0,200,100,.25)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_damage_yes' => [
+                'label'    => 'Korábbi kár / baleset',
+                'desc'     => 'Jármű esetén: volt baleseti előélete',
+                'selector' => '.sl__badge--damage-yes',
+                'example'  => '⚠ Korábbi kár / baleset',
+                'text'     => '#ff8080', 'bg' => 'rgba(255,60,60,.12)', 'border' => 'rgba(255,60,60,.25)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_service' => [
+                'label'    => 'Szervizkönyv megvan',
+                'desc'     => 'Jármű esetén: szervizkönyv rendelkezésre áll',
+                'selector' => '.sl__badge--service-yes',
+                'example'  => '✓ Szervizkönyv megvan',
+                'text'     => '#66ccff', 'bg' => 'rgba(0,180,255,.10)', 'border' => 'rgba(0,180,255,.2)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_license' => [
+                'label'    => 'Fegyverengedély szükséges',
+                'desc'     => 'Vadász termékeknél: engedélyköteles',
+                'selector' => '.sl__badge--license',
+                'example'  => '⚠ Fegyverengedély szükséges',
+                'text'     => '#ffd060', 'bg' => 'rgba(255,180,0,.12)', 'border' => 'rgba(255,180,0,.25)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_verified' => [
+                'label'    => 'Ellenőrzött hirdető (badge)',
+                'desc'     => 'Részletek kártyában megjelenő ellenőrzött badge',
+                'selector' => '.sl__badge--verified',
+                'example'  => '✓ Ellenőrzött hirdető',
+                'text'     => '#4dffaa', 'bg' => 'rgba(0,210,120,.12)', 'border' => 'rgba(0,210,120,.3)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'plan_basic' => [
+                'label'    => 'Alap tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Alap csomag jelölője',
+                'selector' => '.sl__plan-badge--basic',
+                'example'  => 'Alap tag',
+                'text'     => 'rgba(255,255,255,.5)', 'bg' => 'rgba(255,255,255,.07)', 'border' => 'rgba(255,255,255,.12)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 600, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+            'plan_silver' => [
+                'label'    => 'Ezüst tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Ezüst csomag jelölője',
+                'selector' => '.sl__plan-badge--silver',
+                'example'  => '✦ Ezüst tag',
+                'text'     => '#c0c0c0', 'bg' => 'rgba(192,192,192,.12)', 'border' => 'rgba(192,192,192,.3)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+            'plan_gold' => [
+                'label'    => 'Arany tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Arany csomag jelölője',
+                'selector' => '.sl__plan-badge--gold',
+                'example'  => '★ Arany tag',
+                'text'     => '#ffd700', 'bg' => 'rgba(255,215,0,.12)', 'border' => 'rgba(255,215,0,.3)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+            'plan_platinum' => [
+                'label'    => 'Platina tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Platina csomag jelölője',
+                'selector' => '.sl__plan-badge--platinum',
+                'example'  => '◆ Platina tag',
+                'text'     => '#a0e4ff', 'bg' => 'rgba(100,200,255,.12)', 'border' => 'rgba(100,200,255,.3)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+        ];
+    }
+
+    public static function output_pill_css(): void {
+        $defaults = self::get_pill_defaults();
+        $saved    = (array) json_decode( (string) get_option( 'va_pill_styles', '{}' ), true );
+        $css      = "\n<style id=\"va-pill-styles\">\n";
+        foreach ( $defaults as $key => $d ) {
+            $s  = isset( $saved[ $key ] ) ? array_merge( $d, (array) $saved[ $key ] ) : $d;
+            $py = (int) $s['pad_y'];
+            $px = (int) $s['pad_x'];
+            $h  = $py * 2 + (int) $s['font_size'] + 4;  // approx height
+            $padding = $py > 0 ? "{$py}px {$px}px" : "0 {$px}px";
+            $min_h   = $py > 0 ? '' : "height:{$h}px;";
+            $css .= "{$s['selector']}{display:inline-flex;align-items:center;gap:4px;font-size:{$s['font_size']}px;font-weight:{$s['font_weight']};padding:{$padding};{$min_h}border-radius:{$s['radius']}px;background:{$s['bg']};color:{$s['text']};border:1px solid {$s['border']};white-space:nowrap;text-decoration:none;vertical-align:middle;line-height:1;}\n";
+        }
+        $css .= "</style>\n";
+        echo $css; // phpcs:ignore WordPress.Security.EscapeOutput
+    }
+
+    public static function handle_save_pill_styles(): void {
+        check_admin_referer( 'va_save_pill_styles' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
+        $raw = wp_unslash( $_POST['va_pill_styles'] ?? '{}' );
+        // validate: must be valid JSON array
+        $decoded = json_decode( $raw, true );
+        if ( is_array( $decoded ) ) {
+            update_option( 'va_pill_styles', wp_json_encode( $decoded ) );
+        }
+        wp_safe_redirect( add_query_arg( [ 'page' => 'vadaszapro-pills', 'saved' => '1' ], admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    /* ── Pill / Badge stílusok szerkesztő ─────────────────── */
+    public static function render_pill_styles(): void {
+        $defaults = self::get_pill_defaults();
+        $saved    = (array) json_decode( (string) get_option( 'va_pill_styles', '{}' ), true );
+        // merge saved over defaults
+        $pills = [];
+        foreach ( $defaults as $k => $d ) {
+            $pills[$k] = isset( $saved[$k] ) ? array_merge( $d, (array) $saved[$k] ) : $d;
+        }
+        $is_saved = isset( $_GET['saved'] );
+        ?>
+        <div class="wrap va-admin-wrap">
+        <h1>🏷️ Pill & Badge stílusszerkesztő</h1>
+        <p class="description">Az összes hirdetésoldalon megjelenő jelölő (pill / badge) kinézete valós időben szerkeszthető. A változtatások az összes oldalon azonnal érvényre jutnak mentés után.</p>
+        <?php if ( $is_saved ): ?><div class="notice notice-success is-dismissible"><p>✅ Stílusok mentve!</p></div><?php endif; ?>
+
+        <!-- Preview sáv -->
+        <div id="va-pill-preview-bar" style="background:var(--va-bg2);border:1px solid var(--va-border);border-radius:12px;padding:18px 22px;margin:18px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+            <span style="font-size:12px;color:var(--va-muted);margin-right:6px;">Élő előnézet:</span>
+            <?php foreach ( $pills as $key => $p ): ?>
+            <span id="prev-<?php echo esc_attr($key); ?>" style="display:inline-flex;align-items:center;gap:4px;font-size:<?php echo esc_attr($p['font_size']); ?>px;font-weight:<?php echo esc_attr($p['font_weight']); ?>;padding:<?php echo $p['pad_y']>0?esc_attr($p['pad_y']).'px '.esc_attr($p['pad_x']).'px':'0 '.esc_attr($p['pad_x']).'px'; ?>;<?php echo $p['pad_y']<=0?'height:'.((int)$p['font_size']+4+6).'px;':''; ?>border-radius:<?php echo esc_attr($p['radius']); ?>px;background:<?php echo esc_attr($p['bg']); ?>;color:<?php echo esc_attr($p['text']); ?>;border:1px solid <?php echo esc_attr($p['border']); ?>;white-space:nowrap;vertical-align:middle;line-height:1;">
+                <?php echo esc_html($p['example']); ?>
+            </span>
+            <?php endforeach; ?>
+        </div>
+
+        <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" id="va-pill-form">
+            <input type="hidden" name="action" value="va_save_pill_styles">
+            <?php wp_nonce_field( 'va_save_pill_styles' ); ?>
+            <input type="hidden" name="va_pill_styles" id="va_pill_styles_json" value="<?php echo esc_attr( wp_json_encode( array_map( fn($p) => array_diff_key($p,['label'=>1,'desc'=>1,'selector'=>1,'example'=>1]), $pills ) ) ); ?>">
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:18px;">
+            <?php foreach ( $pills as $key => $p ):
+                $sel = esc_attr($key);
+            ?>
+            <div class="va-settings-card" data-pill-key="<?php echo $sel; ?>" style="padding:0;overflow:hidden;">
+                <div class="va-settings-card__head" style="cursor:pointer;user-select:none;" onclick="this.parentElement.classList.toggle('va-pill-open')">
+                    <span id="prev-card-<?php echo $sel; ?>" style="display:inline-flex;align-items:center;gap:4px;font-size:<?php echo esc_attr($p['font_size']); ?>px;font-weight:<?php echo esc_attr($p['font_weight']); ?>;padding:<?php echo $p['pad_y']>0?esc_attr($p['pad_y']).'px '.esc_attr($p['pad_x']).'px':'0 '.esc_attr($p['pad_x']).'px'; ?>;<?php echo $p['pad_y']<=0?'height:'.((int)$p['font_size']+10).'px;':''; ?>border-radius:<?php echo esc_attr($p['radius']); ?>px;background:<?php echo esc_attr($p['bg']); ?>;color:<?php echo esc_attr($p['text']); ?>;border:1px solid <?php echo esc_attr($p['border']); ?>;white-space:nowrap;line-height:1;margin-right:8px;">
+                        <?php echo esc_html($p['example']); ?>
+                    </span>
+                    <div>
+                        <span class="va-settings-card__title"><?php echo esc_html($p['label']); ?></span><br>
+                        <span style="font-size:11px;color:var(--va-muted);font-family:monospace;"><?php echo esc_html($p['selector']); ?></span>
+                    </div>
+                    <span style="margin-left:auto;color:var(--va-muted);font-size:18px;">›</span>
+                </div>
+                <div class="va-pill-controls" style="display:none;padding:16px;border-top:1px solid var(--va-border);background:var(--va-bg3);">
+                    <p style="margin:0 0 12px;font-size:12px;color:var(--va-muted);"><?php echo esc_html($p['desc']); ?></p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;">
+
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Szöveg szín
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <input type="text" class="va-cp va-pill-field" data-key="<?php echo $sel; ?>" data-prop="text" value="<?php echo esc_attr($p['text']); ?>" style="flex:1;font-size:11px;padding:3px 6px;">
+                            </div>
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Háttérszín
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <input type="text" class="va-cp va-pill-field" data-key="<?php echo $sel; ?>" data-prop="bg" value="<?php echo esc_attr($p['bg']); ?>" style="flex:1;font-size:11px;padding:3px 6px;">
+                            </div>
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Keret szín
+                            <input type="text" class="va-cp va-pill-field" data-key="<?php echo $sel; ?>" data-prop="border" value="<?php echo esc_attr($p['border']); ?>" style="width:100%;font-size:11px;padding:3px 6px;">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Betűméret: <b id="lbl-font_size-<?php echo $sel; ?>"><?php echo esc_html($p['font_size']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="font_size" min="9" max="22" value="<?php echo esc_attr($p['font_size']); ?>">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Betűvastagság
+                            <select class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="font_weight" style="padding:4px;">
+                                <?php foreach ( [400,500,600,700,800,900] as $w ): ?>
+                                <option value="<?php echo $w; ?>" <?php selected($p['font_weight'],$w); ?>><?php echo $w; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Lekerekítés (radius): <b id="lbl-radius-<?php echo $sel; ?>"><?php echo esc_html($p['radius']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="radius" min="0" max="40" value="<?php echo esc_attr($p['radius']); ?>">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Vízszintes padding: <b id="lbl-pad_x-<?php echo $sel; ?>"><?php echo esc_html($p['pad_x']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="pad_x" min="0" max="32" value="<?php echo esc_attr($p['pad_x']); ?>">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Függőleges padding: <b id="lbl-pad_y-<?php echo $sel; ?>"><?php echo esc_html($p['pad_y']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="pad_y" min="0" max="20" value="<?php echo esc_attr($p['pad_y']); ?>">
+                        </label>
+                    </div>
+                    <button type="button" class="button button-small va-pill-reset" data-key="<?php echo $sel; ?>" style="margin-top:12px;">↺ Alaphelyre</button>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            </div>
+
+            <p style="margin-top:24px;">
+                <?php submit_button( '💾 Pill stílusok mentése', 'primary', 'submit', false ); ?>
+                &nbsp;<button type="button" class="button" id="va-pills-reset-all">↺ Összes visszaállítása alapértelmezettre</button>
+            </p>
+        </form>
+        </div>
+
+        <script>
+        (function(){
+            var defaults = <?php echo wp_json_encode( array_map( function($p){ return array_intersect_key($p, array_flip(['text','bg','border','radius','font_size','font_weight','pad_x','pad_y','example'])); }, $defaults ) ); ?>;
+            var current  = <?php echo wp_json_encode( array_map( function($p){ return array_intersect_key($p, array_flip(['text','bg','border','radius','font_size','font_weight','pad_x','pad_y'])); }, $pills ) ); ?>;
+
+            // Expand/collapse
+            document.querySelectorAll('[data-pill-key]').forEach(function(card){
+                card.classList.remove('va-pill-open');
+            });
+
+            // Toggle controls visibility
+            document.querySelectorAll('.va-settings-card__head').forEach(function(h){
+                h.addEventListener('click', function(){
+                    var ctrl = this.nextElementSibling;
+                    if(ctrl && ctrl.classList.contains('va-pill-controls')){
+                        ctrl.style.display = ctrl.style.display === 'none' ? 'block' : 'none';
+                        var arrow = this.querySelector('span:last-child');
+                        if(arrow) arrow.textContent = ctrl.style.display === 'none' ? '›' : '⌄';
+                    }
+                });
+            });
+
+            function updatePreview(key) {
+                var d = current[key];
+                if(!d) return;
+                var py = parseInt(d.pad_y)||0;
+                var px = parseInt(d.pad_x)||0;
+                var fs = parseInt(d.font_size)||11;
+                var style = [
+                    'display:inline-flex','align-items:center','gap:4px','white-space:nowrap','line-height:1','vertical-align:middle',
+                    'font-size:'+fs+'px',
+                    'font-weight:'+d.font_weight,
+                    'border-radius:'+d.radius+'px',
+                    'background:'+d.bg,
+                    'color:'+d.text,
+                    'border:1px solid '+d.border,
+                    py>0 ? 'padding:'+py+'px '+px+'px' : 'padding:0 '+px+'px;height:'+(fs+10)+'px',
+                ].join(';');
+                ['prev-'+key, 'prev-card-'+key].forEach(function(id){
+                    var el = document.getElementById(id);
+                    if(el) el.setAttribute('style', style + (id.startsWith('prev-card') ? ';margin-right:8px' : ''));
+                });
+                // update JSON hidden field
+                saveJson();
+            }
+
+            function saveJson() {
+                var out = {};
+                Object.keys(current).forEach(function(k){ out[k] = current[k]; });
+                document.getElementById('va_pill_styles_json').value = JSON.stringify(out);
+            }
+
+            // Field change handler
+            document.querySelectorAll('.va-pill-field').forEach(function(input){
+                input.addEventListener('input', function(){
+                    var key  = this.dataset.key;
+                    var prop = this.dataset.prop;
+                    current[key][prop] = this.type === 'range' ? parseInt(this.value) : this.value;
+                    // update label for range
+                    var lbl = document.getElementById('lbl-'+prop+'-'+key);
+                    if(lbl) lbl.textContent = current[key][prop] + (this.type==='range'?'px':'');
+                    updatePreview(key);
+                });
+            });
+
+            // Reset single
+            document.querySelectorAll('.va-pill-reset').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var key = this.dataset.key;
+                    if(!defaults[key]) return;
+                    current[key] = Object.assign({}, defaults[key]);
+                    // update inputs
+                    document.querySelectorAll('.va-pill-field[data-key="'+key+'"]').forEach(function(inp){
+                        var prop = inp.dataset.prop;
+                        inp.value = current[key][prop] ?? '';
+                        var lbl = document.getElementById('lbl-'+prop+'-'+key);
+                        if(lbl) lbl.textContent = inp.value + (inp.type==='range'?'px':'');
+                    });
+                    updatePreview(key);
+                });
+            });
+
+            // Reset all
+            document.getElementById('va-pills-reset-all').addEventListener('click', function(){
+                if(!confirm('Biztos visszaállítod az összes pill-t az alapértelmezettre?')) return;
+                Object.keys(defaults).forEach(function(key){
+                    current[key] = Object.assign({}, defaults[key]);
+                    document.querySelectorAll('.va-pill-field[data-key="'+key+'"]').forEach(function(inp){
+                        var prop = inp.dataset.prop;
+                        inp.value = current[key][prop] ?? '';
+                        var lbl = document.getElementById('lbl-'+prop+'-'+key);
+                        if(lbl) lbl.textContent = inp.value + (inp.type==='range'?'px':'');
+                    });
+                    updatePreview(key);
+                });
+            });
+
+            // Init color pickers
+            if(typeof window.vaInitColorPickers === 'function') window.vaInitColorPickers();
+        })();
+        </script>
+        <?php
+    }
+}
 
