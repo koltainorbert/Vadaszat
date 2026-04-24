@@ -81,6 +81,7 @@ $email_show  = get_post_meta( $post_id, 'va_email_show',  true );
 $views       = va_display_views( $post_id );
 $expires     = get_post_meta( $post_id, 'va_expires',     true );
 $featured    = get_post_meta( $post_id, 'va_featured',    true ) === '1';
+$verified    = get_post_meta( $post_id, 'va_verified',    true ) === '1';
 $categories  = get_the_terms( $post_id, 'va_category' );
 $county      = get_the_terms( $post_id, 'va_county' );
 $condition   = get_the_terms( $post_id, 'va_condition' );
@@ -237,6 +238,12 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__badge--damage-yes { background:rgba(255,60,60,.12);color:#ff8080;border:1px solid rgba(255,60,60,.25); }
 .sl__badge--service-yes { background:rgba(0,180,255,.1);color:#66ccff;border:1px solid rgba(0,180,255,.2); }
 .sl__badge--license { background:rgba(255,180,0,.12);color:#ffd060;border:1px solid rgba(255,180,0,.25); }
+.sl__badge--verified { background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);font-weight:700; }
+/* Featured + verified pills in title row */
+.sl__title-row { display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap; }
+.sl__title-row .sl__title { flex:1;min-width:0;margin:0; }
+.sl__featured-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(255,180,0,.15);color:#ffd060;border:1px solid rgba(255,180,0,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
+.sl__verified-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
 /* Related listings */
 .sl__related-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px; }
 @media(max-width:700px){ .sl__related-grid { grid-template-columns:repeat(2,1fr); } }
@@ -269,10 +276,6 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 </style>
 
 <div class="sl sl--layout-<?php echo esc_attr( $sl_layout_mode ); ?>">
-
-    <?php if ( $featured ): ?>
-    <div class="sl__featured-bar">Kiemelt hirdet&eacute;s</div>
-    <?php endif; ?>
 
     <div class="sl__layout">
 
@@ -330,7 +333,11 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                         <?php echo esc_html($categories[0]->name); ?>
                     </a>
                 <?php endif; ?>
-                <h1 class="sl__title"><?php the_title(); ?></h1>
+                <div class="sl__title-row">
+                    <h1 class="sl__title"><?php the_title(); ?></h1>
+                    <?php if ($featured): ?><span class="sl__featured-pill">&#11088; Kiemelt</span><?php endif; ?>
+                    <?php if ($verified): ?><span class="sl__verified-pill">&#10003; Ellen&#337;rz&#246;tt</span><?php endif; ?>
+                </div>
                 <div class="sl__price"><?php echo esc_html( va_format_price($price, $price_type) ); ?></div>
 
                 <?php if ( $demand_count >= 2 ): ?>
@@ -391,8 +398,8 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 if ( $furnished )      $specs[] = [ 'B&#250;torozott',           $furn_labels[$furnished] ?? $furnished, false ];
                 if ( $heating )        $specs[] = [ 'F&#369;t&#233;s',                $heat_labels[$heating] ?? $heating, false ];
             } else {
-                if ( $brand )          $specs[] = [ 'M&#225;rka / Gy&#225;rt&#243;',       $brand,  true ];
-                if ( $model )          $specs[] = [ 'Modell / T&#237;pus',       $model,  true ];
+                if ( $brand )          $specs[] = [ 'M&#225;rka / Gy&#225;rt&#243;',       $brand,  false ];
+                if ( $model )          $specs[] = [ 'Modell / T&#237;pus',       $model,  false ];
                 if ( $caliber )        $specs[] = [ 'Kaliber',              $caliber,false ];
                 if ( $year )           $specs[] = [ 'Gy&#225;rt&#225;si &#233;v',          $year,   false ];
             }
@@ -405,6 +412,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 if ( $service_book === '1' ) $badges[] = ['service-yes','&#10003; Szervizk&#246;nyv megvan'];
             }
             if ( $license_req === '1' )  $badges[] = ['license',     '&#9888; Fegyverenged&#233;ly sz&#252;ks&#233;ges'];
+            if ( $verified )              $badges[] = ['verified',    '&#10003; Ellen&#337;rz&#246;tt hirdeto'];
             if ( $balcony === '1' )       $badges[] = ['service-yes', '&#10003; Erk&#233;ly / terasz'];
 
             if ( ! empty($specs) || ! empty($badges) ):
@@ -505,13 +513,13 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     </button>
                 <?php endif; ?>
 
-                <!-- MegosztĂˇs -->
+                <!-- Megosztas -->
                 <?php
                 $share_url   = rawurlencode( get_permalink($post_id) );
                 $share_title = rawurlencode( get_the_title($post_id) );
                 ?>
                 <div class="sl__share">
-                    <span class="sl__share-label">MegosztĂˇs:</span>
+                    <span class="sl__share-label">Megoszt&#225;s:</span>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $share_url; ?>" target="_blank" rel="noopener noreferrer" class="sl__share-btn sl__share-btn--fb" aria-label="Facebook">
                         <?php echo function_exists('va_social_svg') ? va_social_svg('facebook',18) : ''; ?>
                     </a>
