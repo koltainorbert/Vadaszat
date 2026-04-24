@@ -241,7 +241,8 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__badge--verified { background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);font-weight:700; }
 /* Featured + verified pills */
 .sl__top-pills { display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px; }
-.sl__title .sl__verified-pill { vertical-align:middle;font-size:11px;position:relative;top:-2px; }
+.sl__featured-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:0 9px;height:24px;border-radius:20px;background:rgba(255,180,0,.15);color:#ffd060;border:1px solid rgba(255,180,0,.3);white-space:nowrap; }
+.sl__verified-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:0 9px;height:24px;border-radius:20px;background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);white-space:nowrap; }
 .sl__featured-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(255,180,0,.15);color:#ffd060;border:1px solid rgba(255,180,0,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
 .sl__verified-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
 /* Related listings */
