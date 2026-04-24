@@ -1121,8 +1121,8 @@ body.sl-viewer-open { overflow: hidden; }
   letter-spacing: .08em; text-transform: uppercase;
   background: rgba(255,0,0,.12); color: var(--a3);
   border: 1px solid rgba(255,0,0,.25);
-  padding: 3px 10px; border-radius: 20px; height: 24px;
-  margin-bottom: 0; text-decoration: none;
+  padding: 0 10px; border-radius: 20px; height: 24px; line-height: 1;
+  margin: 0; text-decoration: none; flex-shrink: 0;
 }
 .sl__cat-pill:hover { background: rgba(255,0,0,.2); }
 .sl__title {
