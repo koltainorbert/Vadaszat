@@ -244,6 +244,8 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__top-pills .sl__cat-pill { margin-bottom:0; }
 .sl__title-row { display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap; }
 .sl__title-row .sl__title { flex:1;min-width:0;margin:0; }
+.sl__title .sl__featured-pill,
+.sl__title .sl__verified-pill { vertical-align:middle;font-size:11px;position:relative;top:-2px; }
 .sl__featured-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(255,180,0,.15);color:#ffd060;border:1px solid rgba(255,180,0,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
 .sl__verified-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
 /* Related listings */
@@ -330,18 +332,16 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
             <!-- Fejlec: kategoria + cim + ar -->
             <div class="sl__card sl__head">
-                <div class="sl__top-pills">
                 <?php if ( $categories && !is_wp_error($categories) ): ?>
                     <a href="<?php echo esc_url(get_term_link($categories[0])); ?>" class="sl__cat-pill">
                         <?php echo esc_html($categories[0]->name); ?>
                     </a>
                 <?php endif; ?>
-                <?php if ($featured): ?><span class="sl__featured-pill">&#11088; Kiemelt</span><?php endif; ?>
-                </div>
-                <div class="sl__title-row">
-                    <h1 class="sl__title"><?php the_title(); ?></h1>
+                <h1 class="sl__title">
+                    <?php the_title(); ?>
+                    <?php if ($featured): ?><span class="sl__featured-pill">&#11088; Kiemelt</span><?php endif; ?>
                     <?php if ($verified): ?><span class="sl__verified-pill">&#10003; Ellen&#337;rz&#246;tt</span><?php endif; ?>
-                </div>
+                </h1>
                 <div class="sl__price"><?php echo esc_html( va_format_price($price, $price_type) ); ?></div>
 
                 <?php if ( $demand_count >= 2 ): ?>
@@ -416,6 +416,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 if ( $service_book === '1' ) $badges[] = ['service-yes','&#10003; Szervizk&#246;nyv megvan'];
             }
             if ( $license_req === '1' )  $badges[] = ['license',     '&#9888; Fegyverenged&#233;ly sz&#252;ks&#233;ges'];
+            if ( $verified )              $badges[] = ['verified',    '&#10003; Ellen&#337;rz&#246;tt hirdeto'];
             if ( $balcony === '1' )       $badges[] = ['service-yes', '&#10003; Erk&#233;ly / terasz'];
 
             if ( ! empty($specs) || ! empty($badges) ):
