@@ -6065,10 +6065,13 @@ class VA_Settings_Page {
                 updatePlanPreview(panel.dataset.slug);
             });
             setActivePanel('va-pc-panel-<?php echo esc_js( $first_slug ); ?>');
-            if(typeof window.vaInitColorPickers === 'function'){
-                window.vaInitColorPickers(document.querySelector('.va-pc-wrap'));
+            if(typeof $ !== 'undefined') {
+                $(function(){
+                    if(typeof window.vaInitColorPickers === 'function'){
+                        window.vaInitColorPickers(document.querySelector('.va-pc-wrap'));
+                    }
+                });
             }
-        })();
         </script>
         <?php
     }
@@ -6218,7 +6221,7 @@ class VA_Settings_Page {
                 b.style.borderColor = b.dataset.cls === iconInput.value.trim() ? 'var(--va-accent)' : 'var(--va-border)';
             });
         });
-        if(typeof window.vaInitColorPickers === 'function') window.vaInitColorPickers();
+        if(typeof $ !== 'undefined') { $(function(){ if(typeof window.vaInitColorPickers === 'function') window.vaInitColorPickers(); }); }
         </script>
         <?php
     }
@@ -6857,9 +6860,15 @@ class VA_Settings_Page {
                 saveJson();
             });
 
-            // Init color pickers on open sections
-            if(typeof $ !== 'undefined' && typeof window.vaInitColorPickers === 'function') {
-                window.vaInitColorPickers($('#vacd-s-card'));
+            // Init color pickers after page load (admin.js footer-ben tölt be)
+            if(typeof $ !== 'undefined') {
+                $(function(){
+                    if(typeof window.vaInitColorPickers === 'function') {
+                        document.querySelectorAll('.vacd__section.open').forEach(function(sec){
+                            window.vaInitColorPickers($(sec));
+                        });
+                    }
+                });
             }
         })();
         </script>

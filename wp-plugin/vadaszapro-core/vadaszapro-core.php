@@ -63,10 +63,12 @@ add_action( 'plugins_loaded', function () {
     VA_Updater::init();
     VA_Page_Renderer::init();
 
+    // Settings Page init-je frontend-en is kell (wp_head CSS hookak: pill + kártya stílusok)
+    VA_Settings_Page::init();
+
     if ( is_admin() ) {
         VA_Page_Builder::init();
         VA_Admin::init();
-        VA_Settings_Page::init();
         VA_Listing_Columns::init();
         VA_Listing_Edit::init();
         VA_Form_Builder::init();
