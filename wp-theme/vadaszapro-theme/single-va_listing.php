@@ -373,8 +373,8 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
             <?php
             $specs = [];
             if ( $site_type === 'jarmu' ) {
-                if ( $brand )          $specs[] = [ 'Gy&#225;rt&#243;',               $brand,       true ];
-                if ( $model )          $specs[] = [ 'Modell',               $model,       true ];
+                if ( $brand )          $specs[] = [ 'Gy&#225;rt&#243;',               $brand,       false ];
+                if ( $model )          $specs[] = [ 'Modell',               $model,       false ];
                 if ( $year )           $specs[] = [ '&#201;vj&#225;rat',              $year,        false ];
                 if ( $first_reg )      $specs[] = [ 'Els&#337; forgalomba hely.',$first_reg,   false ];
                 if ( $mileage )        $specs[] = [ 'Kilom&#233;ter&#243;ra',         number_format((int)$mileage,0,',',' ').' km', false ];
