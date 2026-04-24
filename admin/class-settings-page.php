@@ -13,7 +13,9 @@ class VA_Settings_Page {
     public static function init() {
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
         add_action( 'wp_head',    [ __CLASS__, 'output_pill_css' ], 99 );
-        add_action( 'admin_post_va_save_pill_styles', [ __CLASS__, 'handle_save_pill_styles' ] );
+        add_action( 'wp_head',    [ __CLASS__, 'output_card_css' ], 99 );
+        add_action( 'admin_post_va_save_pill_styles',  [ __CLASS__, 'handle_save_pill_styles'  ] );
+        add_action( 'admin_post_va_save_card_styles',  [ __CLASS__, 'handle_save_card_styles'  ] );
         add_action( 'admin_post_va_export_settings', [ __CLASS__, 'handle_export_settings' ] );
         add_action( 'admin_post_va_import_settings', [ __CLASS__, 'handle_import_settings' ] );
         add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );
@@ -6217,6 +6219,649 @@ class VA_Settings_Page {
             });
         });
         if(typeof window.vaInitColorPickers === 'function') window.vaInitColorPickers();
+        </script>
+        <?php
+    }
+
+
+    /* ══════════════════════════════════════════════════════════
+     * KÁRTYA STÍLUS SZERKESZTŐ
+     * ══════════════════════════════════════════════════════════ */
+
+    public static function get_card_defaults(): array {
+        return [
+            // Kártya konténer
+            'card_bg'               => '#141414',
+            'card_border_color'     => 'rgba(255,255,255,.08)',
+            'card_border_width'     => 1,
+            'card_radius'           => 12,
+            // Hover
+            'hover_lift'            => 2,
+            'hover_border_color'    => 'rgba(255,0,0,.85)',
+            // Kép
+            'img_aspect'            => '4/3',
+            // Kártya törzs
+            'body_pad_x'            => 14,
+            'body_pad_y'            => 14,
+            'body_gap'              => 6,
+            // Cím
+            'title_color'           => '#ffffff',
+            'title_font_size'       => 15,
+            'title_font_weight'     => 700,
+            'title_font_family'     => 'inherit',
+            'title_line_clamp'      => 2,
+            // Ár
+            'price_color'           => '#ff2a2a',
+            'price_font_size'       => 17,
+            'price_font_weight'     => 800,
+            'price_font_family'     => 'inherit',
+            // Meta sor
+            'meta_color'            => 'rgba(255,255,255,.38)',
+            'meta_font_size'        => 12,
+            // Kiemelt badge
+            'badge_featured_bg'     => 'linear-gradient(135deg,#3a2800,#1e1400)',
+            'badge_featured_color'  => '#ffc840',
+            'badge_featured_border' => 'rgba(255,180,0,.5)',
+            'badge_featured_radius' => 20,
+            'badge_featured_size'   => 11,
+            // Boost badge
+            'badge_boost_bg'        => 'rgba(255,42,42,.18)',
+            'badge_boost_color'     => '#ff2a2a',
+            'badge_boost_border'    => 'rgba(255,42,42,.4)',
+            'badge_boost_radius'    => 20,
+            'badge_boost_size'      => 11,
+            // Watchlist gomb
+            'watchlist_color'       => '#ff2a2a',
+            'watchlist_bg'          => 'rgba(0,0,0,.62)',
+            'watchlist_border'      => 'rgba(255,0,0,.45)',
+            'watchlist_size'        => 30,
+        ];
+    }
+
+    public static function output_card_css(): void {
+        $saved = get_option( 'va_card_styles', '' );
+        $data  = $saved ? json_decode( $saved, true ) : [];
+        if ( ! is_array( $data ) ) $data = [];
+        $d = array_merge( self::get_card_defaults(), $data );
+
+        $ff_title = ( ! empty( $d['title_font_family'] ) && $d['title_font_family'] !== 'inherit' )
+            ? "font-family:{$d['title_font_family']};" : '';
+        $ff_price = ( ! empty( $d['price_font_family'] ) && $d['price_font_family'] !== 'inherit' )
+            ? "font-family:{$d['price_font_family']};" : '';
+
+        $bw = (int) $d['card_border_width'];
+        echo "\n<style id=\"va-card-styles\">\n";
+        echo ".va-card{background:{$d['card_bg']};border:{$bw}px solid {$d['card_border_color']};border-radius:{$d['card_radius']}px;}\n";
+        echo ".va-card:hover,.va-card:focus-within{transform:translateY(-{$d['hover_lift']}px);}\n";
+        echo ".va-card:hover::after,.va-card:focus-within::after{border-color:{$d['hover_border_color']};}\n";
+        echo ".va-card__img-wrap{aspect-ratio:{$d['img_aspect']};}\n";
+        echo ".va-card__body{padding:{$d['body_pad_y']}px {$d['body_pad_x']}px;gap:{$d['body_gap']}px;}\n";
+        echo ".va-card__title{color:{$d['title_color']};font-size:{$d['title_font_size']}px;font-weight:{$d['title_font_weight']};{$ff_title}-webkit-line-clamp:{$d['title_line_clamp']};}\n";
+        echo ".va-card__title a{color:{$d['title_color']};}\n";
+        echo ".va-card__price{color:{$d['price_color']};font-size:{$d['price_font_size']}px;font-weight:{$d['price_font_weight']};{$ff_price}}\n";
+        echo ".va-card__meta{color:{$d['meta_color']};font-size:{$d['meta_font_size']}px;}\n";
+        echo ".va-card__badge--featured{background:{$d['badge_featured_bg']};color:{$d['badge_featured_color']};border-color:{$d['badge_featured_border']};border-radius:{$d['badge_featured_radius']}px;font-size:{$d['badge_featured_size']}px;}\n";
+        echo ".va-card__badge--boost{background:{$d['badge_boost_bg']};color:{$d['badge_boost_color']};border-color:{$d['badge_boost_border']};border-radius:{$d['badge_boost_radius']}px;font-size:{$d['badge_boost_size']}px;}\n";
+        echo ".va-card__watchlist{color:{$d['watchlist_color']};background:{$d['watchlist_bg']};border-color:{$d['watchlist_border']};width:{$d['watchlist_size']}px;height:{$d['watchlist_size']}px;}\n";
+        echo "</style>\n";
+    }
+
+    public static function handle_save_card_styles(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        check_admin_referer( 'va_save_card_styles' );
+        $json = sanitize_textarea_field( wp_unslash( $_POST['va_card_styles_json'] ?? '' ) );
+        $data = $json ? json_decode( $json, true ) : null;
+        if ( is_array( $data ) ) {
+            update_option( 'va_card_styles', wp_json_encode( $data ) );
+        }
+        wp_redirect( add_query_arg( [ 'page' => 'vadaszapro-cards', 'saved' => '1' ], admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    public static function render_card_designer(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        $defaults = self::get_card_defaults();
+        $saved    = get_option( 'va_card_styles', '' );
+        $saved_arr = $saved ? json_decode( $saved, true ) : [];
+        if ( ! is_array( $saved_arr ) ) $saved_arr = [];
+        $d = array_merge( $defaults, $saved_arr );
+
+        $is_saved = isset( $_GET['saved'] );
+
+        // Font lista (újrahasználjuk a pill szerkesztő fontjait)
+        $fonts = [
+            'inherit' => '– Alapértelmezett (örökölt)',
+            'system-ui, sans-serif' => '– System UI',
+            'Arial, sans-serif' => '– Arial',
+            "'Helvetica Neue', sans-serif" => '– Helvetica Neue',
+            "'Open Sans', sans-serif" => 'Open Sans',
+            "'Poppins', sans-serif" => 'Poppins',
+            "'Lato', sans-serif" => 'Lato',
+            "'Inter', sans-serif" => 'Inter',
+            "'Roboto', sans-serif" => 'Roboto',
+            "'Nunito', sans-serif" => 'Nunito',
+            "'Montserrat', sans-serif" => 'Montserrat',
+            "'Raleway', sans-serif" => 'Raleway',
+            "'Oswald', sans-serif" => 'Oswald',
+            "'DM Sans', sans-serif" => 'DM Sans',
+            "'Manrope', sans-serif" => 'Manrope',
+            "'Work Sans', sans-serif" => 'Work Sans',
+            "'Rubik', sans-serif" => 'Rubik',
+            "'Source Sans 3', sans-serif" => 'Source Sans 3',
+            "'Fira Sans', sans-serif" => 'Fira Sans',
+            "'Barlow', sans-serif" => 'Barlow',
+            "'Cabin', sans-serif" => 'Cabin',
+            "'Exo 2', sans-serif" => 'Exo 2',
+            "'Bebas Neue', sans-serif" => 'Bebas Neue',
+            'Georgia, serif' => 'Georgia',
+            "'Playfair Display', serif" => 'Playfair Display',
+            "'Merriweather', serif" => 'Merriweather',
+            "'Courier New', monospace" => '– Courier New (mono)',
+        ];
+
+        $gf_families = ['Open+Sans:wght@400;700','Poppins:wght@400;700','Lato:wght@400;700','Inter:wght@400;700','Roboto:wght@400;700','Nunito:wght@400;700','Montserrat:wght@400;700','Raleway:wght@400;700','Oswald:wght@400;700','DM+Sans:wght@400;700','Manrope:wght@400;700','Work+Sans:wght@400;700','Rubik:wght@400;700','Source+Sans+3:wght@400;700','Fira+Sans:wght@400;700','Barlow:wght@400;700','Cabin:wght@400;700','Exo+2:wght@400;700','Bebas+Neue:wght@400','Playfair+Display:wght@400;700','Merriweather:wght@400;700'];
+        $gf_url = 'https://fonts.googleapis.com/css2?family=' . implode( '&family=', $gf_families ) . '&display=swap';
+        echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+        echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+        echo '<link rel="stylesheet" href="' . esc_url( $gf_url ) . '">' . "\n";
+
+        $aspect_options = ['4/3'=>'4:3 (alapért.)','16/9'=>'16:9 (széles)','3/2'=>'3:2','1/1'=>'1:1 (négyzet)','5/4'=>'5:4'];
+        ?>
+        <style>
+        .vacd { display:grid; grid-template-columns:320px 1fr; gap:28px; align-items:start; }
+        @media(max-width:1100px){ .vacd { grid-template-columns:1fr; } }
+        .vacd__preview-wrap { position:sticky; top:64px; }
+        .vacd__preview-card { background:var(--va-bg2,#141414); border:1px solid rgba(255,255,255,.08); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; max-width:300px; position:relative; transition:transform .18s; }
+        .vacd__preview-card:hover { transform:translateY(-2px); }
+        .vacd__img { width:100%; aspect-ratio:4/3; object-fit:cover; display:block; background:linear-gradient(135deg,#1a1a1a,#0a0a0a); display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.15); font-size:42px; overflow:hidden; position:relative; }
+        .vacd__img img { width:100%; height:100%; object-fit:cover; }
+        .vacd__badge { position:absolute; top:10px; left:10px; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px; letter-spacing:.03em; background:linear-gradient(135deg,#3a2800,#1e1400); color:#ffc840; border:1px solid rgba(255,180,0,.5); }
+        .vacd__body { padding:14px; display:flex; flex-direction:column; gap:6px; }
+        .vacd__title { font-size:15px; font-weight:700; color:#fff; line-height:1.3; margin:0; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .vacd__price-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .vacd__price { font-size:17px; font-weight:800; color:#ff2a2a; }
+        .vacd__watchlist { width:30px; height:30px; border-radius:50%; background:rgba(0,0,0,.62); border:1px solid rgba(255,0,0,.45); display:flex; align-items:center; justify-content:center; color:#ff2a2a; flex-shrink:0; }
+        .vacd__meta { font-size:12px; color:rgba(255,255,255,.38); display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+        /* Editor */
+        .vacd__editor { display:flex; flex-direction:column; gap:0; }
+        .vacd__section { background:var(--va-bg2,#111); border:1px solid rgba(255,255,255,.07); border-radius:10px; margin-bottom:10px; overflow:hidden; }
+        .vacd__section-head { display:flex; align-items:center; gap:10px; padding:13px 16px; cursor:pointer; user-select:none; }
+        .vacd__section-head:hover { background:rgba(255,255,255,.03); }
+        .vacd__section-title { font-size:13px; font-weight:600; color:#fff; }
+        .vacd__section-arrow { margin-left:auto; font-size:18px; color:rgba(255,255,255,.4); transition:transform .2s; }
+        .vacd__section.open .vacd__section-arrow { transform:rotate(90deg); }
+        .vacd__section-body { display:none; padding:14px 16px 16px; border-top:1px solid rgba(255,255,255,.06); }
+        .vacd__section.open .vacd__section-body { display:block; }
+        .vacd__row { display:flex; align-items:center; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+        .vacd__row:last-child { margin-bottom:0; }
+        .vacd__label { font-size:12px; color:rgba(255,255,255,.55); min-width:130px; flex-shrink:0; }
+        .vacd__val { font-size:11px; color:rgba(255,255,255,.3); margin-left:4px; }
+        .vacd__range { flex:1; min-width:100px; accent-color:#ff0000; }
+        .vacd__select { flex:1; background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:6px; color:#fff; padding:5px 8px; font-size:12px; }
+        .vacd__color-wrap { display:flex; align-items:center; gap:8px; flex:1; }
+        .vacd__grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .vacd__grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+        </style>
+
+        <div class="va-wrap">
+            <div class="va-page-header">
+                <div>
+                    <h1 class="va-page-title">🃏 Kártyaszerkesztő</h1>
+                    <p class="va-page-subtitle">Hirdetés kártyák megjelenésének testreszabása – live preview az oldalon</p>
+                </div>
+            </div>
+            <?php if ( $is_saved ): ?>
+                <div class="va-alert va-alert--success" style="margin-bottom:18px;">✅ Beállítások mentve!</div>
+            <?php endif; ?>
+
+            <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>">
+                <?php wp_nonce_field( 'va_save_card_styles' ); ?>
+                <input type="hidden" name="action" value="va_save_card_styles">
+                <input type="hidden" name="va_card_styles_json" id="va_card_styles_json" value="<?php echo esc_attr( wp_json_encode( $d ) ); ?>">
+
+                <div class="vacd">
+                    <!-- LIVE PREVIEW -->
+                    <div class="vacd__preview-wrap">
+                        <div style="font-size:11px;color:rgba(255,255,255,.35);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Élő előnézet</div>
+                        <div class="vacd__preview-card" id="prev-card">
+                            <div class="vacd__img" id="prev-img">
+                                <img src="https://picsum.photos/seed/hunt/400/300" alt="preview" id="prev-img-el">
+                                <span class="vacd__badge" id="prev-badge">⭐ Kiemelt</span>
+                            </div>
+                            <div class="vacd__body" id="prev-body">
+                                <h3 class="vacd__title" id="prev-title">SUZUKI SV 650 N – kiváló állapot</h3>
+                                <div class="vacd__price-row">
+                                    <div class="vacd__price" id="prev-price">2 800 000 Ft</div>
+                                    <div class="vacd__watchlist" id="prev-watchlist">
+                                        <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    </div>
+                                </div>
+                                <div class="vacd__meta" id="prev-meta">
+                                    <span>Veszprém</span><span>🗓 2026.04.23</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:16px;">
+                            <button type="button" id="vacd-reset-all" style="font-size:11px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.5);border-radius:6px;padding:5px 12px;cursor:pointer;">↺ Minden visszaállítása</button>
+                        </div>
+                    </div>
+
+                    <!-- EDITOR SECTIONS -->
+                    <div class="vacd__editor">
+
+                        <!-- 1. Kártya konténer -->
+                        <div class="vacd__section open" id="vacd-s-card">
+                            <div class="vacd__section-head" onclick="vacdToggle('card')">
+                                <span>🪟</span><span class="vacd__section-title">Kártya konténer</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Háttér szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="card_bg" value="<?php echo esc_attr($d['card_bg']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Keret szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="card_border_color" value="<?php echo esc_attr($d['card_border_color']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Keret vastagság <b class="vacd__val" id="lbl-card_border_width"><?php echo esc_html($d['card_border_width']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="card_border_width" min="0" max="4" step="1" value="<?php echo esc_attr($d['card_border_width']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Sarok lekerekítés <b class="vacd__val" id="lbl-card_radius"><?php echo esc_html($d['card_radius']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="card_radius" min="0" max="32" step="1" value="<?php echo esc_attr($d['card_radius']); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Hover effekt -->
+                        <div class="vacd__section" id="vacd-s-hover">
+                            <div class="vacd__section-head" onclick="vacdToggle('hover')">
+                                <span>✨</span><span class="vacd__section-title">Hover effekt</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Emelkedés <b class="vacd__val" id="lbl-hover_lift"><?php echo esc_html($d['hover_lift']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="hover_lift" min="0" max="12" step="1" value="<?php echo esc_attr($d['hover_lift']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Hover keret szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="hover_border_color" value="<?php echo esc_attr($d['hover_border_color']); ?>">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Kép -->
+                        <div class="vacd__section" id="vacd-s-img">
+                            <div class="vacd__section-head" onclick="vacdToggle('img')">
+                                <span>🖼️</span><span class="vacd__section-title">Kép arány</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Képarány (aspect-ratio)</span>
+                                    <select class="vacd__select vacd-field" data-prop="img_aspect">
+                                        <?php foreach ( $aspect_options as $val => $lbl ): ?>
+                                            <option value="<?php echo esc_attr($val); ?>" <?php selected($d['img_aspect'],$val); ?>><?php echo esc_html($lbl); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Kártya törzs -->
+                        <div class="vacd__section" id="vacd-s-body">
+                            <div class="vacd__section-head" onclick="vacdToggle('body')">
+                                <span>📦</span><span class="vacd__section-title">Kártya törzs (padding)</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Belső margó X <b class="vacd__val" id="lbl-body_pad_x"><?php echo esc_html($d['body_pad_x']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="body_pad_x" min="0" max="40" step="1" value="<?php echo esc_attr($d['body_pad_x']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Belső margó Y <b class="vacd__val" id="lbl-body_pad_y"><?php echo esc_html($d['body_pad_y']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="body_pad_y" min="0" max="40" step="1" value="<?php echo esc_attr($d['body_pad_y']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Elemek közt rés <b class="vacd__val" id="lbl-body_gap"><?php echo esc_html($d['body_gap']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="body_gap" min="0" max="24" step="1" value="<?php echo esc_attr($d['body_gap']); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Cím -->
+                        <div class="vacd__section" id="vacd-s-title">
+                            <div class="vacd__section-head" onclick="vacdToggle('title')">
+                                <span>🔤</span><span class="vacd__section-title">Cím</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="title_color" value="<?php echo esc_attr($d['title_color']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-title_font_size"><?php echo esc_html($d['title_font_size']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="title_font_size" min="10" max="28" step="1" value="<?php echo esc_attr($d['title_font_size']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűvastagság</span>
+                                    <select class="vacd__select vacd-field" data-prop="title_font_weight">
+                                        <?php foreach ([300=>'300 – Light',400=>'400 – Normal',500=>'500 – Medium',600=>'600 – SemiBold',700=>'700 – Bold',800=>'800 – ExtraBold',900=>'900 – Black'] as $w=>$wl): ?>
+                                            <option value="<?php echo $w; ?>" <?php selected((int)$d['title_font_weight'],$w); ?>><?php echo $wl; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűtípus</span>
+                                    <select class="vacd__select vacd-field" data-prop="title_font_family">
+                                        <?php foreach ($fonts as $fv=>$fn): ?>
+                                            <option value="<?php echo esc_attr($fv); ?>" <?php selected($d['title_font_family'],$fv); ?> style="font-family:<?php echo esc_attr($fv); ?>"><?php echo esc_html($fn); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Sorok száma (max) <b class="vacd__val" id="lbl-title_line_clamp"><?php echo esc_html($d['title_line_clamp']); ?></b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="title_line_clamp" min="1" max="4" step="1" value="<?php echo esc_attr($d['title_line_clamp']); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6. Ár -->
+                        <div class="vacd__section" id="vacd-s-price">
+                            <div class="vacd__section-head" onclick="vacdToggle('price')">
+                                <span>💰</span><span class="vacd__section-title">Ár</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="price_color" value="<?php echo esc_attr($d['price_color']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-price_font_size"><?php echo esc_html($d['price_font_size']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="price_font_size" min="12" max="32" step="1" value="<?php echo esc_attr($d['price_font_size']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűvastagság</span>
+                                    <select class="vacd__select vacd-field" data-prop="price_font_weight">
+                                        <?php foreach ([400=>'400 – Normal',500=>'500 – Medium',600=>'600 – SemiBold',700=>'700 – Bold',800=>'800 – ExtraBold',900=>'900 – Black'] as $w=>$wl): ?>
+                                            <option value="<?php echo $w; ?>" <?php selected((int)$d['price_font_weight'],$w); ?>><?php echo $wl; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűtípus</span>
+                                    <select class="vacd__select vacd-field" data-prop="price_font_family">
+                                        <?php foreach ($fonts as $fv=>$fn): ?>
+                                            <option value="<?php echo esc_attr($fv); ?>" <?php selected($d['price_font_family'],$fv); ?> style="font-family:<?php echo esc_attr($fv); ?>"><?php echo esc_html($fn); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 7. Meta sor -->
+                        <div class="vacd__section" id="vacd-s-meta">
+                            <div class="vacd__section-head" onclick="vacdToggle('meta')">
+                                <span>📋</span><span class="vacd__section-title">Meta sor (helyszín, dátum)</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Szöveg szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="meta_color" value="<?php echo esc_attr($d['meta_color']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-meta_font_size"><?php echo esc_html($d['meta_font_size']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="meta_font_size" min="9" max="16" step="1" value="<?php echo esc_attr($d['meta_font_size']); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 8. Kiemelt badge -->
+                        <div class="vacd__section" id="vacd-s-feat">
+                            <div class="vacd__section-head" onclick="vacdToggle('feat')">
+                                <span>⭐</span><span class="vacd__section-title">Kiemelt badge</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Háttér szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_featured_bg" value="<?php echo esc_attr($d['badge_featured_bg']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Szöveg szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_featured_color" value="<?php echo esc_attr($d['badge_featured_color']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Keret szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_featured_border" value="<?php echo esc_attr($d['badge_featured_border']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Sarok lekerekítés <b class="vacd__val" id="lbl-badge_featured_radius"><?php echo esc_html($d['badge_featured_radius']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="badge_featured_radius" min="0" max="30" step="1" value="<?php echo esc_attr($d['badge_featured_radius']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-badge_featured_size"><?php echo esc_html($d['badge_featured_size']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="badge_featured_size" min="8" max="18" step="1" value="<?php echo esc_attr($d['badge_featured_size']); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9. Boost badge -->
+                        <div class="vacd__section" id="vacd-s-boost">
+                            <div class="vacd__section-head" onclick="vacdToggle('boost')">
+                                <span>⚡</span><span class="vacd__section-title">Előre téve (Boost) badge</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Háttér szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_boost_bg" value="<?php echo esc_attr($d['badge_boost_bg']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Szöveg szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_boost_color" value="<?php echo esc_attr($d['badge_boost_color']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Keret szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_boost_border" value="<?php echo esc_attr($d['badge_boost_border']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Sarok lekerekítés <b class="vacd__val" id="lbl-badge_boost_radius"><?php echo esc_html($d['badge_boost_radius']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="badge_boost_radius" min="0" max="30" step="1" value="<?php echo esc_attr($d['badge_boost_radius']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-badge_boost_size"><?php echo esc_html($d['badge_boost_size']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="badge_boost_size" min="8" max="18" step="1" value="<?php echo esc_attr($d['badge_boost_size']); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 10. Watchlist -->
+                        <div class="vacd__section" id="vacd-s-wl">
+                            <div class="vacd__section-head" onclick="vacdToggle('wl')">
+                                <span>❤️</span><span class="vacd__section-title">Kedvenc gomb (Watchlist)</span><span class="vacd__section-arrow">›</span>
+                            </div>
+                            <div class="vacd__section-body">
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Szívecske szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="watchlist_color" value="<?php echo esc_attr($d['watchlist_color']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Háttér szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="watchlist_bg" value="<?php echo esc_attr($d['watchlist_bg']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Keret szín</span>
+                                    <div class="vacd__color-wrap">
+                                        <input type="text" class="va-color-input vacd-field" data-prop="watchlist_border" value="<?php echo esc_attr($d['watchlist_border']); ?>">
+                                    </div>
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Méret <b class="vacd__val" id="lbl-watchlist_size"><?php echo esc_html($d['watchlist_size']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="watchlist_size" min="20" max="50" step="1" value="<?php echo esc_attr($d['watchlist_size']); ?>">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:flex;gap:12px;margin-top:8px;align-items:center;">
+                            <button type="submit" class="va-btn va-btn--primary" style="font-size:14px;padding:10px 28px;">💾 Mentés</button>
+                        </div>
+                    </div><!-- /.vacd__editor -->
+                </div><!-- /.vacd -->
+            </form>
+        </div>
+
+        <script>
+        (function(){
+            var defaults = <?php echo wp_json_encode( $defaults ); ?>;
+            var current  = <?php echo wp_json_encode( $d ); ?>;
+
+            function saveJson() {
+                document.getElementById('va_card_styles_json').value = JSON.stringify(current);
+            }
+            saveJson();
+
+            // Section toggle
+            window.vacdToggle = function(key) {
+                var sec = document.getElementById('vacd-s-'+key);
+                if(!sec) return;
+                var wasOpen = sec.classList.contains('open');
+                sec.classList.toggle('open');
+                if(!wasOpen && typeof $ !== 'undefined' && typeof window.vaInitColorPickers === 'function') {
+                    window.vaInitColorPickers($(sec));
+                }
+            };
+
+            // Preview updater
+            function updatePreview() {
+                var c = current;
+                var card = document.getElementById('prev-card');
+                var img  = document.getElementById('prev-img');
+                var body = document.getElementById('prev-body');
+                var ttl  = document.getElementById('prev-title');
+                var prc  = document.getElementById('prev-price');
+                var meta = document.getElementById('prev-meta');
+                var bdg  = document.getElementById('prev-badge');
+                var wl   = document.getElementById('prev-watchlist');
+
+                if(card) {
+                    card.style.background     = c.card_bg;
+                    card.style.borderColor    = c.card_border_color;
+                    card.style.borderWidth    = (c.card_border_width||1)+'px';
+                    card.style.borderStyle    = 'solid';
+                    card.style.borderRadius   = c.card_radius+'px';
+                }
+                if(img) {
+                    img.style.aspectRatio = c.img_aspect;
+                }
+                if(body) {
+                    body.style.padding = c.body_pad_y+'px '+c.body_pad_x+'px';
+                    body.style.gap     = c.body_gap+'px';
+                }
+                if(ttl) {
+                    ttl.style.color          = c.title_color;
+                    ttl.style.fontSize       = c.title_font_size+'px';
+                    ttl.style.fontWeight     = c.title_font_weight;
+                    ttl.style.fontFamily     = (c.title_font_family && c.title_font_family !== 'inherit') ? c.title_font_family : '';
+                    ttl.style.webkitLineClamp= c.title_line_clamp;
+                }
+                if(prc) {
+                    prc.style.color      = c.price_color;
+                    prc.style.fontSize   = c.price_font_size+'px';
+                    prc.style.fontWeight = c.price_font_weight;
+                    prc.style.fontFamily = (c.price_font_family && c.price_font_family !== 'inherit') ? c.price_font_family : '';
+                }
+                if(meta) {
+                    meta.style.color    = c.meta_color;
+                    meta.style.fontSize = c.meta_font_size+'px';
+                }
+                if(bdg) {
+                    bdg.style.background  = c.badge_featured_bg;
+                    bdg.style.color       = c.badge_featured_color;
+                    bdg.style.borderColor = c.badge_featured_border;
+                    bdg.style.borderStyle = 'solid';
+                    bdg.style.borderRadius= c.badge_featured_radius+'px';
+                    bdg.style.fontSize    = c.badge_featured_size+'px';
+                }
+                if(wl) {
+                    wl.style.color       = c.watchlist_color;
+                    wl.style.background  = c.watchlist_bg;
+                    wl.style.borderColor = c.watchlist_border;
+                    wl.style.borderStyle = 'solid';
+                    wl.style.width       = c.watchlist_size+'px';
+                    wl.style.height      = c.watchlist_size+'px';
+                }
+            }
+            updatePreview();
+
+            // Field change listeners
+            document.querySelectorAll('.vacd-field').forEach(function(el){
+                el.addEventListener('input', function(){
+                    var prop = this.dataset.prop;
+                    if(!prop) return;
+                    current[prop] = this.type === 'range' ? (parseFloat(this.value)||parseInt(this.value)||0) : this.value;
+                    var lbl = document.getElementById('lbl-'+prop);
+                    if(lbl) lbl.textContent = (this.type==='range') ? current[prop]+(prop.indexOf('clamp')<0?'px':'') : current[prop];
+                    updatePreview();
+                    saveJson();
+                });
+                el.addEventListener('change', function(){
+                    var prop = this.dataset.prop;
+                    if(!prop || this.type === 'range' || this.tagName === 'SELECT') return;
+                    current[prop] = this.value;
+                    updatePreview();
+                    saveJson();
+                });
+            });
+
+            // Reset all
+            document.getElementById('vacd-reset-all').addEventListener('click', function(){
+                if(!confirm('Visszaállítod az összes kártya beállítást alapértékre?')) return;
+                current = Object.assign({}, defaults);
+                // update all inputs
+                document.querySelectorAll('.vacd-field').forEach(function(el){
+                    var prop = el.dataset.prop;
+                    if(prop && current[prop] !== undefined) {
+                        el.value = current[prop];
+                        var lbl = document.getElementById('lbl-'+prop);
+                        if(lbl) lbl.textContent = current[prop] + (el.type==='range' && prop.indexOf('clamp')<0 ? 'px' : '');
+                    }
+                });
+                updatePreview();
+                saveJson();
+            });
+
+            // Init color pickers on open sections
+            if(typeof $ !== 'undefined' && typeof window.vaInitColorPickers === 'function') {
+                window.vaInitColorPickers($('#vacd-s-card'));
+            }
+        })();
         </script>
         <?php
     }
