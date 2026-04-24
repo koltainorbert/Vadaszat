@@ -6286,6 +6286,9 @@ class VA_Settings_Page {
         $data  = $saved ? json_decode( $saved, true ) : [];
         if ( ! is_array( $data ) ) $data = [];
         $d = array_merge( self::get_card_defaults(), $data );
+        
+        // DEBUG: ellenőrzés, hogy output_card_css lezajlik-e
+        error_log( 'DEBUG: output_card_css() called. Saved option length: ' . strlen( $saved ) . ', merged data count: ' . count( $d ) );
 
         $ff_title = ( ! empty( $d['title_font_family'] ) && $d['title_font_family'] !== 'inherit' )
             ? "font-family:{$d['title_font_family']};" : '';
