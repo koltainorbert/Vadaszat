@@ -11,7 +11,7 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'VA_VERSION',        '1.0.1' );
+define( 'VA_VERSION',        '1.1.2' );
 define( 'VA_REWRITE_VER',   '1.0.4' );   // Növeld meg ha CPT/tax slug változik!
 define( 'VA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -63,10 +63,12 @@ add_action( 'plugins_loaded', function () {
     VA_Updater::init();
     VA_Page_Renderer::init();
 
+    // Settings Page init-je frontend-en is kell (wp_head CSS hookak: pill + kártya stílusok)
+    VA_Settings_Page::init();
+
     if ( is_admin() ) {
         VA_Page_Builder::init();
         VA_Admin::init();
-        VA_Settings_Page::init();
         VA_Listing_Columns::init();
         VA_Listing_Edit::init();
         VA_Form_Builder::init();
