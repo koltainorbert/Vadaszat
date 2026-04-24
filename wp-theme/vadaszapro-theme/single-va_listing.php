@@ -120,25 +120,14 @@ $park_labels = [ 'none'=>'Nincs','street'=>'Utcai','private'=>'Saját','garage'=
 $furn_labels = [ 'no'=>'Nem','partial'=>'Részben','yes'=>'Igen' ];
 $heat_labels = [ 'gas'=>'Gáz','electric'=>'Elektromos','district'=>'Távfűtés','wood'=>'Fa/szilárd','heat_pump'=>'Hőszivattyú' ];
 
-// Kepek gyujtese (editor képek kizárva)
-$att_args = [
-    'post_type'      => 'attachment',
-    'posts_per_page' => 12,
-    'post_parent'    => $post_id,
-    'post_mime_type' => 'image',
-    'fields'         => 'ids',
-    'no_found_rows'  => true,
-    'meta_query'     => [
-        [
-            'key'     => '_va_editor_img',
-            'compare' => 'NOT EXISTS',
-        ],
-    ],
-];
-$attachment_ids = get_posts( $att_args );
+// Kepek gyujtese: va_gallery_ids meta (elsődleges) + featured image
+$gallery_str    = (string) get_post_meta( $post_id, 'va_gallery_ids', true );
+$attachment_ids = $gallery_str
+    ? array_filter( array_map( 'absint', explode( ',', $gallery_str ) ) )
+    : [];
 if ( has_post_thumbnail() ) {
-    $thumb_id = get_post_thumbnail_id( $post_id );
-    $attachment_ids = array_unique( array_merge( [ $thumb_id ], $attachment_ids ) );
+    $thumb_id       = get_post_thumbnail_id( $post_id );
+    $attachment_ids = array_values( array_unique( array_merge( [ $thumb_id ], $attachment_ids ) ) );
 }
 
 wp_enqueue_script( 'va-frontend', VA_PLUGIN_URL . 'frontend/js/frontend.js', [ 'jquery' ], VA_VERSION, true );
