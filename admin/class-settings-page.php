@@ -6415,7 +6415,6 @@ class VA_Settings_Page {
             echo '<input type="color" class="vacd__color-native" id="' . $id . '-pick" value="#000000" oninput="vacdSyncColor(this,\'' . esc_js($prop) . '\',true)">';
             echo '<input type="text"  class="vacd__color-text vacd-field" data-prop="' . esc_attr($prop) . '" id="' . $id . '-txt" value="' . esc_attr($value) . '" oninput="vacdSyncColor(this,\'' . esc_js($prop) . '\',false)" spellcheck="false">';
             echo '</div>';
-            echo '<script>document.getElementById(\'' . $id . '-pick\').value = vacdHexApprox(' . json_encode($value) . ');<\/script>';
         }
         ?>
 
@@ -6828,6 +6827,14 @@ class VA_Settings_Page {
                 updatePreview();
                 saveJson();
             };
+
+            // Native color picker-ek inicializálása a current értékek alapján
+            document.querySelectorAll('.vacd__color-native').forEach(function(pick) {
+                var prop = pick.id.replace('vacd-c-','').replace('-pick','');
+                if(prop && current[prop] !== undefined) {
+                    pick.value = vacdHexApprox(current[prop]);
+                }
+            });
 
             // Field change listeners (range + select)
             document.querySelectorAll('.vacd-field').forEach(function(el){
