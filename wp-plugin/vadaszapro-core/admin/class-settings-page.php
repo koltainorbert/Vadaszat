@@ -13,7 +13,9 @@ class VA_Settings_Page {
     public static function init() {
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
         add_action( 'wp_head',    [ __CLASS__, 'output_pill_css' ], 99 );
-        add_action( 'admin_post_va_save_pill_styles', [ __CLASS__, 'handle_save_pill_styles' ] );
+        add_action( 'wp_head',    [ __CLASS__, 'output_card_css' ], 99 );
+        add_action( 'admin_post_va_save_pill_styles',  [ __CLASS__, 'handle_save_pill_styles'  ] );
+        add_action( 'admin_post_va_save_card_styles',  [ __CLASS__, 'handle_save_card_styles'  ] );
         add_action( 'admin_post_va_export_settings', [ __CLASS__, 'handle_export_settings' ] );
         add_action( 'admin_post_va_import_settings', [ __CLASS__, 'handle_import_settings' ] );
         add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );

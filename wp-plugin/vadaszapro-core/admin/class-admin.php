@@ -336,6 +336,7 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Árkártyák",        "💳 Árkártyák",        "manage_options", "vadaszapro-arkartyak",   [ VA_Settings_Page::class, "render_price_cards"       ] );
         add_submenu_page( "vadaszapro", "Statisztika",      "📈 Statisztika",      "manage_options", "vadaszapro-stats",       [ VA_Settings_Page::class, "render_stats"             ] );
         add_submenu_page( "vadaszapro", "Pill / Badge stílusok", "🏷️ Pill & Badge", "manage_options", "vadaszapro-pills",       [ VA_Settings_Page::class, "render_pill_styles"       ] );
+        add_submenu_page( "vadaszapro", "Kártyaszerkesztő",      "🃏 Kártyaszerkesztő", "manage_options", "vadaszapro-cards",    [ VA_Settings_Page::class, "render_card_designer"     ] );
         add_submenu_page( "vadaszapro", "Oldalszerkesztő",        "📄 Oldalak",        "manage_options", "vadaszapro-oldalak",        [ VA_Page_Builder::class,  "render"                  ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
