@@ -6402,18 +6402,14 @@ class VA_Settings_Page {
         .vacd__range { flex:1; min-width:100px; accent-color:#ff0000; }
         .vacd__select { flex:1; background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:6px; color:#fff; padding:5px 8px; font-size:12px; }
         .vacd__color-wrap { display:flex; align-items:center; gap:8px; flex:1; }
-        .vacd__color-native { width:36px; height:30px; border:none; padding:2px; border-radius:6px; cursor:pointer; flex-shrink:0; background:#1a1a1a; }
-        .vacd__color-text { flex:1; background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:6px; color:#fff; padding:5px 8px; font-size:12px; font-family:monospace; }
         .vacd__grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .vacd__grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
         </style>
         <?php
-        // Helper: szín mező (native color picker + szöveg input, két mező szinkronban)
+        // Helper: szín mező (va-color-input picker)
         function vacd_color_field( string $prop, string $value ): void {
-            $id = 'vacd-c-' . esc_attr($prop);
             echo '<div class="vacd__color-wrap">';
-            echo '<input type="color" class="vacd__color-native" id="' . $id . '-pick" value="#000000" oninput="vacdSyncColor(this,\'' . esc_js($prop) . '\',true)">';
-            echo '<input type="text"  class="vacd__color-text vacd-field" data-prop="' . esc_attr($prop) . '" id="' . $id . '-txt" value="' . esc_attr($value) . '" oninput="vacdSyncColor(this,\'' . esc_js($prop) . '\',false)" spellcheck="false">';
+            echo '<input type="text" class="va-color-input vacd-field" data-prop="' . esc_attr($prop) . '" value="' . esc_attr($value) . '">';
             echo '</div>';
         }
         ?>
@@ -6805,36 +6801,25 @@ class VA_Settings_Page {
             }
             updatePreview();
 
-            // Szín mező szinkron függvény (native color picker ↔ text input)
-            window.vacdHexApprox = function(v) {
-                // rgba/rgb → közelítő hex (color picker csak hex-et fogad el)
-                var m = String(v).match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
-                if(m) return '#' + ('0'+parseInt(m[1]).toString(16)).slice(-2) + ('0'+parseInt(m[2]).toString(16)).slice(-2) + ('0'+parseInt(m[3]).toString(16)).slice(-2);
-                return /^#[0-9a-f]{3,8}$/i.test(v) ? v : '#000000';
-            };
-            window.vacdSyncColor = function(el, prop, fromPicker) {
-                var val = el.value;
-                var txtId = 'vacd-c-'+prop+'-txt';
-                var pickId = 'vacd-c-'+prop+'-pick';
-                if(fromPicker) {
-                    var txt = document.getElementById(txtId);
-                    if(txt) { txt.value = val; }
+            // Szín mezők és field change listeners
+            // Va-color-input picker (admin.js) későn tölt be, DOMContentLoaded után init
+            function vacdInitPickers() {
+                if(typeof $ !== 'undefined' && typeof window.vaInitColorPickers === 'function') {
+                    // Minden szekciót inicializálunk (nyílt és zárt egyaránt)
+                    window.vaInitColorPickers($('#vacd-editor'));
+                    // picker változás → updatePreview
+                    $('#vacd-editor').off('change.vacd', '.va-color-input').on('change.vacd', '.va-color-input', function(){
+                        var prop = $(this).data('prop');
+                        if(!prop) return;
+                        current[prop] = $(this).val();
+                        updatePreview();
+                        saveJson();
+                    });
                 } else {
-                    var pick = document.getElementById(pickId);
-                    if(pick) { try{ pick.value = vacdHexApprox(val); }catch(e){} }
+                    setTimeout(vacdInitPickers, 100);
                 }
-                current[prop] = val;
-                updatePreview();
-                saveJson();
-            };
-
-            // Native color picker-ek inicializálása a current értékek alapján
-            document.querySelectorAll('.vacd__color-native').forEach(function(pick) {
-                var prop = pick.id.replace('vacd-c-','').replace('-pick','');
-                if(prop && current[prop] !== undefined) {
-                    pick.value = vacdHexApprox(current[prop]);
-                }
-            });
+            }
+            vacdInitPickers();
 
             // Field change listeners (range + select)
             document.querySelectorAll('.vacd-field').forEach(function(el){
@@ -6851,6 +6836,8 @@ class VA_Settings_Page {
                 el.addEventListener('change', function(){
                     var prop = this.dataset.prop;
                     if(!prop || this.type === 'range') return;
+                    // va-color-input: a jQuery handler kezeli, ide ne kerljön
+                    if(this.classList.contains('va-color-input')) return;
                     current[prop] = this.value;
                     updatePreview(); saveJson();
                 });
