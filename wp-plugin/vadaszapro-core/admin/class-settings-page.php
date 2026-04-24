@@ -6843,15 +6843,24 @@ class VA_Settings_Page {
             document.getElementById('vacd-reset-all').addEventListener('click', function(){
                 if(!confirm('Visszaállítod az összes kártya beállítást alapértékre?')) return;
                 current = Object.assign({}, defaults);
-                // update all inputs
+                // range + select frissítés
                 document.querySelectorAll('.vacd-field').forEach(function(el){
                     var prop = el.dataset.prop;
-                    if(prop && current[prop] !== undefined) {
-                        el.value = current[prop];
-                        var lbl = document.getElementById('lbl-'+prop);
-                        if(lbl) lbl.textContent = current[prop] + (el.type==='range' && prop.indexOf('clamp')<0 ? 'px' : '');
-                    }
+                    if(!prop || current[prop] === undefined) return;
+                    if(el.classList.contains('va-color-input')) return; // picker alább kezeli
+                    el.value = current[prop];
+                    var lbl = document.getElementById('lbl-'+prop);
+                    if(lbl) lbl.textContent = current[prop] + (el.type==='range' && prop.indexOf('clamp')<0 ? 'px' : '');
                 });
+                // color picker-ek frissítése jQuery-vel (trigger change → swatch is frissül)
+                if(typeof $ !== 'undefined') {
+                    $('.va-color-input.vacd-field').each(function(){
+                        var prop = $(this).data('prop');
+                        if(prop && current[prop] !== undefined) {
+                            $(this).val(current[prop]).trigger('change');
+                        }
+                    });
+                }
                 updatePreview();
                 saveJson();
             });
