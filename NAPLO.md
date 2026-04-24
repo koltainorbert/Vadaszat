@@ -2,6 +2,35 @@
 
 ---
 
+## 2026. 04. 24. – Session #119 (Kártyaszerkesztő – live preview + frontend CSS debug)
+
+### Mit csináltunk [x]
+- [x] `class-settings-page.php` – `require_once` áthelyezve `is_admin()` blokkon kívülre → `VA_Settings_Page` osztály frontend-en is elérhető (fatal error megszüntetve)
+- [x] `vadaszapro-core.php` – `VA_Settings_Page::init()` kiemelve `is_admin()` blokkon kívülre → `wp_head` CSS hookak (pill + kártya) frontend-en is regisztrálódnak
+- [x] Szín inputok: `va-color-input` picker visszaállítva (native color combó visszavonva)
+- [x] `vacdInitPickers()` – az egész `#vacd-editor` inicializálódik betöltéskor (nem csak nyitott szekciók), retry 100ms-enként amíg `vaInitColorPickers` elérhető
+- [x] jQuery event delegation: `#vacd-editor` `.on('change.vacd', '.va-color-input')` → `updatePreview()` + `saveJson()`
+- [x] `vacdToggle()` egyszerűsítve – nincs per-szekció init
+- [x] Form submit handler hozzáadva az IIFE-ben → `saveJson()` mindig lefut submit előtt
+- [x] `handle_save_card_styles()` – debug `error_log` sorok hozzáadva
+- [x] Root fájlok szinkronizálva, deploy megtörtént minden módosítás után
+
+### Ismert nyitott problémák
+- [ ] **Live preview nem frissül** – a `va-color-input` picker `change` eventje nem érkezik meg a `vacdInitPickers` jQuery handleréhez (valószínűleg timing: az init előbb fut mint admin.js betölt)
+- [ ] **Frontend CSS nem változik** – mentés után a `va_card_styles` opció valószínűleg nem íródik (`saveJson()` / form submit sorrend, debug logolás most kerül be)
+- [ ] Debug log elérési útja nem volt ismert, WP_DEBUG státusz ismeretlen
+
+### Hol tartunk
+A kártyaszerkesztő admin oldal betölt, a form struktúra helyes. A két fő probléma (live preview + frontend CSS) debuggolás alatt – a debug `error_log` sorok most kerültek be, következő lépés az eredmény ellenőrzése.
+
+### Következő session teendők
+1. Mentés után ellenőrizni: `wp_options` táblában megjelenik-e `va_card_styles`
+2. Ha igen → frontend CSS specificity probléma (frontend.css felülírja)
+3. Ha nem → `handle_save_card_styles` debug log eredménye alapján JSON/nonce probléma
+4. Live preview: ha `vacdInitPickers` nem kapja el a `change` eventet → direkt `oninput` handler szükséges
+
+---
+
 ## 2026. 04. 21. – Session #115 (Color picker visszaállítás)
 
 ### Mit csináltunk [x]
