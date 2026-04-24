@@ -6866,16 +6866,6 @@ class VA_Settings_Page {
                 saveJson();
             });
 
-            // Init color pickers after page load (admin.js footer-ben tölt be)
-            if(typeof $ !== 'undefined') {
-                $(function(){
-                    if(typeof window.vaInitColorPickers === 'function') {
-                        document.querySelectorAll('.vacd__section.open').forEach(function(sec){
-                            window.vaInitColorPickers($(sec));
-                        });
-                    }
-                });
-            }
         })();
         </script>
         <?php
