@@ -6316,9 +6316,13 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
         check_admin_referer( 'va_save_card_styles' );
         $json = sanitize_textarea_field( wp_unslash( $_POST['va_card_styles_json'] ?? '' ) );
+        error_log( 'DEBUG: handle_save_card_styles() POST json length: ' . strlen( $json ) . ', raw: ' . substr( $json, 0, 100 ) );
         $data = $json ? json_decode( $json, true ) : null;
         if ( is_array( $data ) ) {
             update_option( 'va_card_styles', wp_json_encode( $data ) );
+            error_log( 'DEBUG: Saved va_card_styles option. Data keys: ' . implode( ',', array_keys( $data ) ) );
+        } else {
+            error_log( 'DEBUG: JSON decode failed or not array. Data: ' . var_export( $data, true ) );
         }
         wp_redirect( add_query_arg( [ 'page' => 'vadaszapro-cards', 'saved' => '1' ], admin_url( 'admin.php' ) ) );
         exit;
