@@ -125,6 +125,35 @@ class VA_Ajax {
             'va_year'        => $year,
             'va_license_req' => $license_req,
         ];
+
+        // Típus-specifikus extra mezők mentése
+        $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect' ];
+        $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys',
+                             'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
+        $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating' ];
+        $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
+        foreach ( $type_extra_text as $k ) {
+            if ( isset( $_POST[ str_replace( 'va_', '', $k ) ] ) ) {
+                $metas[ $k ] = sanitize_text_field( wp_unslash( $_POST[ str_replace( 'va_', '', $k ) ] ) );
+            }
+        }
+        foreach ( $type_extra_num as $k ) {
+            $short = str_replace( 'va_', '', $k );
+            if ( isset( $_POST[ $short ] ) ) {
+                $metas[ $k ] = intval( $_POST[ $short ] );
+            }
+        }
+        foreach ( $type_extra_key as $k ) {
+            $short = str_replace( 'va_', '', $k );
+            if ( isset( $_POST[ $short ] ) ) {
+                $metas[ $k ] = sanitize_key( $_POST[ $short ] );
+            }
+        }
+        foreach ( $type_extra_bool as $k ) {
+            $short = str_replace( 'va_', '', $k );
+            $metas[ $k ] = ! empty( $_POST[ $short ] ) ? '1' : '0';
+        }
+
         foreach ( $metas as $k => $v ) {
             update_post_meta( $post_id, $k, $v );
         }
@@ -259,6 +288,30 @@ class VA_Ajax {
             'va_year'        => $year,
             'va_license_req' => $license_req,
             'va_views'       => 0,
+        ];
+
+        // Típus-specifikus extra mezők mentése (submit)
+        $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect' ];
+        $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys',
+                             'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
+        $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating' ];
+        $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
+        foreach ( $type_extra_text as $k ) {
+            $short = str_replace( 'va_', '', $k );
+            if ( isset( $_POST[ $short ] ) ) $metas[ $k ] = sanitize_text_field( wp_unslash( $_POST[ $short ] ) );
+        }
+        foreach ( $type_extra_num as $k ) {
+            $short = str_replace( 'va_', '', $k );
+            if ( isset( $_POST[ $short ] ) ) $metas[ $k ] = intval( $_POST[ $short ] );
+        }
+        foreach ( $type_extra_key as $k ) {
+            $short = str_replace( 'va_', '', $k );
+            if ( isset( $_POST[ $short ] ) ) $metas[ $k ] = sanitize_key( $_POST[ $short ] );
+        }
+        foreach ( $type_extra_bool as $k ) {
+            $short = str_replace( 'va_', '', $k );
+            $metas[ $k ] = ! empty( $_POST[ $short ] ) ? '1' : '0';
+        }
         ];
         foreach ( $metas as $k => $v ) {
             update_post_meta( $post_id, $k, $v );
