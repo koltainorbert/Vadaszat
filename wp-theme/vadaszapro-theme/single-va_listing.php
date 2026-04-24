@@ -86,6 +86,40 @@ $county      = get_the_terms( $post_id, 'va_county' );
 $condition   = get_the_terms( $post_id, 'va_condition' );
 $author      = get_userdata( get_the_author_meta('ID') );
 
+// Típus-specifikus extra metaadatok
+$site_type       = class_exists('VA_Meta_Fields') ? VA_Meta_Fields::get_site_type() : 'vadaszat';
+$mileage         = get_post_meta( $post_id, 'va_mileage',         true );
+$fuel_type       = get_post_meta( $post_id, 'va_fuel_type',       true );
+$performance_kw  = get_post_meta( $post_id, 'va_performance_kw',  true );
+$engine_size     = get_post_meta( $post_id, 'va_engine_size',     true );
+$transmission    = get_post_meta( $post_id, 'va_transmission',    true );
+$body_type       = get_post_meta( $post_id, 'va_body_type',       true );
+$color_val       = get_post_meta( $post_id, 'va_color',           true );
+$doors           = get_post_meta( $post_id, 'va_doors',           true );
+$owners          = get_post_meta( $post_id, 'va_owners',          true );
+$keys_count      = get_post_meta( $post_id, 'va_keys',            true );
+$prev_damage     = get_post_meta( $post_id, 'va_previous_damage', true );
+$service_book    = get_post_meta( $post_id, 'va_service_book',    true );
+$tech_inspect    = get_post_meta( $post_id, 'va_tech_inspect',    true );
+$first_reg       = get_post_meta( $post_id, 'va_first_reg',       true );
+$area_m2         = get_post_meta( $post_id, 'va_area_m2',         true );
+$rooms           = get_post_meta( $post_id, 'va_rooms',           true );
+$floor           = get_post_meta( $post_id, 'va_floor',           true );
+$lot_size        = get_post_meta( $post_id, 'va_lot_size',        true );
+$building_year   = get_post_meta( $post_id, 'va_building_year',   true );
+$parking         = get_post_meta( $post_id, 'va_parking',         true );
+$furnished       = get_post_meta( $post_id, 'va_furnished',       true );
+$heating         = get_post_meta( $post_id, 'va_heating',         true );
+$balcony         = get_post_meta( $post_id, 'va_balcony',         true );
+
+// Felszerelési lista fordítók
+$fuel_labels = [ 'benzin'=>'Benzin','diesel'=>'Dízel','hybrid'=>'Hibrid','electric'=>'Elektromos','lpg'=>'LPG','cng'=>'CNG','egyeb'=>'Egyéb' ];
+$trans_labels = [ 'manual'=>'Kéziváltó','automatic'=>'Automata','semi_auto'=>'Félautomata','cvt'=>'CVT' ];
+$body_labels = [ 'sedan'=>'Szedán','combi'=>'Kombi','hatchback'=>'Ferdehátú','suv'=>'SUV/Terepjáró','coupe'=>'Kupé','cabrio'=>'Kabrió','van'=>'Furgon','pickup'=>'Pickup','motor'=>'Motor','egyeb'=>'Egyéb' ];
+$park_labels = [ 'none'=>'Nincs','street'=>'Utcai','private'=>'Saját','garage'=>'Garázs' ];
+$furn_labels = [ 'no'=>'Nem','partial'=>'Részben','yes'=>'Igen' ];
+$heat_labels = [ 'gas'=>'Gáz','electric'=>'Elektromos','district'=>'Távfűtés','wood'=>'Fa/szilárd','heat_pump'=>'Hőszivattyú' ];
+
 // Kepek gyujtese (editor képek kizárva)
 $att_args = [
     'post_type'      => 'attachment',
@@ -145,6 +179,17 @@ $sl_viewer_bg = sanitize_text_field( (string) get_option( 'va_single_viewer_bg',
 $sl_accent    = sanitize_hex_color( (string) get_option( 'va_single_accent', '#ff2a2a' ) ) ?: '#ff2a2a';
 $sl_glass     = sanitize_text_field( (string) get_option( 'va_single_glass', 'rgba(255,255,255,.07)' ) );
 $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'rgba(255,255,255,.12)' ) );
+
+// Demand indikátor: figyelőlistára adások az elmúlt 24 órában
+$demand_count = 0;
+global $wpdb;
+$wl_table = $wpdb->prefix . 'va_watchlist';
+if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
+    $demand_count = (int) $wpdb->get_var( $wpdb->prepare(
+        "SELECT COUNT(*) FROM `{$wl_table}` WHERE post_id = %d AND created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)",
+        $post_id
+    ) );
+}
 ?>
 
 <style>
@@ -185,11 +230,52 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
 .sl .sl__btn--phone,
 .sl .sl__btn--watch.active { background: var(--sl-accent); }
 .sl-viewer { background: <?php echo esc_attr( $sl_viewer_bg ); ?>; }
+/* Demand badge */
+.sl__demand { display:flex;align-items:center;gap:8px;background:rgba(255,100,0,.12);border:1px solid rgba(255,100,0,.3);border-radius:8px;padding:9px 14px;margin-bottom:14px;font-size:13px;color:#ff9550;font-weight:600; }
+.sl__demand svg { flex-shrink:0; }
+/* Specs table */
+.sl__specs-table { display:grid;grid-template-columns:1fr 1fr;gap:0; }
+.sl__spec-row { display:flex;flex-direction:column;padding:10px 0;border-bottom:1px solid var(--sl-border); }
+.sl__spec-row:nth-child(odd) { padding-right:12px; }
+.sl__spec-row:nth-child(even) { padding-left:12px;border-left:1px solid var(--sl-border); }
+.sl__spec-label { font-size:11px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px; }
+.sl__spec-val { font-size:14px;font-weight:600;color:#fff; }
+.sl__spec-row--full { grid-column:1/-1;padding-right:0 !important;border-left:none !important; }
+/* Highlight badge */
+.sl__badge-row { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px; }
+.sl__badge { display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px; }
+.sl__badge--damage-no { background:rgba(0,200,100,.12);color:#4dffaa;border:1px solid rgba(0,200,100,.25); }
+.sl__badge--damage-yes { background:rgba(255,60,60,.12);color:#ff8080;border:1px solid rgba(255,60,60,.25); }
+.sl__badge--service-yes { background:rgba(0,180,255,.1);color:#66ccff;border:1px solid rgba(0,180,255,.2); }
+.sl__badge--license { background:rgba(255,180,0,.12);color:#ffd060;border:1px solid rgba(255,180,0,.25); }
+/* Related listings */
+.sl__related-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px; }
+@media(max-width:700px){ .sl__related-grid { grid-template-columns:repeat(2,1fr); } }
+.sl__rel-item { text-decoration:none;color:#fff;border:1px solid var(--sl-border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .18s; }
+.sl__rel-item:hover { border-color:var(--sl-accent); }
+.sl__rel-img { width:100%;aspect-ratio:4/3;object-fit:cover;background:#1a1a1a; }
+.sl__rel-img--empty { width:100%;aspect-ratio:4/3;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(255,255,255,.2); }
+.sl__rel-info { padding:10px 12px; }
+.sl__rel-title { font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; }
+.sl__rel-price { font-size:14px;font-weight:700;color:var(--sl-accent); }
+.sl__rel-meta { font-size:11px;color:rgba(255,255,255,.4);margin-top:3px; }
+/* Bottom sticky bar */
+.sl__sticky-bar { position:fixed;bottom:0;left:0;right:0;z-index:999;background:rgba(10,10,10,.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.1);padding:12px 20px;display:flex;align-items:center;gap:12px;transform:translateY(100%);transition:transform .3s; }
+.sl__sticky-bar.visible { transform:translateY(0); }
+.sl__sticky-title { font-size:14px;font-weight:700;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
+.sl__sticky-price { font-size:16px;font-weight:800;color:var(--sl-accent);white-space:nowrap; }
+.sl__sticky-btn { padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;border:none; }
+.sl__sticky-btn--phone { background:var(--sl-accent);color:#fff; }
+.sl__sticky-btn--watch { background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2) !important; }
+.sl__sticky-btn--watch.active { background:var(--sl-accent);border-color:var(--sl-accent) !important; }
+@media(max-width:600px){ .sl__sticky-title { display:none; } }
 
 @media (max-width: 900px) {
     .sl .sl__title { font-size: <?php echo esc_attr( (string) max( 20, (int) floor( $sl_title_size * ( $sl_mobile_scale / 100 ) ) ) ); ?>px; }
     .sl .sl__price { font-size: <?php echo esc_attr( (string) max( 22, (int) floor( $sl_price_size * 0.82 ) ) ); ?>px; }
     .sl--layout-split .sl__layout { grid-template-columns: 1fr; }
+    .sl__specs-table { grid-template-columns:1fr; }
+    .sl__spec-row:nth-child(even) { border-left:none;padding-left:0; }
 }
 </style>
 
