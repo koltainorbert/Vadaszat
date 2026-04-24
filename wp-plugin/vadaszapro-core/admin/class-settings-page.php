@@ -6458,7 +6458,7 @@ class VA_Settings_Page {
                     </div>
 
                     <!-- EDITOR SECTIONS -->
-                    <div class="vacd__editor">
+                    <div class="vacd__editor" id="vacd-editor">
 
                         <!-- 1. Kártya konténer -->
                         <div class="vacd__section open" id="vacd-s-card">
@@ -6732,11 +6732,7 @@ class VA_Settings_Page {
             window.vacdToggle = function(key) {
                 var sec = document.getElementById('vacd-s-'+key);
                 if(!sec) return;
-                var wasOpen = sec.classList.contains('open');
                 sec.classList.toggle('open');
-                if(!wasOpen && typeof $ !== 'undefined' && typeof window.vaInitColorPickers === 'function') {
-                    window.vaInitColorPickers($(sec));
-                }
             };
 
             // Preview updater
