@@ -6402,9 +6402,22 @@ class VA_Settings_Page {
         .vacd__range { flex:1; min-width:100px; accent-color:#ff0000; }
         .vacd__select { flex:1; background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:6px; color:#fff; padding:5px 8px; font-size:12px; }
         .vacd__color-wrap { display:flex; align-items:center; gap:8px; flex:1; }
+        .vacd__color-native { width:36px; height:30px; border:none; padding:2px; border-radius:6px; cursor:pointer; flex-shrink:0; background:#1a1a1a; }
+        .vacd__color-text { flex:1; background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:6px; color:#fff; padding:5px 8px; font-size:12px; font-family:monospace; }
         .vacd__grid2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
         .vacd__grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
         </style>
+        <?php
+        // Helper: szín mező (native color picker + szöveg input, két mező szinkronban)
+        function vacd_color_field( string $prop, string $value ): void {
+            $id = 'vacd-c-' . esc_attr($prop);
+            echo '<div class="vacd__color-wrap">';
+            echo '<input type="color" class="vacd__color-native" id="' . $id . '-pick" value="#000000" oninput="vacdSyncColor(this,\'' . esc_js($prop) . '\',true)">';
+            echo '<input type="text"  class="vacd__color-text vacd-field" data-prop="' . esc_attr($prop) . '" id="' . $id . '-txt" value="' . esc_attr($value) . '" oninput="vacdSyncColor(this,\'' . esc_js($prop) . '\',false)" spellcheck="false">';
+            echo '</div>';
+            echo '<script>document.getElementById(\'' . $id . '-pick\').value = vacdHexApprox(' . json_encode($value) . ');<\/script>';
+        }
+        ?>
 
         <div class="va-wrap">
             <div class="va-page-header">
@@ -6460,15 +6473,11 @@ class VA_Settings_Page {
                             <div class="vacd__section-body">
                                 <div class="vacd__row">
                                     <span class="vacd__label">Háttér szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="card_bg" value="<?php echo esc_attr($d['card_bg']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('card_bg', $d['card_bg']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Keret szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="card_border_color" value="<?php echo esc_attr($d['card_border_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('card_border_color', $d['card_border_color']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Keret vastagság <b class="vacd__val" id="lbl-card_border_width"><?php echo esc_html($d['card_border_width']); ?>px</b></span>
@@ -6493,9 +6502,7 @@ class VA_Settings_Page {
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Hover keret szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="hover_border_color" value="<?php echo esc_attr($d['hover_border_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('hover_border_color', $d['hover_border_color']); ?>
                                 </div>
                             </div>
                         </div>
@@ -6546,9 +6553,7 @@ class VA_Settings_Page {
                             <div class="vacd__section-body">
                                 <div class="vacd__row">
                                     <span class="vacd__label">Szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="title_color" value="<?php echo esc_attr($d['title_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('title_color', $d['title_color']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-title_font_size"><?php echo esc_html($d['title_font_size']); ?>px</b></span>
@@ -6585,9 +6590,7 @@ class VA_Settings_Page {
                             <div class="vacd__section-body">
                                 <div class="vacd__row">
                                     <span class="vacd__label">Szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="price_color" value="<?php echo esc_attr($d['price_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('price_color', $d['price_color']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-price_font_size"><?php echo esc_html($d['price_font_size']); ?>px</b></span>
@@ -6620,9 +6623,7 @@ class VA_Settings_Page {
                             <div class="vacd__section-body">
                                 <div class="vacd__row">
                                     <span class="vacd__label">Szöveg szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="meta_color" value="<?php echo esc_attr($d['meta_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('meta_color', $d['meta_color']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Betűméret <b class="vacd__val" id="lbl-meta_font_size"><?php echo esc_html($d['meta_font_size']); ?>px</b></span>
@@ -6639,21 +6640,15 @@ class VA_Settings_Page {
                             <div class="vacd__section-body">
                                 <div class="vacd__row">
                                     <span class="vacd__label">Háttér szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_featured_bg" value="<?php echo esc_attr($d['badge_featured_bg']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('badge_featured_bg', $d['badge_featured_bg']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Szöveg szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_featured_color" value="<?php echo esc_attr($d['badge_featured_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('badge_featured_color', $d['badge_featured_color']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Keret szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_featured_border" value="<?php echo esc_attr($d['badge_featured_border']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('badge_featured_border', $d['badge_featured_border']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Sarok lekerekítés <b class="vacd__val" id="lbl-badge_featured_radius"><?php echo esc_html($d['badge_featured_radius']); ?>px</b></span>
@@ -6674,21 +6669,15 @@ class VA_Settings_Page {
                             <div class="vacd__section-body">
                                 <div class="vacd__row">
                                     <span class="vacd__label">Háttér szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_boost_bg" value="<?php echo esc_attr($d['badge_boost_bg']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('badge_boost_bg', $d['badge_boost_bg']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Szöveg szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_boost_color" value="<?php echo esc_attr($d['badge_boost_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('badge_boost_color', $d['badge_boost_color']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Keret szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="badge_boost_border" value="<?php echo esc_attr($d['badge_boost_border']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('badge_boost_border', $d['badge_boost_border']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Sarok lekerekítés <b class="vacd__val" id="lbl-badge_boost_radius"><?php echo esc_html($d['badge_boost_radius']); ?>px</b></span>
@@ -6709,21 +6698,15 @@ class VA_Settings_Page {
                             <div class="vacd__section-body">
                                 <div class="vacd__row">
                                     <span class="vacd__label">Szívecske szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="watchlist_color" value="<?php echo esc_attr($d['watchlist_color']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('watchlist_color', $d['watchlist_color']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Háttér szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="watchlist_bg" value="<?php echo esc_attr($d['watchlist_bg']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('watchlist_bg', $d['watchlist_bg']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Keret szín</span>
-                                    <div class="vacd__color-wrap">
-                                        <input type="text" class="va-color-input vacd-field" data-prop="watchlist_border" value="<?php echo esc_attr($d['watchlist_border']); ?>">
-                                    </div>
+                                    <?php vacd_color_field('watchlist_border', $d['watchlist_border']); ?>
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Méret <b class="vacd__val" id="lbl-watchlist_size"><?php echo esc_html($d['watchlist_size']); ?>px</b></span>
@@ -6823,23 +6806,46 @@ class VA_Settings_Page {
             }
             updatePreview();
 
-            // Field change listeners
+            // Szín mező szinkron függvény (native color picker ↔ text input)
+            window.vacdHexApprox = function(v) {
+                // rgba/rgb → közelítő hex (color picker csak hex-et fogad el)
+                var m = String(v).match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+                if(m) return '#' + ('0'+parseInt(m[1]).toString(16)).slice(-2) + ('0'+parseInt(m[2]).toString(16)).slice(-2) + ('0'+parseInt(m[3]).toString(16)).slice(-2);
+                return /^#[0-9a-f]{3,8}$/i.test(v) ? v : '#000000';
+            };
+            window.vacdSyncColor = function(el, prop, fromPicker) {
+                var val = el.value;
+                var txtId = 'vacd-c-'+prop+'-txt';
+                var pickId = 'vacd-c-'+prop+'-pick';
+                if(fromPicker) {
+                    var txt = document.getElementById(txtId);
+                    if(txt) { txt.value = val; }
+                } else {
+                    var pick = document.getElementById(pickId);
+                    if(pick) { try{ pick.value = vacdHexApprox(val); }catch(e){} }
+                }
+                current[prop] = val;
+                updatePreview();
+                saveJson();
+            };
+
+            // Field change listeners (range + select)
             document.querySelectorAll('.vacd-field').forEach(function(el){
                 el.addEventListener('input', function(){
                     var prop = this.dataset.prop;
                     if(!prop) return;
-                    current[prop] = this.type === 'range' ? (parseFloat(this.value)||parseInt(this.value)||0) : this.value;
-                    var lbl = document.getElementById('lbl-'+prop);
-                    if(lbl) lbl.textContent = (this.type==='range') ? current[prop]+(prop.indexOf('clamp')<0?'px':'') : current[prop];
-                    updatePreview();
-                    saveJson();
+                    if(this.type === 'range') {
+                        current[prop] = parseFloat(this.value)||parseInt(this.value)||0;
+                        var lbl = document.getElementById('lbl-'+prop);
+                        if(lbl) lbl.textContent = current[prop] + (prop.indexOf('clamp')<0?'px':'');
+                        updatePreview(); saveJson();
+                    }
                 });
                 el.addEventListener('change', function(){
                     var prop = this.dataset.prop;
-                    if(!prop || this.type === 'range' || this.tagName === 'SELECT') return;
+                    if(!prop || this.type === 'range') return;
                     current[prop] = this.value;
-                    updatePreview();
-                    saveJson();
+                    updatePreview(); saveJson();
                 });
             });
 
