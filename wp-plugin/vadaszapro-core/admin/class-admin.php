@@ -237,6 +237,7 @@ class VA_Admin {
                 <?php self::sb_item( "📱", "Social Media", admin_url( "admin.php?page=vadaszapro-social" ), $page === "vadaszapro-social" ); ?>
                 <?php self::sb_item( "💼", "Csomagok", admin_url( "admin.php?page=vadaszapro-plans" ), $page === "vadaszapro-plans" ); ?>
                 <?php self::sb_item( "💳", "Árkártyák", admin_url( "admin.php?page=vadaszapro-arkartyak" ), $page === "vadaszapro-arkartyak" ); ?>
+                <?php self::sb_item( "🏷️", "Pill & Badge", admin_url( "admin.php?page=vadaszapro-pills" ), $page === "vadaszapro-pills" ); ?>
 
                 <?php if ( $auctions_enabled ): ?>
                 <?php self::sb_item( "🔨", "Aukció beállítások", admin_url( "admin.php?page=vadaszapro-aukcio" ), $page === "vadaszapro-aukcio" ); ?>
