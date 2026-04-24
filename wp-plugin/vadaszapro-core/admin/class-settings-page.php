@@ -29,6 +29,7 @@ class VA_Settings_Page {
             'va_site_name'           => 'VadászApró',
             'va_site_description'    => 'Magyarország vadászati apróhirdetési oldala',
             'va_contact_email'       => get_option('admin_email'),
+            'va_site_type'           => 'vadaszat',  // oldaltípus: vadaszat | jarmu | ingatlan | altalanos
             'va_enable_auctions'     => '1',
             'va_enable_login'        => '1',
             'va_enable_register'     => '1',
@@ -875,6 +876,14 @@ class VA_Settings_Page {
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_general_settings' ); ?>
                 <table class="form-table">
+                    <tr><th colspan="2" style="padding-top:0 0 8px;"><h2 style="margin:0 0 4px;">🗂️ Oldaltípus</h2><p class="description">Ez határozza meg a hirdetési form mezőit, a termékoldalon megjelenő adatokat és a kategóriacímkéket.</p></th></tr>
+                    <?php self::field_select('va_site_type', '🗂️ Oldaltípus / Termékkategória', [
+                        'vadaszat'  => '🦌 Vadászat – fegyver, lőszer, kiegészítők',
+                        'jarmu'     => '🚗 Motor & Autó – jármű adatok (km, üzemanyag, stb.)',
+                        'ingatlan'  => '🏠 Ingatlan – alapterület, szobák, emelet',
+                        'altalanos' => '📦 Általános – márka, modell, gyártási év',
+                    ]); ?>
+                    <tr><th colspan="2" style="padding-top:18px;"><h2 style="margin:0;">🌐 Oldal adatok</h2></th></tr>
                     <?php self::field_text(  'va_site_name',           'Oldal neve' ); ?>
                     <?php self::field_text(  'va_site_description',     'Oldal alcíme / leírás' ); ?>
                     <?php self::field_email( 'va_contact_email',        'Kapcsolati e-mail' ); ?>
