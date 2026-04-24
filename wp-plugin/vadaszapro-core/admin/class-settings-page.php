@@ -6337,7 +6337,8 @@ class VA_Settings_Page {
             $h  = $py * 2 + (int) $s['font_size'] + 4;  // approx height
             $padding = $py > 0 ? "{$py}px {$px}px" : "0 {$px}px";
             $min_h   = $py > 0 ? '' : "height:{$h}px;";
-            $css .= "{$s['selector']}{display:inline-flex;align-items:center;gap:4px;font-size:{$s['font_size']}px;font-weight:{$s['font_weight']};padding:{$padding};{$min_h}border-radius:{$s['radius']}px;background:{$s['bg']};color:{$s['text']};border:1px solid {$s['border']};white-space:nowrap;text-decoration:none;vertical-align:middle;line-height:1;}\n";
+            $ff  = ! empty( $s['font_family'] ) && $s['font_family'] !== 'inherit' ? "font-family:{$s['font_family']};" : '';
+            $css .= "{$s['selector']}{display:inline-flex;align-items:center;gap:4px;font-size:{$s['font_size']}px;font-weight:{$s['font_weight']};{$ff}padding:{$padding};{$min_h}border-radius:{$s['radius']}px;background:{$s['bg']};color:{$s['text']};border:1px solid {$s['border']};white-space:nowrap;text-decoration:none;vertical-align:middle;line-height:1;}\n";
         }
         $css .= "</style>\n";
         echo $css; // phpcs:ignore WordPress.Security.EscapeOutput
