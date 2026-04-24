@@ -6233,7 +6233,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__cat-pill',
                 'example'  => 'Vadászfegyver',
                 'text'     => '#ff4444', 'bg' => 'rgba(255,0,0,.12)', 'border' => 'rgba(255,0,0,.25)',
-                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 3,
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 3, 'font_family' => 'inherit',
             ],
             'featured_pill' => [
                 'label'    => 'Kiemelt hirdetés',
@@ -6241,7 +6241,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__featured-pill',
                 'example'  => '⭐ Kiemelt',
                 'text'     => '#ffd060', 'bg' => 'rgba(255,180,0,.15)', 'border' => 'rgba(255,180,0,.3)',
-                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0,
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0, 'font_family' => 'inherit',
             ],
             'verified_pill' => [
                 'label'    => 'Ellenőrzött hirdető',
@@ -6249,7 +6249,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__verified-pill',
                 'example'  => '✓ Ellenőrzött',
                 'text'     => '#4dffaa', 'bg' => 'rgba(0,210,120,.12)', 'border' => 'rgba(0,210,120,.3)',
-                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0,
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0, 'font_family' => 'inherit',
             ],
             'badge_damage_no' => [
                 'label'    => 'Nincs korábbi kár',
@@ -6257,7 +6257,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__badge--damage-no',
                 'example'  => '✓ Nincs korábbi kár',
                 'text'     => '#4dffaa', 'bg' => 'rgba(0,200,100,.12)', 'border' => 'rgba(0,200,100,.25)',
-                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5, 'font_family' => 'inherit',
             ],
             'badge_damage_yes' => [
                 'label'    => 'Korábbi kár / baleset',
@@ -6265,7 +6265,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__badge--damage-yes',
                 'example'  => '⚠ Korábbi kár / baleset',
                 'text'     => '#ff8080', 'bg' => 'rgba(255,60,60,.12)', 'border' => 'rgba(255,60,60,.25)',
-                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5, 'font_family' => 'inherit',
             ],
             'badge_service' => [
                 'label'    => 'Szervizkönyv megvan',
@@ -6273,7 +6273,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__badge--service-yes',
                 'example'  => '✓ Szervizkönyv megvan',
                 'text'     => '#66ccff', 'bg' => 'rgba(0,180,255,.10)', 'border' => 'rgba(0,180,255,.2)',
-                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5, 'font_family' => 'inherit',
             ],
             'badge_license' => [
                 'label'    => 'Fegyverengedély szükséges',
@@ -6281,7 +6281,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__badge--license',
                 'example'  => '⚠ Fegyverengedély szükséges',
                 'text'     => '#ffd060', 'bg' => 'rgba(255,180,0,.12)', 'border' => 'rgba(255,180,0,.25)',
-                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5, 'font_family' => 'inherit',
             ],
             'badge_verified' => [
                 'label'    => 'Ellenőrzött hirdető (badge)',
@@ -6289,7 +6289,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__badge--verified',
                 'example'  => '✓ Ellenőrzött hirdető',
                 'text'     => '#4dffaa', 'bg' => 'rgba(0,210,120,.12)', 'border' => 'rgba(0,210,120,.3)',
-                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5, 'font_family' => 'inherit',
             ],
             'plan_basic' => [
                 'label'    => 'Alap tag (terv badge)',
@@ -6297,7 +6297,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__plan-badge--basic',
                 'example'  => 'Alap tag',
                 'text'     => 'rgba(255,255,255,.5)', 'bg' => 'rgba(255,255,255,.07)', 'border' => 'rgba(255,255,255,.12)',
-                'radius' => 6, 'font_size' => 11, 'font_weight' => 600, 'pad_x' => 8, 'pad_y' => 3,
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 600, 'pad_x' => 8, 'pad_y' => 3, 'font_family' => 'inherit',
             ],
             'plan_silver' => [
                 'label'    => 'Ezüst tag (terv badge)',
@@ -6305,7 +6305,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__plan-badge--silver',
                 'example'  => '✦ Ezüst tag',
                 'text'     => '#c0c0c0', 'bg' => 'rgba(192,192,192,.12)', 'border' => 'rgba(192,192,192,.3)',
-                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3, 'font_family' => 'inherit',
             ],
             'plan_gold' => [
                 'label'    => 'Arany tag (terv badge)',
@@ -6313,7 +6313,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__plan-badge--gold',
                 'example'  => '★ Arany tag',
                 'text'     => '#ffd700', 'bg' => 'rgba(255,215,0,.12)', 'border' => 'rgba(255,215,0,.3)',
-                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3, 'font_family' => 'inherit',
             ],
             'plan_platinum' => [
                 'label'    => 'Platina tag (terv badge)',
@@ -6321,7 +6321,7 @@ class VA_Settings_Page {
                 'selector' => '.sl__plan-badge--platinum',
                 'example'  => '◆ Platina tag',
                 'text'     => '#a0e4ff', 'bg' => 'rgba(100,200,255,.12)', 'border' => 'rgba(100,200,255,.3)',
-                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3, 'font_family' => 'inherit',
             ],
         ];
     }
