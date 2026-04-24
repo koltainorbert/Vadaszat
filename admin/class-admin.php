@@ -54,10 +54,21 @@ class VA_Admin {
         $vars .= '--va-topbar-h:'  . (int) $g( 'va_ap_topbar_height', '60' )  . 'px;';
         $vars .= '--va-radius:'    . (int) $g( 'va_ap_radius',    '12' ) . 'px;';
         $vars .= '--va-radius-sm:' . (int) $g( 'va_ap_radius_sm', '8' )  . 'px;';
+        $font_size  = max( 10, min( 20, (int) $g( 'va_ap_font_size', '13' ) ) );
         $vars .= '--va-font:'      . $font_stack . ';';
+        $vars .= '--va-font-size:' . $font_size . 'px;';
         $vars .= '}';
 
         echo '<style id="va-admin-theme-vars">' . $vars . '</style>' . "\n";
+
+        // Google Font betöltése közvetlen <link> taggal (megbízhatóbb mint wp_enqueue_style)
+        $gf_map = self::get_google_font_map();
+        if ( isset( $gf_map[ $font_slug ] ) ) {
+            $gf_url = esc_url( 'https://fonts.googleapis.com/css2?family=' . $gf_map[ $font_slug ] . '&display=swap' );
+            echo '<link rel="preconnect" href="https://fonts.googleapis.com">' . "\n";
+            echo '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+            echo '<link rel="stylesheet" href="' . $gf_url . '">' . "\n";
+        }
 
         // TinyMCE editor sötétítés az admin hirdetés szerkesztőben
         echo '<style id="va-tinymce-dark">
@@ -92,6 +103,25 @@ class VA_Admin {
 .quicktags-toolbar input.ed_button { background: #252525 !important; color: #ccc !important; border-color: rgba(255,255,255,.15) !important; border-radius: 3px; }
 .quicktags-toolbar input.ed_button:hover { background: #333 !important; color: #fff !important; }
 </style>' . "\n";
+    }
+
+    /* ── Google Font map ────────────────────────────────────── */
+    private static function get_google_font_map(): array {
+        return [
+            'inter'         => 'Inter:wght@400;500;600;700;800;900',
+            'roboto'        => 'Roboto:wght@400;500;700;900',
+            'montserrat'    => 'Montserrat:wght@400;500;600;700;800;900',
+            'nunito'        => 'Nunito:wght@400;500;600;700;800;900',
+            'poppins'       => 'Poppins:wght@400;500;600;700;800;900',
+            'raleway'       => 'Raleway:wght@400;500;600;700;800;900',
+            'dm-sans'       => 'DM+Sans:wght@400;500;700;900',
+            'manrope'       => 'Manrope:wght@400;500;600;700;800',
+            'work-sans'     => 'Work+Sans:wght@400;500;600;700;800;900',
+            'rubik'         => 'Rubik:wght@400;500;700;900',
+            'source-sans-3' => 'Source+Sans+3:wght@400;500;600;700;800;900',
+            'fira-sans'     => 'Fira+Sans:wght@400;500;600;700;800;900',
+            'oswald'        => 'Oswald:wght@400;500;600;700',
+        ];
     }
 
     /* ── Body class ─────────────────────────────────────────── */
@@ -144,6 +174,7 @@ class VA_Admin {
             "vadaszapro-design"       => "Design beállítások",
             "vadaszapro-layout"       => "Layout Állító",
             "vadaszapro-header-footer"=> "Fejléc & Lábléc",
+            "vadaszapro-hero"         => "Hero szekció",
             "vadaszapro-tools"        => "Export / Import",
             "vadaszapro-reklam"       => "Reklámzónák",
             "vadaszapro-hirdetes"     => "Hirdetés beállítások",
@@ -197,6 +228,7 @@ class VA_Admin {
 
                 <?php self::sb_item( "⚙️", "Általános", admin_url( "admin.php?page=vadaszapro" ), $page === "vadaszapro" ); ?>
                 <?php self::sb_item( "🎨", "Design", admin_url( "admin.php?page=vadaszapro-design" ), $page === "vadaszapro-design" ); ?>
+                <?php self::sb_item( "🎬", "Hero szekció", admin_url( "admin.php?page=vadaszapro-hero" ), $page === "vadaszapro-hero" ); ?>
                 <?php self::sb_item( "📐", "Layout Állító", admin_url( "admin.php?page=vadaszapro-layout" ), $page === "vadaszapro-layout" ); ?>
                 <?php self::sb_item( "🗂️", "Fejléc & Lábléc", admin_url( "admin.php?page=vadaszapro-header-footer" ), $page === "vadaszapro-header-footer" ); ?>
                 <?php self::sb_item( "🧩", "Form szerkesztő", admin_url( "admin.php?page=va-form-builder" ), $page === "va-form-builder" ); ?>
@@ -302,6 +334,7 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Csomagok",         "💼 Csomagok",         "manage_options", "vadaszapro-plans",       [ VA_Settings_Page::class, "render_plans"             ] );
         add_submenu_page( "vadaszapro", "Árkártyák",        "💳 Árkártyák",        "manage_options", "vadaszapro-arkartyak",   [ VA_Settings_Page::class, "render_price_cards"       ] );
         add_submenu_page( "vadaszapro", "Statisztika",      "📈 Statisztika",      "manage_options", "vadaszapro-stats",       [ VA_Settings_Page::class, "render_stats"             ] );
+        add_submenu_page( "vadaszapro", "Pill / Badge stílusok", "🏷️ Pill & Badge", "manage_options", "vadaszapro-pills",       [ VA_Settings_Page::class, "render_pill_styles"       ] );
         add_submenu_page( "vadaszapro", "Oldalszerkesztő",        "📄 Oldalak",        "manage_options", "vadaszapro-oldalak",        [ VA_Page_Builder::class,  "render"                  ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
@@ -333,8 +366,16 @@ class VA_Admin {
         }
 
         wp_enqueue_media();
-        wp_enqueue_style(  "va-admin", VA_PLUGIN_URL . "admin/admin.css", [], VA_VERSION );
         wp_enqueue_style(  "wp-color-picker" );
+        wp_enqueue_style(  "va-admin", VA_PLUGIN_URL . "admin/admin.css", [ "wp-color-picker" ], VA_VERSION );
         wp_enqueue_script( "va-admin", VA_PLUGIN_URL . "admin/admin.js", [ "jquery", "wp-color-picker" ], VA_VERSION, true );
+
+        // Google Font – wp_enqueue_style is betölti (dupla fallback)
+        $ap_font = sanitize_key( (string) ( get_option( 'va_ap_font', 'montserrat' ) ?: 'montserrat' ) );
+        $gf_map  = self::get_google_font_map();
+        if ( isset( $gf_map[ $ap_font ] ) ) {
+            $gf_url = 'https://fonts.googleapis.com/css2?family=' . $gf_map[ $ap_font ] . '&display=swap';
+            wp_enqueue_style( 'va-admin-font', esc_url_raw( $gf_url ), [], null );
+        }
     }
 }

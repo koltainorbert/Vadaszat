@@ -81,10 +81,45 @@ $email_show  = get_post_meta( $post_id, 'va_email_show',  true );
 $views       = va_display_views( $post_id );
 $expires     = get_post_meta( $post_id, 'va_expires',     true );
 $featured    = get_post_meta( $post_id, 'va_featured',    true ) === '1';
+$verified    = get_post_meta( $post_id, 'va_verified',    true ) === '1';
 $categories  = get_the_terms( $post_id, 'va_category' );
 $county      = get_the_terms( $post_id, 'va_county' );
 $condition   = get_the_terms( $post_id, 'va_condition' );
 $author      = get_userdata( get_the_author_meta('ID') );
+
+// Típus-specifikus extra metaadatok
+$site_type       = class_exists('VA_Meta_Fields') ? VA_Meta_Fields::get_site_type() : 'vadaszat';
+$mileage         = get_post_meta( $post_id, 'va_mileage',         true );
+$fuel_type       = get_post_meta( $post_id, 'va_fuel_type',       true );
+$performance_kw  = get_post_meta( $post_id, 'va_performance_kw',  true );
+$engine_size     = get_post_meta( $post_id, 'va_engine_size',     true );
+$transmission    = get_post_meta( $post_id, 'va_transmission',    true );
+$body_type       = get_post_meta( $post_id, 'va_body_type',       true );
+$color_val       = get_post_meta( $post_id, 'va_color',           true );
+$doors           = get_post_meta( $post_id, 'va_doors',           true );
+$owners          = get_post_meta( $post_id, 'va_owners',          true );
+$keys_count      = get_post_meta( $post_id, 'va_keys',            true );
+$prev_damage     = get_post_meta( $post_id, 'va_previous_damage', true );
+$service_book    = get_post_meta( $post_id, 'va_service_book',    true );
+$tech_inspect    = get_post_meta( $post_id, 'va_tech_inspect',    true );
+$first_reg       = get_post_meta( $post_id, 'va_first_reg',       true );
+$area_m2         = get_post_meta( $post_id, 'va_area_m2',         true );
+$rooms           = get_post_meta( $post_id, 'va_rooms',           true );
+$floor           = get_post_meta( $post_id, 'va_floor',           true );
+$lot_size        = get_post_meta( $post_id, 'va_lot_size',        true );
+$building_year   = get_post_meta( $post_id, 'va_building_year',   true );
+$parking         = get_post_meta( $post_id, 'va_parking',         true );
+$furnished       = get_post_meta( $post_id, 'va_furnished',       true );
+$heating         = get_post_meta( $post_id, 'va_heating',         true );
+$balcony         = get_post_meta( $post_id, 'va_balcony',         true );
+
+// Felszerelési lista fordítók
+$fuel_labels = [ 'benzin'=>'Benzin','diesel'=>'Dízel','hybrid'=>'Hibrid','electric'=>'Elektromos','lpg'=>'LPG','cng'=>'CNG','egyeb'=>'Egyéb' ];
+$trans_labels = [ 'manual'=>'Kéziváltó','automatic'=>'Automata','semi_auto'=>'Félautomata','cvt'=>'CVT' ];
+$body_labels = [ 'sedan'=>'Szedán','combi'=>'Kombi','hatchback'=>'Ferdehátú','suv'=>'SUV/Terepjáró','coupe'=>'Kupé','cabrio'=>'Kabrió','van'=>'Furgon','pickup'=>'Pickup','motor'=>'Motor','egyeb'=>'Egyéb' ];
+$park_labels = [ 'none'=>'Nincs','street'=>'Utcai','private'=>'Saját','garage'=>'Garázs' ];
+$furn_labels = [ 'no'=>'Nem','partial'=>'Részben','yes'=>'Igen' ];
+$heat_labels = [ 'gas'=>'Gáz','electric'=>'Elektromos','district'=>'Távfűtés','wood'=>'Fa/szilárd','heat_pump'=>'Hőszivattyú' ];
 
 // Kepek gyujtese: va_gallery_ids meta (elsődleges) + featured image
 $gallery_str    = (string) get_post_meta( $post_id, 'va_gallery_ids', true );
@@ -134,6 +169,17 @@ $sl_viewer_bg = sanitize_text_field( (string) get_option( 'va_single_viewer_bg',
 $sl_accent    = sanitize_hex_color( (string) get_option( 'va_single_accent', '#ff2a2a' ) ) ?: '#ff2a2a';
 $sl_glass     = sanitize_text_field( (string) get_option( 'va_single_glass', 'rgba(255,255,255,.07)' ) );
 $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'rgba(255,255,255,.12)' ) );
+
+// Demand indikátor: figyelőlistára adások az elmúlt 24 órában
+$demand_count = 0;
+global $wpdb;
+$wl_table = $wpdb->prefix . 'va_watchlist';
+if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
+    $demand_count = (int) $wpdb->get_var( $wpdb->prepare(
+        "SELECT COUNT(*) FROM `{$wl_table}` WHERE post_id = %d AND created_at >= DATE_SUB(NOW(), INTERVAL 24 HOUR)",
+        $post_id
+    ) );
+}
 ?>
 
 <style>
@@ -174,19 +220,61 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
 .sl .sl__btn--phone,
 .sl .sl__btn--watch.active { background: var(--sl-accent); }
 .sl-viewer { background: <?php echo esc_attr( $sl_viewer_bg ); ?>; }
+/* Demand badge */
+.sl__demand { display:flex;align-items:center;gap:8px;background:rgba(255,100,0,.12);border:1px solid rgba(255,100,0,.3);border-radius:8px;padding:9px 14px;margin-bottom:14px;font-size:13px;color:#ff9550;font-weight:600; }
+.sl__demand svg { flex-shrink:0; }
+/* Specs table */
+.sl__specs-table { display:grid;grid-template-columns:1fr 1fr;gap:0; }
+.sl__spec-row { display:flex;flex-direction:column;padding:10px 0;border-bottom:1px solid var(--sl-border); }
+.sl__spec-row:nth-child(odd) { padding-right:12px; }
+.sl__spec-row:nth-child(even) { padding-left:12px;border-left:1px solid var(--sl-border); }
+.sl__spec-label { font-size:11px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px; }
+.sl__spec-val { font-size:14px;font-weight:600;color:#fff; }
+.sl__spec-row--full { grid-column:1/-1;padding-right:0 !important;border-left:none !important; }
+/* Highlight badge */
+.sl__badge-row { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px; }
+.sl__badge { display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px; }
+.sl__badge--damage-no { background:rgba(0,200,100,.12);color:#4dffaa;border:1px solid rgba(0,200,100,.25); }
+.sl__badge--damage-yes { background:rgba(255,60,60,.12);color:#ff8080;border:1px solid rgba(255,60,60,.25); }
+.sl__badge--service-yes { background:rgba(0,180,255,.1);color:#66ccff;border:1px solid rgba(0,180,255,.2); }
+.sl__badge--license { background:rgba(255,180,0,.12);color:#ffd060;border:1px solid rgba(255,180,0,.25); }
+.sl__badge--verified { background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);font-weight:700; }
+/* Featured + verified pills – base (dynamic overrides via wp_head) */
+.sl__top-pills { display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px; }
+.sl__featured-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(255,180,0,.15);color:#ffd060;border:1px solid rgba(255,180,0,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
+.sl__verified-pill { display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(0,210,120,.12);color:#4dffaa;border:1px solid rgba(0,210,120,.3);white-space:nowrap;flex-shrink:0;margin-top:6px; }
+/* Related listings */
+.sl__related-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:6px; }
+@media(max-width:700px){ .sl__related-grid { grid-template-columns:repeat(2,1fr); } }
+.sl__rel-item { text-decoration:none;color:#fff;border:1px solid var(--sl-border);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .18s; }
+.sl__rel-item:hover { border-color:var(--sl-accent); }
+.sl__rel-img { width:100%;aspect-ratio:4/3;object-fit:cover;background:#1a1a1a; }
+.sl__rel-img--empty { width:100%;aspect-ratio:4/3;background:#1a1a1a;display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(255,255,255,.2); }
+.sl__rel-info { padding:10px 12px; }
+.sl__rel-title { font-size:13px;font-weight:600;margin-bottom:4px;line-height:1.3;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; }
+.sl__rel-price { font-size:14px;font-weight:700;color:var(--sl-accent); }
+.sl__rel-meta { font-size:11px;color:rgba(255,255,255,.4);margin-top:3px; }
+/* Bottom sticky bar */
+.sl__sticky-bar { position:fixed;bottom:0;left:0;right:0;z-index:999;background:rgba(10,10,10,.95);backdrop-filter:blur(12px);border-top:1px solid rgba(255,255,255,.1);padding:12px 20px;display:flex;align-items:center;gap:12px;transform:translateY(100%);transition:transform .3s; }
+.sl__sticky-bar.visible { transform:translateY(0); }
+.sl__sticky-title { font-size:14px;font-weight:700;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis; }
+.sl__sticky-price { font-size:16px;font-weight:800;color:var(--sl-accent);white-space:nowrap; }
+.sl__sticky-btn { padding:10px 18px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;border:none; }
+.sl__sticky-btn--phone { background:var(--sl-accent);color:#fff; }
+.sl__sticky-btn--watch { background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2) !important; }
+.sl__sticky-btn--watch.active { background:var(--sl-accent);border-color:var(--sl-accent) !important; }
+@media(max-width:600px){ .sl__sticky-title { display:none; } }
 
 @media (max-width: 900px) {
     .sl .sl__title { font-size: <?php echo esc_attr( (string) max( 20, (int) floor( $sl_title_size * ( $sl_mobile_scale / 100 ) ) ) ); ?>px; }
     .sl .sl__price { font-size: <?php echo esc_attr( (string) max( 22, (int) floor( $sl_price_size * 0.82 ) ) ); ?>px; }
     .sl--layout-split .sl__layout { grid-template-columns: 1fr; }
+    .sl__specs-table { grid-template-columns:1fr; }
+    .sl__spec-row:nth-child(even) { border-left:none;padding-left:0; }
 }
 </style>
 
 <div class="sl sl--layout-<?php echo esc_attr( $sl_layout_mode ); ?>">
-
-    <?php if ( $featured ): ?>
-    <div class="sl__featured-bar">Kiemelt hirdet&eacute;s</div>
-    <?php endif; ?>
 
     <div class="sl__layout">
 
@@ -239,12 +327,17 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
 
             <!-- Fejlec: kategoria + cim + ar -->
             <div class="sl__card sl__head">
-                <?php if ( $categories && !is_wp_error($categories) ): ?>
-                    <a href="<?php echo esc_url(get_term_link($categories[0])); ?>" class="sl__cat-pill">
-                        <?php echo esc_html($categories[0]->name); ?>
-                    </a>
-                <?php endif; ?>
-                <h1 class="sl__title"><?php the_title(); ?></h1>
+                <div class="sl__top-pills">
+                    <?php if ( $categories && !is_wp_error($categories) ): ?>
+                        <a href="<?php echo esc_url(get_term_link($categories[0])); ?>" class="sl__cat-pill">
+                            <?php echo esc_html($categories[0]->name); ?>
+                        </a>
+                    <?php endif; ?>
+                    <?php if ($featured): ?><span class="sl__featured-pill">&#11088; Kiemelt</span><?php endif; ?>
+                </div>
+                <h1 class="sl__title">
+                    <?php the_title(); ?>
+                </h1>
                 <div class="sl__price"><?php echo esc_html( va_format_price($price, $price_type) ); ?></div>
 
                 <?php if ( $demand_count >= 2 ): ?>
@@ -280,8 +373,8 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
             <?php
             $specs = [];
             if ( $site_type === 'jarmu' ) {
-                if ( $brand )          $specs[] = [ 'Gy&#225;rt&#243;',               $brand,       true ];
-                if ( $model )          $specs[] = [ 'Modell',               $model,       true ];
+                if ( $brand )          $specs[] = [ 'Gy&#225;rt&#243;',               $brand,       false ];
+                if ( $model )          $specs[] = [ 'Modell',               $model,       false ];
                 if ( $year )           $specs[] = [ '&#201;vj&#225;rat',              $year,        false ];
                 if ( $first_reg )      $specs[] = [ 'Els&#337; forgalomba hely.',$first_reg,   false ];
                 if ( $mileage )        $specs[] = [ 'Kilom&#233;ter&#243;ra',         number_format((int)$mileage,0,',',' ').' km', false ];
@@ -305,8 +398,8 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
                 if ( $furnished )      $specs[] = [ 'B&#250;torozott',           $furn_labels[$furnished] ?? $furnished, false ];
                 if ( $heating )        $specs[] = [ 'F&#369;t&#233;s',                $heat_labels[$heating] ?? $heating, false ];
             } else {
-                if ( $brand )          $specs[] = [ 'M&#225;rka / Gy&#225;rt&#243;',       $brand,  true ];
-                if ( $model )          $specs[] = [ 'Modell / T&#237;pus',       $model,  true ];
+                if ( $brand )          $specs[] = [ 'M&#225;rka / Gy&#225;rt&#243;',       $brand,  false ];
+                if ( $model )          $specs[] = [ 'Modell / T&#237;pus',       $model,  false ];
                 if ( $caliber )        $specs[] = [ 'Kaliber',              $caliber,false ];
                 if ( $year )           $specs[] = [ 'Gy&#225;rt&#225;si &#233;v',          $year,   false ];
             }
@@ -318,6 +411,7 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
                     : ['damage-no', '&#10003; Nincs kor&#225;bbi k&#225;r'];
                 if ( $service_book === '1' ) $badges[] = ['service-yes','&#10003; Szervizk&#246;nyv megvan'];
             }
+            if ( $verified )              $badges[] = ['verified',    '&#10003; Ellen&#337;rz&#246;tt hirdeto'];
             if ( $license_req === '1' )  $badges[] = ['license',     '&#9888; Fegyverenged&#233;ly sz&#252;ks&#233;ges'];
             if ( $balcony === '1' )       $badges[] = ['service-yes', '&#10003; Erk&#233;ly / terasz'];
 
@@ -419,13 +513,13 @@ $sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'r
                     </button>
                 <?php endif; ?>
 
-                <!-- MegosztĂˇs -->
+                <!-- Megosztas -->
                 <?php
                 $share_url   = rawurlencode( get_permalink($post_id) );
                 $share_title = rawurlencode( get_the_title($post_id) );
                 ?>
                 <div class="sl__share">
-                    <span class="sl__share-label">MegosztĂˇs:</span>
+                    <span class="sl__share-label">Megoszt&#225;s:</span>
                     <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $share_url; ?>" target="_blank" rel="noopener noreferrer" class="sl__share-btn sl__share-btn--fb" aria-label="Facebook">
                         <?php echo function_exists('va_social_svg') ? va_social_svg('facebook',18) : ''; ?>
                     </a>

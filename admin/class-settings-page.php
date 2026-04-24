@@ -12,6 +12,8 @@ class VA_Settings_Page {
 
     public static function init() {
         add_action( 'admin_init', [ __CLASS__, 'register_settings' ] );
+        add_action( 'wp_head',    [ __CLASS__, 'output_pill_css' ], 99 );
+        add_action( 'admin_post_va_save_pill_styles', [ __CLASS__, 'handle_save_pill_styles' ] );
         add_action( 'admin_post_va_export_settings', [ __CLASS__, 'handle_export_settings' ] );
         add_action( 'admin_post_va_import_settings', [ __CLASS__, 'handle_import_settings' ] );
         add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );
@@ -29,6 +31,7 @@ class VA_Settings_Page {
             'va_site_name'           => 'VadászApró',
             'va_site_description'    => 'Magyarország vadászati apróhirdetési oldala',
             'va_contact_email'       => get_option('admin_email'),
+            'va_site_type'           => 'vadaszat',  // oldaltípus: vadaszat | jarmu | ingatlan | altalanos
             'va_enable_auctions'     => '1',
             'va_enable_login'        => '1',
             'va_enable_register'     => '1',
@@ -272,6 +275,14 @@ class VA_Settings_Page {
             'va_hf_header_register_text'           => 'Regisztráció',
             'va_hf_header_login_text'              => 'Bejelentkezés',
 
+            // Fejléc nav link és gomb hover színek
+            'va_color_header_nav_link'             => '#ffffff',
+            'va_color_header_nav_hover'            => '#ff2020',
+            'va_color_header_login_hover_bg'       => 'rgba(255,255,255,.08)',
+            'va_color_header_login_hover_text'     => '#ffffff',
+            'va_color_header_register_hover_bg'    => '#cc0000',
+            'va_color_header_register_hover_text'  => '#ffffff',
+
             // Lábléc layout/kinézet
             'va_hf_footer_top_padding'             => 48,
             'va_hf_footer_bottom_padding'          => 24,
@@ -361,6 +372,12 @@ class VA_Settings_Page {
             'va_hf_header_btn_glow_color',
             'va_color_header_submit_hover_bg',
             'va_color_header_submit_hover_text',
+            'va_color_header_nav_link',
+            'va_color_header_nav_hover',
+            'va_color_header_login_hover_bg',
+            'va_color_header_login_hover_text',
+            'va_color_header_register_hover_bg',
+            'va_color_header_register_hover_text',
             'va_hf_header_user_border_alpha',
             'va_hf_header_user_bg_alpha',
             'va_hf_header_mobile_show_search',
@@ -479,6 +496,62 @@ class VA_Settings_Page {
         foreach ( $video_urls as $key => $default ) {
             self::$defaults[ $key ] = $default;
             register_setting( 'va_general_settings', $key, [ 'sanitize_callback' => 'esc_url_raw' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* Hero szekció – teljes vezérlés */
+        $hero = [
+            // Szövegek
+            'va_home_hero_badge_text'           => 'Magyarország első vadászati hirdetőoldala',
+            'va_home_hero_title_top'            => 'VadászBazár',
+            'va_home_hero_title_bottom'         => 'és Apróhirdetés',
+            'va_home_hero_sub_text'             => 'Magyarország első vadászati hirdetőoldala',
+            'va_home_hero_primary_cta_text'     => '+ Hirdetés feladása',
+            'va_home_hero_secondary_cta_text'   => 'Hirdetések böngészése →',
+            // Igazítás
+            'va_home_hero_align'                => 'left',
+            // Overlay
+            'va_hero_overlay_top'               => '0.72',
+            'va_hero_overlay_mid_a'             => '0.18',
+            'va_hero_overlay_mid_b'             => '0.25',
+            'va_hero_overlay_bottom_a'          => '0.85',
+            // Bal oldali piros csík
+            'va_hero_stripe_show'               => '1',
+            'va_hero_stripe_color'              => '#ff0000',
+            'va_hero_stripe_width'              => '3',
+            'va_hero_stripe_opacity'            => '0.55',
+            // Badge dot
+            'va_hero_badge_dot_show'            => '1',
+            'va_hero_badge_dot_color'           => '#ff0000',
+            // Badge
+            'va_color_hero_badge_bg'            => 'rgba(6,6,6,.56)',
+            'va_color_hero_badge_border'        => 'rgba(255,0,0,.55)',
+            'va_color_hero_badge_text'          => '#ffffff',
+            // Cím + alcím
+            'va_color_hero_title'               => '#ffffff',
+            'va_color_hero_title_span'          => '#ff0000',
+            'va_color_hero_sub'                 => 'rgba(255,255,255,.90)',
+            // Primary gomb
+            'va_color_hero_btn_primary_bg'      => '#ff0000',
+            'va_color_hero_btn_primary_hover'   => '#cc0000',
+            'va_color_hero_btn_primary_text'    => '#ffffff',
+            'va_color_hero_btn_primary_hover_text' => '#ffffff',
+            'va_color_hero_btn_primary_glow'    => 'rgba(255,0,0,.45)',
+            // Ghost gomb
+            'va_color_hero_btn_ghost_bg'        => 'rgba(255,255,255,.08)',
+            'va_color_hero_btn_ghost_border'    => 'rgba(255,255,255,.22)',
+            'va_color_hero_btn_ghost_hover'     => 'rgba(255,255,255,.15)',
+            'va_color_hero_btn_ghost_text'      => '#ffffff',
+            'va_color_hero_btn_ghost_hover_text'=> '#ffffff',
+            // Scroll jel
+            'va_hero_scroll_show'               => '1',
+            'va_hero_scroll_line_color'         => '#ff0000',
+            'va_hero_scroll_dot_color'          => '#ff0000',
+            'va_hero_scroll_opacity'            => '0.50',
+        ];
+        foreach ( $hero as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_hero_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
@@ -635,7 +708,7 @@ class VA_Settings_Page {
 
         /* Árkártyák (kredit vásárlás oldal) */
         $card_int_keys = [];
-        for ( $n = 1; $n <= 4; $n++ ) {
+        for ( $n = 1; $n <= 8; $n++ ) {
             $card_int_keys[] = "va_pc_{$n}_qty";
             $card_int_keys[] = "va_pc_{$n}_price";
         }
@@ -657,24 +730,25 @@ class VA_Settings_Page {
             'va_pc_eyebrow'  => 'Átlátható csomagok',
             'va_pc_title'    => 'Rang Alapú Vásárlás',
             'va_pc_subtitle' => 'Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.',
+            'va_pc_count'    => '4',
         ];
-        for ( $n = 1; $n <= 4; $n++ ) {
-            $price_card_opts[ "va_pc_{$n}_enabled"   ] = '1';
-            $price_card_opts[ "va_pc_{$n}_label"     ] = $default_card_labels[ $n ];
-            $price_card_opts[ "va_pc_{$n}_plan_slug" ] = $default_card_slugs[ $n ];
-            $price_card_opts[ "va_pc_{$n}_tag"       ] = $default_card_tags[ $n ];
-            $price_card_opts[ "va_pc_{$n}_desc"      ] = $default_card_descs[ $n ];
-            $price_card_opts[ "va_pc_{$n}_qty"       ] = (string) $default_card_qtys[ $n ];
-            $price_card_opts[ "va_pc_{$n}_price"     ] = (string) $default_card_prices[ $n ];
-            $price_card_opts[ "va_pc_{$n}_badge"     ] = $default_card_badges[ $n ];
+        for ( $n = 1; $n <= 8; $n++ ) {
+            $price_card_opts[ "va_pc_{$n}_enabled"   ] = $n <= 4 ? '1' : '0';
+            $price_card_opts[ "va_pc_{$n}_label"     ] = $default_card_labels[ $n ]  ?? '';
+            $price_card_opts[ "va_pc_{$n}_plan_slug" ] = $default_card_slugs[ $n ]   ?? '';
+            $price_card_opts[ "va_pc_{$n}_tag"       ] = $default_card_tags[ $n ]    ?? '';
+            $price_card_opts[ "va_pc_{$n}_desc"      ] = $default_card_descs[ $n ]   ?? '';
+            $price_card_opts[ "va_pc_{$n}_qty"       ] = (string) ( $default_card_qtys[ $n ]   ?? 1 );
+            $price_card_opts[ "va_pc_{$n}_price"     ] = (string) ( $default_card_prices[ $n ] ?? 0 );
+            $price_card_opts[ "va_pc_{$n}_badge"     ] = $default_card_badges[ $n ]  ?? '';
             $price_card_opts[ "va_pc_{$n}_featured"  ] = ( $n === 3 ) ? '1' : '0';
             $price_card_opts[ "va_pc_{$n}_free"      ] = ( $n === 1 ) ? '1' : '0';
             $price_card_opts[ "va_pc_{$n}_btn_text"  ] = ( $n === 1 ) ? 'Mindenki számára elérhető' : 'Vásárlás →';
-            $price_card_opts[ "va_pc_{$n}_theme"     ] = $default_card_themes[ $n ];
+            $price_card_opts[ "va_pc_{$n}_theme"     ] = $default_card_themes[ $n ]  ?? 'basic';
         }
         foreach ( $price_card_opts as $key => $default ) {
             self::$defaults[ $key ] = $default;
-            $sanitize = in_array( $key, $card_int_keys, true ) ? 'absint' : 'sanitize_text_field';
+            $sanitize = in_array( $key, $card_int_keys, true ) || $key === 'va_pc_count' ? 'absint' : 'sanitize_text_field';
             register_setting( 'va_price_cards_settings', $key, [ 'sanitize_callback' => $sanitize ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
@@ -723,6 +797,7 @@ class VA_Settings_Page {
             'va_ap_radius'        => 12,
             'va_ap_radius_sm'     => 8,
             'va_ap_font'          => 'montserrat',
+            'va_ap_font_size'     => 13,
         ];
         foreach ( $adminpanel as $key => $default ) {
             self::$defaults[ $key ] = $default;
@@ -760,6 +835,26 @@ class VA_Settings_Page {
                 update_option( $key, $default );
             }
         }
+
+        /* Back-to-top gomb (va_btt_*) */
+        $btt = [
+            'va_btt_enabled'      => '1',
+            'va_btt_style'        => 'circle',
+            'va_btt_icon'         => 'fa-solid fa-chevron-up',
+            'va_btt_color'        => '#ff0000',
+            'va_btt_border_color' => '#ff0000',
+            'va_btt_text_color'   => '#ffffff',
+            'va_btt_size'         => '48',
+            'va_btt_position'     => 'right',
+            'va_btt_offset_x'     => '28',
+            'va_btt_offset_y'     => '28',
+            'va_btt_show_after'   => '300',
+        ];
+        foreach ( $btt as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_btt_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
     }
 
     private static function get_display_option( string $key, $fallback = '' ) {
@@ -783,6 +878,14 @@ class VA_Settings_Page {
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_general_settings' ); ?>
                 <table class="form-table">
+                    <tr><th colspan="2" style="padding-top:0 0 8px;"><h2 style="margin:0 0 4px;">🗂️ Oldaltípus</h2><p class="description">Ez határozza meg a hirdetési form mezőit, a termékoldalon megjelenő adatokat és a kategóriacímkéket.</p></th></tr>
+                    <?php self::field_select('va_site_type', '🗂️ Oldaltípus / Termékkategória', [
+                        'vadaszat'  => '🦌 Vadászat – fegyver, lőszer, kiegészítők',
+                        'jarmu'     => '🚗 Motor & Autó – jármű adatok (km, üzemanyag, stb.)',
+                        'ingatlan'  => '🏠 Ingatlan – alapterület, szobák, emelet',
+                        'altalanos' => '📦 Általános – márka, modell, gyártási év',
+                    ]); ?>
+                    <tr><th colspan="2" style="padding-top:18px;"><h2 style="margin:0;">🌐 Oldal adatok</h2></th></tr>
                     <?php self::field_text(  'va_site_name',           'Oldal neve' ); ?>
                     <?php self::field_text(  'va_site_description',     'Oldal alcíme / leírás' ); ?>
                     <?php self::field_email( 'va_contact_email',        'Kapcsolati e-mail' ); ?>
@@ -793,10 +896,10 @@ class VA_Settings_Page {
                     <?php self::field_num(   'va_hero_logo_height',     'Hero logó magasság (px)', 30, 260 ); ?>
                     <?php self::field_select('va_hero_logo_position',   'Hero logó pozíció', [ 'left' => 'Bal', 'center' => 'Közép', 'right' => 'Jobb' ] ); ?>
                     <?php self::field_select('va_home_hero_align',      'Főoldal hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
-                    <?php self::field_url(   'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
-                    <?php self::field_url(   'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
-                    <?php self::field_url(   'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
-                    <?php self::field_url(   'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
+                    <?php self::field_video(  'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
+                    <?php self::field_video(  'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
+                    <?php self::field_video(  'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
+                    <?php self::field_video(  'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
                     <?php self::field_select('va_kategoria_hero_align', 'Kategória hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_select('va_tax_hero_align',       'Alkategória hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
                     <?php self::field_select('va_contact_hero_align',   'Kapcsolat hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
@@ -900,7 +1003,7 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
         $fonts = [
-            // ─ Rendszer / web-safe ────────────────────────────────────────
+            // ─ Rendszer / web-safe ────────────────────────────────────────────
             'system'             => '– System UI (gyors, natív)',
             'arial'              => '– Arial',
             'arial-black'        => '– Arial Black',
@@ -911,7 +1014,7 @@ class VA_Settings_Page {
             'georgia'            => '– Georgia (serif)',
             'times'              => '– Times New Roman (serif)',
             'courier'            => '– Courier New (monospace)',
-            // ─ Google – Sans-serif népszerű ──────────────────────────
+            // ─ Google – Sans-serif népszerű ───────────────────────────────────
             'open-sans'          => 'Open Sans',
             'poppins'            => 'Poppins',
             'lato'               => 'Lato',
@@ -948,7 +1051,7 @@ class VA_Settings_Page {
             'fira-sans'          => 'Fira Sans',
             'ibm-plex-sans'      => 'IBM Plex Sans',
             'noto-sans'          => 'Noto Sans',
-            // ─ Google – Serif ──────────────────────────────────────────────────
+            // ─ Google – Serif ─────────────────────────────────────────────────
             'merriweather'       => 'Merriweather',
             'playfair'           => 'Playfair Display',
             'lora'               => 'Lora',
@@ -958,7 +1061,7 @@ class VA_Settings_Page {
             'cormorant-garamond' => 'Cormorant Garamond',
             'spectral'           => 'Spectral',
             'oswald'             => 'Oswald',
-            // ─ Google – Display / dekorátív ───────────────────────────────
+            // ─ Google – Display / dekoratív ───────────────────────────────────
             'abril-fatface'      => 'Abril Fatface',
             'righteous'          => 'Righteous',
             'bebas-neue'         => 'Bebas Neue',
@@ -998,7 +1101,7 @@ class VA_Settings_Page {
                 <table class="form-table">
                     <?php self::field_color( 'va_color_global_bg',     'Globális háttér' ); ?>
                     <?php self::field_color( 'va_color_global_text',   'Globális fő szöveg' ); ?>
-                    <?php self::field_text(  'va_color_global_muted',  'Globális halvány szöveg (pl. rgba...)' ); ?>
+                    <?php self::field_color( 'va_color_global_muted',  'Globális halvány szöveg (pl. rgba...)' ); ?>
                     <?php self::field_color( 'va_color_global_accent', 'Globális accent szín' ); ?>
                 </table>
 
@@ -1013,17 +1116,17 @@ class VA_Settings_Page {
                 <h2>Hero badge és gombok színei</h2>
                 <table class="form-table">
                     <?php self::field_color( 'va_color_hero_title',            'Hero cím szöveg szín' ); ?>
-                    <?php self::field_text(  'va_color_hero_sub',              'Hero alcím szöveg szín (rgba vagy hex)' ); ?>
-                    <?php self::field_text(  'va_color_hero_badge_bg',          'Hero badge háttér (rgba vagy hex)' ); ?>
-                    <?php self::field_text(  'va_color_hero_badge_border',       'Hero badge keret szín (rgba vagy hex)' ); ?>
+                    <?php self::field_color( 'va_color_hero_sub',             'Hero alcim szoveg szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_bg',         'Hero badge hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_border',      'Hero badge keret szin' ); ?>
                     <?php self::field_color( 'va_color_hero_badge_text',         'Hero badge szöveg szín' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_bg',     'Primary gomb háttér' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_hover',  'Primary gomb hover háttér' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_primary_text',   'Primary gomb szöveg szín' ); ?>
-                    <?php self::field_text(  'va_color_hero_btn_primary_glow',   'Primary gomb glow szín (rgba)' ); ?>
-                    <?php self::field_text(  'va_color_hero_btn_ghost_bg',       'Ghost gomb háttér (rgba)' ); ?>
-                    <?php self::field_text(  'va_color_hero_btn_ghost_border',   'Ghost gomb keret szín (rgba)' ); ?>
-                    <?php self::field_text(  'va_color_hero_btn_ghost_hover',    'Ghost gomb hover háttér (rgba)' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_glow',  'Primary gomb glow szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_bg',      'Ghost gomb hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_border',  'Ghost gomb keret szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_hover',   'Ghost gomb hover hatter' ); ?>
                     <?php self::field_color( 'va_color_hero_btn_ghost_text',     'Ghost gomb szöveg szín' ); ?>
                 </table>
 
@@ -1073,6 +1176,101 @@ class VA_Settings_Page {
         <?php
     }
 
+    /* ══ Hero szekció – teljes vezérlés ══════════════════════════ */
+    public static function render_hero() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🎬 VadászApró – Hero szekció (teljes vezérlés)</h1>
+            <p class="description">A főoldali video hero összes eleme: szövegek, színek, overlay, bal csík, badge pont, gombok, scroll jelző.</p>
+            <?php settings_errors( 'va_hero_settings' ); ?>
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_hero_settings' ); ?>
+
+                <h2>📝 Hero szövegek</h2>
+                <table class="form-table">
+                    <?php self::field_text( 'va_home_hero_badge_text',         'Badge szöveg' ); ?>
+                    <?php self::field_text( 'va_home_hero_title_top',          'Cím 1. sor' ); ?>
+                    <?php self::field_text( 'va_home_hero_title_bottom',       'Cím 2. sor' ); ?>
+                    <?php self::field_text( 'va_home_hero_sub_text',           'Alcím szöveg' ); ?>
+                    <?php self::field_text( 'va_home_hero_primary_cta_text',   'Piros gomb szöveg' ); ?>
+                    <?php self::field_text( 'va_home_hero_secondary_cta_text', 'Ghost gomb szöveg' ); ?>
+                </table>
+
+                <h2>📐 Elrendezés</h2>
+                <table class="form-table">
+                    <?php self::field_select( 'va_home_hero_align', 'Tartalom igazítás', [ 'left' => 'Bal', 'center' => 'Közép', 'right' => 'Jobb' ] ); ?>
+                </table>
+
+                <h2>🌫️ Overlay sötétítés</h2>
+                <p class="description">A videó fölötti fekete gradient réteg erőssége (0 = átlátszó, 1 = teljesen fekete).</p>
+                <table class="form-table">
+                    <?php self::field_decimal( 'va_hero_overlay_top',      'Teteje opacitás (nav mögötti sötétség)', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hero_overlay_mid_a',    'Közép-felső opacitás', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hero_overlay_mid_b',    'Közép-alsó opacitás', 0, 1, 0.01 ); ?>
+                    <?php self::field_decimal( 'va_hero_overlay_bottom_a', 'Alsó opacitás (alap tartalomba tűnés)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <h2>📍 Bal oldali piros csík</h2>
+                <table class="form-table">
+                    <?php self::field_toggle( 'va_hero_stripe_show',    'Megjelenítés' ); ?>
+                    <?php self::field_color(  'va_hero_stripe_color',   'Csík színe' ); ?>
+                    <?php self::field_num(    'va_hero_stripe_width',   'Csík szélessége (px)', 1, 20 ); ?>
+                    <?php self::field_decimal( 'va_hero_stripe_opacity','Csík átlátszósága (0-1)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <h2>🔴 Badge pulzáló pont</h2>
+                <table class="form-table">
+                    <?php self::field_toggle( 'va_hero_badge_dot_show',  'Pont megjelenítése' ); ?>
+                    <?php self::field_color(  'va_hero_badge_dot_color', 'Pont színe' ); ?>
+                </table>
+
+                <h2>🏷️ Badge háttér és keret</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_badge_bg',         'Hatter szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_border',      'Keret szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_badge_text',   'Szöveg szín' ); ?>
+                </table>
+
+                <h2>✍️ Cím és alcím színek</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_title',      'Cím szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_title_span', 'Cím kiemelt szó szín (span)' ); ?>
+                    <?php self::field_color( 'va_color_hero_sub',               'Alcim szin' ); ?>
+                </table>
+
+                <h2>🔴 Piros (primary) gomb</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_btn_primary_bg',         'Háttér' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_hover', 'Hover hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_text',       'Szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_hover_text', 'Hover szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_primary_glow',  'Glow szin' ); ?>
+                </table>
+
+                <h2>👻 Ghost gomb</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_color_hero_btn_ghost_bg',      'Hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_border',  'Keret szin' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_hover',   'Hover hatter' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_text',         'Szöveg szín' ); ?>
+                    <?php self::field_color( 'va_color_hero_btn_ghost_hover_text',   'Hover szöveg szín' ); ?>
+                </table>
+
+                <h2>⬇️ Scroll jelző (jobb oldal lent)</h2>
+                <table class="form-table">
+                    <?php self::field_toggle( 'va_hero_scroll_show',       'Megjelenítés' ); ?>
+                    <?php self::field_color(  'va_hero_scroll_line_color', 'Vonal szín' ); ?>
+                    <?php self::field_color(  'va_hero_scroll_dot_color',  'Pont szín' ); ?>
+                    <?php self::field_decimal( 'va_hero_scroll_opacity',   'Átlátszóság (0-1)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <?php submit_button( 'Hero beállítások mentése' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
     /* ══ Fejléc + Lábléc oldal (maximális paraméterezés) ════════ */
     public static function render_header_footer() {
         if ( ! current_user_can( 'manage_options' ) ) return;
@@ -1100,151 +1298,344 @@ class VA_Settings_Page {
             <?php endif; ?>
             <?php settings_errors( 'va_header_footer_settings' ); ?>
 
-            <h2>🎛️ Egy kattintásos modern presetek</h2>
-            <p class="description">10 előre összehangolt fejléc + lábléc paletta, árnyék és glow beállítással.</p>
-            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;max-width:1200px;margin:10px 0 18px;">
-                <?php foreach ( $presets as $preset_key => $preset ): ?>
-                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="border:1px solid #dcdcde;border-radius:8px;padding:12px;background:#fff;">
-                        <input type="hidden" name="action" value="va_apply_hf_preset">
-                        <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
-                        <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
-                        <strong><?php echo esc_html( $preset['label'] ); ?></strong>
-                        <div style="margin:8px 0 10px;color:#50575e;"><?php echo esc_html( $preset['desc'] ); ?></div>
-                        <button type="submit" class="button button-secondary">Preset alkalmazása</button>
-                    </form>
-                <?php endforeach; ?>
+            <!-- ──────── PRESETEK ──────── -->
+            <div class="va-settings-card" style="margin-bottom:28px;">
+                <div class="va-settings-card__head">
+                    <span class="va-settings-card__icon">🎛️</span>
+                    <span class="va-settings-card__title">Egy kattintásos modern presetek</span>
+                    <span class="va-settings-card__desc">10 összehangolt paletta, árnyék és glow kombóval</span>
+                </div>
+                <div style="padding:20px;">
+                    <div class="va-preset-grid">
+                        <?php foreach ( $presets as $preset_key => $preset ):
+                            $sw_base   = $preset['options']['va_hf_header_color_base']   ?? '#0a0a0a';
+                            $sw_alt    = $preset['options']['va_hf_header_color_alt']    ?? '#1a1a1a';
+                            $sw_accent = $preset['options']['va_hf_header_border_color'] ?? '#ff2020';
+                        ?>
+                            <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" class="va-preset-card">
+                                <div class="va-preset-card__swatch" style="background:linear-gradient(135deg,<?php echo esc_attr($sw_base); ?> 0%,<?php echo esc_attr($sw_alt); ?> 55%,<?php echo esc_attr($sw_accent); ?> 100%);"></div>
+                                <input type="hidden" name="action" value="va_apply_hf_preset">
+                                <input type="hidden" name="preset_key" value="<?php echo esc_attr( $preset_key ); ?>">
+                                <?php wp_nonce_field( 'va_apply_hf_preset' ); ?>
+                                <strong><?php echo esc_html( $preset['label'] ); ?></strong>
+                                <p><?php echo esc_html( $preset['desc'] ); ?></p>
+                                <button type="submit" class="button button-secondary">Alkalmazás</button>
+                            </form>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
             </div>
 
+            <!-- ──────── FŐ FORM ──────── -->
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_header_footer_settings' ); ?>
 
-                <h2>Fejléc/Lábléc: alapszínek (tipográfia + linkek)</h2>
-                <table class="form-table">
-                    <?php self::field_text(  'va_color_header_bg',     'Fejléc háttér (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_header_text',   'Fejléc szöveg szín' ); ?>
-                    <?php self::field_color( 'va_color_header_accent', 'Fejléc accent szín' ); ?>
-                    <?php self::field_color( 'va_color_footer_bg',       'Lábléc háttér alapszín' ); ?>
-                    <?php self::field_text(  'va_color_footer_text',     'Lábléc szöveg szín (hex vagy rgba)' ); ?>
-                    <?php self::field_color( 'va_color_footer_headings', 'Lábléc címsor szín' ); ?>
-                    <?php self::field_color( 'va_color_footer_links',    'Lábléc link alapszín' ); ?>
-                </table>
+                <!-- FEJLÉC ALAPSZÍNEK -->
+                <div class="va-settings-grid">
 
-                <h2>Fejléc: alap layout és üveg-hatás</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_header_height',              'Fejléc magasság (px)', 50, 120 ); ?>
-                    <?php self::field_num( 'va_hf_header_max_width',           'Fejléc belső max szélesség (px)', 960, 2200 ); ?>
-                    <?php self::field_num( 'va_hf_header_padding_x',           'Fejléc belső vízszintes padding (px)', 0, 80 ); ?>
-                    <?php self::field_num( 'va_hf_header_padding_top',         'Fejléc belső felső padding (px)', 0, 30 ); ?>
-                    <?php self::field_num( 'va_hf_header_padding_bottom',      'Fejléc belső alsó padding (px)', 0, 30 ); ?>
-                    <?php self::field_num( 'va_hf_header_gap',                 'Fejléc elemek közti gap (px)', 0, 40 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_bg_opacity',      'Fejléc háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_bg_opacity_scrolled', 'Fejléc háttér opacitás scroll után (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_num( 'va_hf_header_blur',                'Fejléc blur (px)', 0, 40 ); ?>
-                    <?php self::field_num( 'va_hf_header_blur_scrolled',       'Fejléc blur scroll után (px)', 0, 44 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_shadow_alpha',    'Fejléc árnyék opacitás (0-1)', 0, 1, 0.01 ); ?>
-                </table>
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🎨</span>
+                            <span class="va-settings-card__title">Fejléc alapszínek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_color_header_bg',     'Hatter' ); ?>
+                                <?php self::field_color( 'va_color_header_text',   'Szöveg szín' ); ?>
+                                <?php self::field_color( 'va_color_header_accent', 'Accent szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
 
-                <h2>Fejléc: modern színpaletta és árnyékok</h2>
-                <table class="form-table">
-                    <?php self::field_color( 'va_hf_header_color_base',    'Fejléc alapszín (gradient 1)' ); ?>
-                    <?php self::field_color( 'va_hf_header_color_alt',     'Fejléc másodlagos szín (gradient 2)' ); ?>
-                    <?php self::field_color( 'va_hf_header_border_color',  'Fejléc alsó border szín' ); ?>
-                    <?php self::field_text(  'va_hf_header_shadow_color',  'Fejléc fő árnyék szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_header_glow_color',    'Fejléc neon glow szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_header_search_glow_color', 'Kereső glow szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_header_btn_glow_color',    'CTA gomb glow szín (hex/rgba)' ); ?>
-                </table>
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔗</span>
+                            <span class="va-settings-card__title">Nav link hover</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_color_header_nav_link',  'Nav link alap szín' ); ?>
+                                <?php self::field_color( 'va_color_header_nav_hover', 'Nav link hover szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
 
-                <h2>Fejléc: kereső részletes vezérlés</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_header_search_max_width',        'Kereső max szélesség (px)', 220, 760 ); ?>
-                    <?php self::field_num( 'va_hf_header_search_height',           'Kereső magasság (px)', 30, 64 ); ?>
-                    <?php self::field_num( 'va_hf_header_search_radius',           'Kereső lekerekítés (px)', 8, 999 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_border_alpha', 'Kereső keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_bg_alpha',     'Kereső háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_hover_border_alpha', 'Kereső keret opacitás hover (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_focus_border_alpha', 'Kereső keret opacitás fókusz (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_num( 'va_hf_header_search_icon_size',        'Nagyító ikon méret (px)', 10, 28 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_icon_bg_alpha', 'Nagyító gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_search_icon_bg_hover_alpha', 'Nagyító gomb háttér opacitás hover (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_text( 'va_hf_header_search_placeholder',      'Kereső placeholder szöveg' ); ?>
-                </table>
+                </div>
 
-                <h2>Fejléc: gombok, feliratok és mobil viselkedés</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_header_btn_radius',          'Header gombok lekerekítés (px)', 8, 999 ); ?>
-                    <?php self::field_num( 'va_hf_header_btn_pad_y',           'Header gombok függőleges padding (px)', 4, 20 ); ?>
-                    <?php self::field_num( 'va_hf_header_btn_pad_x',           'Header gombok vízszintes padding (px)', 8, 40 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Piros gomb glow opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_color( 'va_color_header_submit_hover_bg',   'CTA gomb hover háttér' ); ?>
-                    <?php self::field_color( 'va_color_header_submit_hover_text', 'CTA gomb hover szöveg szín' ); ?>
-                    <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Felhasználó gomb keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_header_user_bg_alpha',   'Felhasználó gomb háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső megjelenjen mobilon is' ); ?>
-                    <?php self::field_toggle( 'va_hf_header_mobile_show_submit', 'Piros CTA gomb megjelenjen mobilon is' ); ?>
-                    <?php self::field_text( 'va_hf_header_submit_text',        'CTA gomb szöveg (bejelentkezve)' ); ?>
-                    <?php self::field_text( 'va_hf_header_register_text',      'CTA gomb szöveg (vendég)' ); ?>
-                    <?php self::field_text( 'va_hf_header_login_text',         'Belépés gomb szöveg (vendég)' ); ?>
-                    <?php self::field_select( 'va_weight_header_brand', 'Brand név súly/típus', $weights ); ?>
-                    <?php self::field_select( 'va_weight_header_nav',   'Navigáció súly/típus', $weights ); ?>
-                    <?php self::field_num( 'va_size_header_brand',      'Brand név méret (px)', 10, 44 ); ?>
-                    <?php self::field_num( 'va_size_header_nav',        'Navigáció méret (px)', 10, 34 ); ?>
-                    <?php self::field_num( 'va_size_header_search',     'Kereső szövegméret (px)', 10, 30 ); ?>
-                    <?php self::field_num( 'va_size_header_btn',        'Fejléc gomb szövegméret (px)', 10, 30 ); ?>
-                </table>
+                <!-- FEJLÉC LAYOUT -->
+                <div class="va-settings-grid">
 
-                <h2>Lábléc: layout, spacing, tipográfia</h2>
-                <table class="form-table">
-                    <?php self::field_num( 'va_hf_footer_top_padding',        'Lábléc felső padding (px)', 12, 120 ); ?>
-                    <?php self::field_num( 'va_hf_footer_bottom_padding',     'Lábléc alsó padding (px)', 8, 80 ); ?>
-                    <?php self::field_num( 'va_hf_footer_grid_gap',           'Lábléc oszlop gap (px)', 8, 80 ); ?>
-                    <?php self::field_num( 'va_hf_footer_col_min_width',      'Lábléc oszlop minimum szélesség (px)', 120, 420 ); ?>
-                    <?php self::field_num( 'va_hf_footer_title_gap',          'Lábléc oszlopcím alsó margó (px)', 4, 36 ); ?>
-                    <?php self::field_num( 'va_hf_footer_link_pad_y',         'Lábléc link függőleges térköz (px)', 0, 20 ); ?>
-                    <?php self::field_num( 'va_hf_footer_bottom_top_padding', 'Lábléc alsó sor felső padding (px)', 6, 40 ); ?>
-                    <?php self::field_decimal( 'va_hf_footer_border_alpha',   'Lábléc felső keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_decimal( 'va_hf_footer_bottom_border_alpha', 'Lábléc alsó sor keret opacitás (0-1)', 0, 1, 0.01 ); ?>
-                    <?php self::field_num( 'va_hf_footer_max_width',          'Lábléc tartalom max szélesség (px)', 800, 2200 ); ?>
-                    <?php self::field_select( 'va_weight_footer_title', 'Lábléc címsor súly/típus', $weights ); ?>
-                    <?php self::field_select( 'va_weight_footer_link',  'Lábléc link súly/típus', $weights ); ?>
-                    <?php self::field_num( 'va_size_footer_title',      'Lábléc oszlopcím méret (px)', 10, 34 ); ?>
-                    <?php self::field_num( 'va_size_footer_link',       'Lábléc link méret (px)', 10, 30 ); ?>
-                    <?php self::field_num( 'va_size_footer_bottom',     'Lábléc alsó sor méret (px)', 10, 28 ); ?>
-                </table>
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📐</span>
+                            <span class="va-settings-card__title">Fejléc layout</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_header_height',         'Magasság (px)', 50, 120 ); ?>
+                                <?php self::field_num( 'va_hf_header_max_width',       'Belső max szélesség (px)', 960, 2200 ); ?>
+                                <?php self::field_num( 'va_hf_header_padding_x',       'Vízszintes padding (px)', 0, 80 ); ?>
+                                <?php self::field_num( 'va_hf_header_padding_top',     'Felső padding (px)', 0, 30 ); ?>
+                                <?php self::field_num( 'va_hf_header_padding_bottom',  'Alsó padding (px)', 0, 30 ); ?>
+                                <?php self::field_num( 'va_hf_header_gap',             'Elemek közti gap (px)', 0, 40 ); ?>
+                            </table>
+                        </div>
+                    </div>
 
-                <h2>Lábléc: modern színpaletta és árnyékok</h2>
-                <table class="form-table">
-                    <?php self::field_color( 'va_hf_footer_color_base',       'Lábléc alapszín (gradient 1)' ); ?>
-                    <?php self::field_color( 'va_hf_footer_color_alt',        'Lábléc másodlagos szín (gradient 2)' ); ?>
-                    <?php self::field_color( 'va_hf_footer_border_color',     'Lábléc border szín' ); ?>
-                    <?php self::field_text(  'va_hf_footer_shadow_color',     'Lábléc árnyék szín (hex/rgba)' ); ?>
-                    <?php self::field_text(  'va_hf_footer_glow_color',       'Lábléc glow szín (hex/rgba)' ); ?>
-                    <?php self::field_color( 'va_hf_footer_link_hover_color', 'Lábléc link hover szín' ); ?>
-                    <?php self::field_media( 'va_hf_footer_logo_url',         'Lábléc logó (opcionális)' ); ?>
-                    <?php self::field_num(   'va_hf_footer_logo_height',      'Lábléc logó magasság (px)', 20, 180 ); ?>
-                </table>
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🪟</span>
+                            <span class="va-settings-card__title">Üveg-hatás &amp; árnyék</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_decimal( 'va_hf_header_bg_opacity',          'Háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_bg_opacity_scrolled', 'Opacitás scroll után (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_num( 'va_hf_header_blur',                    'Blur (px)', 0, 40 ); ?>
+                                <?php self::field_num( 'va_hf_header_blur_scrolled',           'Blur scroll után (px)', 0, 44 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_shadow_alpha',        'Árnyék opacitás (0-1)', 0, 1, 0.01 ); ?>
+                            </table>
+                        </div>
+                    </div>
 
-                <h2>Lábléc: összes felirat és link címke</h2>
-                <table class="form-table">
-                    <?php self::field_text( 'va_hf_footer_brand_title',          'Brand oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_col_categories_title', 'Kategóriák oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_col_account_title',    'Fiók oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_col_legal_title',      'Jogi oszlop cím' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_aszf',            'ÁSZF link felirat' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_privacy',         'Adatvédelem link felirat (jogi oszlop)' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_contact',         'Kapcsolat link felirat' ); ?>
-                    <?php self::field_text( 'va_hf_footer_link_help',            'Súgó link felirat' ); ?>
-                    <?php self::field_text( 'va_hf_footer_copy_text',            'Copyright szöveg (év után)' ); ?>
-                    <?php self::field_text( 'va_hf_footer_privacy_text',         'Alsó sor adatvédelem link felirat' ); ?>
-                </table>
+                </div>
+
+                <!-- FEJLÉC SZÍNPALETTA -->
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">✨</span>
+                            <span class="va-settings-card__title">Fejléc neon &amp; glow</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_hf_header_color_base',    'Gradient alap szín' ); ?>
+                                <?php self::field_color( 'va_hf_header_color_alt',     'Gradient másodlagos szín' ); ?>
+                                <?php self::field_color( 'va_hf_header_border_color',  'Alsó border szín' ); ?>
+                                <?php self::field_color( 'va_hf_header_shadow_color',      'Fo arnyak szin' ); ?>
+                                <?php self::field_color( 'va_hf_header_glow_color',        'Fejlec neon glow' ); ?>
+                                <?php self::field_color( 'va_hf_header_search_glow_color', 'Kereso glow szin' ); ?>
+                                <?php self::field_color( 'va_hf_header_btn_glow_color',    'CTA gomb glow szin' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔍</span>
+                            <span class="va-settings-card__title">Kereső részletes vezérlés</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_header_search_max_width',              'Max szélesség (px)', 220, 760 ); ?>
+                                <?php self::field_num( 'va_hf_header_search_height',                 'Magasság (px)', 30, 64 ); ?>
+                                <?php self::field_num( 'va_hf_header_search_radius',                 'Lekerekítés (px)', 8, 999 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_border_alpha',       'Keret opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_bg_alpha',           'Háttér opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_hover_border_alpha', 'Keret opacitás hover', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_focus_border_alpha', 'Keret opacitás fókusz', 0, 1, 0.01 ); ?>
+                                <?php self::field_num( 'va_hf_header_search_icon_size',              'Nagyító ikon méret (px)', 10, 28 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_icon_bg_alpha',       'Nagyító háttér opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_search_icon_bg_hover_alpha', 'Nagyító háttér hover opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_text( 'va_hf_header_search_placeholder',           'Placeholder szöveg' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- GOMBOK HOVER -->
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔴</span>
+                            <span class="va-settings-card__title">CTA gomb (+ Hirdetés feladása)</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_header_btn_radius',          'Lekerekítés (px)', 8, 999 ); ?>
+                                <?php self::field_num( 'va_hf_header_btn_pad_y',           'Függőleges padding (px)', 4, 20 ); ?>
+                                <?php self::field_num( 'va_hf_header_btn_pad_x',           'Vízszintes padding (px)', 8, 40 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_btn_glow_alpha',  'Glow opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_color( 'va_color_header_submit_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_submit_hover_text', 'Hover szöveg szín' ); ?>
+                                <?php self::field_text( 'va_hf_header_submit_text',           'Felirat (bejelentkezve)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">👤</span>
+                            <span class="va-settings-card__title">Bejelentkezés gomb hover</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_color_header_login_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_login_hover_text', 'Hover szöveg szín' ); ?>
+                                <?php self::field_decimal( 'va_hf_header_user_border_alpha', 'Keret opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_header_user_bg_alpha',     'Háttér opacitás (0-1)', 0, 1, 0.01 ); ?>
+                                <?php self::field_text( 'va_hf_header_login_text',            'Felirat (vendégként)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📝</span>
+                            <span class="va-settings-card__title">Regisztráció gomb hover</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_color_header_register_hover_bg',   'Hover háttér (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_color_header_register_hover_text', 'Hover szöveg szín' ); ?>
+                                <?php self::field_text( 'va_hf_header_register_text',            'Felirat (vendégként)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TIPOGRÁFIA & MOBIL -->
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔤</span>
+                            <span class="va-settings-card__title">Fejléc tipográfia</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_select( 'va_weight_header_brand', 'Brand név súly', $weights ); ?>
+                                <?php self::field_select( 'va_weight_header_nav',   'Navigáció súly', $weights ); ?>
+                                <?php self::field_num( 'va_size_header_brand',      'Brand név méret (px)', 10, 44 ); ?>
+                                <?php self::field_num( 'va_size_header_nav',        'Navigáció méret (px)', 10, 34 ); ?>
+                                <?php self::field_num( 'va_size_header_search',     'Kereső szövegméret (px)', 10, 30 ); ?>
+                                <?php self::field_num( 'va_size_header_btn',        'Gomb szövegméret (px)', 10, 30 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📱</span>
+                            <span class="va-settings-card__title">Mobil viselkedés</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső mobilon is' ); ?>
+                                <?php self::field_toggle( 'va_hf_header_mobile_show_submit', 'CTA gomb mobilon is' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- LÁBLÉC -->
+                <h2 style="margin:36px 0 20px;font-size:15px !important;color:#fff !important;text-transform:none !important;letter-spacing:0 !important;border-bottom:1px solid var(--va-border) !important;padding-bottom:12px !important;">🦶 Lábléc beállítások</h2>
+
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📐</span>
+                            <span class="va-settings-card__title">Lábléc layout &amp; spacing</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_hf_footer_top_padding',        'Felső padding (px)', 12, 120 ); ?>
+                                <?php self::field_num( 'va_hf_footer_bottom_padding',     'Alsó padding (px)', 8, 80 ); ?>
+                                <?php self::field_num( 'va_hf_footer_grid_gap',           'Oszlop gap (px)', 8, 80 ); ?>
+                                <?php self::field_num( 'va_hf_footer_col_min_width',      'Oszlop min szélesség (px)', 120, 420 ); ?>
+                                <?php self::field_num( 'va_hf_footer_title_gap',          'Oszlopcím alsó margó (px)', 4, 36 ); ?>
+                                <?php self::field_num( 'va_hf_footer_link_pad_y',         'Link függőleges térköz (px)', 0, 20 ); ?>
+                                <?php self::field_num( 'va_hf_footer_bottom_top_padding', 'Alsó sor felső padding (px)', 6, 40 ); ?>
+                                <?php self::field_num( 'va_hf_footer_max_width',          'Tartalom max szélesség (px)', 800, 2200 ); ?>
+                                <?php self::field_decimal( 'va_hf_footer_border_alpha',        'Felső keret opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_decimal( 'va_hf_footer_bottom_border_alpha', 'Alsó sor keret opacitás', 0, 1, 0.01 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🎨</span>
+                            <span class="va-settings-card__title">Lábléc színek &amp; glow</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_color_footer_bg',       'Háttér alapszín' ); ?>
+                                <?php self::field_color( 'va_color_footer_text',     'Szoveg szin' ); ?>
+                                <?php self::field_color( 'va_color_footer_headings', 'Oszlop cím szín' ); ?>
+                                <?php self::field_color( 'va_color_footer_links',    'Link alapszín' ); ?>
+                                <?php self::field_color( 'va_hf_footer_color_base',  'Gradient alap' ); ?>
+                                <?php self::field_color( 'va_hf_footer_color_alt',   'Gradient másodlagos' ); ?>
+                                <?php self::field_color( 'va_hf_footer_border_color',     'Border szín' ); ?>
+                                <?php self::field_text(  'va_hf_footer_shadow_color',     'Árnyék szín (hex/rgba)' ); ?>
+                                <?php self::field_text(  'va_hf_footer_glow_color',       'Glow szín (hex/rgba)' ); ?>
+                                <?php self::field_color( 'va_hf_footer_link_hover_color', 'Link hover szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="va-settings-grid">
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔤</span>
+                            <span class="va-settings-card__title">Lábléc tipográfia</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_select( 'va_weight_footer_title', 'Oszlopcím súly', $weights ); ?>
+                                <?php self::field_select( 'va_weight_footer_link',  'Link súly', $weights ); ?>
+                                <?php self::field_num( 'va_size_footer_title',      'Oszlopcím méret (px)', 10, 34 ); ?>
+                                <?php self::field_num( 'va_size_footer_link',       'Link méret (px)', 10, 30 ); ?>
+                                <?php self::field_num( 'va_size_footer_bottom',     'Alsó sor méret (px)', 10, 28 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🖼️</span>
+                            <span class="va-settings-card__title">Lábléc logó &amp; szövegek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_media( 'va_hf_footer_logo_url',         'Logó (opcionális)' ); ?>
+                                <?php self::field_num(   'va_hf_footer_logo_height',       'Logó magasság (px)', 20, 180 ); ?>
+                                <?php self::field_text( 'va_hf_footer_brand_title',          'Brand oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_col_categories_title', 'Kategóriák oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_col_account_title',    'Fiók oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_col_legal_title',      'Jogi oszlop cím' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_aszf',            'ÁSZF link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_privacy',         'Adatvédelem link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_contact',         'Kapcsolat link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_link_help',            'Súgó link felirat' ); ?>
+                                <?php self::field_text( 'va_hf_footer_copy_text',            'Copyright szöveg' ); ?>
+                                <?php self::field_text( 'va_hf_footer_privacy_text',         'Alsó sor adatvédelem felirat' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
 
                 <?php submit_button( 'Fejléc + Lábléc mentése' ); ?>
             </form>
 
             <!-- ═══ Nav gombok szerkesztő (külön form, JSON mentés) ═══ -->
-            <hr style="margin:32px 0;">
-            <h2>🔗 Navigációs gombok szerkesztése</h2>
-            <p class="description">Rendezd, kapcsold ki/be, vagy adj hozzá új menüpontot. A sorrend drag &amp; drop-pal állítható.</p>
+            <div class="va-settings-card" style="margin-top:32px;">
+                <div class="va-settings-card__head">
+                    <span class="va-settings-card__icon">🔗</span>
+                    <span class="va-settings-card__title">Navigációs gombok szerkesztése</span>
+                    <span class="va-settings-card__desc">Drag &amp; drop sorrendezés</span>
+                </div>
+                <div style="padding:20px;">
             <?php
             $nav_json = get_option( 'va_nav_items_json', '' );
             $nav_items_saved = [];
@@ -1269,12 +1660,12 @@ class VA_Settings_Page {
 
                 <div id="va-nav-list" style="max-width:700px;margin-bottom:16px;">
                     <?php foreach ( $nav_items_saved as $idx => $item ): ?>
-                    <div class="va-nav-row" style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;" draggable="true">
-                        <span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>
+                    <div class="va-nav-row va-nav-row-modern" draggable="true">
+                        <span class="va-nav-drag">&#8597;</span>
                         <input type="checkbox" class="va-nav-enabled" <?php checked( $item['enabled'] ?? true ); ?> title="Megjelenítés">
                         <input type="text" class="va-nav-label regular-text" value="<?php echo esc_attr( $item['label'] ); ?>" placeholder="Felirat" style="width:200px;">
                         <input type="text" class="va-nav-url regular-text" value="<?php echo esc_attr( $item['url'] ); ?>" placeholder="/url vagy https://..." style="flex:1;">
-                        <button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>
+                        <button type="button" class="button va-nav-del va-nav-del-btn" title="Törlés">&times;</button>
                     </div>
                     <?php endforeach; ?>
                 </div>
@@ -1304,14 +1695,13 @@ class VA_Settings_Page {
 
                 document.getElementById('va-nav-add').addEventListener('click', function(){
                     var div = document.createElement('div');
-                    div.className = 'va-nav-row';
+                    div.className = 'va-nav-row va-nav-row-modern';
                     div.draggable = true;
-                    div.style.cssText = 'display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:10px 12px;margin-bottom:8px;cursor:move;';
-                    div.innerHTML = '<span style="color:#aaa;font-size:18px;cursor:grab;">&#8597;</span>'
+                    div.innerHTML = '<span class="va-nav-drag">&#8597;</span>'
                         + '<input type="checkbox" class="va-nav-enabled" checked title="Megjelenítés">'
                         + '<input type="text" class="va-nav-label regular-text" value="" placeholder="Felirat" style="width:200px;">'
                         + '<input type="text" class="va-nav-url regular-text" value="" placeholder="/url vagy https://..." style="flex:1;">'
-                        + '<button type="button" class="button va-nav-del" title="Törlés" style="color:#c00;border-color:#c00;">&times;</button>';
+                        + '<button type="button" class="button va-nav-del va-nav-del-btn" title="Törlés">&times;</button>';
                     list.appendChild(div);
                     bindDel(div);
                     bindDrag(div);
@@ -1344,7 +1734,9 @@ class VA_Settings_Page {
                 list.querySelectorAll('.va-nav-row').forEach(function(r){ bindDel(r); bindDrag(r); });
             })();
             </script>
-        </div>
+                </div><!-- end padding div -->
+            </div><!-- end va-settings-card -->
+        </div><!-- end wrap -->
         <?php
     }
 
@@ -1478,20 +1870,31 @@ class VA_Settings_Page {
         wp_enqueue_media();
 
         $fonts = [
-            'system'        => 'System UI (natív, leggyorsabb)',
-            'inter'         => 'Inter',
-            'roboto'        => 'Roboto',
-            'montserrat'    => 'Montserrat (alapértelmezett)',
-            'nunito'        => 'Nunito',
-            'poppins'       => 'Poppins',
-            'raleway'       => 'Raleway',
-            'dm-sans'       => 'DM Sans',
-            'manrope'       => 'Manrope',
-            'work-sans'     => 'Work Sans',
-            'rubik'         => 'Rubik',
-            'source-sans-3' => 'Source Sans 3',
-            'fira-sans'     => 'Fira Sans',
-            'oswald'        => 'Oswald',
+            'system'             => 'System UI (natív, leggyorsabb)',
+            'arial'              => '– Arial',
+            'verdana'            => '– Verdana',
+            'tahoma'             => '– Tahoma',
+            'inter'              => 'Inter',
+            'roboto'             => 'Roboto',
+            'open-sans'          => 'Open Sans',
+            'poppins'            => 'Poppins',
+            'lato'               => 'Lato',
+            'montserrat'         => 'Montserrat (alapértelmezett)',
+            'nunito'             => 'Nunito',
+            'raleway'            => 'Raleway',
+            'dm-sans'            => 'DM Sans',
+            'manrope'            => 'Manrope',
+            'work-sans'          => 'Work Sans',
+            'rubik'              => 'Rubik',
+            'cabin'              => 'Cabin',
+            'mulish'             => 'Mulish',
+            'figtree'            => 'Figtree',
+            'outfit'             => 'Outfit',
+            'jost'               => 'Jost',
+            'source-sans-3'      => 'Source Sans 3',
+            'fira-sans'          => 'Fira Sans',
+            'ibm-plex-sans'      => 'IBM Plex Sans',
+            'oswald'             => 'Oswald',
         ];
 
         $presets = self::get_adminpanel_presets();
@@ -1557,7 +1960,7 @@ class VA_Settings_Page {
                                 <?php self::field_text(  'va_ap_panel_name',  'Panel neve (sidebar fejléc)' ); ?>
                                 <?php self::field_text(  'va_ap_panel_icon',  'Panel ikon (emoji, pl. 🎯)' ); ?>
                                 <?php self::field_media( 'va_ap_logo_url',    'Sidebar logó kép (opcionális – ha van, az ikon helyére kerül)' ); ?>
-                                <?php self::field_num(   'va_ap_logo_height', 'Logó magasság (px)', 16, 80 ); ?>
+                                <?php self::field_num(   'va_ap_logo_height', 'Logó magasság (px)', 16, 200 ); ?>
                             </table>
                         </div>
 
@@ -1638,69 +2041,13 @@ class VA_Settings_Page {
                             </div>
                             <table class="form-table">
                                 <?php self::field_select( 'va_ap_font', 'Admin betűtípus', $fonts ); ?>
-                            </table>
-                        </div>
+                                <?php self::field_num( 'va_ap_font_size', 'Admin betűméret (px)', 10, 20 ); ?>
 
                         <div style="margin-top:8px;">
-                            <?php submit_button( '💾 Admin Panel beállítások mentése', 'primary', 'submit', false ); ?>
+                            <?php submit_button( '💾 Admin Panel beállítások mentése', 'primary', 'submit' ); ?>
                         </div>
                     </form>
                 </div><!-- .va-aps-form-col -->
-
-                <!-- Live Preview -->
-                <div class="va-aps-preview-col">
-                    <div class="va-aps-preview-sticky">
-                        <div class="va-aps-preview-label">👁 Élő előnézet</div>
-
-                        <!-- Topbar -->
-                        <div class="va-aps-prev-topbar" id="va-aps-prev-topbar"
-                             style="--pv-bg2:<?php echo esc_attr($g('va_ap_color_bg2','#0d0d11')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;">
-                            <span class="va-aps-topbar-title">Irányítópult <small>VadászApró</small></span>
-                            <span class="va-aps-topbar-btn">+ Új hirdetés</span>
-                        </div>
-
-                        <!-- Sidebar -->
-                        <div class="va-aps-prev-sidebar" id="va-aps-prev-sidebar"
-                             style="--pv-bg:<?php echo esc_attr($g('va_ap_color_bg','#070709')); ?>;--pv-bg2:<?php echo esc_attr($g('va_ap_color_bg2','#0d0d11')); ?>;--pv-bg3:<?php echo esc_attr($g('va_ap_color_bg3','#111118')); ?>;--pv-bg4:<?php echo esc_attr($g('va_ap_color_bg4','#161620')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-accent2:<?php echo esc_attr($g('va_ap_color_accent2','#ff5050')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;">
-                            <div class="va-aps-prev-logo">
-                                <div class="va-aps-prev-icon" id="va-aps-prev-icon"><?php echo esc_html( $g('va_ap_panel_icon','🎯') ); ?></div>
-                                <div>
-                                    <div class="va-aps-prev-name" id="va-aps-prev-name"><?php echo esc_html( $g('va_ap_panel_name','VadászApró') ); ?></div>
-                                    <div class="va-aps-prev-sub">Admin Panel</div>
-                                </div>
-                            </div>
-                            <nav class="va-aps-prev-nav">
-                                <a class="va-aps-prev-item va-aps-prev-item--active"><span>📊</span>Irányítópult</a>
-                                <a class="va-aps-prev-item"><span>📋</span>Hirdetések <span class="va-aps-prev-badge">3</span></a>
-                                <a class="va-aps-prev-item"><span>👥</span>Felhasználók</a>
-                                <div class="va-aps-prev-sep">Beállítások</div>
-                                <a class="va-aps-prev-item"><span>⚙️</span>Általános</a>
-                                <a class="va-aps-prev-item"><span>🎨</span>Design</a>
-                                <a class="va-aps-prev-item va-aps-prev-item--current"><span>🖥️</span>Admin Panel</a>
-                                <div class="va-aps-prev-sep">Tartalom</div>
-                                <a class="va-aps-prev-item"><span>📢</span>Reklámzónák</a>
-                                <a class="va-aps-prev-item"><span>📈</span>Statisztika</a>
-                            </nav>
-                        </div>
-
-                        <!-- Content area snippet -->
-                        <div class="va-aps-prev-content" id="va-aps-prev-content"
-                             style="--pv-bg:<?php echo esc_attr($g('va_ap_color_bg','#070709')); ?>;--pv-bg3:<?php echo esc_attr($g('va_ap_color_bg3','#111118')); ?>;--pv-text:<?php echo esc_attr($g('va_ap_color_text','#e8e8f0')); ?>;--pv-muted:<?php echo $g('va_ap_color_muted','rgba(255,255,255,.45)'); ?>;--pv-accent:<?php echo esc_attr($g('va_ap_color_accent','#ff2020')); ?>;--pv-border:<?php echo $g('va_ap_color_border','rgba(255,255,255,.07)'); ?>;--pv-radius:<?php echo (int)$g('va_ap_radius','12'); ?>px;">
-                            <div class="va-aps-prev-kpi-row">
-                                <div class="va-aps-prev-kpi"><span>📋</span><strong>1 247</strong><small>Aktív hird.</small></div>
-                                <div class="va-aps-prev-kpi"><span>👥</span><strong>384</strong><small>Felhasználó</small></div>
-                                <div class="va-aps-prev-kpi"><span>👁</span><strong>42 k</strong><small>Megtekintés</small></div>
-                            </div>
-                            <div class="va-aps-prev-table-row">
-                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
-                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
-                                <div class="va-aps-prev-tr"><div class="va-aps-prev-td va-aps-prev-td--img"></div><div class="va-aps-prev-td va-aps-prev-td--title"></div><div class="va-aps-prev-td va-aps-prev-td--price"></div></div>
-                            </div>
-                        </div>
-
-                        <div class="va-aps-preview-note">Az előnézet automatikusan frissül gépelés közben.</div>
-                    </div>
-                </div><!-- .va-aps-preview-col -->
 
             </div><!-- .va-aps-main -->
         </div><!-- .va-aps-wrap -->
@@ -1728,7 +2075,7 @@ class VA_Settings_Page {
         .va-aps-swatches span { width:14px; height:14px; border-radius:50%; border:1px solid rgba(255,255,255,.12); }
 
         /* Main layout */
-        .va-aps-main { display:grid; grid-template-columns:1fr 260px; gap:24px; align-items:start; }
+        .va-aps-main { display:grid; grid-template-columns:1fr; gap:24px; align-items:start; }
 
         /* Sections */
         .va-aps-section { background:var(--va-bg2); border:1px solid var(--va-border); border-radius:var(--va-radius); overflow:hidden; margin-bottom:16px; }
@@ -1745,7 +2092,7 @@ class VA_Settings_Page {
         .va-aps-section .form-table input[type=color] { width:44px; height:34px; border-radius:var(--va-radius-sm); border:1px solid var(--va-border2); background:transparent; cursor:pointer; padding:2px; }
 
         /* Preview column */
-        .va-aps-preview-col { position:sticky; top:72px; }
+        .va-aps-preview-col { position:sticky; top:72px; align-self:start; }
         .va-aps-preview-sticky { display:flex; flex-direction:column; gap:0; }
         .va-aps-preview-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.8px; color:var(--va-muted); margin-bottom:6px; }
         .va-aps-preview-note { font-size:10px; color:var(--va-muted); margin-top:8px; text-align:center; }
@@ -1789,68 +2136,11 @@ class VA_Settings_Page {
         .va-aps-prev-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:8px; }
         .va-aps-prev-kpi { background:var(--pv-bg3); border:1px solid var(--pv-border,rgba(255,255,255,.07)); border-radius:var(--pv-radius,8px); padding:6px 8px; display:flex; flex-direction:column; align-items:center; gap:1px; font-size:9px; color:var(--pv-muted,rgba(255,255,255,.45)); }
         .va-aps-prev-kpi span { font-size:13px; }
-        .va-aps-prev-kpi strong { font-size:13px; font-weight:700; color:var(--pv-accent,#ff2020); }
-        .va-aps-prev-table-row { background:var(--pv-bg3); border:1px solid var(--pv-border,rgba(255,255,255,.07)); border-radius:var(--pv-radius,8px); overflow:hidden; }
-        .va-aps-prev-tr { display:flex; align-items:center; gap:6px; padding:5px 8px; border-bottom:1px solid var(--pv-border,rgba(255,255,255,.07)); }
-        .va-aps-prev-tr:last-child { border-bottom:none; }
-        .va-aps-prev-td--img { width:24px; height:24px; background:var(--pv-bg,#070709); border-radius:4px; flex-shrink:0; }
-        .va-aps-prev-td--title { flex:1; height:8px; background:var(--pv-border2,rgba(255,255,255,.12)); border-radius:3px; }
-        .va-aps-prev-td--price { width:36px; height:8px; background:var(--pv-accent,#ff2020); opacity:.6; border-radius:3px; }
-
-        @media (max-width:1100px) {
-            .va-aps-main { grid-template-columns:1fr; }
-            .va-aps-preview-col { position:static; }
-        }
         @media (max-width:680px) {
             .va-aps-presets-grid { gap:6px; }
             .va-aps-preset { min-width:130px; }
         }
         </style>
-
-        <script>
-        (function () {
-            const form    = document.getElementById('va-aps-form');
-            const sidebar = document.getElementById('va-aps-prev-sidebar');
-            const topbar  = document.getElementById('va-aps-prev-topbar');
-            const content = document.getElementById('va-aps-prev-content');
-            const iconEl  = document.getElementById('va-aps-prev-icon');
-            const nameEl  = document.getElementById('va-aps-prev-name');
-            if (!form || !sidebar) return;
-
-            const colorMap = {
-                'va_ap_color_bg':      '--pv-bg',
-                'va_ap_color_bg2':     '--pv-bg2',
-                'va_ap_color_bg3':     '--pv-bg3',
-                'va_ap_color_bg4':     '--pv-bg4',
-                'va_ap_color_text':    '--pv-text',
-                'va_ap_color_muted':   '--pv-muted',
-                'va_ap_color_accent':  '--pv-accent',
-                'va_ap_color_accent2': '--pv-accent2',
-                'va_ap_color_border':  '--pv-border',
-                'va_ap_color_border2': '--pv-border2',
-            };
-            const allPrevEls = [sidebar, topbar, content].filter(Boolean);
-
-            function sync() {
-                for (const [key, prop] of Object.entries(colorMap)) {
-                    const el = form.querySelector('[name="' + key + '"]');
-                    if (!el) continue;
-                    const val = el.value;
-                    allPrevEls.forEach(n => n && n.style.setProperty(prop, val));
-                }
-                const r = form.querySelector('[name="va_ap_radius"]');
-                if (r && content) content.style.setProperty('--pv-radius', r.value + 'px');
-
-                const icon = form.querySelector('[name="va_ap_panel_icon"]');
-                const name = form.querySelector('[name="va_ap_panel_name"]');
-                if (iconEl && icon && icon.value) iconEl.textContent = icon.value;
-                if (nameEl && name && name.value) nameEl.textContent = name.value;
-            }
-
-            form.addEventListener('input',  sync);
-            form.addEventListener('change', sync);
-        })();
-        </script>
         <?php
     }
 
@@ -3935,27 +4225,52 @@ class VA_Settings_Page {
         echo " placeholder=\"https://.../video.mp4\"></td></tr>";
     }
 
-    private static function field_media( string $key, string $label ): void {
+    private static function field_video( string $key, string $label ): void {
         $val = esc_attr( (string) self::get_display_option( $key, '' ) );
-        $preview = $val !== '' ? '<img src="' . $val . '" alt="" class="va-media-preview">' : '';
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
+        echo "<div class=\"va-media-field\">";
+        echo "<input type=\"url\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text code va-media-input\" placeholder=\"https://.../video.mp4\">";
+        echo "<button type=\"button\" class=\"button va-media-video-btn\" data-target=\"{$key}\">Tallózás</button>";
+        echo "<button type=\"button\" class=\"button va-media-video-clear\" data-target=\"{$key}\">Törlés</button>";
+        echo "</div>";
+        echo "</td></tr>";
+    }
+
+    private static function field_media( string $key, string $label ): void {
+        $val     = esc_attr( (string) self::get_display_option( $key, '' ) );
+        $img_id  = $key . '_img';
+        $img_vis = $val !== '' ? '' : ' style="display:none"';
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>";
         echo "<div class=\"va-media-field\">";
         echo "<input type=\"url\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text code va-media-input\" placeholder=\"https://.../logo.png\">";
-        echo "<button type=\"button\" class=\"button va-media-pick\" data-target=\"{$key}\">Tallózás</button>";
-        echo "<button type=\"button\" class=\"button va-media-clear\" data-target=\"{$key}\">Törlés</button>";
+        echo "<button type=\"button\" class=\"button va-media-btn\" data-target=\"{$key}\" data-preview=\"{$img_id}\">Tallózás</button>";
+        echo "<button type=\"button\" class=\"button va-media-clear\" data-target=\"{$key}\" data-preview=\"{$img_id}\">Törlés</button>";
         echo "</div>";
-        echo "<div class=\"va-media-preview-wrap\" id=\"{$key}_preview\">{$preview}</div>";
+        echo "<div class=\"va-media-preview-wrap\"><img id=\"{$img_id}\" src=\"{$val}\" alt=\"\" class=\"va-media-preview\"{$img_vis}></div>";
         echo "</td></tr>";
+    }
+
+    private static function spin_wrap( string $key, string $input_html ): string {
+        $up   = "var i=this.closest('.va-num-wrap').querySelector('input');var s=parseFloat(i.step)||1;var v=parseFloat(i.value)||0;var mx=i.max!==''?parseFloat(i.max):9999;i.value=Math.min(mx,Math.round((v+s)*10000)/10000);i.dispatchEvent(new Event('change',{bubbles:true}))";
+        $down = "var i=this.closest('.va-num-wrap').querySelector('input');var s=parseFloat(i.step)||1;var v=parseFloat(i.value)||0;var mn=i.min!==''?parseFloat(i.min):0;i.value=Math.max(mn,Math.round((v-s)*10000)/10000);i.dispatchEvent(new Event('change',{bubbles:true}))";
+        return '<div class="va-num-wrap">'
+            . $input_html
+            . '<div class="va-num-spin">'
+            . '<button type="button" tabindex="-1" onclick="' . esc_attr( $up )   . '">&#9652;</button>'
+            . '<button type="button" tabindex="-1" onclick="' . esc_attr( $down ) . '">&#9662;</button>'
+            . '</div></div>';
     }
 
     private static function field_num( string $key, string $label, int $min = 0, int $max = 9999 ): void {
         $val = esc_attr( (string) self::get_display_option( $key, '' ) );
-        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" class=\"small-text\"></td></tr>";
+        $input = "<input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" class=\"small-text\">";
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>" . self::spin_wrap( $key, $input ) . "</td></tr>";
     }
 
     private static function field_decimal( string $key, string $label, float $min = 0.1, float $max = 5, float $step = 0.01 ): void {
         $val = esc_attr( (string) self::get_display_option( $key, '' ) );
-        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" step=\"{$step}\" class=\"small-text\"></td></tr>";
+        $input = "<input type=\"number\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" min=\"{$min}\" max=\"{$max}\" step=\"{$step}\" class=\"small-text\">";
+        echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td>" . self::spin_wrap( $key, $input ) . "</td></tr>";
     }
 
     private static function field_select( string $key, string $label, array $options ): void {
@@ -4132,14 +4447,14 @@ class VA_Settings_Page {
 
         .va-single-preview {
             --sp-accent:#ff2a2a; --sp-glass:rgba(255,255,255,.07); --sp-border:rgba(255,255,255,.12);
-            --sp-gap:20px; --sp-radius:12px; --sp-pad:18px; --sp-side:38%; --sp-ratio:4/3; --sp-thumb:74px;
+            --sp-gap:20px; --sp-radius:12px; --sp-pad:18px; --sp-side:0.6fr; --sp-ratio:4/3; --sp-thumb:74px;
             background:#080808; border:1px solid var(--sp-border); border-radius:16px; padding:12px;
         }
         .va-single-preview .sp-top { height:8px; width:120px; background:rgba(255,255,255,.15); border-radius:999px; margin-bottom:12px; }
         .va-single-preview .sp-grid { display:grid; grid-template-columns:1fr var(--sp-side); gap:var(--sp-gap); }
         .va-single-preview.sp-stacked .sp-grid { grid-template-columns:1fr; }
         .va-single-preview .sp-main,
-        .va-single-preview .sp-side { background:var(--sp-glass); border:1px solid var(--sp-border); border-radius:var(--sp-radius); padding:var(--sp-pad); }
+        .va-single-preview .sp-side { background:var(--sp-glass); border:1px solid var(--sp-border); border-radius:var(--sp-radius); padding:var(--sp-pad); min-width:0; overflow:hidden; }
         .va-single-preview .sp-hero { aspect-ratio:var(--sp-ratio); border-radius:calc(var(--sp-radius) - 2px); background:linear-gradient(130deg, rgba(255,255,255,.16), rgba(255,255,255,.05)); }
         .va-single-preview .sp-thumbs { display:flex; gap:8px; margin-top:10px; }
         .va-single-preview .sp-thumbs i { width:var(--sp-thumb); height:calc(var(--sp-thumb) * .75); border-radius:8px; background:rgba(255,255,255,.16); }
@@ -4175,7 +4490,7 @@ class VA_Settings_Page {
             function syncPreview() {
                 const mode = val('va_single_layout_mode', 'split');
                 preview.classList.toggle('sp-stacked', mode === 'stacked');
-                preview.style.setProperty('--sp-side', Math.max(28, Math.min(52, Number(val('va_single_sidebar_width', 390)) / 10)) + '%');
+                preview.style.setProperty('--sp-side', (Math.max(0.3, Math.min(0.8, Number(val('va_single_sidebar_width', 380)) / 800))).toFixed(2) + 'fr');
                 preview.style.setProperty('--sp-gap', Math.max(8, Math.min(40, Number(val('va_single_layout_gap', 24)))) + 'px');
                 preview.style.setProperty('--sp-radius', Math.max(0, Math.min(40, Number(val('va_single_card_radius', 14)))) + 'px');
                 preview.style.setProperty('--sp-pad', Math.max(8, Math.min(40, Number(val('va_single_card_padding', 22)))) + 'px');
@@ -4319,6 +4634,11 @@ class VA_Settings_Page {
         .va-pk-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
         @media(max-width:1200px) { .va-pk-grid { grid-template-columns:repeat(2,1fr); } }
         @media(max-width:700px)  { .va-pk-grid { grid-template-columns:1fr; } }
+        .va-pk-card--hidden { display:none; }
+        .va-pk-add-row { display:flex; justify-content:center; margin-bottom:16px; }
+        .va-pk-add-btn { background:rgba(255,255,255,.06); border:1px dashed rgba(255,255,255,.2); border-radius:12px; color:rgba(255,255,255,.6); font-size:13px; font-weight:600; padding:12px 28px; cursor:pointer; transition:.2s; }
+        .va-pk-add-btn:hover { background:rgba(204,0,0,.12); border-color:rgba(204,0,0,.4); color:#fff; }
+        .va-pk-add-btn:disabled { opacity:.3; cursor:default; }
         .va-pk-card { border-radius:16px; border:1px solid rgba(255,255,255,.1); overflow:hidden; transition:box-shadow .2s; }
         .va-pk-card--featured { border-color:rgba(245,158,11,.4); }
         .va-pk-card__header { padding:16px 16px 12px; position:relative; }
@@ -4329,8 +4649,8 @@ class VA_Settings_Page {
         .va-pk-card__enable-label { font-size:11px; color:rgba(255,255,255,.4); font-weight:600; text-transform:uppercase; letter-spacing:.06em; }
         .va-pk-toggle { position:relative; width:36px; height:20px; flex-shrink:0; }
         .va-pk-toggle input { opacity:0; width:0; height:0; position:absolute; }
-        .va-pk-toggle__track { position:absolute; inset:0; border-radius:20px; background:rgba(255,255,255,.1); cursor:pointer; transition:background .15s; }
-        .va-pk-toggle input:checked+.va-pk-toggle__track { background:#cc0000; }
+        .va-pk-toggle__track { position:absolute; inset:0; border-radius:20px; background:#8b1a1a; cursor:pointer; transition:background .15s; }
+        .va-pk-toggle input:checked+.va-pk-toggle__track { background:#1a7a2e; box-shadow:0 0 8px rgba(0,200,60,.3); }
         .va-pk-toggle__track::after { content:''; position:absolute; left:3px; top:3px; width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .15s; }
         .va-pk-toggle input:checked+.va-pk-toggle__track::after { transform:translateX(16px); }
         .va-pk-toggle-row { display:flex; align-items:center; gap:8px; padding:4px 0; }
@@ -4384,25 +4704,30 @@ class VA_Settings_Page {
                 </div>
 
                 <!-- ─── Kártya szerkesztők ─── -->
-                <div class="va-pk-grid">
-                <?php for ( $n = 1; $n <= 4; $n++ ):
-                    $label    = $g( "va_pc_{$n}_label",    $card_defaults['labels'][$n]  );
-                    $slug     = $g( "va_pc_{$n}_plan_slug",$card_defaults['slugs'][$n]   );
-                    $tag      = $g( "va_pc_{$n}_tag",      $card_defaults['tags'][$n]    );
-                    $desc     = $g( "va_pc_{$n}_desc",     $card_defaults['descs'][$n]   );
-                    $qty      = $gi( "va_pc_{$n}_qty",     $card_defaults['qtys'][$n]    );
-                    $price    = $gi( "va_pc_{$n}_price",   $card_defaults['prices'][$n]  );
-                    $badge    = $g( "va_pc_{$n}_badge",    $card_defaults['badges'][$n]  );
+                <?php
+                $pc_count = max( 4, min( 8, $gi( 'va_pc_count', 4 ) ) );
+                ?>
+                <input type="hidden" name="va_pc_count" id="va-pk-count" value="<?php echo $pc_count; ?>">
+                <div class="va-pk-grid" id="va-pk-grid">
+                <?php for ( $n = 1; $n <= 8; $n++ ):
+                    $label    = $g( "va_pc_{$n}_label",    $card_defaults['labels'][$n]  ?? '' );
+                    $slug     = $g( "va_pc_{$n}_plan_slug",$card_defaults['slugs'][$n]   ?? '' );
+                    $tag      = $g( "va_pc_{$n}_tag",      $card_defaults['tags'][$n]    ?? '' );
+                    $desc     = $g( "va_pc_{$n}_desc",     $card_defaults['descs'][$n]   ?? '' );
+                    $qty      = $gi( "va_pc_{$n}_qty",     $card_defaults['qtys'][$n]    ?? 1  );
+                    $price    = $gi( "va_pc_{$n}_price",   $card_defaults['prices'][$n]  ?? 0  );
+                    $badge    = $g( "va_pc_{$n}_badge",    $card_defaults['badges'][$n]  ?? '' );
                     $featured = $g( "va_pc_{$n}_featured", ( $n === 3 ) ? '1' : '0' ) === '1';
                     $free     = $g( "va_pc_{$n}_free",     ( $n === 1 ) ? '1' : '0' ) === '1';
-                    $btn_text = $g( "va_pc_{$n}_btn_text", $card_defaults['btns'][$n]    );
-                    $theme    = $g( "va_pc_{$n}_theme",    $card_defaults['themes'][$n]  );
-                    $enabled  = $g( "va_pc_{$n}_enabled",  '1' ) === '1';
+                    $btn_text = $g( "va_pc_{$n}_btn_text", $card_defaults['btns'][$n]    ?? 'Vásárlás →' );
+                    $theme    = $g( "va_pc_{$n}_theme",    $card_defaults['themes'][$n]  ?? 'basic' );
+                    $enabled  = $g( "va_pc_{$n}_enabled",  $n <= 4 ? '1' : '0' ) === '1';
+                    $is_hidden = $n > $pc_count;
 
                     $tc       = $theme_colors[ $theme ] ?? $theme_colors['basic'];
                     $total    = $qty * $price;
                 ?>
-                <div class="va-pk-card<?php echo $featured ? ' va-pk-card--featured' : ''; ?>"
+                <div class="va-pk-card<?php echo $featured ? ' va-pk-card--featured' : ''; ?><?php echo $is_hidden ? ' va-pk-card--hidden' : ''; ?>" data-card-n="<?php echo $n; ?>"
                      style="background:<?php echo esc_attr( $tc['gradient'] ); ?>; box-shadow:<?php echo $featured ? '0 8px 40px ' . esc_attr( $tc['glow'] ) : 'none'; ?>;">
                     <!-- Header preview -->
                     <div class="va-pk-card__header" style="border-bottom:1px solid rgba(255,255,255,.06);">
@@ -4506,23 +4831,26 @@ class VA_Settings_Page {
                             <input type="text" name="va_pc_<?php echo $n; ?>_btn_text" value="<?php echo esc_attr( $btn_text ); ?>" placeholder="Vásárlás →">
                         </div>
 
-                        <div class="va-pk-card__field-row">
-                            <div class="va-pk-field">
-                                <label>Plan slug (aktív det.)</label>
-                                <input type="text" name="va_pc_<?php echo $n; ?>_plan_slug" value="<?php echo esc_attr( $slug ); ?>" placeholder="gold">
-                            </div>
-                            <div class="va-pk-field">
-                                <label>Téma / szín</label>
-                                <select name="va_pc_<?php echo $n; ?>_theme" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 10px;color:#e8e8f0;font-size:13px;width:100%;box-sizing:border-box;">
-                                    <?php foreach ( $theme_colors as $t_key => $_ ): ?>
-                                    <option value="<?php echo esc_attr( $t_key ); ?>"<?php selected( $theme, $t_key ); ?>><?php echo esc_html( ucfirst( $t_key ) ); ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
+                        <div class="va-pk-field">
+                            <label>Plan slug (aktív det.)</label>
+                            <input type="text" name="va_pc_<?php echo $n; ?>_plan_slug" value="<?php echo esc_attr( $slug ); ?>" placeholder="gold">
+                        </div>
+                        <div class="va-pk-field">
+                            <label>Téma / szín</label>
+                            <select name="va_pc_<?php echo $n; ?>_theme" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:9px 10px;color:#e8e8f0;font-size:13px;width:100%;box-sizing:border-box;">
+                                <?php foreach ( $theme_colors as $t_key => $_ ): ?>
+                                <option value="<?php echo esc_attr( $t_key ); ?>"<?php selected( $theme, $t_key ); ?>><?php echo esc_html( ucfirst( $t_key ) ); ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <?php endfor; ?>
+                </div>
+
+                <!-- ─── Kártya hozzáadása ─── -->
+                <div class="va-pk-add-row">
+                    <button type="button" id="va-pk-add-card" class="va-pk-add-btn"<?php echo $pc_count >= 8 ? ' disabled' : ''; ?>>+ Üres kártya hozzáadása</button>
                 </div>
 
                 <!-- ─── Mentés ─── -->
@@ -4552,6 +4880,23 @@ class VA_Settings_Page {
                     if(unitEl) unitEl.textContent = formatHu(price);
                 });
             });
+
+            // + Kártya hozzáadása
+            var addBtn   = document.getElementById('va-pk-add-card');
+            var countEl  = document.getElementById('va-pk-count');
+            if (addBtn && countEl) {
+                addBtn.addEventListener('click', function(){
+                    var cur = parseInt(countEl.value) || 4;
+                    if (cur >= 8) { addBtn.disabled = true; return; }
+                    var next = cur + 1;
+                    var card = document.querySelector('[data-card-n="'+next+'"]');
+                    if (card) {
+                        card.classList.remove('va-pk-card--hidden');
+                        countEl.value = next;
+                        if (next >= 8) addBtn.disabled = true;
+                    }
+                });
+            }
         })();
         </script>
         <?php
@@ -4697,7 +5042,7 @@ class VA_Settings_Page {
 
                         <div class="va-pc-overview-grid">
                             <div class="va-pc-overview-card">
-                                <span class="va-pc-overview-card__label">Hasznalati logika</span>
+                                <span class="va-pc-overview-card__label">Használati logika</span>
                                 <strong class="va-pc-overview-card__value" data-summary-basis-card><?php echo esc_html( $basis_label ); ?></strong>
                             </div>
                             <div class="va-pc-overview-card">
@@ -4709,7 +5054,7 @@ class VA_Settings_Page {
                                 <strong class="va-pc-overview-card__value" data-summary-cooldown-card><?php echo esc_html( (string) (int) $plan['boost_cooldown'] ); ?> nap</strong>
                             </div>
                             <div class="va-pc-overview-card">
-                                <span class="va-pc-overview-card__label">Badge szin</span>
+                                <span class="va-pc-overview-card__label">Badge szín</span>
                                 <strong class="va-pc-overview-card__value" data-summary-color-card><?php echo esc_html( $plan['color'] ); ?></strong>
                             </div>
                         </div>
@@ -4718,8 +5063,8 @@ class VA_Settings_Page {
                             <section class="va-pc-card va-pc-card--appearance">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Megjelenes</h2>
-                                        <p class="va-pc-card__text">Ez hatarozza meg a badge vizualis karakteret es az adminban, frontendben latszo rovid szoveget.</p>
+                                        <h2 class="va-pc-card__title">Megjelenés</h2>
+                                        <p class="va-pc-card__text">Ez határozza meg a badge vizuális karakterét és az adminban, frontendben látszó rövid szöveget.</p>
                                     </div>
                                     <div class="va-pc-livebadge" data-preview-badge>
                                         <span class="va-pc-livebadge__icon" data-preview-icon><?php echo esc_html( $plan['icon'] ); ?></span>
@@ -4728,26 +5073,25 @@ class VA_Settings_Page {
                                 </div>
                                 <div class="va-pc-form-grid va-pc-form-grid--appearance">
                                     <label class="va-pc-field va-pc-field--wide">
-                                        <span class="va-pc-field__label">Megnevezes</span>
+                                        <span class="va-pc-field__label">Megnevezés</span>
                                         <input type="text" class="va-pc-input" data-key="label" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['label'] ); ?>" placeholder="<?php echo esc_attr( $default['label'] ); ?>">
                                     </label>
                                     <label class="va-pc-field va-pc-field--icon">
                                         <span class="va-pc-field__label">Ikon</span>
                                         <input type="text" class="va-pc-input va-pc-input--icon" data-key="icon" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['icon'] ); ?>" placeholder="<?php echo esc_attr( $default['icon'] ); ?>" maxlength="8">
                                     </label>
-                                    <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Szin</span>
+                                    <label class="va-pc-field va-pc-field--color">
+                                        <span class="va-pc-field__label">Szín</span>
                                         <span class="va-pc-color-field">
-                                            <input type="color" class="va-pc-colorpicker" data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( preg_match( '/^#[0-9a-fA-F]{6}$/', $plan['color'] ) ? $plan['color'] : $default['color'] ); ?>">
-                                            <input type="text" class="va-pc-input va-pc-input--color" data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['color'] ); ?>" placeholder="<?php echo esc_attr( $default['color'] ); ?>">
+                                            <input type="text" class="va-pc-input va-pc-input--color va-color-input" data-key="color" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['color'] ); ?>" placeholder="<?php echo esc_attr( $default['color'] ); ?>">
                                         </span>
                                     </label>
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Hatter RGBA</span>
+                                        <span class="va-pc-field__label">Háttér RGBA</span>
                                         <input type="text" class="va-pc-input" data-key="bg" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['bg'] ); ?>" placeholder="<?php echo esc_attr( $default['bg'] ); ?>">
                                     </label>
                                     <label class="va-pc-field va-pc-field--full">
-                                        <span class="va-pc-field__label">Leiras</span>
+                                        <span class="va-pc-field__label">Leírás</span>
                                         <input type="text" class="va-pc-input" data-key="description" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['description'] ); ?>" placeholder="<?php echo esc_attr( $default['description'] ); ?>">
                                     </label>
                                     <?php if ( $slug === 'platinum' ): ?>
@@ -4763,22 +5107,22 @@ class VA_Settings_Page {
                             <section class="va-pc-card">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Hirdetesi limit</h2>
-                                        <p class="va-pc-card__text">Itt dol el, hogy egyszerre aktiv darabszamot vagy havi feladast szamoljon a rendszer.</p>
+                                        <h2 class="va-pc-card__title">Hirdetési limit</h2>
+                                        <p class="va-pc-card__text">Azt határozza meg, hogy egyszerre aktív darabszámot vagy havi feladást számláljon a rendszer.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid va-pc-form-grid--compact">
                                     <label class="va-pc-field">
                                         <span class="va-pc-field__label">Limit</span>
-                                        <span class="va-pc-field__hint">0 = korlatlan</span>
+                                        <span class="va-pc-field__hint">0 = korlátlan</span>
                                         <input type="number" class="va-pc-input va-pc-input--number" data-key="monthly_limit" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( (string) $limit_value ); ?>" min="0" max="9999">
                                     </label>
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Szamlalas modja</span>
-                                        <span class="va-pc-field__hint">aktiv vagy havi</span>
+                                        <span class="va-pc-field__label">Számlálás módja</span>
+                                        <span class="va-pc-field__hint">aktív vagy havi</span>
                                         <select class="va-pc-select" data-key="basis" data-slug="<?php echo esc_attr( $slug ); ?>">
-                                            <option value="active" <?php selected( $plan['basis'], 'active' ); ?>>Aktiv hirdetesek egyszerre</option>
-                                            <option value="monthly" <?php selected( $plan['basis'], 'monthly' ); ?>>Havi feladott hirdetesek</option>
+                                            <option value="active" <?php selected( $plan['basis'], 'active' ); ?>>Aktív hirdetések egyszerre</option>
+                                            <option value="monthly" <?php selected( $plan['basis'], 'monthly' ); ?>>Havi feladott hirdetések</option>
                                         </select>
                                     </label>
                                 </div>
@@ -4787,14 +5131,14 @@ class VA_Settings_Page {
                             <section class="va-pc-card">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Boost / Kiemeles</h2>
-                                        <p class="va-pc-card__text">A cooldown csomag-specifikus. A globalis badge es kapcsolo a kulon panelen allithato.</p>
+                                        <h2 class="va-pc-card__title">Boost / Kiemelés</h2>
+                                        <p class="va-pc-card__text">A cooldown csomag-specifikus. A globális badge és kapcsoló a külön panelen állítható.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid va-pc-form-grid--compact">
                                     <label class="va-pc-field">
                                         <span class="va-pc-field__label">Cooldown</span>
-                                        <span class="va-pc-field__hint">napokban merve</span>
+                                        <span class="va-pc-field__hint">napokban mérve</span>
                                         <input type="number" class="va-pc-input va-pc-input--number" data-key="boost_cooldown" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( (string) (int) $plan['boost_cooldown'] ); ?>" min="1" max="365">
                                     </label>
                                 </div>
@@ -4803,22 +5147,22 @@ class VA_Settings_Page {
                             <section class="va-pc-card va-pc-card--marketing">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Ar es marketing</h2>
-                                        <p class="va-pc-card__text">Nem a fizetesi logikat kezeli, hanem a kommunikacios szovegeket es badge tartalmakat.</p>
+                                        <h2 class="va-pc-card__title">Ár és marketing</h2>
+                                        <p class="va-pc-card__text">Nem a fizetési logikát kezeli, hanem a kommunikációs szövegeket és badge tartalmakat.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid">
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Havi ar</span>
-                                        <input type="text" class="va-pc-input" data-key="price_monthly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_monthly'] ?? '' ); ?>" placeholder="pl. 990 Ft/ho">
+                                        <span class="va-pc-field__label">Havi ár</span>
+                                        <input type="text" class="va-pc-input" data-key="price_monthly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_monthly'] ?? '' ); ?>" placeholder="pl. 990 Ft/hó">
                                     </label>
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Eves ar</span>
-                                        <input type="text" class="va-pc-input" data-key="price_yearly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_yearly'] ?? '' ); ?>" placeholder="pl. 9900 Ft/ev">
+                                        <span class="va-pc-field__label">Éves ár</span>
+                                        <input type="text" class="va-pc-input" data-key="price_yearly" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['price_yearly'] ?? '' ); ?>" placeholder="pl. 9900 Ft/év">
                                     </label>
                                     <label class="va-pc-field va-pc-field--full">
-                                        <span class="va-pc-field__label">Promo badge szoveg</span>
-                                        <input type="text" class="va-pc-input" data-key="badge_text" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['badge_text'] ?? '' ); ?>" placeholder="opcionalis kiemeles, pl. Legjobb ar">
+                                        <span class="va-pc-field__label">Promo badge szöveg</span>
+                                        <input type="text" class="va-pc-input" data-key="badge_text" data-slug="<?php echo esc_attr( $slug ); ?>" value="<?php echo esc_attr( $plan['badge_text'] ?? '' ); ?>" placeholder="opcionális kiemelés, pl. Legjobb ár">
                                     </label>
                                 </div>
                             </section>
@@ -4840,9 +5184,9 @@ class VA_Settings_Page {
                                         'price_yearly'   => '',
                                         'badge_text'     => '',
                                     ] ) ); ?>">
-                                Alapertekek visszaallitasa
+                                Alapértékek visszaállítása
                             </button>
-                            <span class="va-pc-footerbar__note">A visszaallitas csak a jelenlegi panel mezoihez nyul. Mentes utan irjuk felul az adatbazist.</span>
+                            <span class="va-pc-footerbar__note">A visszaállítás csak a jelenlegi panel mezőihez nyúl. Mentés után írjuk felül az adatbázist.</span>
                         </div>
                     </div>
                     <?php endforeach; ?>
@@ -4854,8 +5198,8 @@ class VA_Settings_Page {
                                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"/></svg>
                                 </span>
                                 <div>
-                                    <div class="va-pc-planchip__title">Globalis boost beallitasok</div>
-                                    <div class="va-pc-planchip__desc">Itt tudod vezerezni a badge lathatosagat, a rendszer be-kikapcsolasat es a kozos feliratot.</div>
+                                    <div class="va-pc-planchip__title">Globális boost beállítások</div>
+                                    <div class="va-pc-planchip__desc">A badge láthatóságát, a rendszer be-/kikapcsolását és a közös feliratot itt vezérelheted.</div>
                                 </div>
                             </div>
                             <div class="va-pc-panel__hero-meta">
@@ -4869,19 +5213,19 @@ class VA_Settings_Page {
                             <section class="va-pc-card">
                                 <div class="va-pc-card__head">
                                     <div>
-                                        <h2 class="va-pc-card__title">Kozös boost logika</h2>
-                                        <p class="va-pc-card__text">A csomagszintu cooldown mellett ez szabja meg, hogy a badge meddig latszik es egyaltalan aktiv-e a szolgaltatas.</p>
+                                        <h2 class="va-pc-card__title">Közös boost logika</h2>
+                                        <p class="va-pc-card__text">A csomagszintű cooldown mellett ez szabja meg, hogy a badge meddig látszik és egyáltalán aktív-e a szolgáltatás.</p>
                                     </div>
                                 </div>
                                 <div class="va-pc-form-grid">
                                     <label class="va-pc-field">
-                                        <span class="va-pc-field__label">Badge lathatosag</span>
+                                        <span class="va-pc-field__label">Badge láthatóság</span>
                                         <span class="va-pc-field__hint">napban megadva</span>
                                         <input type="number" id="va-pc-global-window" class="va-pc-input va-pc-input--number" value="<?php echo esc_attr( (string) (int) $global['boost_badge_window'] ); ?>" min="1" max="365">
                                     </label>
                                     <label class="va-pc-field va-pc-field--wide">
-                                        <span class="va-pc-field__label">Badge szoveg</span>
-                                        <input type="text" id="va-pc-global-badgetext" class="va-pc-input" value="<?php echo esc_attr( $global['boost_badge_text'] ); ?>" placeholder="pl. Elore teve">
+                                        <span class="va-pc-field__label">Badge szöveg</span>
+                                        <input type="text" id="va-pc-global-badgetext" class="va-pc-input" value="<?php echo esc_attr( $global['boost_badge_text'] ); ?>" placeholder="pl. Előre téve">
                                     </label>
                                     <label class="va-pc-field va-pc-field--switch">
                                         <span class="va-pc-field__label">Boost rendszer</span>
@@ -5296,6 +5640,11 @@ class VA_Settings_Page {
         .va-pc-field--icon {
             max-width: 120px;
         }
+        .va-pc-field--color {
+            align-items: flex-start;
+            justify-content: center;
+            padding-left: 18px;
+        }
         .va-pc-field__label {
             font-size: 12px;
             font-weight: 700;
@@ -5538,14 +5887,14 @@ class VA_Settings_Page {
                 }
                 var label = panel.querySelector('[data-key="label"]');
                 var icon = panel.querySelector('[data-key="icon"]');
-                var color = panel.querySelector('.va-pc-colorpicker[data-key="color"]');
+                var color = panel.querySelector('.va-pc-input[data-key="color"]');
                 var limit = panel.querySelector('[data-key="monthly_limit"]');
                 var basis = panel.querySelector('[data-key="basis"]');
                 var cooldown = panel.querySelector('[data-key="boost_cooldown"]');
                 var title = nav.querySelector('.va-pc-nav__title');
                 var navIcon = nav.querySelector('.va-pc-nav__icon');
                 var meta = nav.querySelectorAll('.va-pc-nav__meta span');
-                var basisText = basis && basis.value === 'active' ? 'aktiv' : 'havi';
+                var basisText = basis && basis.value === 'active' ? 'aktív' : 'havi';
                 var limitText = limit && parseInt(limit.value || '0', 10) > 0 ? limit.value : 'Korlátlan';
                 var cooldownText = cooldown ? (cooldown.value || '0') : '0';
                 if(title && label){ title.textContent = label.value || ''; }
@@ -5566,15 +5915,14 @@ class VA_Settings_Page {
                 var iconInput = panel.querySelector('[data-key="icon"]');
                 var labelInput = panel.querySelector('[data-key="label"]');
                 var descInput = panel.querySelector('[data-key="description"]');
-                var colorInput = panel.querySelector('.va-pc-colorpicker[data-key="color"]');
+                var colorInput = panel.querySelector('.va-pc-input[data-key="color"]');
                 var limitInput = panel.querySelector('[data-key="monthly_limit"]');
                 var basisInput = panel.querySelector('[data-key="basis"]');
                 var cooldownInput = panel.querySelector('[data-key="boost_cooldown"]');
-                var colorText = panel.querySelector('.va-pc-input[data-key="color"]');
-                var color = colorInput ? colorInput.value : (colorText ? colorText.value : '#ffffff');
+                var color = colorInput ? colorInput.value : '#ffffff';
                 var limitValue = limitInput ? parseInt(limitInput.value || '0', 10) : 0;
                 var limitText = limitValue > 0 ? String(limitValue) : 'Korlátlan';
-                var basisText = basisInput && basisInput.value === 'active' ? 'Aktiv hirdetesek' : 'Havi feladas';
+                var basisText = basisInput && basisInput.value === 'active' ? 'Aktív hirdetések' : 'Havi feladás';
                 var cooldownText = cooldownInput ? (cooldownInput.value || '0') + ' nap' : '0 nap';
 
                 panel.style.setProperty('--plan-color', color);
@@ -5598,24 +5946,11 @@ class VA_Settings_Page {
                 updateSidebarSummary(slug, panel);
             }
 
-            document.querySelectorAll('.va-pc-colorpicker').forEach(function(picker){
-                picker.addEventListener('input', function(){
-                    var panel = picker.closest('.va-pc-panel');
-                    var text = panel ? panel.querySelector('.va-pc-input[data-key="color"]') : null;
-                    if(text){
-                        text.value = picker.value;
-                    }
-                    updatePlanPreview(picker.dataset.slug);
-                });
-            });
-
             document.querySelectorAll('.va-pc-input[data-key="color"]').forEach(function(input){
                 input.addEventListener('input', function(){
-                    var panel = input.closest('.va-pc-panel');
-                    var picker = panel ? panel.querySelector('.va-pc-colorpicker[data-key="color"]') : null;
-                    if(picker && /^#[0-9a-fA-F]{6}$/.test(input.value)){
-                        picker.value = input.value;
-                    }
+                    updatePlanPreview(input.dataset.slug);
+                });
+                input.addEventListener('change', function(){
                     updatePlanPreview(input.dataset.slug);
                 });
             });
@@ -5643,10 +5978,7 @@ class VA_Settings_Page {
                             field.value = defaults[key];
                         }
                         if(key === 'color'){
-                            var picker = panel.querySelector('.va-pc-colorpicker[data-key="color"]');
-                            if(picker && /^#[0-9a-fA-F]{6}$/.test(defaults[key])){
-                                picker.value = defaults[key];
-                            }
+                            updatePlanPreview(button.dataset.slug);
                         }
                     });
                     updatePlanPreview(button.dataset.slug);
@@ -5669,7 +6001,7 @@ class VA_Settings_Page {
                     var slug = panel.dataset.slug;
                     var item = {};
                     panel.querySelectorAll('[data-key]').forEach(function(field){
-                        if(field.type === 'color'){
+                        if(field.classList.contains('va-cpick__swatch')){
                             return;
                         }
                         item[field.dataset.key] = field.value;
@@ -5731,8 +6063,505 @@ class VA_Settings_Page {
                 updatePlanPreview(panel.dataset.slug);
             });
             setActivePanel('va-pc-panel-<?php echo esc_js( $first_slug ); ?>');
+            if(typeof window.vaInitColorPickers === 'function'){
+                window.vaInitColorPickers(document.querySelector('.va-pc-wrap'));
+            }
+        })();
+        </script>
+        <?php
+    }
+
+    /* ── Back-to-top gomb beállítások ─────────────────────── */
+    public static function render_btt(): void {
+        $styles = [
+            'circle'   => [ 'label' => 'Circle – teli kör',          'preview' => '⬤' ],
+            'rounded'  => [ 'label' => 'Rounded – lekerekített',      'preview' => '▣' ],
+            'square'   => [ 'label' => 'Square – szögletes',          'preview' => '■' ],
+            'pill'     => [ 'label' => 'Pill – hosszított oval',      'preview' => '💊' ],
+            'ghost'    => [ 'label' => 'Ghost – átlátszó keret',      'preview' => '○' ],
+            'glass'    => [ 'label' => 'Glass – frosted glass',       'preview' => '🔮' ],
+            'neon'     => [ 'label' => 'Neon – izzó glow',            'preview' => '💡' ],
+            'minimal'  => [ 'label' => 'Minimal – csak ikon',         'preview' => '↑' ],
+            'floating' => [ 'label' => 'Floating – lebegő árnyék',    'preview' => '🎈' ],
+            'arrow'    => [ 'label' => 'Arrow – nyíl badge',          'preview' => '▲' ],
+        ];
+
+        $cur_style       = self::get_display_option( 'va_btt_style',        'circle' );
+        $cur_icon        = self::get_display_option( 'va_btt_icon',          'fa-solid fa-chevron-up' );
+        $cur_color       = self::get_display_option( 'va_btt_color',         '#ff0000' );
+        $cur_border      = self::get_display_option( 'va_btt_border_color',  '#ff0000' );
+        $cur_txtcolor    = self::get_display_option( 'va_btt_text_color',    '#ffffff' );
+        $cur_size        = self::get_display_option( 'va_btt_size',          '48' );
+        $cur_pos         = self::get_display_option( 'va_btt_position',      'right' );
+        $cur_ox          = self::get_display_option( 'va_btt_offset_x',      '28' );
+        $cur_oy          = self::get_display_option( 'va_btt_offset_y',      '28' );
+        $cur_after       = self::get_display_option( 'va_btt_show_after',    '300' );
+        $cur_enabled     = self::get_display_option( 'va_btt_enabled',       '1' );
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>⬆ Tetejére gomb</h1>
+            <p class="description">Az oldal jobb (vagy bal) sarkában megjelenő „vissza a tetejére" gomb kinézete és viselkedése.</p>
+            <?php settings_errors( 'va_btt_settings' ); ?>
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_btt_settings' ); ?>
+
+                <table class="form-table">
+                    <tr><th>Bekapcsolva</th><td>
+                        <label><input type="checkbox" name="va_btt_enabled" value="1" <?php checked( $cur_enabled, '1' ); ?>> Gomb megjelenítése a frontenden</label>
+                    </td></tr>
+                    <tr><th>Megjelenési stílus</th><td>
+                        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:4px;">
+                        <?php foreach ( $styles as $key => $s ) : ?>
+                            <label style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:10px;border:2px solid <?php echo $cur_style === $key ? 'var(--va-accent)' : 'var(--va-border)'; ?>;border-radius:10px;background:var(--va-bg3);min-width:80px;text-align:center;">
+                                <input type="radio" name="va_btt_style" value="<?php echo esc_attr($key); ?>" <?php checked($cur_style, $key); ?> style="display:none;">
+                                <span style="font-size:22px;"><?php echo $s['preview']; ?></span>
+                                <span style="font-size:11px;color:var(--va-muted);"><?php echo esc_html($s['label']); ?></span>
+                            </label>
+                        <?php endforeach; ?>
+                        </div>
+                    </td></tr>
+                    <tr><th>Font Awesome ikon</th><td>
+                        <p class="description" style="margin-bottom:8px;">Írj be egy <a href="https://fontawesome.com/icons" target="_blank">Font Awesome 6</a> ikonnevet, pl. <code>fa-solid fa-chevron-up</code> – vagy kattints az alábbi előre beállítottak egyikére:</p>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+                            <input type="text" id="va_btt_icon_input" name="va_btt_icon" value="<?php echo esc_attr($cur_icon); ?>" style="width:260px;" placeholder="pl. fa-solid fa-chevron-up">
+                            <span style="font-size:22px;"><i id="va_btt_icon_preview" class="<?php echo esc_attr($cur_icon); ?>" style="color:var(--va-accent);"></i></span>
+                        </div>
+                        <?php
+                        $fa_suggestions = [
+                            'fa-solid fa-chevron-up'    => 'Chevron',
+                            'fa-solid fa-arrow-up'      => 'Nyíl',
+                            'fa-solid fa-rocket'        => 'Rakéta',
+                            'fa-solid fa-house'         => 'Ház',
+                            'fa-solid fa-star'          => 'Csillag',
+                            'fa-solid fa-fire'          => 'Láng',
+                            'fa-solid fa-paw'           => 'Mancs',
+                            'fa-solid fa-leaf'          => 'Levél',
+                            'fa-solid fa-circle-up'     => 'Kör nyíl',
+                            'fa-solid fa-angles-up'     => 'Dupla nyíl',
+                            'fa-solid fa-gun'           => 'Puska',
+                            'fa-solid fa-feather'       => 'Toll',
+                            'fa-solid fa-tree'          => 'Fa',
+                            'fa-solid fa-crow'          => 'Varjú',
+                            'fa-solid fa-fish'          => 'Hal',
+                            'fa-solid fa-dog'           => 'Kutya',
+                            'fa-solid fa-horse'         => 'Ló',
+                            'fa-solid fa-bug'           => 'Bogár',
+                            'fa-solid fa-khanda'        => 'Khanda',
+                            'fa-regular fa-circle-up'   => 'Kör nyíl (körvonal)',
+                        ];
+                        ?>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                        <?php foreach ( $fa_suggestions as $cls => $lbl ) : ?>
+                            <button type="button" class="va-btt-fa-pick" data-cls="<?php echo esc_attr($cls); ?>"
+                                style="display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 12px;border:2px solid <?php echo $cur_icon === $cls ? 'var(--va-accent)' : 'var(--va-border)'; ?>;border-radius:10px;background:var(--va-bg3);cursor:pointer;min-width:64px;">
+                                <i class="<?php echo esc_attr($cls); ?>" style="font-size:20px;color:var(--va-accent);"></i>
+                                <span style="font-size:10px;color:var(--va-muted);"><?php echo esc_html($lbl); ?></span>
+                            </button>
+                        <?php endforeach; ?>
+                        </div>
+                    </td></tr>
+                    <?php self::field_color( 'va_btt_color',        'Gomb háttér színe',   $cur_color ); ?>
+                    <?php self::field_color( 'va_btt_border_color', 'Keret (border) színe',$cur_border ); ?>
+                    <?php self::field_color( 'va_btt_text_color',   'Ikon színe',          $cur_txtcolor ); ?>
+                    <tr><th>Méret (px)</th><td>
+                        <input type="number" name="va_btt_size" value="<?php echo esc_attr($cur_size); ?>" min="32" max="80" class="small-text">
+                        <p class="description">A gomb átmérője pixelben (32–80).</p>
+                    </td></tr>
+                    <tr><th>Pozíció</th><td>
+                        <select name="va_btt_position">
+                            <option value="right" <?php selected($cur_pos,'right'); ?>>Jobb oldal</option>
+                            <option value="left"  <?php selected($cur_pos,'left');  ?>>Bal oldal</option>
+                        </select>
+                    </td></tr>
+                    <tr><th>Vízszintes eltolás (px)</th><td>
+                        <input type="number" name="va_btt_offset_x" value="<?php echo esc_attr($cur_ox); ?>" min="0" max="120" class="small-text">
+                    </td></tr>
+                    <tr><th>Függőleges eltolás (px)</th><td>
+                        <input type="number" name="va_btt_offset_y" value="<?php echo esc_attr($cur_oy); ?>" min="0" max="120" class="small-text">
+                    </td></tr>
+                    <tr><th>Megjelenés görgetés után (px)</th><td>
+                        <input type="number" name="va_btt_show_after" value="<?php echo esc_attr($cur_after); ?>" min="0" max="2000" class="small-text">
+                        <p class="description">Ennyi pixel görgetés után jelenik meg a gomb.</p>
+                    </td></tr>
+                </table>
+
+                <?php submit_button( '💾 Mentés' ); ?>
+            </form>
+        </div>
+        <script>
+        // Stílus radio kártya highlight
+        document.querySelectorAll('[name="va_btt_style"]').forEach(function(r){
+            r.addEventListener('change',function(){
+                document.querySelectorAll('[name="va_btt_style"]').forEach(function(x){
+                    x.closest('label').style.borderColor = x.checked ? 'var(--va-accent)' : 'var(--va-border)';
+                });
+            });
+        });
+        // FA ikon gyors választó
+        var iconInput   = document.getElementById('va_btt_icon_input');
+        var iconPreview = document.getElementById('va_btt_icon_preview');
+        document.querySelectorAll('.va-btt-fa-pick').forEach(function(btn){
+            btn.addEventListener('click', function(){
+                var cls = btn.dataset.cls;
+                iconInput.value = cls;
+                iconPreview.className = cls;
+                document.querySelectorAll('.va-btt-fa-pick').forEach(function(b){
+                    b.style.borderColor = b.dataset.cls === cls ? 'var(--va-accent)' : 'var(--va-border)';
+                });
+            });
+        });
+        iconInput && iconInput.addEventListener('input', function(){
+            iconPreview.className = iconInput.value.trim();
+            document.querySelectorAll('.va-btt-fa-pick').forEach(function(b){
+                b.style.borderColor = b.dataset.cls === iconInput.value.trim() ? 'var(--va-accent)' : 'var(--va-border)';
+            });
+        });
+        if(typeof window.vaInitColorPickers === 'function') window.vaInitColorPickers();
+        </script>
+        <?php
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * PILL / BADGE STÍLUSOK
+     * ══════════════════════════════════════════════════════════ */
+
+    public static function get_pill_defaults(): array {
+        return [
+            'cat_pill' => [
+                'label'    => 'Kategória jelölő',
+                'desc'     => 'A hirdetés kategóriájának pill-je (pl. SUZUKI)',
+                'selector' => '.sl__cat-pill',
+                'example'  => 'Vadászfegyver',
+                'text'     => '#ff4444', 'bg' => 'rgba(255,0,0,.12)', 'border' => 'rgba(255,0,0,.25)',
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 3,
+            ],
+            'featured_pill' => [
+                'label'    => 'Kiemelt hirdetés',
+                'desc'     => 'A kiemelt hirdetések jelölője a cím mellett',
+                'selector' => '.sl__featured-pill',
+                'example'  => '⭐ Kiemelt',
+                'text'     => '#ffd060', 'bg' => 'rgba(255,180,0,.15)', 'border' => 'rgba(255,180,0,.3)',
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0,
+            ],
+            'verified_pill' => [
+                'label'    => 'Ellenőrzött hirdető',
+                'desc'     => 'A megerősített hirdetők jelölője a cím mellett',
+                'selector' => '.sl__verified-pill',
+                'example'  => '✓ Ellenőrzött',
+                'text'     => '#4dffaa', 'bg' => 'rgba(0,210,120,.12)', 'border' => 'rgba(0,210,120,.3)',
+                'radius' => 20, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 9, 'pad_y' => 0,
+            ],
+            'badge_damage_no' => [
+                'label'    => 'Nincs korábbi kár',
+                'desc'     => 'Jármű esetén: nincsen baleseti előélet',
+                'selector' => '.sl__badge--damage-no',
+                'example'  => '✓ Nincs korábbi kár',
+                'text'     => '#4dffaa', 'bg' => 'rgba(0,200,100,.12)', 'border' => 'rgba(0,200,100,.25)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_damage_yes' => [
+                'label'    => 'Korábbi kár / baleset',
+                'desc'     => 'Jármű esetén: volt baleseti előélete',
+                'selector' => '.sl__badge--damage-yes',
+                'example'  => '⚠ Korábbi kár / baleset',
+                'text'     => '#ff8080', 'bg' => 'rgba(255,60,60,.12)', 'border' => 'rgba(255,60,60,.25)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_service' => [
+                'label'    => 'Szervizkönyv megvan',
+                'desc'     => 'Jármű esetén: szervizkönyv rendelkezésre áll',
+                'selector' => '.sl__badge--service-yes',
+                'example'  => '✓ Szervizkönyv megvan',
+                'text'     => '#66ccff', 'bg' => 'rgba(0,180,255,.10)', 'border' => 'rgba(0,180,255,.2)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_license' => [
+                'label'    => 'Fegyverengedély szükséges',
+                'desc'     => 'Vadász termékeknél: engedélyköteles',
+                'selector' => '.sl__badge--license',
+                'example'  => '⚠ Fegyverengedély szükséges',
+                'text'     => '#ffd060', 'bg' => 'rgba(255,180,0,.12)', 'border' => 'rgba(255,180,0,.25)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'badge_verified' => [
+                'label'    => 'Ellenőrzött hirdető (badge)',
+                'desc'     => 'Részletek kártyában megjelenő ellenőrzött badge',
+                'selector' => '.sl__badge--verified',
+                'example'  => '✓ Ellenőrzött hirdető',
+                'text'     => '#4dffaa', 'bg' => 'rgba(0,210,120,.12)', 'border' => 'rgba(0,210,120,.3)',
+                'radius' => 20, 'font_size' => 12, 'font_weight' => 700, 'pad_x' => 10, 'pad_y' => 5,
+            ],
+            'plan_basic' => [
+                'label'    => 'Alap tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Alap csomag jelölője',
+                'selector' => '.sl__plan-badge--basic',
+                'example'  => 'Alap tag',
+                'text'     => 'rgba(255,255,255,.5)', 'bg' => 'rgba(255,255,255,.07)', 'border' => 'rgba(255,255,255,.12)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 600, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+            'plan_silver' => [
+                'label'    => 'Ezüst tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Ezüst csomag jelölője',
+                'selector' => '.sl__plan-badge--silver',
+                'example'  => '✦ Ezüst tag',
+                'text'     => '#c0c0c0', 'bg' => 'rgba(192,192,192,.12)', 'border' => 'rgba(192,192,192,.3)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+            'plan_gold' => [
+                'label'    => 'Arany tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Arany csomag jelölője',
+                'selector' => '.sl__plan-badge--gold',
+                'example'  => '★ Arany tag',
+                'text'     => '#ffd700', 'bg' => 'rgba(255,215,0,.12)', 'border' => 'rgba(255,215,0,.3)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+            'plan_platinum' => [
+                'label'    => 'Platina tag (terv badge)',
+                'desc'     => 'Feladó kártyában: Platina csomag jelölője',
+                'selector' => '.sl__plan-badge--platinum',
+                'example'  => '◆ Platina tag',
+                'text'     => '#a0e4ff', 'bg' => 'rgba(100,200,255,.12)', 'border' => 'rgba(100,200,255,.3)',
+                'radius' => 6, 'font_size' => 11, 'font_weight' => 700, 'pad_x' => 8, 'pad_y' => 3,
+            ],
+        ];
+    }
+
+    public static function output_pill_css(): void {
+        $defaults = self::get_pill_defaults();
+        $saved    = (array) json_decode( (string) get_option( 'va_pill_styles', '{}' ), true );
+        $css      = "\n<style id=\"va-pill-styles\">\n";
+        foreach ( $defaults as $key => $d ) {
+            $s  = isset( $saved[ $key ] ) ? array_merge( $d, (array) $saved[ $key ] ) : $d;
+            $py = (int) $s['pad_y'];
+            $px = (int) $s['pad_x'];
+            $h  = $py * 2 + (int) $s['font_size'] + 4;  // approx height
+            $padding = $py > 0 ? "{$py}px {$px}px" : "0 {$px}px";
+            $min_h   = $py > 0 ? '' : "height:{$h}px;";
+            $css .= "{$s['selector']}{display:inline-flex;align-items:center;gap:4px;font-size:{$s['font_size']}px;font-weight:{$s['font_weight']};padding:{$padding};{$min_h}border-radius:{$s['radius']}px;background:{$s['bg']};color:{$s['text']};border:1px solid {$s['border']};white-space:nowrap;text-decoration:none;vertical-align:middle;line-height:1;}\n";
+        }
+        $css .= "</style>\n";
+        echo $css; // phpcs:ignore WordPress.Security.EscapeOutput
+    }
+
+    public static function handle_save_pill_styles(): void {
+        check_admin_referer( 'va_save_pill_styles' );
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
+        $raw = wp_unslash( $_POST['va_pill_styles'] ?? '{}' );
+        // validate: must be valid JSON array
+        $decoded = json_decode( $raw, true );
+        if ( is_array( $decoded ) ) {
+            update_option( 'va_pill_styles', wp_json_encode( $decoded ) );
+        }
+        wp_safe_redirect( add_query_arg( [ 'page' => 'vadaszapro-pills', 'saved' => '1' ], admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    /* ── Pill / Badge stílusok szerkesztő ─────────────────── */
+    public static function render_pill_styles(): void {
+        $defaults = self::get_pill_defaults();
+        $saved    = (array) json_decode( (string) get_option( 'va_pill_styles', '{}' ), true );
+        // merge saved over defaults
+        $pills = [];
+        foreach ( $defaults as $k => $d ) {
+            $pills[$k] = isset( $saved[$k] ) ? array_merge( $d, (array) $saved[$k] ) : $d;
+        }
+        $is_saved = isset( $_GET['saved'] );
+        ?>
+        <div class="wrap va-admin-wrap">
+        <h1>🏷️ Pill & Badge stílusszerkesztő</h1>
+        <p class="description">Az összes hirdetésoldalon megjelenő jelölő (pill / badge) kinézete valós időben szerkeszthető. A változtatások az összes oldalon azonnal érvényre jutnak mentés után.</p>
+        <?php if ( $is_saved ): ?><div class="notice notice-success is-dismissible"><p>✅ Stílusok mentve!</p></div><?php endif; ?>
+
+        <!-- Preview sáv -->
+        <div id="va-pill-preview-bar" style="background:var(--va-bg2);border:1px solid var(--va-border);border-radius:12px;padding:18px 22px;margin:18px 0;display:flex;flex-wrap:wrap;gap:10px;align-items:center;">
+            <span style="font-size:12px;color:var(--va-muted);margin-right:6px;">Élő előnézet:</span>
+            <?php foreach ( $pills as $key => $p ): ?>
+            <span id="prev-<?php echo esc_attr($key); ?>" style="display:inline-flex;align-items:center;gap:4px;font-size:<?php echo esc_attr($p['font_size']); ?>px;font-weight:<?php echo esc_attr($p['font_weight']); ?>;padding:<?php echo $p['pad_y']>0?esc_attr($p['pad_y']).'px '.esc_attr($p['pad_x']).'px':'0 '.esc_attr($p['pad_x']).'px'; ?>;<?php echo $p['pad_y']<=0?'height:'.((int)$p['font_size']+4+6).'px;':''; ?>border-radius:<?php echo esc_attr($p['radius']); ?>px;background:<?php echo esc_attr($p['bg']); ?>;color:<?php echo esc_attr($p['text']); ?>;border:1px solid <?php echo esc_attr($p['border']); ?>;white-space:nowrap;vertical-align:middle;line-height:1;">
+                <?php echo esc_html($p['example']); ?>
+            </span>
+            <?php endforeach; ?>
+        </div>
+
+        <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" id="va-pill-form">
+            <input type="hidden" name="action" value="va_save_pill_styles">
+            <?php wp_nonce_field( 'va_save_pill_styles' ); ?>
+            <input type="hidden" name="va_pill_styles" id="va_pill_styles_json" value="<?php echo esc_attr( wp_json_encode( array_map( fn($p) => array_diff_key($p,['label'=>1,'desc'=>1,'selector'=>1,'example'=>1]), $pills ) ) ); ?>">
+
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:18px;">
+            <?php foreach ( $pills as $key => $p ):
+                $sel = esc_attr($key);
+            ?>
+            <div class="va-settings-card" data-pill-key="<?php echo $sel; ?>" style="padding:0;overflow:hidden;">
+                <div class="va-settings-card__head" style="cursor:pointer;user-select:none;" onclick="this.parentElement.classList.toggle('va-pill-open')">
+                    <span id="prev-card-<?php echo $sel; ?>" style="display:inline-flex;align-items:center;gap:4px;font-size:<?php echo esc_attr($p['font_size']); ?>px;font-weight:<?php echo esc_attr($p['font_weight']); ?>;padding:<?php echo $p['pad_y']>0?esc_attr($p['pad_y']).'px '.esc_attr($p['pad_x']).'px':'0 '.esc_attr($p['pad_x']).'px'; ?>;<?php echo $p['pad_y']<=0?'height:'.((int)$p['font_size']+10).'px;':''; ?>border-radius:<?php echo esc_attr($p['radius']); ?>px;background:<?php echo esc_attr($p['bg']); ?>;color:<?php echo esc_attr($p['text']); ?>;border:1px solid <?php echo esc_attr($p['border']); ?>;white-space:nowrap;line-height:1;margin-right:8px;">
+                        <?php echo esc_html($p['example']); ?>
+                    </span>
+                    <div>
+                        <span class="va-settings-card__title"><?php echo esc_html($p['label']); ?></span><br>
+                        <span style="font-size:11px;color:var(--va-muted);font-family:monospace;"><?php echo esc_html($p['selector']); ?></span>
+                    </div>
+                    <span style="margin-left:auto;color:var(--va-muted);font-size:18px;">›</span>
+                </div>
+                <div class="va-pill-controls" style="display:none;padding:16px;border-top:1px solid var(--va-border);background:var(--va-bg3);">
+                    <p style="margin:0 0 12px;font-size:12px;color:var(--va-muted);"><?php echo esc_html($p['desc']); ?></p>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;">
+
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Szöveg szín
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <input type="text" class="va-cp va-pill-field" data-key="<?php echo $sel; ?>" data-prop="text" value="<?php echo esc_attr($p['text']); ?>" style="flex:1;font-size:11px;padding:3px 6px;">
+                            </div>
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Háttérszín
+                            <div style="display:flex;align-items:center;gap:6px;">
+                                <input type="text" class="va-cp va-pill-field" data-key="<?php echo $sel; ?>" data-prop="bg" value="<?php echo esc_attr($p['bg']); ?>" style="flex:1;font-size:11px;padding:3px 6px;">
+                            </div>
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Keret szín
+                            <input type="text" class="va-cp va-pill-field" data-key="<?php echo $sel; ?>" data-prop="border" value="<?php echo esc_attr($p['border']); ?>" style="width:100%;font-size:11px;padding:3px 6px;">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Betűméret: <b id="lbl-font_size-<?php echo $sel; ?>"><?php echo esc_html($p['font_size']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="font_size" min="9" max="22" value="<?php echo esc_attr($p['font_size']); ?>">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Betűvastagság
+                            <select class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="font_weight" style="padding:4px;">
+                                <?php foreach ( [400,500,600,700,800,900] as $w ): ?>
+                                <option value="<?php echo $w; ?>" <?php selected($p['font_weight'],$w); ?>><?php echo $w; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Lekerekítés (radius): <b id="lbl-radius-<?php echo $sel; ?>"><?php echo esc_html($p['radius']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="radius" min="0" max="40" value="<?php echo esc_attr($p['radius']); ?>">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Vízszintes padding: <b id="lbl-pad_x-<?php echo $sel; ?>"><?php echo esc_html($p['pad_x']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="pad_x" min="0" max="32" value="<?php echo esc_attr($p['pad_x']); ?>">
+                        </label>
+                        <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
+                            Függőleges padding: <b id="lbl-pad_y-<?php echo $sel; ?>"><?php echo esc_html($p['pad_y']); ?>px</b>
+                            <input type="range" class="va-pill-field" data-key="<?php echo $sel; ?>" data-prop="pad_y" min="0" max="20" value="<?php echo esc_attr($p['pad_y']); ?>">
+                        </label>
+                    </div>
+                    <button type="button" class="button button-small va-pill-reset" data-key="<?php echo $sel; ?>" style="margin-top:12px;">↺ Alaphelyre</button>
+                </div>
+            </div>
+            <?php endforeach; ?>
+            </div>
+
+            <p style="margin-top:24px;">
+                <?php submit_button( '💾 Pill stílusok mentése', 'primary', 'submit', false ); ?>
+                &nbsp;<button type="button" class="button" id="va-pills-reset-all">↺ Összes visszaállítása alapértelmezettre</button>
+            </p>
+        </form>
+        </div>
+
+        <script>
+        (function(){
+            var defaults = <?php echo wp_json_encode( array_map( function($p){ return array_intersect_key($p, array_flip(['text','bg','border','radius','font_size','font_weight','pad_x','pad_y','example'])); }, $defaults ) ); ?>;
+            var current  = <?php echo wp_json_encode( array_map( function($p){ return array_intersect_key($p, array_flip(['text','bg','border','radius','font_size','font_weight','pad_x','pad_y'])); }, $pills ) ); ?>;
+
+            // Expand/collapse
+            document.querySelectorAll('[data-pill-key]').forEach(function(card){
+                card.classList.remove('va-pill-open');
+            });
+
+            // Toggle controls visibility
+            document.querySelectorAll('.va-settings-card__head').forEach(function(h){
+                h.addEventListener('click', function(){
+                    var ctrl = this.nextElementSibling;
+                    if(ctrl && ctrl.classList.contains('va-pill-controls')){
+                        ctrl.style.display = ctrl.style.display === 'none' ? 'block' : 'none';
+                        var arrow = this.querySelector('span:last-child');
+                        if(arrow) arrow.textContent = ctrl.style.display === 'none' ? '›' : '⌄';
+                    }
+                });
+            });
+
+            function updatePreview(key) {
+                var d = current[key];
+                if(!d) return;
+                var py = parseInt(d.pad_y)||0;
+                var px = parseInt(d.pad_x)||0;
+                var fs = parseInt(d.font_size)||11;
+                var style = [
+                    'display:inline-flex','align-items:center','gap:4px','white-space:nowrap','line-height:1','vertical-align:middle',
+                    'font-size:'+fs+'px',
+                    'font-weight:'+d.font_weight,
+                    'border-radius:'+d.radius+'px',
+                    'background:'+d.bg,
+                    'color:'+d.text,
+                    'border:1px solid '+d.border,
+                    py>0 ? 'padding:'+py+'px '+px+'px' : 'padding:0 '+px+'px;height:'+(fs+10)+'px',
+                ].join(';');
+                ['prev-'+key, 'prev-card-'+key].forEach(function(id){
+                    var el = document.getElementById(id);
+                    if(el) el.setAttribute('style', style + (id.startsWith('prev-card') ? ';margin-right:8px' : ''));
+                });
+                // update JSON hidden field
+                saveJson();
+            }
+
+            function saveJson() {
+                var out = {};
+                Object.keys(current).forEach(function(k){ out[k] = current[k]; });
+                document.getElementById('va_pill_styles_json').value = JSON.stringify(out);
+            }
+
+            // Field change handler
+            document.querySelectorAll('.va-pill-field').forEach(function(input){
+                input.addEventListener('input', function(){
+                    var key  = this.dataset.key;
+                    var prop = this.dataset.prop;
+                    current[key][prop] = this.type === 'range' ? parseInt(this.value) : this.value;
+                    // update label for range
+                    var lbl = document.getElementById('lbl-'+prop+'-'+key);
+                    if(lbl) lbl.textContent = current[key][prop] + (this.type==='range'?'px':'');
+                    updatePreview(key);
+                });
+            });
+
+            // Reset single
+            document.querySelectorAll('.va-pill-reset').forEach(function(btn){
+                btn.addEventListener('click', function(){
+                    var key = this.dataset.key;
+                    if(!defaults[key]) return;
+                    current[key] = Object.assign({}, defaults[key]);
+                    // update inputs
+                    document.querySelectorAll('.va-pill-field[data-key="'+key+'"]').forEach(function(inp){
+                        var prop = inp.dataset.prop;
+                        inp.value = current[key][prop] ?? '';
+                        var lbl = document.getElementById('lbl-'+prop+'-'+key);
+                        if(lbl) lbl.textContent = inp.value + (inp.type==='range'?'px':'');
+                    });
+                    updatePreview(key);
+                });
+            });
+
+            // Reset all
+            document.getElementById('va-pills-reset-all').addEventListener('click', function(){
+                if(!confirm('Biztos visszaállítod az összes pill-t az alapértelmezettre?')) return;
+                Object.keys(defaults).forEach(function(key){
+                    current[key] = Object.assign({}, defaults[key]);
+                    document.querySelectorAll('.va-pill-field[data-key="'+key+'"]').forEach(function(inp){
+                        var prop = inp.dataset.prop;
+                        inp.value = current[key][prop] ?? '';
+                        var lbl = document.getElementById('lbl-'+prop+'-'+key);
+                        if(lbl) lbl.textContent = inp.value + (inp.type==='range'?'px':'');
+                    });
+                    updatePreview(key);
+                });
+            });
+
+            // Init color pickers
+            if(typeof window.vaInitColorPickers === 'function') window.vaInitColorPickers();
         })();
         </script>
         <?php
     }
 }
+
