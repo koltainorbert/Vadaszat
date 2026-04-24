@@ -6488,17 +6488,7 @@ class VA_Settings_Page {
                         <?php foreach ( ['text'=>'Szöveg szín','bg'=>'Háttér szín','border'=>'Keret szín'] as $prop => $lbl ): ?>
                         <div<?php echo $prop==='border'?' class="va-pill-grid--full"':''; ?>>
                             <div class="va-pill-label"><?php echo $lbl; ?></div>
-                            <div class="va-color-row">
-                                <div style="width:28px;height:28px;border-radius:6px;border:1px solid var(--va-border);background:<?php echo esc_attr($p[$prop]); ?>;flex-shrink:0;cursor:pointer;" id="cswatch-<?php echo $sel.'-'.$prop; ?>" onclick="document.getElementById('cinp-<?php echo $sel.'-'.$prop; ?>').focus()"></div>
-                                <input type="text" id="cinp-<?php echo $sel.'-'.$prop; ?>" class="va-pill-input va-pill-field" data-key="<?php echo $sel; ?>" data-prop="<?php echo $prop; ?>" value="<?php echo esc_attr($p[$prop]); ?>">
-                            </div>
-                            <div class="va-palette">
-                            <?php foreach ($palette as $c): ?>
-                                <div class="va-palette__swatch" style="background:<?php echo esc_attr($c); ?>"
-                                     onclick="vaPillSetColor('<?php echo $sel; ?>','<?php echo esc_js($prop); ?>','<?php echo esc_js($c); ?>')"
-                                     title="<?php echo esc_attr($c); ?>"></div>
-                            <?php endforeach; ?>
-                            </div>
+                            <input type="text" id="cinp-<?php echo $sel.'-'.$prop; ?>" class="va-color-input va-pill-field" data-key="<?php echo $sel; ?>" data-prop="<?php echo $prop; ?>" value="<?php echo esc_attr($p[$prop]); ?>">
                         </div>
                         <?php endforeach; ?>
                     </div>
@@ -6568,7 +6558,13 @@ class VA_Settings_Page {
 
             window.vaPillToggle = function(key) {
                 var card = document.getElementById('card-'+key);
-                if(card) card.classList.toggle('open');
+                if(!card) return;
+                var wasOpen = card.classList.contains('open');
+                card.classList.toggle('open');
+                // init color pickers when card opens
+                if(!wasOpen && typeof $ !== 'undefined' && typeof window.vaInitColorPickers === 'function') {
+                    window.vaInitColorPickers($(card));
+                }
             };
 
             window.vaPillSetColor = function(key, prop, val) {
@@ -6620,7 +6616,16 @@ class VA_Settings_Page {
             // Initial JSON
             saveJson();
 
-            // Field change handler
+            // Field change handler (input = sliders/selects/text, change = color picker update)
+            function vaPillHandleChange() {
+                var key  = this.dataset.key;
+                var prop = this.dataset.prop;
+                if(!key || !current[key]) return;
+                current[key][prop] = this.type === 'range' ? parseInt(this.value) : this.value;
+                var lbl = document.getElementById('lbl-'+prop+'-'+key);
+                if(lbl) lbl.textContent = current[key][prop] + (this.type==='range'?'px':'');
+                updatePreview(key);
+            }
             document.querySelectorAll('.va-pill-field').forEach(function(input){
                 input.addEventListener('input', function(){
                     var key  = this.dataset.key;
@@ -6629,11 +6634,14 @@ class VA_Settings_Page {
                     current[key][prop] = this.type === 'range' ? parseInt(this.value) : this.value;
                     var lbl = document.getElementById('lbl-'+prop+'-'+key);
                     if(lbl) lbl.textContent = current[key][prop] + (this.type==='range'?'px':'');
-                    // update color swatch if color field
-                    if(prop==='text'||prop==='bg'||prop==='border'){
-                        var sw = document.getElementById('cswatch-'+key+'-'+prop);
-                        if(sw) sw.style.background = this.value;
-                    }
+                    updatePreview(key);
+                });
+                // color picker (va-color-input) triggers 'change' after picking
+                input.addEventListener('change', function(){
+                    var key  = this.dataset.key;
+                    var prop = this.dataset.prop;
+                    if(!key || !current[key]) return;
+                    current[key][prop] = this.value;
                     updatePreview(key);
                 });
             });
