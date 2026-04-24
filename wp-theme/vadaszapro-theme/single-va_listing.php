@@ -338,7 +338,6 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 </div>
                 <h1 class="sl__title">
                     <?php the_title(); ?>
-                    <?php if ($verified): ?><span class="sl__verified-pill">&#10003; Ellen&#337;rz&#246;tt</span><?php endif; ?>
                 </h1>
                 <div class="sl__price"><?php echo esc_html( va_format_price($price, $price_type) ); ?></div>
 
@@ -413,6 +412,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     : ['damage-no', '&#10003; Nincs kor&#225;bbi k&#225;r'];
                 if ( $service_book === '1' ) $badges[] = ['service-yes','&#10003; Szervizk&#246;nyv megvan'];
             }
+            if ( $verified )              $badges[] = ['verified',    '&#10003; Ellen&#337;rz&#246;tt hirdeto'];
             if ( $license_req === '1' )  $badges[] = ['license',     '&#9888; Fegyverenged&#233;ly sz&#252;ks&#233;ges'];
             if ( $balcony === '1' )       $badges[] = ['service-yes', '&#10003; Erk&#233;ly / terasz'];
 
