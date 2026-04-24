@@ -312,7 +312,6 @@ class VA_Ajax {
             $short = str_replace( 'va_', '', $k );
             $metas[ $k ] = ! empty( $_POST[ $short ] ) ? '1' : '0';
         }
-        ];
         foreach ( $metas as $k => $v ) {
             update_post_meta( $post_id, $k, $v );
         }
