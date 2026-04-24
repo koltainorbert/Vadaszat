@@ -6387,7 +6387,7 @@ class VA_Settings_Page {
             <?php wp_nonce_field( 'va_save_pill_styles' ); ?>
             <input type="hidden" name="va_pill_styles" id="va_pill_styles_json" value="<?php echo esc_attr( wp_json_encode( array_map( fn($p) => array_diff_key($p,['label'=>1,'desc'=>1,'selector'=>1,'example'=>1]), $pills ) ) ); ?>">
 
-            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:18px;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(420px,100%),1fr));gap:18px;">
             <?php foreach ( $pills as $key => $p ):
                 $sel = esc_attr($key);
             ?>
@@ -6404,7 +6404,7 @@ class VA_Settings_Page {
                 </div>
                 <div class="va-pill-controls" style="display:none;padding:16px;border-top:1px solid var(--va-border);background:var(--va-bg3);">
                     <p style="margin:0 0 12px;font-size:12px;color:var(--va-muted);"><?php echo esc_html($p['desc']); ?></p>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(180px,100%),1fr));gap:10px 18px;">
 
                         <label style="display:flex;flex-direction:column;gap:4px;font-size:12px;">
                             Szöveg szín
