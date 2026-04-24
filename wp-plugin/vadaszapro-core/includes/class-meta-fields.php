@@ -8,16 +8,78 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class VA_Meta_Fields {
 
+    /* ── Oldaltípus lekérése ────────────────────────────── */
+    public static function get_site_type(): string {
+        $t = (string) get_option( 'va_site_type', 'vadaszat' );
+        return in_array( $t, [ 'vadaszat', 'jarmu', 'ingatlan', 'altalanos' ], true ) ? $t : 'vadaszat';
+    }
+
+    /* ── Típus-specifikus extra mezők (admin metabox + AJAX mentés) ─── */
+    public static function get_type_extra_fields(): array {
+        switch ( self::get_site_type() ) {
+            case 'jarmu':
+                return [
+                    'va_brand'           => [ 'label' => 'Gyártó',                  'type' => 'text' ],
+                    'va_model'           => [ 'label' => 'Modell',                   'type' => 'text' ],
+                    'va_year'            => [ 'label' => 'Évjárat',                  'type' => 'number', 'min' => 1900, 'max' => 2030 ],
+                    'va_mileage'         => [ 'label' => 'Kilométeróra (km)',        'type' => 'number', 'min' => 0 ],
+                    'va_fuel_type'       => [ 'label' => 'Üzemanyag',               'type' => 'select',
+                        'options' => [ 'benzin'=>'Benzin','diesel'=>'Dízel','hybrid'=>'Hibrid','electric'=>'Elektromos','lpg'=>'LPG','cng'=>'CNG','egyeb'=>'Egyéb' ] ],
+                    'va_performance_kw'  => [ 'label' => 'Teljesítmény (kW)',        'type' => 'number', 'min' => 0 ],
+                    'va_engine_size'     => [ 'label' => 'Hengerűrtartalom (cm³)',   'type' => 'number', 'min' => 0 ],
+                    'va_transmission'    => [ 'label' => 'Sebességváltó',            'type' => 'select',
+                        'options' => [ 'manual'=>'Kéziváltó','automatic'=>'Automata','semi_auto'=>'Félautomata','cvt'=>'CVT' ] ],
+                    'va_body_type'       => [ 'label' => 'Felépítmény',             'type' => 'select',
+                        'options' => [ 'sedan'=>'Szedán','combi'=>'Kombi','hatchback'=>'Ferdehátú','suv'=>'SUV/Terepjáró','coupe'=>'Kupé','cabrio'=>'Kabrió','van'=>'Furgon/Van','pickup'=>'Pickup','motor'=>'Motor','egyeb'=>'Egyéb' ] ],
+                    'va_color'           => [ 'label' => 'Szín',                     'type' => 'text' ],
+                    'va_doors'           => [ 'label' => 'Ajtók száma',              'type' => 'select',
+                        'options' => [ '2'=>'2', '3'=>'3', '4'=>'4', '5'=>'5' ] ],
+                    'va_owners'          => [ 'label' => 'Tulajdonosok száma',       'type' => 'number', 'min' => 1, 'max' => 20 ],
+                    'va_keys'            => [ 'label' => 'Kulcsok száma',            'type' => 'number', 'min' => 0, 'max' => 10 ],
+                    'va_previous_damage' => [ 'label' => 'Korábbi kár / baleset',   'type' => 'checkbox' ],
+                    'va_service_book'    => [ 'label' => 'Szervizkönyv megvan',      'type' => 'checkbox' ],
+                    'va_tech_inspect'    => [ 'label' => 'Műszaki vizsga lejár',     'type' => 'date' ],
+                    'va_first_reg'       => [ 'label' => 'Első forgalomba hely. (év.hó)', 'type' => 'text' ],
+                ];
+            case 'ingatlan':
+                return [
+                    'va_area_m2'         => [ 'label' => 'Alapterület (m²)',        'type' => 'number', 'min' => 1 ],
+                    'va_rooms'           => [ 'label' => 'Szobák száma',             'type' => 'number', 'min' => 0 ],
+                    'va_floor'           => [ 'label' => 'Emelet',                  'type' => 'number', 'min' => -2, 'max' => 100 ],
+                    'va_total_floors'    => [ 'label' => 'Összes szint',            'type' => 'number', 'min' => 1 ],
+                    'va_lot_size'        => [ 'label' => 'Telek (m²)',              'type' => 'number', 'min' => 0 ],
+                    'va_building_year'   => [ 'label' => 'Építési év',              'type' => 'number', 'min' => 1800, 'max' => 2030 ],
+                    'va_parking'         => [ 'label' => 'Parkoló',                 'type' => 'select',
+                        'options' => [ 'none'=>'Nincs','street'=>'Utcai','private'=>'Saját','garage'=>'Garázs' ] ],
+                    'va_furnished'       => [ 'label' => 'Bútorozott',              'type' => 'select',
+                        'options' => [ 'no'=>'Nem','partial'=>'Részben','yes'=>'Igen' ] ],
+                    'va_heating'         => [ 'label' => 'Fűtés',                   'type' => 'select',
+                        'options' => [ 'gas'=>'Gáz','electric'=>'Elektromos','district'=>'Távfűtés','wood'=>'Fa/szilárd','heat_pump'=>'Hőszivattyú' ] ],
+                    'va_balcony'         => [ 'label' => 'Erkély / terasz',         'type' => 'checkbox' ],
+                ];
+            case 'altalanos':
+                return [
+                    'va_brand'           => [ 'label' => 'Márka',                   'type' => 'text' ],
+                    'va_model'           => [ 'label' => 'Modell / Típus',          'type' => 'text' ],
+                    'va_year'            => [ 'label' => 'Gyártási év',             'type' => 'number', 'min' => 1800, 'max' => 2030 ],
+                ];
+            default: // vadaszat
+                return [
+                    'va_brand'           => [ 'label' => 'Márka / Gyártó',          'type' => 'text' ],
+                    'va_model'           => [ 'label' => 'Modell / Típus',          'type' => 'text' ],
+                    'va_caliber'         => [ 'label' => 'Kaliber',                 'type' => 'text' ],
+                    'va_year'            => [ 'label' => 'Gyártási év',             'type' => 'number', 'min' => 1800, 'max' => 2030 ],
+                    'va_license_req'     => [ 'label' => 'Fegyverengedély szükséges', 'type' => 'checkbox' ],
+                ];
+        }
+    }
+
     /* ── Listing mezők definíciója ─────────────────────── */
     public static function listing_fields() {
-        return [
+        $base = [
             'va_price'        => [ 'label' => 'Ár (Ft)', 'type' => 'number', 'min' => 0 ],
             'va_price_type'   => [ 'label' => 'Árazás', 'type' => 'select',
                                    'options' => [ 'fixed' => 'Fix ár', 'negotiable' => 'Alkudható', 'free' => 'Ingyenes', 'on_request' => 'Érdeklődjön' ] ],
-            'va_brand'        => [ 'label' => 'Márka / Gyártó', 'type' => 'text' ],
-            'va_model'        => [ 'label' => 'Modell / Típus', 'type' => 'text' ],
-            'va_caliber'      => [ 'label' => 'Kaliber', 'type' => 'text' ],
-            'va_year'         => [ 'label' => 'Gyártási év', 'type' => 'number', 'min' => 1800, 'max' => 2026 ],
             'va_phone'        => [ 'label' => 'Telefonszám', 'type' => 'tel' ],
             'va_email_show'   => [ 'label' => 'Email megjelenítése', 'type' => 'checkbox' ],
             'va_location'     => [ 'label' => 'Helység (város/község)', 'type' => 'text' ],
@@ -25,8 +87,8 @@ class VA_Meta_Fields {
             'va_featured'     => [ 'label' => 'Kiemelt hirdetés', 'type' => 'checkbox' ],
             'va_verified'     => [ 'label' => 'Ellenőrzött', 'type' => 'checkbox' ],
             'va_views'        => [ 'label' => 'Megtekintések', 'type' => 'number', 'readonly' => true ],
-            'va_license_req'  => [ 'label' => 'Fegyverengedély szükséges', 'type' => 'checkbox' ],
         ];
+        return array_merge( $base, self::get_type_extra_fields() );
     }
 
     /* ── Auction extra mezők ───────────────────────────── */
