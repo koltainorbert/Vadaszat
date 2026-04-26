@@ -85,9 +85,11 @@ hr { border-color: var(--border); }
 }
 body.admin-bar .va-header,
 #wpadminbar ~ .va-site-wrap .va-header { top: 32px !important; }
+body.logged-in .va-header { top: 32px !important; }
 @media (max-width: 782px) {
   body.admin-bar .va-header,
-  #wpadminbar ~ .va-site-wrap .va-header { top: 46px !important; }
+  #wpadminbar ~ .va-site-wrap .va-header,
+  body.logged-in .va-header { top: 46px !important; }
 }
 .va-header.scrolled {
   background: rgba(6,4,4,.88);
