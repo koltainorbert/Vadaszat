@@ -68,6 +68,10 @@ hr { border-color: var(--border); }
 /* fixed header miatt az első blokk padding — hero oldal NEM kap, csak belső oldalak */
 .va-site-wrap { min-height: 100vh; display: flex; flex-direction: column; }
 .va-site-wrap--inner { padding-top: var(--nav); }
+body.logged-in .va-site-wrap { padding-top: 32px !important; }
+@media (max-width: 782px) {
+  body.logged-in .va-site-wrap { padding-top: 46px !important; }
+}
 .va-container  { max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%; }
 @media (max-width: 400px) { .va-container { padding: 0 12px; } }
 
