@@ -1,6 +1,8 @@
 {
     "task.allowAutomaticTasks": "on",
     "chat.tools.terminal.autoApprove": {
-        "&": true
+        "&": true,
+        "Add-Type": true,
+        "ForEach-Object": true
     }
 }
