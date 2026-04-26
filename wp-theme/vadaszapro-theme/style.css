@@ -27,11 +27,7 @@ Text Domain:  vadaszapro-theme
   --r:        16px;
   --r2:       22px;
   --nav:      66px;
-  --adminbar-offset: 0px;
 }
-
-body.admin-bar { --adminbar-offset: 32px; }
-@media (max-width: 782px) { body.admin-bar { --adminbar-offset: 46px; } }
 
 /* ──────────────────────────────────────────────────────────
    RESET + BASE
@@ -71,7 +67,7 @@ hr { border-color: var(--border); }
 ────────────────────────────────────────────────────────── */
 /* fixed header miatt az első blokk padding — hero oldal NEM kap, csak belső oldalak */
 .va-site-wrap { min-height: 100vh; display: flex; flex-direction: column; }
-.va-site-wrap--inner { padding-top: calc(var(--nav) + var(--adminbar-offset)); }
+.va-site-wrap--inner { padding-top: var(--nav); }
 .va-container  { max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%; }
 @media (max-width: 400px) { .va-container { padding: 0 12px; } }
 
@@ -79,7 +75,7 @@ hr { border-color: var(--border); }
    HEADER / NAVBAR — 2026 modern
 ══════════════════════════════════════════════════════════ */
 .va-header {
-  position: fixed; top: var(--adminbar-offset); left: 0; right: 0; z-index: 400;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 400;
   height: var(--nav);
   background: rgba(6,4,4,.82);
   backdrop-filter: blur(16px) saturate(1.4);
