@@ -83,6 +83,8 @@ hr { border-color: var(--border); }
   border-bottom: none;
   transition: background .35s, backdrop-filter .35s, box-shadow .35s;
 }
+.admin-bar .va-header { top: 32px; }
+@media (max-width: 782px) { .admin-bar .va-header { top: 46px; } }
 .va-header.scrolled {
   background: rgba(6,4,4,.88);
   backdrop-filter: blur(20px) saturate(1.4);
