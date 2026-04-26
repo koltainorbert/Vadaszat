@@ -304,6 +304,17 @@ add_action( 'wp_head', function() {
         . '</style>';
 }, 99 );
 
+add_action( 'wp_head', function() {
+    if ( is_admin() || ! is_admin_bar_showing() ) {
+        return;
+    }
+
+    echo '<style id="va-adminbar-header-fix">'
+        . '.va-header{top:32px !important;}'
+        . '@media (max-width:782px){.va-header{top:46px !important;}}'
+        . '</style>';
+}, 101 );
+
 add_action( 'wp_footer', function() {
     if ( is_admin() || ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
         return;
