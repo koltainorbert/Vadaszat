@@ -106,13 +106,24 @@
     var hbtn = document.getElementById('va-hamburger');
     var nav  = document.getElementById('va-main-nav');
 
+    function applyAdminBarOffset(){
+        if(!hdr) return;
+        var bar = document.getElementById('wpadminbar');
+        var offset = bar ? Math.round(bar.getBoundingClientRect().height || bar.offsetHeight || 0) : 0;
+        hdr.style.setProperty('top', offset + 'px', 'important');
+    }
+
     // Scroll: header glass-effect bekapcsol
     function onScroll(){
         if( window.scrollY > 40 ) hdr.classList.add('scrolled');
         else hdr.classList.remove('scrolled');
     }
     window.addEventListener('scroll', onScroll, {passive:true});
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', function(){
+        applyAdminBarOffset();
+        onScroll();
+    });
+    applyAdminBarOffset();
     onScroll();
 
     // Hamburger toggle
