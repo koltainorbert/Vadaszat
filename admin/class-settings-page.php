@@ -6802,25 +6802,29 @@ class VA_Settings_Page {
                     wl.style.height      = c.watchlist_size+'px';
                 }
             }
+            // Hover border preview: inline :hover nem lehetséges, <style> injekcióval
+            function updateHoverStyle() {
+                var styleId = 'vacd-hover-preview-style';
+                var el = document.getElementById(styleId);
+                if(!el) { el = document.createElement('style'); el.id = styleId; document.head.appendChild(el); }
+                el.textContent = '#prev-card:hover { border-color: ' + current.hover_border_color + ' !important; }';
+            }
+            // Bővített updatePreview: hover stílust is frissíti
+            var _origUpdatePreview = updatePreview;
+            updatePreview = function() { _origUpdatePreview(); updateHoverStyle(); };
             updatePreview();
 
             // Szín mezők és field change listeners
-            // Va-color-input picker (admin.js) későn tölt be, DOMContentLoaded után init
+            // admin.js wpColorPicker change eventet triggerel az input-on → delegáció elegendő
             function vacdInitPickers() {
-                if(typeof $ !== 'undefined' && typeof window.vaInitColorPickers === 'function') {
-                    // Minden szekciót inicializálunk (nyílt és zárt egyaránt)
-                    window.vaInitColorPickers($('#vacd-editor'));
-                    // picker változás → updatePreview
-                    $('#vacd-editor').off('change.vacd', '.va-color-input').on('change.vacd', '.va-color-input', function(){
-                        var prop = $(this).data('prop');
-                        if(!prop) return;
-                        current[prop] = $(this).val();
-                        updatePreview();
-                        saveJson();
-                    });
-                } else {
-                    setTimeout(vacdInitPickers, 100);
-                }
+                if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 100); return; }
+                $('#vacd-editor').off('change.vacd', '.va-color-input').on('change.vacd', '.va-color-input', function(){
+                    var prop = $(this).data('prop');
+                    if(!prop) return;
+                    current[prop] = $(this).val();
+                    updatePreview();
+                    saveJson();
+                });
             }
             vacdInitPickers();
 
