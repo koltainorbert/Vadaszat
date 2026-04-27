@@ -808,8 +808,8 @@ add_action( 'wp_enqueue_scripts', function () {
         'border-color:rgba(255,255,255,' . $hf_search_border_alpha . ');' .
         'background:rgba(255,255,255,' . $hf_search_bg_alpha . ');' .
     '}' .
-    '.va-header__search:hover{border-color:rgba(255,0,0,' . $hf_search_hover_alpha . ');box-shadow:0 0 18px ' . $hf_search_glow_color . ';}' .
-    '.va-header__search:focus-within{border-color:rgba(255,0,0,' . $hf_search_focus_alpha . ');box-shadow:0 0 22px ' . $hf_search_glow_color . ';}' .
+    '.va-header__search:hover{border-color:rgba(255,255,255,' . $hf_search_hover_alpha . ');box-shadow:none;}' .
+    '.va-header__search:focus-within{border-color:rgba(255,255,255,' . $hf_search_focus_alpha . ');box-shadow:none;}' .
     '.va-header__search-btn{' .
         'width:' . $hf_search_btn_size . 'px;' .
         'height:' . $hf_search_btn_size . 'px;' .
