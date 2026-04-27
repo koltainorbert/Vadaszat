@@ -246,6 +246,14 @@ class VA_Admin {
                 <?php self::sb_item( "📧", "Email sablonok", admin_url( "admin.php?page=vadaszapro-emails" ), $page === "vadaszapro-emails" ); ?>
 
                 <?php self::sb_item( "📄", "Oldalak", admin_url( "admin.php?page=vadaszapro-oldalak" ), $page === "vadaszapro-oldalak" ); ?>
+                <?php
+                    $i18n_langs   = VA_Settings_Page::get_languages();
+                    $i18n_default = (string) get_option( 'va_default_lang', 'hu' );
+                    $i18n_flag    = $i18n_langs[ $i18n_default ]['flag'] ?? '🌍';
+                ?>
+                <?php self::sb_item( $i18n_flag, "Fordítás", admin_url( "admin.php?page=vadaszapro-i18n" ), $page === "vadaszapro-i18n" ); ?>
+                <?php self::sb_item( "💻", "Egyedi kód", admin_url( "admin.php?page=vadaszapro-customcode" ), $page === "vadaszapro-customcode" ); ?>
+                <?php self::sb_item( "🗂️", "Verziókövetés", admin_url( "admin.php?page=vadaszapro-versions" ), $page === "vadaszapro-versions" ); ?>
 
                 <span class="va-sb-sep">Tartalom</span>
 
