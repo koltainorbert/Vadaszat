@@ -367,10 +367,10 @@ class VA_Form_Builder {
         .va-fb-delete-btn { background:none; border:none; cursor:pointer; font-size:16px; color:#c0392b !important; padding:2px 5px; border-radius:4px; flex-shrink:0; line-height:1; }
         .va-fb-delete-btn:hover { background:#fdecea; }
         /* Mező hozzáadás panel */
-        .va-fb-add-panel { margin-top:18px; background:#f6f7f7; border:1px dashed #bbb; border-radius:6px; padding:14px 16px; }
-        .va-fb-add-panel h4 { margin:0 0 12px; font-size:13px; font-weight:700; color:#333 !important; }
+        .va-fb-add-panel { margin-top:18px; background:rgba(255,255,255,.04); border:1px dashed rgba(255,255,255,.18); border-radius:6px; padding:14px 16px; }
+        .va-fb-add-panel h4 { margin:0 0 12px; font-size:13px; font-weight:700; color:#fff !important; }
         .va-fb-add-row { display:flex; gap:8px; flex-wrap:wrap; align-items:flex-end; }
-        .va-fb-add-row input, .va-fb-add-row select { background:#fff; border:1px solid #c3c4c7; color:#111 !important; border-radius:4px; padding:6px 9px; font-size:13px; }
+        .va-fb-add-row input, .va-fb-add-row select { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15); color:#fff !important; border-radius:4px; padding:6px 9px; font-size:13px; }
         .va-fb-add-row input { flex:1; min-width:120px; }
         .va-fb-add-btn { background:#2980b9 !important; border-color:#1a5f8a !important; color:#fff !important; font-weight:600 !important; white-space:nowrap; }
         .va-fb-add-btn:hover { background:#1a5f8a !important; }
