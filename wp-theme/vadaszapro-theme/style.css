@@ -89,6 +89,9 @@ hr { border-color: var(--border); }
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
   box-shadow: 0 1px 60px rgba(0,0,0,.7);
 }
+/* WordPress admin bar (32px asztali, 46px mobil) ne takarja a fixed headert */
+.admin-bar .va-header { top: 32px; }
+@media screen and (max-width: 782px) { .admin-bar .va-header { top: 46px; } }
 
 .va-header__inner {
   display: flex;
