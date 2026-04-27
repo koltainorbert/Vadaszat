@@ -6814,25 +6814,27 @@ class VA_Settings_Page {
             updatePreview = function() { _origUpdatePreview(); updateHoverStyle(); };
             updatePreview();
 
-            // Szín mezők: wpColorPicker/iris NEM triggerel standard change-t kattintáskor,
-            // iris:change custom eventet használ → azt kell figyelni.
+            // Szín picker init: admin.js NEM init-eli a #vacd-editor mezőit,
+            // itt inicializáljuk wpColorPicker change callback-kel.
             function vacdInitPickers() {
-                if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 100); return; }
+                if(typeof $ === 'undefined' || !$.fn.wpColorPicker) { setTimeout(vacdInitPickers, 50); return; }
                 $(function() {
-                    // iris:change: az input.val() már frissítve van mielőtt az event elsül
-                    $('#vacd-editor').off('iris:change.vacd', '.va-color-input').on('iris:change.vacd', '.va-color-input', function() {
-                        var prop = $(this).data('prop');
-                        if(!prop) return;
-                        current[prop] = $(this).val();
-                        updatePreview();
-                        saveJson();
-                    });
-                    // Clear gomb: iris:change nem sül el törléskor
-                    $('#vacd-editor').off('click.vacd', '.wp-picker-clear').on('click.vacd', '.wp-picker-clear', function() {
-                        var $input = $(this).closest('.wp-picker-container').find('.va-color-input');
-                        var prop = $input.data('prop');
-                        if(!prop) return;
-                        setTimeout(function(){ current[prop] = $input.val(); updatePreview(); saveJson(); }, 50);
+                    $('#vacd-editor .va-color-input').each(function() {
+                        var $input = $(this);
+                        $input.wpColorPicker({
+                            change: function(event, ui) {
+                                var prop = $input.data('prop');
+                                if(!prop) return;
+                                current[prop] = ui.color.toString();
+                                updatePreview();
+                                saveJson();
+                            },
+                            clear: function() {
+                                var prop = $input.data('prop');
+                                if(!prop) return;
+                                setTimeout(function(){ current[prop] = $input.val() || ''; updatePreview(); saveJson(); }, 30);
+                            }
+                        });
                     });
                 });
             }
