@@ -3390,7 +3390,7 @@ class VA_Settings_Page {
             </style>
 
             <?php if ( $note !== '' ): ?>
-                <div class="<?php echo esc_attr( $cls ); ?>" style="padding:10px 16px; border-left-width:4px; background:rgba(255,255,255,.06); color:#fff;"><p style="margin:.3em 0;"><?php echo wp_kses( $note, [ 'strong' => [], 'code' => [], 'em' => [] ] ); ?></p></div>
+                <div class="va-notice va-tools-msg" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:8px;margin-top:10px;margin-bottom:4px;border:1px solid <?php echo ( $msg === 'import_ok' || $msg === 'reset_ok' ) ? 'rgba(74,222,128,.35)' : 'rgba(248,113,113,.35)'; ?>;background:<?php echo ( $msg === 'import_ok' || $msg === 'reset_ok' ) ? 'rgba(74,222,128,.08)' : 'rgba(248,113,113,.08)'; ?>;color:#fff;font-size:13px;line-height:1.5;"><?php echo wp_kses( $note, [ 'strong' => [], 'code' => [], 'em' => [] ] ); ?></div>
             <?php endif; ?>
 
             <div class="va-ei-card">
