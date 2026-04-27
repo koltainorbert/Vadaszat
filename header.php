@@ -220,14 +220,14 @@
                         if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
                         $curr_lang = $all_langs[ $curr_code ];
                 ?>
-                        <div class="va-lang-sw" id="va-lang-sw">
-                            <button type="button" class="va-lang-sw__toggle" id="va-lang-toggle"
-                                    aria-haspopup="true" aria-expanded="false">
-                                <?php echo esc_html( $curr_lang['flag'] ); ?>
-                                <span><?php echo esc_html( $curr_lang['name'] ); ?></span>
+                        <div class="va-lang-sw notranslate" id="va-lang-sw" translate="no">
+                            <button type="button" class="va-lang-sw__toggle notranslate" id="va-lang-toggle"
+                                    aria-haspopup="true" aria-expanded="false" translate="no">
+                                <span class="va-lang-flag"><?php echo esc_html( $curr_lang['flag'] ); ?></span>
+                                <span class="va-lang-code"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
                                 <svg class="va-lang-sw__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                             </button>
-                            <div class="va-lang-sw__dropdown" id="va-lang-dropdown" hidden>
+                            <div class="va-lang-sw__dropdown notranslate" id="va-lang-dropdown" hidden translate="no">
                                 <?php foreach ( $active_langs as $code ) :
                                     if ( ! isset( $all_langs[ $code ] ) ) continue;
                                     $lang = $all_langs[ $code ];
