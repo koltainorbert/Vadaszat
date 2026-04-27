@@ -7573,14 +7573,8 @@ class VA_Settings_Page {
     public static function output_custom_head(): void {
         $head = (string) get_option( 'va_custom_head', '' );
         if ( ! $head ) return;
-        echo "\n<!-- VA Custom Head -->\n";
-        // Csak meta, link, script, style engedélyezett
-        echo wp_kses( $head, [
-            'meta'   => [ 'name' => [], 'content' => [], 'charset' => [], 'http-equiv' => [], 'property' => [] ],
-            'link'   => [ 'rel' => [], 'href' => [], 'type' => [], 'media' => [], 'as' => [], 'crossorigin' => [], 'integrity' => [] ],
-            'script' => [ 'src' => [], 'type' => [], 'async' => [], 'defer' => [], 'id' => [], 'crossorigin' => [], 'integrity' => [] ],
-            'style'  => [ 'type' => [], 'id' => [], 'media' => [] ],
-        ] ) . "\n";
+        // Csak admin állíthatja be (manage_options), direkt output – wp_kses levágja a style/script tartalmát
+        echo "\n<!-- VA Custom Head -->\n" . $head . "\n";
     }
 
     public static function output_custom_css(): void {
