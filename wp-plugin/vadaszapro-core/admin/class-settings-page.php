@@ -16,6 +16,7 @@ class VA_Settings_Page {
         add_action( 'wp_head',    [ __CLASS__, 'output_card_css' ], 99 );
         add_action( 'admin_post_va_save_pill_styles',  [ __CLASS__, 'handle_save_pill_styles'  ] );
         add_action( 'admin_post_va_save_card_styles',  [ __CLASS__, 'handle_save_card_styles'  ] );
+        add_action( 'wp_ajax_va_save_card_styles_ajax', [ __CLASS__, 'handle_save_card_styles_ajax' ] );
         add_action( 'admin_post_va_export_settings', [ __CLASS__, 'handle_export_settings' ] );
         add_action( 'admin_post_va_import_settings', [ __CLASS__, 'handle_import_settings' ] );
         add_action( 'admin_post_va_reset_settings',  [ __CLASS__, 'handle_reset_settings' ] );
@@ -6312,6 +6313,21 @@ class VA_Settings_Page {
         echo "</style>\n";
     }
 
+    public static function handle_save_card_styles_ajax(): void {
+        check_ajax_referer( 'va_save_card_styles_ajax' );
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_send_json_error( [ 'msg' => 'Hozzáférés megtagadva.' ] );
+        }
+        $json = sanitize_textarea_field( wp_unslash( $_POST['va_card_styles_json'] ?? '' ) );
+        $data = $json ? json_decode( $json, true ) : null;
+        if ( is_array( $data ) && ! empty( $data ) ) {
+            update_option( 'va_card_styles', wp_json_encode( $data ) );
+            wp_send_json_success( [ 'msg' => 'Mentve!' ] );
+        } else {
+            wp_send_json_error( [ 'msg' => 'Érvénytelen adat. JSON: ' . substr( $json, 0, 60 ) ] );
+        }
+    }
+
     public static function handle_save_card_styles(): void {
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
         check_admin_referer( 'va_save_card_styles' );
@@ -6857,8 +6873,38 @@ class VA_Settings_Page {
             $(function() { vacdInitPickers(); });
 
             // Form submit előtt mindig frissítjük a hidden inputot
-            document.querySelector('.vacd').closest('form').addEventListener('submit', function() {
+            // AJAX mentés – megbízhatóbb, azonnali visszajelzés
+            var vacdAjaxNonce = '<?php echo esc_js( wp_create_nonce('va_save_card_styles_ajax') ); ?>';
+
+            document.getElementById('vacd-save-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                var btn = this;
                 saveJson();
+                var jsonVal = document.getElementById('va_card_styles_json').value;
+                btn.disabled = true;
+                btn.textContent = '⏳ Mentés...';
+                jQuery.post(ajaxurl, {
+                    action:              'va_save_card_styles_ajax',
+                    va_card_styles_json: jsonVal,
+                    _ajax_nonce:         vacdAjaxNonce
+                })
+                .done(function(resp) {
+                    if (resp && resp.success) {
+                        if (typeof vaAdminToast === 'function') vaAdminToast('✅ Mentés sikeres!', 'success');
+                    } else {
+                        var msg = (resp && resp.data && resp.data.msg) ? resp.data.msg : 'Ismeretlen hiba';
+                        if (typeof vaAdminToast === 'function') vaAdminToast('❌ Hiba: ' + msg, 'error');
+                        else alert('Hiba: ' + msg);
+                    }
+                })
+                .fail(function(xhr) {
+                    if (typeof vaAdminToast === 'function') vaAdminToast('❌ AJAX hiba: ' + xhr.status, 'error');
+                    else alert('AJAX hiba: ' + xhr.status);
+                })
+                .always(function() {
+                    btn.disabled = false;
+                    btn.textContent = '💾 Mentés';
+                });
             });
 
             // Field change listeners (range + select)
