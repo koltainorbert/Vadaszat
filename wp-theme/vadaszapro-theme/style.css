@@ -396,6 +396,17 @@ hr { border-color: var(--border); }
   border-color: rgba(255,255,255,.35);
 }
 
+/* ── Nyelvváltó ── */
+.va-lang-sw { display: flex; align-items: center; gap: 3px; margin-left: 6px; }
+.va-lang-sw__btn {
+  background: none; border: 1px solid transparent; border-radius: 6px;
+  font-size: 18px; line-height: 1; padding: 3px 5px; cursor: pointer;
+  transition: background .15s, border-color .15s;
+  opacity: .7;
+}
+.va-lang-sw__btn:hover { background: rgba(255,255,255,.1); opacity: 1; }
+.va-lang-sw__btn.active { border-color: rgba(255,255,255,.2); opacity: 1; }
+
 /* ── Hamburger ── */
 .va-hamburger {
   display: none;

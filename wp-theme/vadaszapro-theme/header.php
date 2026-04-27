@@ -205,6 +205,29 @@
                     $hdr_size  = max(14, min(28, absint( get_option('va_social_icon_size', 20) )));
                     echo '<div style="margin-left:5px">' . va_social_bar( $hdr_style, $hdr_size ) . '</div>';
                 endif; ?>
+                <?php
+                $show_sw  = get_option('va_lang_show_switcher','1') === '1';
+                $sw_pos   = (string) get_option('va_lang_switcher_pos','header');
+                if ( $show_sw && in_array( $sw_pos, ['header','both'], true ) && class_exists('VA_Settings_Page') ) :
+                    $all_langs    = VA_Settings_Page::get_languages();
+                    $active_langs = (array) json_decode( (string) get_option('va_active_langs','["hu"]'), true );
+                    $default_lang = (string) get_option('va_default_lang','hu');
+                    if ( count($active_langs) > 1 ) : ?>
+                        <div class="va-lang-sw">
+                            <?php foreach ( $active_langs as $code ) :
+                                if ( ! isset($all_langs[$code]) ) continue;
+                                $lang    = $all_langs[$code];
+                                $is_curr = ( $code === $default_lang );
+                            ?>
+                                <button type="button" class="va-lang-sw__btn<?php echo $is_curr ? ' active' : ''; ?>"
+                                        title="<?php echo esc_attr($lang['name']); ?>"
+                                        onclick="document.cookie='va_lang=<?php echo esc_js($code); ?>;path=/';location.reload();">
+                                    <?php echo esc_html($lang['flag']); ?>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif;
+                endif; ?>
                 <button class="va-hamburger" id="va-hamburger" aria-label="Men&uuml;">
                     <span></span><span></span><span></span>
                 </button>
