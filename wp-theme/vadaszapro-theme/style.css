@@ -104,7 +104,7 @@ hr { border-color: var(--border); }
   margin: 0 auto;
 }
 .va-header__inner .va-nav { flex: 0 0 auto; }
-.va-header__inner .va-header__search { flex: 0 0 200px; width: 200px; max-width: 200px; margin-left: 24px; }
+.va-header__inner .va-header__search { flex: 0 0 300px; width: 300px; max-width: 300px; margin-left: 24px; }
 .va-header__inner .va-header__right { flex: 0 0 auto; margin-left: auto; }
 
 /* ── Header kereső ── */
@@ -114,7 +114,7 @@ hr { border-color: var(--border); }
   border: 1px solid rgba(255,255,255,.18);
   border-radius: 999px;
   padding: 0 10px 0 18px;
-  flex: 0 0 200px; width: 200px; max-width: 200px;
+  flex: 0 0 300px; width: 300px; max-width: 300px;
   height: 36px; box-sizing: border-box;
   background: rgba(255,255,255,.02);
   outline: none;
