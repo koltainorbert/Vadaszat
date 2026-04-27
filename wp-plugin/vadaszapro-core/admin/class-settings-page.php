@@ -4763,7 +4763,9 @@ class VA_Settings_Page {
         .va-pk-card__field-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
         .va-pk-card__field-row--3 { grid-template-columns:1fr 1fr 1fr; }
         .va-pk-card__price-preview { text-align:center; padding:14px 0; }
-        .va-pk-card__price-preview .total { font-size:38px; font-weight:800; color:#fff; line-height:1.1; }
+        .va-pk-card__price-preview .total { font-size:48px; font-weight:900; color:#fff; line-height:1; display:flex; align-items:baseline; justify-content:center; gap:4px; }
+        .va-pk-card__price-preview .total .num { letter-spacing:-1px; }
+        .va-pk-card__price-preview .total .currency { font-size:22px; font-weight:700; opacity:.7; margin-left:2px; }
         .va-pk-card__price-preview .unit  { font-size:13px; color:rgba(255,255,255,.4); margin-top:4px; }
         .va-pk-card__price-preview .free-tag { font-size:22px; font-weight:700; color:#4ade80; }
         .va-pk-save-bar { background:rgba(14,14,18,.95); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px 24px; display:flex; align-items:center; gap:14px; }
@@ -4857,7 +4859,7 @@ class VA_Settings_Page {
                             <div class="free-tag">Ingyenes</div>
                             <?php else: ?>
                             <div class="total" style="color:<?php echo esc_attr( $tc['accent'] ); ?>;">
-                                <span id="va-pk-total-<?php echo $n; ?>"><?php echo number_format( $total, 0, ',', ' ' ); ?></span> Ft
+                                <span class="num" id="va-pk-total-<?php echo $n; ?>"><?php echo number_format( $total, 0, ',', '&nbsp;' ); ?></span><span class="currency">Ft</span>
                             </div>
                             <div class="unit"><span id="va-pk-unit-<?php echo $n; ?>"><?php echo number_format( $price, 0, ',', ' ' ); ?></span> Ft / kredit · <?php echo esc_html( (string) $qty ); ?> db</div>
                             <?php endif; ?>
