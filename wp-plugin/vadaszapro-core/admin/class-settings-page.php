@@ -3744,26 +3744,6 @@ class VA_Settings_Page {
         exit;
     }
 
-    public static function handle_apply_ap_preset(): void {
-        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
-        check_admin_referer( 'va_apply_ap_preset' );
-
-        $preset_key = sanitize_key( (string) ( $_POST['preset_key'] ?? '' ) );
-        $presets = self::get_adminpanel_presets();
-
-        if ( ! isset( $presets[ $preset_key ] ) ) {
-            wp_safe_redirect( add_query_arg( 'va_ap_preset', 'invalid', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
-            exit;
-        }
-
-        foreach ( $presets[ $preset_key ]['options'] as $key => $value ) {
-            update_option( (string) $key, $value );
-        }
-
-        wp_safe_redirect( add_query_arg( 'va_ap_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
-        exit;
-    }
-
     public static function handle_apply_design_preset(): void {
         if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
         check_admin_referer( 'va_apply_design_preset' );
