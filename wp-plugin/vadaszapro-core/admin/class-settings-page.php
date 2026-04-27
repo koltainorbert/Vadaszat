@@ -6300,7 +6300,7 @@ class VA_Settings_Page {
         echo "\n<style id=\"va-card-styles\">\n";
         echo ".va-card{background:{$d['card_bg']};border:{$bw}px solid {$d['card_border_color']};border-radius:{$d['card_radius']}px;}\n";
         echo ".va-card:hover,.va-card:focus-within{transform:translateY(-{$d['hover_lift']}px);}\n";
-        echo ".va-card:hover::after,.va-card:focus-within::after{border-color:{$d['hover_border_color']};}\n";
+        echo ".va-card:hover::after,.va-card:focus-within::after{border-color:{$d['hover_border_color']};box-shadow:none;}\n";
         echo ".va-card__img-wrap{aspect-ratio:{$d['img_aspect']};}\n";
         echo ".va-card__body{padding:{$d['body_pad_y']}px {$d['body_pad_x']}px;gap:{$d['body_gap']}px;}\n";
         echo ".va-card__title{color:{$d['title_color']};font-size:{$d['title_font_size']}px;font-weight:{$d['title_font_weight']};{$ff_title}-webkit-line-clamp:{$d['title_line_clamp']};}\n";

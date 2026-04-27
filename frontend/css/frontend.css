@@ -203,13 +203,7 @@
   pointer-events: none;
   transition: border-color var(--va-transition), box-shadow var(--va-transition);
 }
-.va-card:hover,
-.va-card:focus-within { transform: translateY(-2px); }
-.va-card:hover::after,
-.va-card:focus-within::after {
-  /* border-color az admin kártyaszerkesztő által generált CSS-ből jön (va-card-styles) */
-  box-shadow: inset 0 0 0 1px rgba(255, 0, 0, 0.16);
-}
+/* .va-card hover és border-color az admin kártyaszerkesztő CSS-éből jön (id="va-card-styles") */
 .va-card__img-wrap {
   display: block; flex-shrink: 0;
   width: 100%; aspect-ratio: 4 / 3; overflow: hidden;
