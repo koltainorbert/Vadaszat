@@ -207,7 +207,7 @@
 .va-card:focus-within { transform: translateY(-2px); }
 .va-card:hover::after,
 .va-card:focus-within::after {
-  border-color: var(--va-accent);
+  /* border-color az admin kártyaszerkesztő által generált CSS-ből jön (va-card-styles) */
   box-shadow: inset 0 0 0 1px rgba(255, 0, 0, 0.16);
 }
 .va-card__img-wrap {
