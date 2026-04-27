@@ -24,6 +24,12 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_apply_ap_preset',  [ __CLASS__, 'handle_apply_ap_preset'  ] );
         add_action( 'admin_post_va_apply_single_preset', [ __CLASS__, 'handle_apply_single_preset' ] );
         add_action( 'admin_post_va_save_nav_items',   [ __CLASS__, 'handle_save_nav_items'   ] );
+        add_action( 'wp_head',    [ __CLASS__, 'output_custom_head' ], 1 );
+        add_action( 'wp_head',    [ __CLASS__, 'output_custom_css'  ], 100 );
+        add_action( 'wp_footer',  [ __CLASS__, 'output_custom_js'   ], 100 );
+        add_action( 'admin_post_va_create_snapshot',  [ __CLASS__, 'handle_create_snapshot'  ] );
+        add_action( 'admin_post_va_restore_snapshot', [ __CLASS__, 'handle_restore_snapshot' ] );
+        add_action( 'admin_post_va_delete_snapshot',  [ __CLASS__, 'handle_delete_snapshot'  ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
