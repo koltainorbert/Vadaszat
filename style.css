@@ -397,15 +397,39 @@ hr { border-color: var(--border); }
 }
 
 /* ── Nyelvváltó ── */
-.va-lang-sw { display: flex; align-items: center; gap: 3px; margin-left: 6px; }
-.va-lang-sw__btn {
-  background: none; border: 1px solid transparent; border-radius: 6px;
-  font-size: 18px; line-height: 1; padding: 3px 5px; cursor: pointer;
-  transition: background .15s, border-color .15s;
-  opacity: .7;
+.va-lang-sw { position:relative; display:flex; align-items:center; margin-left:8px; }
+.va-lang-sw__toggle {
+  display:flex; align-items:center; gap:6px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+  border-radius:8px; padding:5px 10px;
+  color:#fff; font-size:13px; font-weight:500; cursor:pointer;
+  transition:background .15s, border-color .15s; white-space:nowrap;
 }
-.va-lang-sw__btn:hover { background: rgba(255,255,255,.1); opacity: 1; }
-.va-lang-sw__btn.active { border-color: rgba(255,255,255,.2); opacity: 1; }
+.va-lang-sw__toggle:hover { background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.22); }
+.va-lang-sw__toggle span { font-size:13px; }
+.va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:.7; }
+.va-lang-sw[aria-open] .va-lang-sw__arrow,
+.va-lang-sw__toggle[aria-expanded="true"] .va-lang-sw__arrow { transform:rotate(180deg); }
+.va-lang-sw__dropdown {
+  position:absolute; top:calc(100% + 6px); right:0;
+  background:#1a1a1a; border:1px solid rgba(255,255,255,.12);
+  border-radius:10px; padding:6px; min-width:150px;
+  box-shadow:0 8px 28px rgba(0,0,0,.55);
+  z-index:9999;
+}
+.va-lang-sw__item {
+  display:flex; align-items:center; gap:8px; width:100%;
+  background:none; border:none; border-radius:7px;
+  color:#fff; font-size:13px; padding:7px 10px;
+  cursor:pointer; text-align:left; transition:background .12s;
+}
+.va-lang-sw__item:hover { background:rgba(255,255,255,.09); }
+.va-lang-sw__item.active { background:rgba(255,200,0,.13); color:#ffd700; font-weight:600; }
+.va-lang-sw__item span { font-size:13px; }
+/* Google Translate saját UI elrejtése */
+.skiptranslate, .goog-te-banner-frame { display:none !important; }
+body { top:0 !important; }
+.goog-te-menu-value:hover { text-decoration:none !important; }
 
 /* ── Hamburger ── */
 .va-hamburger {

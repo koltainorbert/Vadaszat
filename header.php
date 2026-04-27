@@ -211,21 +211,71 @@
                 if ( $show_sw && in_array( $sw_pos, ['header','both'], true ) && class_exists('VA_Settings_Page') ) :
                     $all_langs    = VA_Settings_Page::get_languages();
                     $active_langs = (array) json_decode( (string) get_option('va_active_langs','["hu"]'), true );
-                    $default_lang = (string) get_option('va_default_lang','hu');
-                    if ( count($active_langs) > 1 ) : ?>
-                        <div class="va-lang-sw">
-                            <?php foreach ( $active_langs as $code ) :
-                                if ( ! isset($all_langs[$code]) ) continue;
-                                $lang    = $all_langs[$code];
-                                $is_curr = ( $code === $default_lang );
-                            ?>
-                                <button type="button" class="va-lang-sw__btn<?php echo $is_curr ? ' active' : ''; ?>"
-                                        title="<?php echo esc_attr($lang['name']); ?>"
-                                        onclick="document.cookie='va_lang=<?php echo esc_js($code); ?>;path=/';location.reload();">
-                                    <?php echo esc_html($lang['flag']); ?>
-                                </button>
-                            <?php endforeach; ?>
+                    if ( count($active_langs) > 1 ) :
+                        // Jelenlegi nyelv a googtrans cookie-ból vagy hu alapértelmezett
+                        $curr_code = 'hu';
+                        if ( isset( $_COOKIE['googtrans'] ) && preg_match('#^/hu/([a-z]{2})$#', $_COOKIE['googtrans'], $m ) ) {
+                            $curr_code = $m[1];
+                        }
+                        if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
+                        $curr_lang = $all_langs[ $curr_code ];
+                ?>
+                        <div class="va-lang-sw" id="va-lang-sw">
+                            <button type="button" class="va-lang-sw__toggle" id="va-lang-toggle"
+                                    aria-haspopup="true" aria-expanded="false">
+                                <?php echo esc_html( $curr_lang['flag'] ); ?>
+                                <span><?php echo esc_html( $curr_lang['name'] ); ?></span>
+                                <svg class="va-lang-sw__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                            </button>
+                            <div class="va-lang-sw__dropdown" id="va-lang-dropdown" hidden>
+                                <?php foreach ( $active_langs as $code ) :
+                                    if ( ! isset( $all_langs[ $code ] ) ) continue;
+                                    $lang = $all_langs[ $code ];
+                                ?>
+                                    <button type="button" class="va-lang-sw__item<?php echo ( $code === $curr_code ) ? ' active' : ''; ?>"
+                                            onclick="vaSetLang('<?php echo esc_js($code); ?>')">
+                                        <?php echo esc_html( $lang['flag'] ); ?>
+                                        <span><?php echo esc_html( $lang['name'] ); ?></span>
+                                    </button>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
+                        <!-- Google Translate elem (rejtett) -->
+                        <div id="google_translate_element" style="display:none"></div>
+                        <script>
+                        function googleTranslateElementInit() {
+                            new google.translate.TranslateElement({
+                                pageLanguage: 'hu',
+                                autoDisplay: false
+                            }, 'google_translate_element');
+                        }
+                        function vaSetLang(code) {
+                            if (code === 'hu') {
+                                document.cookie = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
+                                document.cookie = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.' + location.hostname;
+                            } else {
+                                document.cookie = 'googtrans=/hu/' + code + ';path=/';
+                                document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
+                            }
+                            location.reload();
+                        }
+                        (function(){
+                            var toggle   = document.getElementById('va-lang-toggle');
+                            var dropdown = document.getElementById('va-lang-dropdown');
+                            if (!toggle) return;
+                            toggle.addEventListener('click', function(e){
+                                e.stopPropagation();
+                                var open = !dropdown.hidden;
+                                dropdown.hidden = open;
+                                toggle.setAttribute('aria-expanded', String(!open));
+                            });
+                            document.addEventListener('click', function(){
+                                dropdown.hidden = true;
+                                toggle.setAttribute('aria-expanded','false');
+                            });
+                        })();
+                        </script>
+                        <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
                     <?php endif;
                 endif; ?>
                 <button class="va-hamburger" id="va-hamburger" aria-label="Men&uuml;">
