@@ -6814,27 +6814,20 @@ class VA_Settings_Page {
             updatePreview = function() { _origUpdatePreview(); updateHoverStyle(); };
             updatePreview();
 
-            // Szín picker init: admin.js NEM init-eli a #vacd-editor mezőit,
-            // itt inicializáljuk wpColorPicker change callback-kel.
+            // Szín picker init: a custom vaInitColorPickers picker syncUI()-ban
+            // $hidden.trigger('change')-t hív → change eseményt kell figyelni.
+            // admin.js már inicializálja az összes .va-color-input-ot DOMReady-n.
+            // Mi itt csak a change eseményt kötjük be (közvetlen, nem delegation).
             function vacdInitPickers() {
-                if(typeof $ === 'undefined' || !$.fn.wpColorPicker) { setTimeout(vacdInitPickers, 50); return; }
+                if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 50); return; }
                 $(function() {
-                    $('#vacd-editor .va-color-input').each(function() {
-                        var $input = $(this);
-                        $input.wpColorPicker({
-                            change: function(event, ui) {
-                                var prop = $input.data('prop');
-                                if(!prop) return;
-                                current[prop] = ui.color.toString();
-                                updatePreview();
-                                saveJson();
-                            },
-                            clear: function() {
-                                var prop = $input.data('prop');
-                                if(!prop) return;
-                                setTimeout(function(){ current[prop] = $input.val() || ''; updatePreview(); saveJson(); }, 30);
-                            }
-                        });
+                    // Közvetlen binding minden .va-color-input elemre a #vacd-editor-ben
+                    $('#vacd-editor .va-color-input').off('change.vacd').on('change.vacd', function() {
+                        var prop = $(this).data('prop');
+                        if(!prop) return;
+                        current[prop] = $(this).val();
+                        updatePreview();
+                        saveJson();
                     });
                 });
             }
