@@ -3353,29 +3353,47 @@ class VA_Settings_Page {
             $cnt  = absint( $_GET['count'] ?? 0 );
             $tax  = absint( $_GET['tax'] ?? 0 );
             $pages= absint( $_GET['pages'] ?? 0 );
-            $note = 'Import kész. Frissített opciók: ' . $cnt . ', taxonómiák: ' . $tax . ', oldalak: ' . $pages;
+            $note = '✅ Import sikeres! Frissített opciók: <strong>' . $cnt . '</strong>, taxonómiák: <strong>' . $tax . '</strong>, oldalak: <strong>' . $pages . '</strong>';
             $cls  = 'notice notice-success';
         } elseif ( $msg === 'reset_ok' ) {
             $cnt  = absint( $_GET['count'] ?? 0 );
-            $note = 'Alaphelyzet visszaállítva. Újra felvett alap opciók: ' . $cnt;
+            $note = '✅ Alaphelyzet visszaállítva. Újra felvett alap opciók: ' . $cnt;
             $cls  = 'notice notice-success';
         } elseif ( $msg === 'import_invalid' ) {
-            $note = 'Hibás import fájl. Kérlek ellenőrizd a JSON tartalmát.';
+            $note = '❌ Hibás import fájl. Kérlek ellenőrizd a JSON tartalmát (a <code>va_export_*.json</code> fájlt töltsd fel).';
             $cls  = 'notice notice-error';
         } elseif ( $msg === 'import_empty' ) {
-            $note = 'Nem érkezett import fájl.';
+            $note = '❌ Nem érkezett import fájl. Válassz ki egy <code>.json</code> fájlt és kattints az "Import indítása" gombra.';
+            $cls  = 'notice notice-error';
+        } elseif ( $msg === 'import_toolarge' ) {
+            $note = '❌ A feltöltött fájl túl nagy (PHP upload limit). A LocalWP PHP settings-ben növeld: <code>upload_max_filesize</code> és <code>post_max_size</code>.';
+            $cls  = 'notice notice-error';
+        } elseif ( $msg === 'import_partial' ) {
+            $note = '❌ A fájl feltöltése megszakadt. Próbáld újra.';
             $cls  = 'notice notice-error';
         }
         ?>
         <div class="wrap va-admin-wrap">
             <h1>📦 VadászApró – Export / Import / Reset</h1>
-            <p class="description">A teljes <code>va_*</code> beállításkészlet exportálható és importálható (általános, design, fejléc/lábléc, reklámzónák, hirdetés/aukció opciók).</p>
+            <p class="description" style="color:rgba(255,255,255,.5)">A teljes <code>va_*</code> beállításkészlet exportálható és importálható (általános, design, fejléc/lábléc, reklámzónák, hirdetés/aukció opciók).</p>
+            <style>
+            .va-ei-card { background:var(--va-bg2,#161616); border:1px solid var(--va-border,rgba(255,255,255,.1)); border-radius:10px; padding:20px 24px; margin-top:16px; max-width:960px; }
+            .va-ei-card h2 { font-size:15px !important; color:#fff !important; text-transform:none !important; letter-spacing:0 !important; border-bottom:1px solid rgba(255,255,255,.1) !important; padding-bottom:10px !important; margin:0 0 14px !important; }
+            .va-ei-card p, .va-ei-card label { color:rgba(255,255,255,.65) !important; font-size:13px; }
+            .va-ei-card table.widefat { background:transparent !important; border:1px solid rgba(255,255,255,.1) !important; }
+            .va-ei-card table.widefat th { background:rgba(255,255,255,.06) !important; color:rgba(255,255,255,.5) !important; font-size:11px; text-transform:uppercase; letter-spacing:.5px; }
+            .va-ei-card table.widefat td { background:transparent !important; color:#fff !important; border-bottom:1px solid rgba(255,255,255,.07) !important; }
+            .va-ei-card table.widefat tr:last-child td { border-bottom:none !important; }
+            .va-ei-card input[type=file] { color:#fff !important; }
+            .va-ei-card input[type=checkbox] { accent-color:#ff0000; }
+            .va-ei-card--danger { border-left:3px solid #ff4444; }
+            </style>
 
             <?php if ( $note !== '' ): ?>
-                <div class="<?php echo esc_attr( $cls ); ?>"><p><?php echo esc_html( $note ); ?></p></div>
+                <div class="va-notice va-tools-msg" style="display:flex;align-items:center;gap:10px;padding:12px 18px;border-radius:8px;margin-top:10px;margin-bottom:4px;border:1px solid <?php echo ( $msg === 'import_ok' || $msg === 'reset_ok' ) ? 'rgba(74,222,128,.35)' : 'rgba(248,113,113,.35)'; ?>;background:<?php echo ( $msg === 'import_ok' || $msg === 'reset_ok' ) ? 'rgba(74,222,128,.08)' : 'rgba(248,113,113,.08)'; ?>;color:#fff;font-size:13px;line-height:1.5;"><?php echo wp_kses( $note, [ 'strong' => [], 'code' => [], 'em' => [] ] ); ?></div>
             <?php endif; ?>
 
-            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
+            <div class="va-ei-card">
                 <h2>1) Export összes beállítás</h2>
                 <p>JSON fájl letöltése, amit friss WordPress telepítésen vissza tudsz importálni — <strong>mindent tartalmaz</strong>.</p>
                 <table class="widefat" style="margin-bottom:14px;">
@@ -3398,7 +3416,7 @@ class VA_Settings_Page {
                 </form>
             </div>
 
-            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
+            <div class="va-ei-card">
                 <h2>2) Import beállítás fájlból</h2>
                 <p>Csak ezen plugin exportjából származó JSON fájlt tölts fel. Beállíthatod, hogy a taxonómiákat és oldalakat is importálja.</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
@@ -3415,7 +3433,7 @@ class VA_Settings_Page {
                 </form>
             </div>
 
-            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;border-left:4px solid #d63638;">
+            <div class="va-ei-card va-ei-card--danger">
                 <h2>3) Visszaállítás alaphelyzetbe</h2>
                 <p>Ez törli a jelenlegi <code>va_*</code> beállításokat, majd visszaállítja az alapértékeket.</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('Biztosan alaphelyzetbe állítod az összes beállítást?');">
@@ -3468,34 +3486,67 @@ class VA_Settings_Page {
 
         $redirect = admin_url( 'admin.php?page=vadaszapro-tools' );
 
-        if ( empty( $_FILES['va_import_file']['tmp_name'] ) ) {
+        // Fájl feltöltés hibakód ellenőrzés
+        $upload_error = isset( $_FILES['va_import_file']['error'] ) ? (int) $_FILES['va_import_file']['error'] : UPLOAD_ERR_NO_FILE;
+        if ( $upload_error !== UPLOAD_ERR_OK ) {
+            $err_map = [
+                UPLOAD_ERR_NO_FILE   => 'import_empty',
+                UPLOAD_ERR_INI_SIZE  => 'import_toolarge',
+                UPLOAD_ERR_FORM_SIZE => 'import_toolarge',
+                UPLOAD_ERR_PARTIAL   => 'import_partial',
+            ];
+            $err_key = $err_map[ $upload_error ] ?? 'import_invalid';
+            error_log( '[VA Import] Upload error code: ' . $upload_error );
+            wp_safe_redirect( add_query_arg( 'va_tools_msg', $err_key, $redirect ) );
+            exit;
+        }
+
+        $tmp_name = (string) ( $_FILES['va_import_file']['tmp_name'] ?? '' );
+        if ( $tmp_name === '' || ! is_uploaded_file( $tmp_name ) ) {
             wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_empty', $redirect ) );
             exit;
         }
 
-        $tmp_name = (string) $_FILES['va_import_file']['tmp_name'];
-        $content  = file_get_contents( $tmp_name );
+        $content = file_get_contents( $tmp_name );
         if ( $content === false || trim( $content ) === '' ) {
+            error_log( '[VA Import] Cannot read tmp file: ' . $tmp_name );
             wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
             exit;
         }
 
+        // UTF-8 BOM eltávolítás
+        $content = ltrim( $content, "\xEF\xBB\xBF" );
+
         $data = json_decode( $content, true );
+        if ( json_last_error() !== JSON_ERROR_NONE ) {
+            error_log( '[VA Import] JSON decode error: ' . json_last_error_msg() );
+            wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
+            exit;
+        }
+
         if ( ! is_array( $data ) || ! isset( $data['options'] ) || ! is_array( $data['options'] ) ) {
+            error_log( '[VA Import] Missing options key. Keys: ' . implode( ',', array_keys( (array) $data ) ) );
             wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
             exit;
         }
 
         $count = 0;
-        $tax_count = 0;
-        $page_count = 0;
         foreach ( $data['options'] as $key => $value ) {
             if ( ! is_string( $key ) || strpos( $key, 'va_' ) !== 0 ) {
                 continue;
             }
-            update_option( $key, $value );
+            // Autoload: csak ha már létezik, megtartjuk az autoload értékét; egyébként nem autoload
+            $existing = get_option( $key, '__NOT_SET__' );
+            if ( $existing === '__NOT_SET__' ) {
+                add_option( $key, $value, '', 'no' );
+            } else {
+                update_option( $key, $value );
+            }
             $count++;
         }
+
+        $tax_count  = 0;
+        $page_count = 0;
 
         if ( (string) ( $_POST['va_import_taxonomies'] ?? '' ) === '1' && isset( $data['taxonomies'] ) && is_array( $data['taxonomies'] ) ) {
             $tax_count = self::import_taxonomies( $data['taxonomies'] );
@@ -3504,6 +3555,9 @@ class VA_Settings_Page {
         if ( (string) ( $_POST['va_import_pages'] ?? '' ) === '1' && isset( $data['pages'] ) && is_array( $data['pages'] ) ) {
             $page_count = self::import_pages( $data['pages'] );
         }
+
+        // Rewrite flush ha CPT/taxonomy érintett
+        flush_rewrite_rules( false );
 
         wp_safe_redirect( add_query_arg( [ 'va_tools_msg' => 'import_ok', 'count' => $count, 'tax' => $tax_count, 'pages' => $page_count ], $redirect ) );
         exit;
@@ -7573,14 +7627,8 @@ class VA_Settings_Page {
     public static function output_custom_head(): void {
         $head = (string) get_option( 'va_custom_head', '' );
         if ( ! $head ) return;
-        echo "\n<!-- VA Custom Head -->\n";
-        // Csak meta, link, script, style engedélyezett
-        echo wp_kses( $head, [
-            'meta'   => [ 'name' => [], 'content' => [], 'charset' => [], 'http-equiv' => [], 'property' => [] ],
-            'link'   => [ 'rel' => [], 'href' => [], 'type' => [], 'media' => [], 'as' => [], 'crossorigin' => [], 'integrity' => [] ],
-            'script' => [ 'src' => [], 'type' => [], 'async' => [], 'defer' => [], 'id' => [], 'crossorigin' => [], 'integrity' => [] ],
-            'style'  => [ 'type' => [], 'id' => [], 'media' => [] ],
-        ] ) . "\n";
+        // Csak admin állíthatja be (manage_options), direkt output – wp_kses levágja a style/script tartalmát
+        echo "\n<!-- VA Custom Head -->\n" . $head . "\n";
     }
 
     public static function output_custom_css(): void {
