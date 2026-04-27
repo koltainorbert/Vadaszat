@@ -6730,10 +6730,36 @@ class VA_Settings_Page {
             var defaults = <?php echo wp_json_encode( $defaults ); ?>;
             var current  = <?php echo wp_json_encode( $d ); ?>;
 
+            // saveJson: közvetlen DOM-olvasás – nem függ az event binding működésétől
             function saveJson() {
-                document.getElementById('va_card_styles_json').value = JSON.stringify(current);
+                var out = {};
+                document.querySelectorAll('#vacd-editor .vacd-field').forEach(function(el) {
+                    var prop = el.dataset.prop;
+                    if (!prop) return;
+                    if (el.type === 'range') {
+                        out[prop] = parseFloat(el.value) || parseInt(el.value) || 0;
+                    } else if (el.tagName === 'SELECT') {
+                        out[prop] = el.value;
+                    } else if (el.classList.contains('va-color-input')) {
+                        if (el.value) out[prop] = el.value; // hidden input, vaInitColorPickers frissíti
+                    } else {
+                        out[prop] = el.value;
+                    }
+                });
+                // ami nincs a DOM-ban (pl. nincs megnyitott szekcióban), current-ből töltjük
+                Object.keys(current).forEach(function(k) {
+                    if (out[k] === undefined) out[k] = current[k];
+                });
+                current = out;
+                document.getElementById('va_card_styles_json').value = JSON.stringify(out);
             }
             saveJson();
+
+            // Frissítsük current-t is amikor picker változik (preview miatt)
+            function onPickerChange(el) {
+                var prop = el.dataset ? el.dataset.prop : el.getAttribute('data-prop');
+                if (prop) current[prop] = el.value;
+            }
 
             // Section toggle
             window.vacdToggle = function(key) {
@@ -6822,9 +6848,7 @@ class VA_Settings_Page {
                 if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 50); return; }
                 setTimeout(function() {
                     $('#vacd-editor .va-color-input').off('change.vacd').on('change.vacd', function() {
-                        var prop = $(this).data('prop');
-                        if(!prop) return;
-                        current[prop] = $(this).val();
+                        onPickerChange(this);
                         updatePreview();
                         saveJson();
                     });
