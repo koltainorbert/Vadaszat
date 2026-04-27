@@ -23,6 +23,7 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_apply_hf_preset', [ __CLASS__, 'handle_apply_hf_preset' ] );
         add_action( 'admin_post_va_apply_ap_preset',  [ __CLASS__, 'handle_apply_ap_preset'  ] );
         add_action( 'admin_post_va_apply_single_preset', [ __CLASS__, 'handle_apply_single_preset' ] );
+        add_action( 'admin_post_va_apply_design_preset', [ __CLASS__, 'handle_apply_design_preset' ] );
         add_action( 'admin_post_va_save_nav_items',   [ __CLASS__, 'handle_save_nav_items'   ] );
         add_action( 'wp_head',    [ __CLASS__, 'output_custom_head' ], 1 );
         add_action( 'wp_head',    [ __CLASS__, 'output_custom_css'  ], 100 );
