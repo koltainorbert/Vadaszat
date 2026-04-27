@@ -3814,8 +3814,10 @@ class VA_Settings_Page {
 
     private static function get_adminpanel_presets(): array {
         return [
+
+            /* ── 1 ── */
             'dark_crimson' => [
-                'label' => 'Dark Crimson', 'desc' => 'Alapértelmezett – sötét + piros',
+                'label' => '🔴 Dark Crimson', 'desc' => 'Alapértelmezett – sötét + erős piros',
                 'bg' => '#070709', 'bg2' => '#0d0d11', 'accent' => '#ff2020', 'accent2' => '#ff5050',
                 'options' => [
                     'va_ap_color_bg' => '#070709', 'va_ap_color_bg2' => '#0d0d11', 'va_ap_color_bg3' => '#111118', 'va_ap_color_bg4' => '#161620',
@@ -3824,18 +3826,58 @@ class VA_Settings_Page {
                     'va_ap_color_border' => 'rgba(255,255,255,.07)', 'va_ap_color_border2' => 'rgba(255,255,255,.12)',
                 ],
             ],
-            'midnight_navy' => [
-                'label' => 'Midnight Navy', 'desc' => 'Sötétkék + neon kék accent',
-                'bg' => '#07090f', 'bg2' => '#0b0f1a', 'accent' => '#3b8af7', 'accent2' => '#6aadff',
+
+            /* ── 2 ── */
+            'arctic_white' => [
+                'label' => '⚪ Arctic White', 'desc' => 'Orvosi tiszta fehér, éles kontraszt',
+                'bg' => '#f0f4f8', 'bg2' => '#ffffff', 'accent' => '#0066ff', 'accent2' => '#3385ff',
                 'options' => [
-                    'va_ap_color_bg' => '#07090f', 'va_ap_color_bg2' => '#0b0f1a', 'va_ap_color_bg3' => '#101520', 'va_ap_color_bg4' => '#151c2b',
-                    'va_ap_color_text' => '#dce8ff', 'va_ap_color_muted' => 'rgba(220,232,255,.45)',
-                    'va_ap_color_accent' => '#3b8af7', 'va_ap_color_accent2' => '#6aadff',
-                    'va_ap_color_border' => 'rgba(59,138,247,.08)', 'va_ap_color_border2' => 'rgba(59,138,247,.15)',
+                    'va_ap_color_bg' => '#f0f4f8', 'va_ap_color_bg2' => '#ffffff', 'va_ap_color_bg3' => '#e8edf4', 'va_ap_color_bg4' => '#dde3ec',
+                    'va_ap_color_text' => '#0d1117', 'va_ap_color_muted' => 'rgba(13,17,23,.5)',
+                    'va_ap_color_accent' => '#0066ff', 'va_ap_color_accent2' => '#3385ff',
+                    'va_ap_color_border' => 'rgba(0,0,0,.09)', 'va_ap_color_border2' => 'rgba(0,0,0,.16)',
                 ],
             ],
+
+            /* ── 3 ── */
+            'clinical_mint' => [
+                'label' => '🏥 Clinical Mint', 'desc' => 'Orvosi letisztult – fehér + mentazöld',
+                'bg' => '#f5faf8', 'bg2' => '#ffffff', 'accent' => '#00a878', 'accent2' => '#00cc92',
+                'options' => [
+                    'va_ap_color_bg' => '#f5faf8', 'va_ap_color_bg2' => '#ffffff', 'va_ap_color_bg3' => '#eaf5f1', 'va_ap_color_bg4' => '#ddeee9',
+                    'va_ap_color_text' => '#0a1e17', 'va_ap_color_muted' => 'rgba(10,30,23,.48)',
+                    'va_ap_color_accent' => '#00a878', 'va_ap_color_accent2' => '#00cc92',
+                    'va_ap_color_border' => 'rgba(0,168,120,.1)', 'va_ap_color_border2' => 'rgba(0,168,120,.2)',
+                ],
+            ],
+
+            /* ── 4 ── */
+            'speed_red' => [
+                'label' => '🏎 Speed Red', 'desc' => 'Racing – fekete + elektromos piros glow',
+                'bg' => '#060606', 'bg2' => '#0f0000', 'accent' => '#ff0022', 'accent2' => '#ff4455',
+                'options' => [
+                    'va_ap_color_bg' => '#060606', 'va_ap_color_bg2' => '#0f0000', 'va_ap_color_bg3' => '#180000', 'va_ap_color_bg4' => '#220005',
+                    'va_ap_color_text' => '#fff0f2', 'va_ap_color_muted' => 'rgba(255,240,242,.45)',
+                    'va_ap_color_accent' => '#ff0022', 'va_ap_color_accent2' => '#ff4455',
+                    'va_ap_color_border' => 'rgba(255,0,34,.1)', 'va_ap_color_border2' => 'rgba(255,0,34,.2)',
+                ],
+            ],
+
+            /* ── 5 ── */
+            'hunter_camo' => [
+                'label' => '🦌 Hunter Camo', 'desc' => 'Vadászos terepszín – erdei zöld + barna',
+                'bg' => '#0d110a', 'bg2' => '#151c10', 'accent' => '#7aad2f', 'accent2' => '#a3d44e',
+                'options' => [
+                    'va_ap_color_bg' => '#0d110a', 'va_ap_color_bg2' => '#151c10', 'va_ap_color_bg3' => '#1d2815', 'va_ap_color_bg4' => '#25341c',
+                    'va_ap_color_text' => '#e8f2d8', 'va_ap_color_muted' => 'rgba(232,242,216,.44)',
+                    'va_ap_color_accent' => '#7aad2f', 'va_ap_color_accent2' => '#a3d44e',
+                    'va_ap_color_border' => 'rgba(122,173,47,.1)', 'va_ap_color_border2' => 'rgba(122,173,47,.2)',
+                ],
+            ],
+
+            /* ── 6 ── */
             'forest_command' => [
-                'label' => 'Forest Command', 'desc' => 'Mély zöld, vadász feeling',
+                'label' => '🌲 Forest Command', 'desc' => 'Mély erdőzöld, vadász parancsnok',
                 'bg' => '#060f0b', 'bg2' => '#0b1910', 'accent' => '#25d468', 'accent2' => '#5de891',
                 'options' => [
                     'va_ap_color_bg' => '#060f0b', 'va_ap_color_bg2' => '#0b1910', 'va_ap_color_bg3' => '#0f2018', 'va_ap_color_bg4' => '#142a20',
@@ -3844,8 +3886,46 @@ class VA_Settings_Page {
                     'va_ap_color_border' => 'rgba(37,212,104,.07)', 'va_ap_color_border2' => 'rgba(37,212,104,.14)',
                 ],
             ],
+
+            /* ── 7 ── */
+            'neon_cyber' => [
+                'label' => '⚡ Neon Cyber', 'desc' => 'Cyberpunk 2026 – fekete + neon zöld',
+                'bg' => '#030a06', 'bg2' => '#060f08', 'accent' => '#00ff88', 'accent2' => '#33ffaa',
+                'options' => [
+                    'va_ap_color_bg' => '#030a06', 'va_ap_color_bg2' => '#060f08', 'va_ap_color_bg3' => '#0a1a0e', 'va_ap_color_bg4' => '#102214',
+                    'va_ap_color_text' => '#ccffe8', 'va_ap_color_muted' => 'rgba(204,255,232,.4)',
+                    'va_ap_color_accent' => '#00ff88', 'va_ap_color_accent2' => '#33ffaa',
+                    'va_ap_color_border' => 'rgba(0,255,136,.1)', 'va_ap_color_border2' => 'rgba(0,255,136,.22)',
+                ],
+            ],
+
+            /* ── 8 ── */
+            'midnight_navy' => [
+                'label' => '🌊 Midnight Navy', 'desc' => 'Mélytenger kék + prémium neon',
+                'bg' => '#07090f', 'bg2' => '#0b0f1a', 'accent' => '#3b8af7', 'accent2' => '#6aadff',
+                'options' => [
+                    'va_ap_color_bg' => '#07090f', 'va_ap_color_bg2' => '#0b0f1a', 'va_ap_color_bg3' => '#101520', 'va_ap_color_bg4' => '#151c2b',
+                    'va_ap_color_text' => '#dce8ff', 'va_ap_color_muted' => 'rgba(220,232,255,.45)',
+                    'va_ap_color_accent' => '#3b8af7', 'va_ap_color_accent2' => '#6aadff',
+                    'va_ap_color_border' => 'rgba(59,138,247,.08)', 'va_ap_color_border2' => 'rgba(59,138,247,.15)',
+                ],
+            ],
+
+            /* ── 9 ── */
+            'ocean_depth' => [
+                'label' => '🐋 Ocean Depth', 'desc' => 'Mélyvíz – teal + aqua neon',
+                'bg' => '#040e12', 'bg2' => '#08181e', 'accent' => '#00c8d4', 'accent2' => '#33dde6',
+                'options' => [
+                    'va_ap_color_bg' => '#040e12', 'va_ap_color_bg2' => '#08181e', 'va_ap_color_bg3' => '#0c2028', 'va_ap_color_bg4' => '#122830',
+                    'va_ap_color_text' => '#c8f4f8', 'va_ap_color_muted' => 'rgba(200,244,248,.42)',
+                    'va_ap_color_accent' => '#00c8d4', 'va_ap_color_accent2' => '#33dde6',
+                    'va_ap_color_border' => 'rgba(0,200,212,.09)', 'va_ap_color_border2' => 'rgba(0,200,212,.18)',
+                ],
+            ],
+
+            /* ── 10 ── */
             'obsidian_gold' => [
-                'label' => 'Obsidian Gold', 'desc' => 'Fekete + arany, prémium',
+                'label' => '👑 Obsidian Gold', 'desc' => 'Obszidián fekete + nemes arany',
                 'bg' => '#080807', 'bg2' => '#10100d', 'accent' => '#e8b840', 'accent2' => '#f5cf6a',
                 'options' => [
                     'va_ap_color_bg' => '#080807', 'va_ap_color_bg2' => '#10100d', 'va_ap_color_bg3' => '#161612', 'va_ap_color_bg4' => '#1e1d17',
@@ -3854,28 +3934,10 @@ class VA_Settings_Page {
                     'va_ap_color_border' => 'rgba(232,184,64,.07)', 'va_ap_color_border2' => 'rgba(232,184,64,.14)',
                 ],
             ],
-            'graphite_purple' => [
-                'label' => 'Graphite Purple', 'desc' => 'Grafit + lila, tech-SaaS vibe',
-                'bg' => '#090910', 'bg2' => '#0f0f19', 'accent' => '#8b5cf6', 'accent2' => '#a78bfa',
-                'options' => [
-                    'va_ap_color_bg' => '#090910', 'va_ap_color_bg2' => '#0f0f19', 'va_ap_color_bg3' => '#141420', 'va_ap_color_bg4' => '#1a1a28',
-                    'va_ap_color_text' => '#e4e4f0', 'va_ap_color_muted' => 'rgba(228,228,240,.42)',
-                    'va_ap_color_accent' => '#8b5cf6', 'va_ap_color_accent2' => '#a78bfa',
-                    'va_ap_color_border' => 'rgba(139,92,246,.08)', 'va_ap_color_border2' => 'rgba(139,92,246,.16)',
-                ],
-            ],
-            'carbon_steel' => [
-                'label' => 'Carbon Steel', 'desc' => 'Tiszta szürke-acél, minimál',
-                'bg' => '#0a0a0a', 'bg2' => '#111111', 'accent' => '#64748b', 'accent2' => '#94a3b8',
-                'options' => [
-                    'va_ap_color_bg' => '#0a0a0a', 'va_ap_color_bg2' => '#111111', 'va_ap_color_bg3' => '#171717', 'va_ap_color_bg4' => '#1e1e1e',
-                    'va_ap_color_text' => '#e0e0e0', 'va_ap_color_muted' => 'rgba(224,224,224,.45)',
-                    'va_ap_color_accent' => '#64748b', 'va_ap_color_accent2' => '#94a3b8',
-                    'va_ap_color_border' => 'rgba(255,255,255,.06)', 'va_ap_color_border2' => 'rgba(255,255,255,.11)',
-                ],
-            ],
+
+            /* ── 11 ── */
             'copper_dark' => [
-                'label' => 'Copper Dark', 'desc' => 'Sötétbarna + réz, prémium outdoor',
+                'label' => '🔶 Copper Dark', 'desc' => 'Sötétbarna + réz – prémium outdoor',
                 'bg' => '#0a0806', 'bg2' => '#140f0a', 'accent' => '#c97d3e', 'accent2' => '#e0a265',
                 'options' => [
                     'va_ap_color_bg' => '#0a0806', 'va_ap_color_bg2' => '#140f0a', 'va_ap_color_bg3' => '#1c160e', 'va_ap_color_bg4' => '#241c13',
@@ -3884,8 +3946,10 @@ class VA_Settings_Page {
                     'va_ap_color_border' => 'rgba(201,125,62,.08)', 'va_ap_color_border2' => 'rgba(201,125,62,.14)',
                 ],
             ],
+
+            /* ── 12 ── */
             'steel_ember' => [
-                'label' => 'Steel Ember', 'desc' => 'Acélos szürke + izzó narancs',
+                'label' => '🔥 Steel Ember', 'desc' => 'Acélos szürke + izzó narancs',
                 'bg' => '#0d0e10', 'bg2' => '#111317', 'accent' => '#ff7a22', 'accent2' => '#ffaa66',
                 'options' => [
                     'va_ap_color_bg' => '#0d0e10', 'va_ap_color_bg2' => '#111317', 'va_ap_color_bg3' => '#16181e', 'va_ap_color_bg4' => '#1c1e25',
@@ -3894,18 +3958,22 @@ class VA_Settings_Page {
                     'va_ap_color_border' => 'rgba(255,122,34,.08)', 'va_ap_color_border2' => 'rgba(255,122,34,.15)',
                 ],
             ],
-            'arctic_white' => [
-                'label' => 'Arctic White', 'desc' => 'Fehér/világos, magas kontraszt',
-                'bg' => '#f4f6f9', 'bg2' => '#ffffff', 'accent' => '#ef4444', 'accent2' => '#f87171',
+
+            /* ── 13 ── */
+            'graphite_purple' => [
+                'label' => '🔮 Graphite Purple', 'desc' => 'Grafit + lila, tech-SaaS 2026',
+                'bg' => '#090910', 'bg2' => '#0f0f19', 'accent' => '#8b5cf6', 'accent2' => '#a78bfa',
                 'options' => [
-                    'va_ap_color_bg' => '#f4f6f9', 'va_ap_color_bg2' => '#ffffff', 'va_ap_color_bg3' => '#eef0f5', 'va_ap_color_bg4' => '#e4e7ed',
-                    'va_ap_color_text' => '#1a1a2e', 'va_ap_color_muted' => 'rgba(26,26,46,.5)',
-                    'va_ap_color_accent' => '#ef4444', 'va_ap_color_accent2' => '#f87171',
-                    'va_ap_color_border' => 'rgba(0,0,0,.08)', 'va_ap_color_border2' => 'rgba(0,0,0,.14)',
+                    'va_ap_color_bg' => '#090910', 'va_ap_color_bg2' => '#0f0f19', 'va_ap_color_bg3' => '#141420', 'va_ap_color_bg4' => '#1a1a28',
+                    'va_ap_color_text' => '#e4e4f0', 'va_ap_color_muted' => 'rgba(228,228,240,.42)',
+                    'va_ap_color_accent' => '#8b5cf6', 'va_ap_color_accent2' => '#a78bfa',
+                    'va_ap_color_border' => 'rgba(139,92,246,.08)', 'va_ap_color_border2' => 'rgba(139,92,246,.16)',
                 ],
             ],
+
+            /* ── 14 ── */
             'royal_plum' => [
-                'label' => 'Royal Plum', 'desc' => 'Sötét lila-bordó, exkluzív',
+                'label' => '🍷 Royal Plum', 'desc' => 'Sötét lila-bordó, exkluzív',
                 'bg' => '#12091a', 'bg2' => '#1a0f24', 'accent' => '#c75cff', 'accent2' => '#da98ff',
                 'options' => [
                     'va_ap_color_bg' => '#12091a', 'va_ap_color_bg2' => '#1a0f24', 'va_ap_color_bg3' => '#22132e', 'va_ap_color_bg4' => '#2b1a38',
@@ -3914,6 +3982,79 @@ class VA_Settings_Page {
                     'va_ap_color_border' => 'rgba(199,92,255,.08)', 'va_ap_color_border2' => 'rgba(199,92,255,.16)',
                 ],
             ],
+
+            /* ── 15 ── */
+            'aurora_nord' => [
+                'label' => '🌌 Aurora Nord', 'desc' => 'Északi fény – nordic kék + zöld',
+                'bg' => '#0a0e14', 'bg2' => '#111820', 'accent' => '#88c0d0', 'accent2' => '#a3be8c',
+                'options' => [
+                    'va_ap_color_bg' => '#0a0e14', 'va_ap_color_bg2' => '#111820', 'va_ap_color_bg3' => '#17222e', 'va_ap_color_bg4' => '#1d2c3c',
+                    'va_ap_color_text' => '#d8dee9', 'va_ap_color_muted' => 'rgba(216,222,233,.44)',
+                    'va_ap_color_accent' => '#88c0d0', 'va_ap_color_accent2' => '#a3be8c',
+                    'va_ap_color_border' => 'rgba(136,192,208,.09)', 'va_ap_color_border2' => 'rgba(136,192,208,.18)',
+                ],
+            ],
+
+            /* ── 16 ── */
+            'carbon_steel' => [
+                'label' => '⚙️ Carbon Steel', 'desc' => 'Tiszta acél szürke, minimál 2026',
+                'bg' => '#0a0a0a', 'bg2' => '#111111', 'accent' => '#64748b', 'accent2' => '#94a3b8',
+                'options' => [
+                    'va_ap_color_bg' => '#0a0a0a', 'va_ap_color_bg2' => '#111111', 'va_ap_color_bg3' => '#171717', 'va_ap_color_bg4' => '#1e1e1e',
+                    'va_ap_color_text' => '#e0e0e0', 'va_ap_color_muted' => 'rgba(224,224,224,.45)',
+                    'va_ap_color_accent' => '#64748b', 'va_ap_color_accent2' => '#94a3b8',
+                    'va_ap_color_border' => 'rgba(255,255,255,.06)', 'va_ap_color_border2' => 'rgba(255,255,255,.11)',
+                ],
+            ],
+
+            /* ── 17 ── */
+            'ink_paper' => [
+                'label' => '📰 Ink & Paper', 'desc' => 'Editorial újság – fehér + tinta fekete',
+                'bg' => '#fafafa', 'bg2' => '#ffffff', 'accent' => '#1a1a1a', 'accent2' => '#333333',
+                'options' => [
+                    'va_ap_color_bg' => '#fafafa', 'va_ap_color_bg2' => '#ffffff', 'va_ap_color_bg3' => '#f2f2f2', 'va_ap_color_bg4' => '#e8e8e8',
+                    'va_ap_color_text' => '#111111', 'va_ap_color_muted' => 'rgba(17,17,17,.5)',
+                    'va_ap_color_accent' => '#1a1a1a', 'va_ap_color_accent2' => '#444444',
+                    'va_ap_color_border' => 'rgba(0,0,0,.1)', 'va_ap_color_border2' => 'rgba(0,0,0,.18)',
+                ],
+            ],
+
+            /* ── 18 ── */
+            'sunset_blaze' => [
+                'label' => '🌅 Sunset Blaze', 'desc' => 'Napnyugta – meleg korall + arany',
+                'bg' => '#0f0a06', 'bg2' => '#1a1008', 'accent' => '#ff6b35', 'accent2' => '#ffa040',
+                'options' => [
+                    'va_ap_color_bg' => '#0f0a06', 'va_ap_color_bg2' => '#1a1008', 'va_ap_color_bg3' => '#24160c', 'va_ap_color_bg4' => '#2e1c12',
+                    'va_ap_color_text' => '#fff0e8', 'va_ap_color_muted' => 'rgba(255,240,232,.44)',
+                    'va_ap_color_accent' => '#ff6b35', 'va_ap_color_accent2' => '#ffa040',
+                    'va_ap_color_border' => 'rgba(255,107,53,.1)', 'va_ap_color_border2' => 'rgba(255,107,53,.2)',
+                ],
+            ],
+
+            /* ── 19 ── */
+            'sakura_pro' => [
+                'label' => '🌸 Sakura Pro', 'desc' => 'Japán prémium – halvány rózsa + fehér',
+                'bg' => '#fdf7f9', 'bg2' => '#ffffff', 'accent' => '#e8558a', 'accent2' => '#f07aaa',
+                'options' => [
+                    'va_ap_color_bg' => '#fdf7f9', 'va_ap_color_bg2' => '#ffffff', 'va_ap_color_bg3' => '#f8eef3', 'va_ap_color_bg4' => '#f0e0e8',
+                    'va_ap_color_text' => '#1f0a14', 'va_ap_color_muted' => 'rgba(31,10,20,.48)',
+                    'va_ap_color_accent' => '#e8558a', 'va_ap_color_accent2' => '#f07aaa',
+                    'va_ap_color_border' => 'rgba(232,85,138,.1)', 'va_ap_color_border2' => 'rgba(232,85,138,.2)',
+                ],
+            ],
+
+            /* ── 20 ── */
+            'matrix_dark' => [
+                'label' => '💻 Matrix Dark', 'desc' => 'Hacker zöld – mély fekete + lime',
+                'bg' => '#020802', 'bg2' => '#050f05', 'accent' => '#39ff14', 'accent2' => '#66ff44',
+                'options' => [
+                    'va_ap_color_bg' => '#020802', 'va_ap_color_bg2' => '#050f05', 'va_ap_color_bg3' => '#091509', 'va_ap_color_bg4' => '#0f1f0f',
+                    'va_ap_color_text' => '#ccffcc', 'va_ap_color_muted' => 'rgba(204,255,204,.4)',
+                    'va_ap_color_accent' => '#39ff14', 'va_ap_color_accent2' => '#66ff44',
+                    'va_ap_color_border' => 'rgba(57,255,20,.1)', 'va_ap_color_border2' => 'rgba(57,255,20,.2)',
+                ],
+            ],
+
         ];
     }
 
