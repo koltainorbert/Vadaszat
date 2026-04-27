@@ -243,12 +243,29 @@
                         <!-- Google Translate elem (rejtett) -->
                         <div id="google_translate_element" style="display:none"></div>
                         <script>
+                        var VA_ACTIVE_LANGS = <?php echo json_encode( array_values($active_langs) ); ?>;
+                        // Ország → nyelv térkép
+                        var VA_COUNTRY_LANG = {
+                            DE:'de',AT:'de',CH:'de',LI:'de',
+                            RO:'ro',MD:'ro',
+                            SK:'sk',CZ:'cs',PL:'pl',
+                            FR:'fr',BE:'fr',LU:'fr',MC:'fr',
+                            IT:'it',SM:'it',VA:'it',
+                            ES:'es',MX:'es',AR:'es',CO:'es',CL:'es',PE:'es',VE:'es',
+                            UA:'uk',
+                            RS:'sr',BA:'sr',ME:'sr',
+                            HR:'hr',SI:'sl',
+                            GB:'en',US:'en',AU:'en',CA:'en',NZ:'en',IE:'en',
+                            HU:'hu'
+                        };
+
                         function googleTranslateElementInit() {
                             new google.translate.TranslateElement({
                                 pageLanguage: 'hu',
                                 autoDisplay: false
                             }, 'google_translate_element');
                         }
+
                         function vaSetLang(code) {
                             if (code === 'hu') {
                                 document.cookie = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
@@ -257,8 +274,35 @@
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/';
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
                             }
+                            document.cookie = 'va_geo_done=1;path=/;max-age=86400';
                             location.reload();
                         }
+
+                        // IP geolokáció – csak ha még nem volt meghatározva
+                        (function(){
+                            function getCookie(n){
+                                var m = document.cookie.match('(?:^|;)\\s*'+n+'=([^;]*)');
+                                return m ? decodeURIComponent(m[1]) : null;
+                            }
+                            if (getCookie('va_geo_done') || getCookie('googtrans')) return;
+                            // Nincs beállítva – lekérjük az IP alapú országot
+                            fetch('https://ip-api.com/json/?fields=countryCode', {cache:'no-store'})
+                                .then(function(r){ return r.json(); })
+                                .then(function(d){
+                                    var cc   = (d && d.countryCode) ? d.countryCode.toUpperCase() : 'HU';
+                                    var lang = VA_COUNTRY_LANG[cc] || 'hu';
+                                    // Beállítjuk hogy ne fusson újra
+                                    document.cookie = 'va_geo_done=1;path=/;max-age=86400';
+                                    // Ha Magyarország vagy nincs az aktív nyelvek közt → marad
+                                    if (lang === 'hu' || VA_ACTIVE_LANGS.indexOf(lang) === -1) return;
+                                    document.cookie = 'googtrans=/hu/' + lang + ';path=/';
+                                    document.cookie = 'googtrans=/hu/' + lang + ';path=/;domain=.' + location.hostname;
+                                    location.reload();
+                                })
+                                .catch(function(){});
+                        })();
+
+                        // Dropdown toggle
                         (function(){
                             var toggle   = document.getElementById('va-lang-toggle');
                             var dropdown = document.getElementById('va-lang-dropdown');

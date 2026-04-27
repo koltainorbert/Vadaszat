@@ -399,14 +399,14 @@ hr { border-color: var(--border); }
 /* ── Nyelvváltó ── */
 .va-lang-sw { position:relative; display:flex; align-items:center; margin-left:8px; }
 .va-lang-sw__toggle {
-  display:flex; align-items:center; gap:6px;
-  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
-  border-radius:8px; padding:5px 10px;
-  color:#fff; font-size:13px; font-weight:500; cursor:pointer;
-  transition:background .15s, border-color .15s; white-space:nowrap;
+  display:flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+  border-radius:999px; padding:7px 18px;
+  color:#fff !important; font-size:.76rem; font-weight:600; cursor:pointer;
+  transition:background .18s, border-color .18s; white-space:nowrap;
 }
-.va-lang-sw__toggle:hover { background:rgba(255,255,255,.13); border-color:rgba(255,255,255,.22); }
-.va-lang-sw__toggle span { font-size:13px; }
+.va-lang-sw__toggle:hover { background:rgba(255,255,255,.11); border-color:rgba(255,0,0,.35); }
+.va-lang-sw__toggle span { font-size:.76rem; color:#fff !important; }
 .va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:.7; }
 .va-lang-sw[aria-open] .va-lang-sw__arrow,
 .va-lang-sw__toggle[aria-expanded="true"] .va-lang-sw__arrow { transform:rotate(180deg); }
@@ -430,6 +430,11 @@ hr { border-color: var(--border); }
 .skiptranslate, .goog-te-banner-frame { display:none !important; }
 body { top:0 !important; }
 .goog-te-menu-value:hover { text-decoration:none !important; }
+/* Gombok szövege fehér marad fordítás után is (Google Translate font elem fix) */
+.va-header__submit-btn, .va-header__submit-btn font, .va-header__submit-btn * { color:#fff !important; }
+.va-header__user, .va-header__user font, .va-header__user * { color:#fff !important; }
+.va-header__user-login font { color:inherit !important; }
+.va-lang-sw__toggle font, .va-lang-sw__item font { color:#fff !important; }
 
 /* ── Hamburger ── */
 .va-hamburger {
