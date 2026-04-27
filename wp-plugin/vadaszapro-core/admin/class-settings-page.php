@@ -3419,6 +3419,22 @@ class VA_Settings_Page {
             <div class="va-ei-card">
                 <h2>2) Import beállítás fájlból</h2>
                 <p>Csak ezen plugin exportjából származó JSON fájlt tölts fel. Beállíthatod, hogy a taxonómiákat és oldalakat is importálja.</p>
+                <?php
+                $max_upload = (int) wp_max_upload_size();
+                $post_max   = wp_convert_hr_to_bytes( ini_get('post_max_size') );
+                $tmp_ok     = is_writable( sys_get_temp_dir() );
+                $limit_ok   = $max_upload >= 1024*1024;
+                ?>
+                <div style="background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:10px 14px;margin-bottom:14px;font-size:12px;color:rgba(255,255,255,.6);">
+                    <strong style="color:rgba(255,255,255,.8);">⚙ PHP feltöltési info:</strong>
+                    upload_max_filesize: <code><?php echo esc_html( ini_get('upload_max_filesize') ); ?></code> &nbsp;|&nbsp;
+                    post_max_size: <code><?php echo esc_html( ini_get('post_max_size') ); ?></code> &nbsp;|&nbsp;
+                    wp_max_upload_size: <code><?php echo esc_html( size_format($max_upload) ); ?></code> &nbsp;|&nbsp;
+                    tmp_dir írható: <code><?php echo $tmp_ok ? '<span style="color:#4ade80">igen</span>' : '<span style="color:#f87171">NEM</span>'; ?></code>
+                    <?php if ( ! $limit_ok ): ?>
+                        <br><span style="color:#f87171;font-weight:600;">⚠ Az upload limit kevesebb mint 1MB! Növeld a LocalWP PHP Settings-ben.</span>
+                    <?php endif; ?>
+                </div>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="va_import_settings">
                     <?php wp_nonce_field( 'va_import_settings' ); ?>
