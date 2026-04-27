@@ -84,6 +84,7 @@ body.va-admin-page #wpbody-content {
     background: var(--va-bg) !important;
     padding-left: var(--va-sidebar-w) !important;
     padding-top: var(--va-topbar-h) !important;
+    padding-bottom: 80px !important;
     min-height: 100vh;
     box-sizing: border-box;
 }
