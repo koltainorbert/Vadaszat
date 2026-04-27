@@ -327,41 +327,41 @@ class VA_Form_Builder {
         </div>
 
         <style>
-        /* ── Form Builder – fekete szöveg, WP admin fehér háttérre ── */
-        .va-fb-wrap * { color:#111 !important; box-sizing:border-box; }
+        /* ── Form Builder – dark téma ── */
+        .va-fb-wrap * { color:#fff !important; box-sizing:border-box; }
         .va-fb-wrap { max-width:960px; }
         .va-fb-tabs { display:flex; gap:6px; margin-bottom:0; flex-wrap:wrap; }
-        .va-fb-tab  { padding:8px 18px; border-radius:6px 6px 0 0; background:#f0f0f1; color:#333 !important; text-decoration:none; font-size:13px; font-weight:600; border:1px solid #c3c4c7; border-bottom:none; transition:.15s; }
-        .va-fb-tab:hover { background:#e0e0e0; color:#000 !important; }
-        .va-fb-tab--active { background:#fff; color:#c0392b !important; border-color:#c3c4c7; font-weight:700; }
-        .va-fb-body { background:#fff; border:1px solid #c3c4c7; border-radius:0 6px 6px 6px; padding:20px; }
-        .va-fb-info { font-size:12px; color:#555 !important; margin-bottom:16px; padding:10px 14px; background:#f6f7f7; border-left:3px solid #c0392b; border-radius:0 4px 4px 0; }
+        .va-fb-tab  { padding:8px 18px; border-radius:6px 6px 0 0; background:rgba(255,255,255,.06); color:rgba(255,255,255,.5) !important; text-decoration:none; font-size:13px; font-weight:600; border:1px solid rgba(255,255,255,.12); border-bottom:none; transition:.15s; }
+        .va-fb-tab:hover { background:rgba(255,255,255,.1); color:#fff !important; }
+        .va-fb-tab--active { background:#1a1a1a; color:#ff4444 !important; border-color:rgba(255,255,255,.18); font-weight:700; }
+        .va-fb-body { background:#1a1a1a; border:1px solid rgba(255,255,255,.12); border-radius:0 6px 6px 6px; padding:20px; }
+        .va-fb-info { font-size:12px; color:rgba(255,255,255,.55) !important; margin-bottom:16px; padding:10px 14px; background:rgba(255,255,255,.04); border-left:3px solid #ff0000; border-radius:0 4px 4px 0; }
         .va-fb-list { display:flex; flex-direction:column; gap:7px; }
-        .va-fb-row  { display:flex; align-items:center; gap:12px; background:#fafafa; border:1px solid #ddd; border-radius:6px; padding:9px 13px; cursor:default; transition:.15s; }
-        .va-fb-row:hover { border-color:#c0392b; background:#fff5f5; }
-        .va-fb-row.sortable-chosen { opacity:.75; border-color:#c0392b; box-shadow:0 2px 8px rgba(192,57,43,.15); }
+        .va-fb-row  { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); border-radius:6px; padding:9px 13px; cursor:default; transition:.15s; }
+        .va-fb-row:hover { border-color:#ff0000; background:rgba(255,0,0,.05); }
+        .va-fb-row.sortable-chosen { opacity:.75; border-color:#ff0000; box-shadow:0 2px 8px rgba(255,0,0,.15); }
         .va-fb-row.sortable-ghost  { opacity:.3; }
-        .va-fb-row--disabled { opacity:.5; background:#f0f0f0; }
-        .va-fb-row--custom { border-left:3px solid #2980b9; }
-        .va-fb-handle { font-size:20px; cursor:grab; color:#aaa !important; user-select:none; flex-shrink:0; }
+        .va-fb-row--disabled { opacity:.5; background:rgba(255,255,255,.02); }
+        .va-fb-row--custom { border-left:3px solid #4da3ff; }
+        .va-fb-handle { font-size:20px; cursor:grab; color:rgba(255,255,255,.3) !important; user-select:none; flex-shrink:0; }
         .va-fb-handle:active { cursor:grabbing; }
         .va-fb-type-icon { font-size:17px; flex-shrink:0; width:22px; text-align:center; }
         .va-fb-row-inputs { display:flex; gap:10px; flex:1; flex-wrap:wrap; }
         .va-fb-input-group { display:flex; flex-direction:column; gap:3px; flex:1; min-width:130px; }
-        .va-fb-input-group > label { font-size:10px; font-weight:700; text-transform:uppercase; color:#888 !important; letter-spacing:.6px; }
-        .va-fb-label-input, .va-fb-ph-input, .va-fb-type-sel { background:#fff; border:1px solid #c3c4c7; color:#111 !important; border-radius:4px; padding:5px 8px; font-size:13px; width:100%; }
-        .va-fb-label-input:focus, .va-fb-ph-input:focus, .va-fb-type-sel:focus { border-color:#c0392b; outline:none; box-shadow:0 0 0 1px #c0392b; }
+        .va-fb-input-group > label { font-size:10px; font-weight:700; text-transform:uppercase; color:rgba(255,255,255,.4) !important; letter-spacing:.6px; }
+        .va-fb-label-input, .va-fb-ph-input, .va-fb-type-sel { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.15); color:#fff !important; border-radius:4px; padding:5px 8px; font-size:13px; width:100%; }
+        .va-fb-label-input:focus, .va-fb-ph-input:focus, .va-fb-type-sel:focus { border-color:#ff0000; outline:none; box-shadow:0 0 0 1px rgba(255,0,0,.4); }
         .va-fb-row-controls { display:flex; gap:14px; flex-shrink:0; align-items:center; }
         .va-fb-ctrl-label { display:flex; flex-direction:column; align-items:center; gap:4px; }
-        .va-fb-ctrl-label > span { font-size:10px; font-weight:700; text-transform:uppercase; color:#888 !important; letter-spacing:.5px; }
-        /* Toggle az adminban – fekete alapon is látható legyen */
+        .va-fb-ctrl-label > span { font-size:10px; font-weight:700; text-transform:uppercase; color:rgba(255,255,255,.4) !important; letter-spacing:.5px; }
+        /* Toggle */
         .va-fb-wrap .va-toggle { position:relative; display:inline-block; width:36px; height:20px; }
         .va-fb-wrap .va-toggle input { opacity:0; width:0; height:0; position:absolute; }
-        .va-fb-wrap .va-toggle-slider { position:absolute; inset:0; background:#ccc; border-radius:20px; transition:.2s; cursor:pointer; }
+        .va-fb-wrap .va-toggle-slider { position:absolute; inset:0; background:rgba(255,255,255,.2); border-radius:20px; transition:.2s; cursor:pointer; }
         .va-fb-wrap .va-toggle-slider:before { content:''; position:absolute; width:14px; height:14px; left:3px; top:3px; background:#fff; border-radius:50%; transition:.2s; }
         .va-fb-wrap input:checked + .va-toggle-slider { background:#27ae60; }
         .va-fb-wrap input:checked + .va-toggle-slider--red { background:#c0392b !important; }
-        .va-fb-wrap .va-toggle-slider--red { background:#ddd !important; }
+        .va-fb-wrap .va-toggle-slider--red { background:rgba(255,255,255,.2) !important; }
         .va-fb-wrap input:checked + .va-toggle-slider:before { transform:translateX(16px); }
         /* Törlés gomb */
         .va-fb-delete-btn { background:none; border:none; cursor:pointer; font-size:16px; color:#c0392b !important; padding:2px 5px; border-radius:4px; flex-shrink:0; line-height:1; }

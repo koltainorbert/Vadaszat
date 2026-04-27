@@ -3369,13 +3369,25 @@ class VA_Settings_Page {
         ?>
         <div class="wrap va-admin-wrap">
             <h1>📦 VadászApró – Export / Import / Reset</h1>
-            <p class="description">A teljes <code>va_*</code> beállításkészlet exportálható és importálható (általános, design, fejléc/lábléc, reklámzónák, hirdetés/aukció opciók).</p>
+            <p class="description" style="color:rgba(255,255,255,.5)">A teljes <code>va_*</code> beállításkészlet exportálható és importálható (általános, design, fejléc/lábléc, reklámzónák, hirdetés/aukció opciók).</p>
+            <style>
+            .va-ei-card { background:var(--va-bg2,#161616); border:1px solid var(--va-border,rgba(255,255,255,.1)); border-radius:10px; padding:20px 24px; margin-top:16px; max-width:960px; }
+            .va-ei-card h2 { font-size:15px !important; color:#fff !important; text-transform:none !important; letter-spacing:0 !important; border-bottom:1px solid rgba(255,255,255,.1) !important; padding-bottom:10px !important; margin:0 0 14px !important; }
+            .va-ei-card p, .va-ei-card label { color:rgba(255,255,255,.65) !important; font-size:13px; }
+            .va-ei-card table.widefat { background:transparent !important; border:1px solid rgba(255,255,255,.1) !important; }
+            .va-ei-card table.widefat th { background:rgba(255,255,255,.06) !important; color:rgba(255,255,255,.5) !important; font-size:11px; text-transform:uppercase; letter-spacing:.5px; }
+            .va-ei-card table.widefat td { background:transparent !important; color:#fff !important; border-bottom:1px solid rgba(255,255,255,.07) !important; }
+            .va-ei-card table.widefat tr:last-child td { border-bottom:none !important; }
+            .va-ei-card input[type=file] { color:#fff !important; }
+            .va-ei-card input[type=checkbox] { accent-color:#ff0000; }
+            .va-ei-card--danger { border-left:3px solid #ff4444; }
+            </style>
 
             <?php if ( $note !== '' ): ?>
                 <div class="<?php echo esc_attr( $cls ); ?>"><p><?php echo esc_html( $note ); ?></p></div>
             <?php endif; ?>
 
-            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
+            <div class="va-ei-card">
                 <h2>1) Export összes beállítás</h2>
                 <p>JSON fájl letöltése, amit friss WordPress telepítésen vissza tudsz importálni — <strong>mindent tartalmaz</strong>.</p>
                 <table class="widefat" style="margin-bottom:14px;">
@@ -3398,7 +3410,7 @@ class VA_Settings_Page {
                 </form>
             </div>
 
-            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;">
+            <div class="va-ei-card">
                 <h2>2) Import beállítás fájlból</h2>
                 <p>Csak ezen plugin exportjából származó JSON fájlt tölts fel. Beállíthatod, hogy a taxonómiákat és oldalakat is importálja.</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" enctype="multipart/form-data">
@@ -3415,7 +3427,7 @@ class VA_Settings_Page {
                 </form>
             </div>
 
-            <div class="card" style="max-width:960px;padding:18px 22px;margin-top:16px;border-left:4px solid #d63638;">
+            <div class="va-ei-card va-ei-card--danger">
                 <h2>3) Visszaállítás alaphelyzetbe</h2>
                 <p>Ez törli a jelenlegi <code>va_*</code> beállításokat, majd visszaállítja az alapértékeket.</p>
                 <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" onsubmit="return confirm('Biztosan alaphelyzetbe állítod az összes beállítást?');">
