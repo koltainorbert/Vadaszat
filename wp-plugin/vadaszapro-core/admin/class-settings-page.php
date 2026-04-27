@@ -1148,9 +1148,11 @@ class VA_Settings_Page {
                         <input type="hidden" name="preset_key" value="<?php echo esc_attr( $key ); ?>">
                         <?php wp_nonce_field( 'va_apply_design_preset' ); ?>
                         <button type="submit" class="va-aps-preset-btn" style="<?php echo $bg_style; ?>border-color:<?php echo esc_attr( $p['accent'] ); ?>;">
-                            <span class="va-aps-preset-accent" style="background:<?php echo esc_attr( $p['accent'] ); ?>;"></span>
-                            <span class="va-aps-preset-label" style="<?php echo $text_style; ?>"><?php echo esc_html( $p['label'] ); ?></span>
-                            <span class="va-aps-preset-desc" style="<?php echo $text_style; ?>opacity:.7;"><?php echo esc_html( $p['desc'] ); ?></span>
+                            <span class="va-aps-preset-accent" style="background:<?php echo esc_attr( $p['accent'] ); ?>;color:<?php echo esc_attr( $p['accent'] ); ?>;"></span>
+                            <span class="va-aps-preset-content">
+                                <span class="va-aps-preset-label" style="<?php echo $text_style; ?>"><?php echo esc_html( $p['label'] ); ?></span>
+                                <span class="va-aps-preset-desc" style="<?php echo $text_style; ?>"><?php echo esc_html( $p['desc'] ); ?></span>
+                            </span>
                         </button>
                     </form>
                     <?php endforeach; ?>

@@ -1292,3 +1292,44 @@ body.va-admin-page .media-sidebar::-webkit-scrollbar-thumb {
     border-bottom: none !important;
     border-radius: 0 6px 6px 0 !important;
 }
+
+/* === PRESET GRID 2026 Glassmorphism Magic === */
+@keyframes va-preset-shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+@keyframes va-preset-glow-pulse { 0%,100%{ opacity:.55; transform:scale(1); } 50%{ opacity:1; transform:scale(1.12); } }
+@keyframes va-preset-float-in { from { opacity:0; transform:translateY(16px) scale(.95); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+.va-aps-presets-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(168px,1fr)); gap:10px; }
+
+.va-aps-preset-btn { position:relative; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end; width:100%; min-height:110px; padding:0; border:1.5px solid transparent; border-radius:16px; cursor:pointer; overflow:hidden; transition:transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s ease, border-color .22s ease; animation:va-preset-float-in .4s ease both; text-align:left; outline:none; }
+.va-aps-preset-btn::before { content:''; position:absolute; inset:0; background:linear-gradient(160deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.01) 40%,rgba(0,0,0,.55) 100%); z-index:1; transition:opacity .25s; border-radius:inherit; }
+.va-aps-preset-btn::after { content:''; position:absolute; inset:0; background:linear-gradient(120deg,transparent 0%,rgba(255,255,255,.14) 50%,transparent 100%); background-size:400px 100%; opacity:0; transition:opacity .3s; border-radius:inherit; z-index:2; }
+.va-aps-preset-btn:hover::after { opacity:1; animation:va-preset-shimmer .7s linear; }
+.va-aps-preset-btn:hover { transform:translateY(-6px) scale(1.04); box-shadow:0 20px 48px rgba(0,0,0,.55),0 0 0 2px rgba(255,255,255,.25),0 0 36px rgba(255,255,255,.08); z-index:10; }
+.va-aps-preset-btn:active { transform:translateY(-2px) scale(1.01); transition-duration:.08s; }
+
+.va-aps-preset-accent { position:absolute; top:11px; right:11px; width:9px; height:9px; border-radius:50%; z-index:4; box-shadow:0 0 8px 3px currentColor; animation:va-preset-glow-pulse 2.8s ease-in-out infinite; }
+
+.va-aps-preset-content { position:relative; z-index:3; padding:10px 12px 12px; width:100%; background:linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 100%); border-radius:0 0 14px 14px; }
+.va-aps-preset-label { display:block; font-size:12px; font-weight:700; line-height:1.3; letter-spacing:.01em; text-shadow:0 1px 5px rgba(0,0,0,.9); margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.va-aps-preset-desc { display:block; font-size:10px; font-weight:400; line-height:1.3; text-shadow:0 1px 4px rgba(0,0,0,.9); opacity:.75; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+.va-aps-presets-grid form:nth-child(1) .va-aps-preset-btn{animation-delay:.02s}
+.va-aps-presets-grid form:nth-child(2) .va-aps-preset-btn{animation-delay:.04s}
+.va-aps-presets-grid form:nth-child(3) .va-aps-preset-btn{animation-delay:.06s}
+.va-aps-presets-grid form:nth-child(4) .va-aps-preset-btn{animation-delay:.08s}
+.va-aps-presets-grid form:nth-child(5) .va-aps-preset-btn{animation-delay:.10s}
+.va-aps-presets-grid form:nth-child(6) .va-aps-preset-btn{animation-delay:.12s}
+.va-aps-presets-grid form:nth-child(7) .va-aps-preset-btn{animation-delay:.14s}
+.va-aps-presets-grid form:nth-child(8) .va-aps-preset-btn{animation-delay:.16s}
+.va-aps-presets-grid form:nth-child(9) .va-aps-preset-btn{animation-delay:.18s}
+.va-aps-presets-grid form:nth-child(10) .va-aps-preset-btn{animation-delay:.20s}
+.va-aps-presets-grid form:nth-child(11) .va-aps-preset-btn{animation-delay:.22s}
+.va-aps-presets-grid form:nth-child(12) .va-aps-preset-btn{animation-delay:.24s}
+.va-aps-presets-grid form:nth-child(13) .va-aps-preset-btn{animation-delay:.26s}
+.va-aps-presets-grid form:nth-child(14) .va-aps-preset-btn{animation-delay:.28s}
+.va-aps-presets-grid form:nth-child(15) .va-aps-preset-btn{animation-delay:.30s}
+.va-aps-presets-grid form:nth-child(16) .va-aps-preset-btn{animation-delay:.32s}
+.va-aps-presets-grid form:nth-child(17) .va-aps-preset-btn{animation-delay:.34s}
+.va-aps-presets-grid form:nth-child(18) .va-aps-preset-btn{animation-delay:.36s}
+.va-aps-presets-grid form:nth-child(19) .va-aps-preset-btn{animation-delay:.38s}
+.va-aps-presets-grid form:nth-child(20) .va-aps-preset-btn{animation-delay:.40s}
