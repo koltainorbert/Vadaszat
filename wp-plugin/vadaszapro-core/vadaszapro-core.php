@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: VadászApró Core
- * Plugin URI:  https://vadaszapro.net
- * Description: Vadászati apróhirdetési rendszer – hirdetés, aukció, felhasználói fiók, reklámzónák.
+ * Plugin Name: Listrix Core
+ * Plugin URI:  https://listrix.com
+ * Description: Listrix – Advanced Classifieds & Auction Marketplace. Listings, auctions, user accounts, ad zones.
  * Version:     1.0.1
  * Author:      SDH
  * Text Domain: vadaszapro
