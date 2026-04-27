@@ -6814,19 +6814,34 @@ class VA_Settings_Page {
             updatePreview = function() { _origUpdatePreview(); updateHoverStyle(); };
             updatePreview();
 
-            // Szín mezők és field change listeners
-            // admin.js wpColorPicker change eventet triggerel az input-on → delegáció elegendő
+            // Szín mezők: wpColorPicker/iris NEM triggerel standard change-t kattintáskor,
+            // iris:change custom eventet használ → azt kell figyelni.
             function vacdInitPickers() {
                 if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 100); return; }
-                $('#vacd-editor').off('change.vacd', '.va-color-input').on('change.vacd', '.va-color-input', function(){
-                    var prop = $(this).data('prop');
-                    if(!prop) return;
-                    current[prop] = $(this).val();
-                    updatePreview();
-                    saveJson();
+                $(function() {
+                    // iris:change: az input.val() már frissítve van mielőtt az event elsül
+                    $('#vacd-editor').off('iris:change.vacd', '.va-color-input').on('iris:change.vacd', '.va-color-input', function() {
+                        var prop = $(this).data('prop');
+                        if(!prop) return;
+                        current[prop] = $(this).val();
+                        updatePreview();
+                        saveJson();
+                    });
+                    // Clear gomb: iris:change nem sül el törléskor
+                    $('#vacd-editor').off('click.vacd', '.wp-picker-clear').on('click.vacd', '.wp-picker-clear', function() {
+                        var $input = $(this).closest('.wp-picker-container').find('.va-color-input');
+                        var prop = $input.data('prop');
+                        if(!prop) return;
+                        setTimeout(function(){ current[prop] = $input.val(); updatePreview(); saveJson(); }, 50);
+                    });
                 });
             }
             vacdInitPickers();
+
+            // Form submit előtt mindig frissítjük a hidden inputot
+            document.querySelector('.vacd').closest('form').addEventListener('submit', function() {
+                saveJson();
+            });
 
             // Field change listeners (range + select)
             document.querySelectorAll('.vacd-field').forEach(function(el){
