@@ -6814,31 +6814,23 @@ class VA_Settings_Page {
             updatePreview = function() { _origUpdatePreview(); updateHoverStyle(); };
             updatePreview();
 
-            // Szín picker init: admin.js NEM init-eli a #vacd-editor mezőit,
-            // itt inicializáljuk wpColorPicker change callback-kel.
+            // Szín picker init: a custom vaInitColorPickers picker syncUI()-ban
+            // $hidden.trigger('change')-t hív → change eseményt kell figyelni.
+            // DOMReady-n 100ms késleltetéssel bindolunk, hogy admin.js
+            // vaInitColorPickers már inicializálta a pickereket.
             function vacdInitPickers() {
-                if(typeof $ === 'undefined' || !$.fn.wpColorPicker) { setTimeout(vacdInitPickers, 50); return; }
-                $(function() {
-                    $('#vacd-editor .va-color-input').each(function() {
-                        var $input = $(this);
-                        $input.wpColorPicker({
-                            change: function(event, ui) {
-                                var prop = $input.data('prop');
-                                if(!prop) return;
-                                current[prop] = ui.color.toString();
-                                updatePreview();
-                                saveJson();
-                            },
-                            clear: function() {
-                                var prop = $input.data('prop');
-                                if(!prop) return;
-                                setTimeout(function(){ current[prop] = $input.val() || ''; updatePreview(); saveJson(); }, 30);
-                            }
-                        });
+                if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 50); return; }
+                setTimeout(function() {
+                    $('#vacd-editor .va-color-input').off('change.vacd').on('change.vacd', function() {
+                        var prop = $(this).data('prop');
+                        if(!prop) return;
+                        current[prop] = $(this).val();
+                        updatePreview();
+                        saveJson();
                     });
-                });
+                }, 100);
             }
-            vacdInitPickers();
+            $(function() { vacdInitPickers(); });
 
             // Form submit előtt mindig frissítjük a hidden inputot
             document.querySelector('.vacd').closest('form').addEventListener('submit', function() {

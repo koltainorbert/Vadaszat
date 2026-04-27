@@ -8,8 +8,7 @@
     /* ── Color picker init ────────────────────────────────────── */
     $(function () {
         if ($.fn.wpColorPicker) {
-            // A #vacd-editor mezőit a kártyaszerkesztő init-eli saját change callback-kel
-            $(".va-color-input").not("#vacd-editor .va-color-input").wpColorPicker();
+            $(".va-color-input").wpColorPicker();
         }
 
         /* ── Media picker ─────────────────────────────────────── */

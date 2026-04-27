@@ -6816,12 +6816,11 @@ class VA_Settings_Page {
 
             // Szín picker init: a custom vaInitColorPickers picker syncUI()-ban
             // $hidden.trigger('change')-t hív → change eseményt kell figyelni.
-            // admin.js már inicializálja az összes .va-color-input-ot DOMReady-n.
-            // Mi itt csak a change eseményt kötjük be (közvetlen, nem delegation).
+            // DOMReady-n 100ms késleltetéssel bindolunk, hogy admin.js
+            // vaInitColorPickers már inicializálta a pickereket.
             function vacdInitPickers() {
                 if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 50); return; }
-                $(function() {
-                    // Közvetlen binding minden .va-color-input elemre a #vacd-editor-ben
+                setTimeout(function() {
                     $('#vacd-editor .va-color-input').off('change.vacd').on('change.vacd', function() {
                         var prop = $(this).data('prop');
                         if(!prop) return;
@@ -6829,9 +6828,9 @@ class VA_Settings_Page {
                         updatePreview();
                         saveJson();
                     });
-                });
+                }, 100);
             }
-            vacdInitPickers();
+            $(function() { vacdInitPickers(); });
 
             // Form submit előtt mindig frissítjük a hidden inputot
             document.querySelector('.vacd').closest('form').addEventListener('submit', function() {
