@@ -6742,7 +6742,7 @@ class VA_Settings_Page {
         </div>
 
         <script>
-        (function(){
+        jQuery(function($) {
             var defaults = <?php echo wp_json_encode( $defaults ); ?>;
             var current  = <?php echo wp_json_encode( $d ); ?>;
 
@@ -6861,16 +6861,26 @@ class VA_Settings_Page {
             // DOMReady-n 100ms késleltetéssel bindolunk, hogy admin.js
             // vaInitColorPickers már inicializálta a pickereket.
             function vacdInitPickers() {
-                if(typeof $ === 'undefined') { setTimeout(vacdInitPickers, 50); return; }
-                setTimeout(function() {
-                    $('#vacd-editor .va-color-input').off('change.vacd').on('change.vacd', function() {
-                        onPickerChange(this);
-                        updatePreview();
-                        saveJson();
-                    });
-                }, 100);
+                if(!$.fn || !$.fn.wpColorPicker) {
+                    // custom picker: 200ms után bindolunk
+                    setTimeout(function() {
+                        $('#vacd-editor .va-color-input').off('change.vacd').on('change.vacd', function() {
+                            onPickerChange(this);
+                            updatePreview();
+                            saveJson();
+                        });
+                    }, 200);
+                } else {
+                    setTimeout(function() {
+                        $('#vacd-editor .va-color-input').off('change.vacd').on('change.vacd', function() {
+                            onPickerChange(this);
+                            updatePreview();
+                            saveJson();
+                        });
+                    }, 200);
+                }
             }
-            $(function() { vacdInitPickers(); });
+            vacdInitPickers();
 
             // Form submit előtt mindig frissítjük a hidden inputot
             // AJAX mentés – megbízhatóbb, azonnali visszajelzés
@@ -6955,7 +6965,7 @@ class VA_Settings_Page {
                 saveJson();
             });
 
-        })();
+        }); // jQuery DOMReady
         </script>
         <?php
     }
