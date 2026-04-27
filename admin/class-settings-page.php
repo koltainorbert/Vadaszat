@@ -24,6 +24,12 @@ class VA_Settings_Page {
         add_action( 'admin_post_va_apply_ap_preset',  [ __CLASS__, 'handle_apply_ap_preset'  ] );
         add_action( 'admin_post_va_apply_single_preset', [ __CLASS__, 'handle_apply_single_preset' ] );
         add_action( 'admin_post_va_save_nav_items',   [ __CLASS__, 'handle_save_nav_items'   ] );
+        add_action( 'wp_head',    [ __CLASS__, 'output_custom_head' ], 1 );
+        add_action( 'wp_head',    [ __CLASS__, 'output_custom_css'  ], 100 );
+        add_action( 'wp_footer',  [ __CLASS__, 'output_custom_js'   ], 100 );
+        add_action( 'admin_post_va_create_snapshot',  [ __CLASS__, 'handle_create_snapshot'  ] );
+        add_action( 'admin_post_va_restore_snapshot', [ __CLASS__, 'handle_restore_snapshot' ] );
+        add_action( 'admin_post_va_delete_snapshot',  [ __CLASS__, 'handle_delete_snapshot'  ] );
     }
 
     /* ══ Settings regisztráció ════════════════════════════ */
@@ -856,6 +862,31 @@ class VA_Settings_Page {
         foreach ( $btt as $key => $default ) {
             self::$defaults[ $key ] = $default;
             register_setting( 'va_btt_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* Custom kód (CSS, JS, Head) */
+        $custom_code_keys = [
+            'va_custom_css'  => '',
+            'va_custom_js'   => '',
+            'va_custom_head' => '',
+        ];
+        foreach ( $custom_code_keys as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_custom_code_settings', $key, [ 'sanitize_callback' => [ __CLASS__, 'sanitize_code_field' ] ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* i18n */
+        $i18n_keys = [
+            'va_default_lang'        => 'hu',
+            'va_active_langs'        => '["hu"]',
+            'va_lang_show_switcher'  => '1',
+            'va_lang_switcher_pos'   => 'header',
+        ];
+        foreach ( $i18n_keys as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_i18n_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
     }
@@ -7522,6 +7553,438 @@ class VA_Settings_Page {
                     });
                     updatePreview(key);
                 });
+            });
+        })();
+        </script>
+        <?php
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * CUSTOM KÓD SANITIZE
+     * ══════════════════════════════════════════════════════════ */
+    public static function sanitize_code_field( string $val ): string {
+        // Csak </style> és </script> tag-et távolítjuk el hogy ne törjön ki a kontextusból
+        return str_replace( [ '</style>', '</script>' ], [ '<\\/style>', '<\\/script>' ], $val );
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * CUSTOM KÓD OUTPUT (frontend)
+     * ══════════════════════════════════════════════════════════ */
+    public static function output_custom_head(): void {
+        $head = (string) get_option( 'va_custom_head', '' );
+        if ( ! $head ) return;
+        echo "\n<!-- VA Custom Head -->\n";
+        // Csak meta, link, script, style engedélyezett
+        echo wp_kses( $head, [
+            'meta'   => [ 'name' => [], 'content' => [], 'charset' => [], 'http-equiv' => [], 'property' => [] ],
+            'link'   => [ 'rel' => [], 'href' => [], 'type' => [], 'media' => [], 'as' => [], 'crossorigin' => [], 'integrity' => [] ],
+            'script' => [ 'src' => [], 'type' => [], 'async' => [], 'defer' => [], 'id' => [], 'crossorigin' => [], 'integrity' => [] ],
+            'style'  => [ 'type' => [], 'id' => [], 'media' => [] ],
+        ] ) . "\n";
+    }
+
+    public static function output_custom_css(): void {
+        $css = (string) get_option( 'va_custom_css', '' );
+        if ( ! $css ) return;
+        echo '<style id="va-custom-css">' . "\n" . $css . "\n" . '</style>' . "\n";
+    }
+
+    public static function output_custom_js(): void {
+        $js = (string) get_option( 'va_custom_js', '' );
+        if ( ! $js ) return;
+        echo '<script id="va-custom-js">' . "\n" . $js . "\n" . '</script>' . "\n";
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * CUSTOM KÓD OLDAL
+     * ══════════════════════════════════════════════════════════ */
+    public static function render_custom_code(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        $css  = (string) get_option( 'va_custom_css',  '' );
+        $js   = (string) get_option( 'va_custom_js',   '' );
+        $head = (string) get_option( 'va_custom_head', '' );
+        ?>
+        <style>
+        .va-code-tab-bar { display:flex; gap:6px; border-bottom:1px solid rgba(255,255,255,.1); margin-bottom:0; padding:16px 20px 0; }
+        .va-code-tab { padding:8px 18px; border-radius:6px 6px 0 0; cursor:pointer; font-size:13px; font-weight:600; color:rgba(255,255,255,.5); border:1px solid transparent; border-bottom:none; background:transparent; transition:.15s; }
+        .va-code-tab.active { color:#fff; background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12); }
+        .va-code-panel { display:none; }
+        .va-code-panel.active { display:block; }
+        .va-code-editor { width:100%; min-height:360px; font-family:'JetBrains Mono','Fira Code','Cascadia Code',monospace; font-size:13px; line-height:1.6; background:#0a0a0e; color:#e8e8f0; border:1px solid rgba(255,255,255,.1); border-radius:0 0 8px 8px; padding:16px; resize:vertical; box-sizing:border-box; outline:none; tab-size:2; }
+        .va-code-editor:focus { border-color:rgba(255,100,100,.4); box-shadow:0 0 0 2px rgba(255,0,0,.08); }
+        .va-code-hint { font-size:11px; color:rgba(255,255,255,.35); padding:6px 20px 14px; }
+        </style>
+        <div class="va-wrap">
+            <div class="va-page-header">
+                <div>
+                    <h1 class="va-page-title">💻 Egyedi kód</h1>
+                    <p class="va-page-subtitle">Custom CSS, JavaScript és &lt;head&gt; tartalom – minden oldalon betöltődik</p>
+                </div>
+            </div>
+            <?php if ( isset( $_GET['settings-updated'] ) ): ?>
+                <div class="va-alert va-alert--success" style="margin-bottom:16px;">✅ Kód elmentve!</div>
+            <?php endif; ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_custom_code_settings' ); ?>
+
+                <div class="va-le-card" style="margin-top:20px;padding:0;overflow:hidden;">
+                    <div class="va-code-tab-bar">
+                        <button type="button" class="va-code-tab active" onclick="vaCodeTab('css',this)">🎨 CSS</button>
+                        <button type="button" class="va-code-tab" onclick="vaCodeTab('js',this)">⚡ JavaScript</button>
+                        <button type="button" class="va-code-tab" onclick="vaCodeTab('head',this)">📄 &lt;head&gt;</button>
+                    </div>
+
+                    <div id="va-code-css" class="va-code-panel active">
+                        <textarea name="va_custom_css" class="va-code-editor" spellcheck="false" placeholder="/* Az egyedi CSS ide kerül – minden oldalon a </head> előtt töltődik be */"><?php echo esc_textarea( $css ); ?></textarea>
+                        <p class="va-code-hint">💡 Priority: 100 – a téma stílusok UTÁN töltődik be. Nincs szükség !important-ra az egyszerű felülíráshoz.</p>
+                    </div>
+
+                    <div id="va-code-js" class="va-code-panel">
+                        <textarea name="va_custom_js" class="va-code-editor" spellcheck="false" placeholder="// Az egyedi JavaScript ide kerül – a </body> előtt töltődik be&#10;// document.addEventListener('DOMContentLoaded', function() { ... });"><?php echo esc_textarea( $js ); ?></textarea>
+                        <p class="va-code-hint">💡 A kód a &lt;/body&gt; előtt fut le. jQuery elérhető $ névvel.</p>
+                    </div>
+
+                    <div id="va-code-head" class="va-code-panel">
+                        <textarea name="va_custom_head" class="va-code-editor" spellcheck="false" placeholder="<!-- Meta tagek, külső script/style hivatkozások pl.:&#10;<meta name=&quot;theme-color&quot; content=&quot;#ff0000&quot;>&#10;<link rel=&quot;preconnect&quot; href=&quot;https://...&quot;> -->"><?php echo esc_textarea( $head ); ?></textarea>
+                        <p class="va-code-hint">💡 Engedélyezett tagek: &lt;meta&gt; &lt;link&gt; &lt;script&gt; &lt;style&gt;. Inline JavaScript tartalom itt nem fut le.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top:16px;">
+                    <?php submit_button( '💾 Kód mentése', 'primary', 'submit', false ); ?>
+                </div>
+            </form>
+        </div>
+        <script>
+        function vaCodeTab(id, btn) {
+            document.querySelectorAll('.va-code-panel').forEach(function(p){ p.classList.remove('active'); });
+            document.querySelectorAll('.va-code-tab').forEach(function(b){ b.classList.remove('active'); });
+            document.getElementById('va-code-'+id).classList.add('active');
+            btn.classList.add('active');
+        }
+        // Tab billentyű kezelése a textarea-kban
+        document.querySelectorAll('.va-code-editor').forEach(function(el) {
+            el.addEventListener('keydown', function(e) {
+                if (e.key === 'Tab') {
+                    e.preventDefault();
+                    var s = this.selectionStart, end = this.selectionEnd;
+                    this.value = this.value.substring(0,s) + '  ' + this.value.substring(end);
+                    this.selectionStart = this.selectionEnd = s + 2;
+                }
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * VERSION CONTROL – SNAPSHOT KEZELŐK
+     * ══════════════════════════════════════════════════════════ */
+    private static function get_snapshots(): array {
+        $raw = (string) get_option( 'va_snapshots', '[]' );
+        $arr = json_decode( $raw, true );
+        return is_array( $arr ) ? $arr : [];
+    }
+
+    private static function save_snapshots( array $arr ): void {
+        update_option( 'va_snapshots', wp_json_encode( array_values( $arr ) ) );
+    }
+
+    private static function collect_va_options(): array {
+        global $wpdb;
+        $rows = $wpdb->get_results(
+            "SELECT option_name, option_value FROM {$wpdb->options} WHERE option_name LIKE 'va_%'",
+            ARRAY_A
+        );
+        $data = [];
+        foreach ( (array) $rows as $row ) {
+            $data[ $row['option_name'] ] = $row['option_value'];
+        }
+        return $data;
+    }
+
+    public static function handle_create_snapshot(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        check_admin_referer( 'va_create_snapshot' );
+        $label = sanitize_text_field( wp_unslash( $_POST['snapshot_label'] ?? '' ) );
+        if ( ! $label ) $label = 'Mentés ' . wp_date( 'Y.m.d H:i' );
+        $snapshots = self::get_snapshots();
+        // Max 20 snapshot
+        if ( count( $snapshots ) >= 20 ) {
+            array_shift( $snapshots );
+        }
+        $snapshots[] = [
+            'id'      => uniqid( 'snap_', true ),
+            'label'   => $label,
+            'time'    => time(),
+            'options' => self::collect_va_options(),
+        ];
+        self::save_snapshots( $snapshots );
+        wp_redirect( add_query_arg( [ 'page' => 'vadaszapro-versions', 'created' => '1' ], admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    public static function handle_restore_snapshot(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        check_admin_referer( 'va_restore_snapshot' );
+        $snap_id = sanitize_text_field( wp_unslash( $_POST['snapshot_id'] ?? '' ) );
+        foreach ( self::get_snapshots() as $snap ) {
+            if ( $snap['id'] === $snap_id ) {
+                foreach ( (array) $snap['options'] as $key => $val ) {
+                    update_option( sanitize_key( $key ), $val );
+                }
+                wp_redirect( add_query_arg( [ 'page' => 'vadaszapro-versions', 'restored' => '1' ], admin_url( 'admin.php' ) ) );
+                exit;
+            }
+        }
+        wp_redirect( add_query_arg( [ 'page' => 'vadaszapro-versions', 'error' => '1' ], admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    public static function handle_delete_snapshot(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        check_admin_referer( 'va_delete_snapshot' );
+        $snap_id   = sanitize_text_field( wp_unslash( $_POST['snapshot_id'] ?? '' ) );
+        $snapshots = array_filter( self::get_snapshots(), fn( $s ) => $s['id'] !== $snap_id );
+        self::save_snapshots( array_values( $snapshots ) );
+        wp_redirect( add_query_arg( [ 'page' => 'vadaszapro-versions', 'deleted' => '1' ], admin_url( 'admin.php' ) ) );
+        exit;
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * VERSION CONTROL OLDAL
+     * ══════════════════════════════════════════════════════════ */
+    public static function render_version_control(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        $snapshots = array_reverse( self::get_snapshots() );
+        ?>
+        <div class="va-wrap">
+            <div class="va-page-header">
+                <div>
+                    <h1 class="va-page-title">🗂️ Verziókövetés</h1>
+                    <p class="va-page-subtitle">Beállítások mentése és visszaállítása – max 20 snapshot</p>
+                </div>
+            </div>
+
+            <?php if ( isset( $_GET['created'] ) ): ?>
+                <div class="va-alert va-alert--success" style="margin-bottom:16px;">✅ Snapshot létrehozva!</div>
+            <?php elseif ( isset( $_GET['restored'] ) ): ?>
+                <div class="va-alert va-alert--success" style="margin-bottom:16px;">✅ Beállítások visszaállítva!</div>
+            <?php elseif ( isset( $_GET['deleted'] ) ): ?>
+                <div class="va-alert va-alert--info" style="margin-bottom:16px;">🗑️ Snapshot törölve.</div>
+            <?php elseif ( isset( $_GET['error'] ) ): ?>
+                <div class="va-alert va-alert--error" style="margin-bottom:16px;">❌ Snapshot nem található.</div>
+            <?php endif; ?>
+
+            <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                <div class="va-le-card-hdr">💾 Új snapshot létrehozása</div>
+                <div style="padding:16px;">
+                    <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>">
+                        <?php wp_nonce_field('va_create_snapshot'); ?>
+                        <input type="hidden" name="action" value="va_create_snapshot">
+                        <div style="display:flex;gap:10px;align-items:center;">
+                            <input type="text" name="snapshot_label" placeholder="pl. Beállítások v1.0 – launch előtt"
+                                   style="flex:1;background:#0e0e0e;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:9px 12px;color:#fff;font-size:13px;">
+                            <?php submit_button( '📸 Snapshot készítése', 'secondary', 'submit', false ); ?>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                <div class="va-le-card-hdr">📋 Mentett snapshotok (<?php echo count( $snapshots ); ?>/20)</div>
+                <?php if ( empty( $snapshots ) ): ?>
+                    <div style="padding:24px;text-align:center;color:rgba(255,255,255,.4);font-size:13px;">
+                        Még nincs mentett snapshot. Készíts egyet a fenti gombbal!
+                    </div>
+                <?php else: ?>
+                    <table style="width:100%;border-collapse:collapse;">
+                        <thead>
+                            <tr style="border-bottom:1px solid rgba(255,255,255,.08);">
+                                <th style="padding:10px 16px;text-align:left;font-size:12px;color:rgba(255,255,255,.45);">Megnevezés</th>
+                                <th style="padding:10px 16px;text-align:left;font-size:12px;color:rgba(255,255,255,.45);">Időpont</th>
+                                <th style="padding:10px 16px;text-align:left;font-size:12px;color:rgba(255,255,255,.45);">Opciók száma</th>
+                                <th style="padding:10px 16px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ( $snapshots as $snap ): ?>
+                            <tr style="border-bottom:1px solid rgba(255,255,255,.05);">
+                                <td style="padding:12px 16px;font-size:13px;font-weight:600;"><?php echo esc_html( $snap['label'] ); ?></td>
+                                <td style="padding:12px 16px;font-size:12px;color:rgba(255,255,255,.5);"><?php echo esc_html( wp_date( 'Y.m.d H:i', $snap['time'] ) ); ?></td>
+                                <td style="padding:12px 16px;font-size:12px;color:rgba(255,255,255,.5);"><?php echo count( (array) $snap['options'] ); ?> beállítás</td>
+                                <td style="padding:12px 16px;text-align:right;white-space:nowrap;">
+                                    <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" style="display:inline;" onsubmit="return confirm('Biztosan visszaállítod? A jelenlegi beállítások felülíródnak.');">
+                                        <?php wp_nonce_field('va_restore_snapshot'); ?>
+                                        <input type="hidden" name="action" value="va_restore_snapshot">
+                                        <input type="hidden" name="snapshot_id" value="<?php echo esc_attr( $snap['id'] ); ?>">
+                                        <button type="submit" class="button button-primary" style="font-size:11px;padding:4px 10px;">↩️ Visszaállítás</button>
+                                    </form>
+                                    <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>" style="display:inline;margin-left:6px;" onsubmit="return confirm('Biztosan törlöd ezt a snapshotot?');">
+                                        <?php wp_nonce_field('va_delete_snapshot'); ?>
+                                        <input type="hidden" name="action" value="va_delete_snapshot">
+                                        <input type="hidden" name="snapshot_id" value="<?php echo esc_attr( $snap['id'] ); ?>">
+                                        <button type="submit" class="button" style="font-size:11px;padding:4px 10px;color:#ff4444;border-color:rgba(255,68,68,.3);">🗑️</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </div>
+        </div>
+        <?php
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * i18n – SEGÉDFÜGGVÉNY
+     * ══════════════════════════════════════════════════════════ */
+    public static function get_languages(): array {
+        return [
+            'hu' => [ 'flag' => '🇭🇺', 'name' => 'Magyar',      'locale' => 'hu_HU' ],
+            'en' => [ 'flag' => '🇬🇧', 'name' => 'English',     'locale' => 'en_US' ],
+            'de' => [ 'flag' => '🇩🇪', 'name' => 'Deutsch',     'locale' => 'de_DE' ],
+            'ro' => [ 'flag' => '🇷🇴', 'name' => 'Română',      'locale' => 'ro_RO' ],
+            'sk' => [ 'flag' => '🇸🇰', 'name' => 'Slovenčina', 'locale' => 'sk_SK' ],
+            'cs' => [ 'flag' => '🇨🇿', 'name' => 'Čeština',    'locale' => 'cs_CZ' ],
+            'pl' => [ 'flag' => '🇵🇱', 'name' => 'Polski',      'locale' => 'pl_PL' ],
+            'fr' => [ 'flag' => '🇫🇷', 'name' => 'Français',    'locale' => 'fr_FR' ],
+            'it' => [ 'flag' => '🇮🇹', 'name' => 'Italiano',    'locale' => 'it_IT' ],
+            'es' => [ 'flag' => '🇪🇸', 'name' => 'Español',     'locale' => 'es_ES' ],
+            'uk' => [ 'flag' => '🇺🇦', 'name' => 'Українська', 'locale' => 'uk'    ],
+            'sr' => [ 'flag' => '🇷🇸', 'name' => 'Srpski',      'locale' => 'sr_RS' ],
+            'hr' => [ 'flag' => '🇭🇷', 'name' => 'Hrvatski',    'locale' => 'hr'    ],
+            'sl' => [ 'flag' => '🇸🇮', 'name' => 'Slovenščina','locale' => 'sl_SI' ],
+        ];
+    }
+
+    /* ══════════════════════════════════════════════════════════
+     * i18n OLDAL
+     * ══════════════════════════════════════════════════════════ */
+    public static function render_i18n(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Hozzáférés megtagadva.' );
+        $languages    = self::get_languages();
+        $active_langs = (array) json_decode( (string) get_option( 'va_active_langs', '["hu"]' ), true );
+        $default_lang = (string) get_option( 'va_default_lang', 'hu' );
+        $show_sw      = (string) get_option( 'va_lang_show_switcher', '1' );
+        $sw_pos       = (string) get_option( 'va_lang_switcher_pos', 'header' );
+        ?>
+        <div class="va-wrap">
+            <div class="va-page-header">
+                <div>
+                    <h1 class="va-page-title">🌍 Többnyelvűség (i18n)</h1>
+                    <p class="va-page-subtitle">Aktív nyelvek, alapértelmezett nyelv és frontend nyelvváltó</p>
+                </div>
+            </div>
+            <?php if ( isset( $_GET['settings-updated'] ) ): ?>
+                <div class="va-alert va-alert--success" style="margin-bottom:16px;">✅ Nyelvi beállítások mentve!</div>
+            <?php endif; ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_i18n_settings' ); ?>
+
+                <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                    <div class="va-le-card-hdr">🏳️ Elérhető nyelvek</div>
+                    <div style="padding:16px;">
+                        <p style="font-size:12px;color:rgba(255,255,255,.4);margin:0 0 14px;">Jelöld be az aktív nyelveket. Az alapértelmezett mindig aktív.</p>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">
+                        <?php foreach ( $languages as $code => $lang ): ?>
+                            <?php $is_active  = in_array( $code, $active_langs, true ); ?>
+                            <?php $is_default = ( $code === $default_lang ); ?>
+                            <label style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,<?php echo $is_active ? '.15' : '.06'; ?>);border-radius:8px;padding:10px 14px;cursor:pointer;transition:.15s;" onmouseover="this.style.borderColor='rgba(255,255,255,.2)'" onmouseout="this.style.borderColor='rgba(255,255,255,<?php echo $is_active ? '.15' : '.06'; ?>)'">
+                                <input type="checkbox" name="va_active_langs_cb[]" value="<?php echo esc_attr( $code ); ?>"
+                                       <?php checked( $is_active ); ?>
+                                       <?php if ( $is_default ) echo 'disabled checked'; ?>
+                                       style="accent-color:#ff0000;">
+                                <span style="font-size:22px;line-height:1;"><?php echo esc_html( $lang['flag'] ); ?></span>
+                                <span style="font-size:13px;font-weight:600;"><?php echo esc_html( $lang['name'] ); ?></span>
+                                <?php if ( $is_default ): ?>
+                                    <span style="font-size:10px;background:rgba(255,0,0,.15);color:#ff6666;border-radius:4px;padding:2px 6px;margin-left:auto;">alapértelmezett</span>
+                                <?php endif; ?>
+                            </label>
+                        <?php endforeach; ?>
+                        </div>
+                        <!-- Rejtett mező a JSON-hoz – JS frissíti -->
+                        <input type="hidden" name="va_active_langs" id="va_active_langs_json" value="<?php echo esc_attr( wp_json_encode( $active_langs ) ); ?>">
+                    </div>
+                </div>
+
+                <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                    <div class="va-le-card-hdr">⭐ Alapértelmezett nyelv</div>
+                    <div style="padding:16px;">
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;" id="va-default-lang-radios">
+                        <?php foreach ( $languages as $code => $lang ): ?>
+                            <?php if ( ! in_array( $code, $active_langs, true ) && $code !== $default_lang ) continue; ?>
+                            <label style="display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 14px;cursor:pointer;">
+                                <input type="radio" name="va_default_lang" value="<?php echo esc_attr( $code ); ?>"
+                                       <?php checked( $default_lang, $code ); ?>
+                                       style="accent-color:#ff0000;">
+                                <span style="font-size:18px;"><?php echo esc_html( $lang['flag'] ); ?></span>
+                                <span style="font-size:13px;"><?php echo esc_html( $lang['name'] ); ?></span>
+                            </label>
+                        <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                    <div class="va-le-card-hdr">🔄 Frontend nyelvváltó</div>
+                    <table class="form-table" style="margin:0;">
+                        <tr>
+                            <th style="padding:14px 16px;">Nyelvváltó megjelenjen</th>
+                            <td style="padding:14px 16px;">
+                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                    <input type="checkbox" name="va_lang_show_switcher" value="1" <?php checked( $show_sw, '1' ); ?> style="accent-color:#ff0000;">
+                                    <span style="font-size:13px;">Frontend fejlécben megjelenjen a nyelvváltó</span>
+                                </label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="padding:14px 16px;">Pozíció</th>
+                            <td style="padding:14px 16px;">
+                                <select name="va_lang_switcher_pos" style="background:#0e0e0e;border:1px solid rgba(255,255,255,.12);border-radius:6px;padding:7px 12px;color:#fff;font-size:13px;">
+                                    <option value="header" <?php selected( $sw_pos, 'header' ); ?>>Fejléc (jobb oldal)</option>
+                                    <option value="footer" <?php selected( $sw_pos, 'footer' ); ?>>Lábléc</option>
+                                    <option value="both"   <?php selected( $sw_pos, 'both'   ); ?>>Fejléc + Lábléc</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="margin-top:16px;">
+                    <?php submit_button( '💾 Nyelvi beállítások mentése', 'primary', 'submit', false ); ?>
+                </div>
+            </form>
+
+            <div class="va-le-card" style="max-width:700px;margin-top:20px;">
+                <div class="va-le-card-hdr">👁️ Előnézet – Nyelvváltó</div>
+                <div style="padding:16px;display:flex;gap:8px;flex-wrap:wrap;">
+                <?php foreach ( $active_langs as $code ):
+                    if ( ! isset( $languages[$code] ) ) continue;
+                    $lang = $languages[$code]; ?>
+                    <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:6px;padding:6px 12px;font-size:13px;<?php echo $code === $default_lang ? 'border-color:rgba(255,0,0,.4);' : ''; ?>">
+                        <span style="font-size:18px;"><?php echo esc_html( $lang['flag'] ); ?></span>
+                        <span><?php echo esc_html( $lang['name'] ); ?></span>
+                    </div>
+                <?php endforeach; ?>
+                </div>
+            </div>
+        </div>
+        <script>
+        (function() {
+            // Checkbox változáskor frissíti a JSON hidden inputot
+            function syncActiveLangs() {
+                var checked = [];
+                document.querySelectorAll('input[name="va_active_langs_cb[]"]:checked').forEach(function(cb){
+                    checked.push(cb.value);
+                });
+                document.getElementById('va_active_langs_json').value = JSON.stringify(checked);
+            }
+            document.querySelectorAll('input[name="va_active_langs_cb[]"]').forEach(function(cb){
+                cb.addEventListener('change', syncActiveLangs);
             });
         })();
         </script>

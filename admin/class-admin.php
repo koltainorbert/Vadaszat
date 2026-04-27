@@ -339,6 +339,13 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Pill / Badge stílusok", "🏷️ Pill & Badge", "manage_options", "vadaszapro-pills",       [ VA_Settings_Page::class, "render_pill_styles"       ] );
         add_submenu_page( "vadaszapro", "Kártyaszerkesztő",      "🃏 Kártyaszerkesztő", "manage_options", "vadaszapro-cards",    [ VA_Settings_Page::class, "render_card_designer"     ] );
         add_submenu_page( "vadaszapro", "Oldalszerkesztő",        "📄 Oldalak",        "manage_options", "vadaszapro-oldalak",        [ VA_Page_Builder::class,  "render"                  ] );
+        // i18n – dinamikus zászló az aktív alapnyelvből
+        $i18n_langs   = VA_Settings_Page::get_languages();
+        $i18n_default = (string) get_option( 'va_default_lang', 'hu' );
+        $i18n_flag    = $i18n_langs[ $i18n_default ]['flag'] ?? '🌍';
+        add_submenu_page( "vadaszapro", "Többnyelvűség",     $i18n_flag . " Fordítás",    "manage_options", "vadaszapro-i18n",      [ VA_Settings_Page::class, "render_i18n"              ] );
+        add_submenu_page( "vadaszapro", "Egyedi kód",        "💻 Egyedi kód",             "manage_options", "vadaszapro-customcode",[ VA_Settings_Page::class, "render_custom_code"       ] );
+        add_submenu_page( "vadaszapro", "Verziókövetés",     "🗂️ Verziókövetés",         "manage_options", "vadaszapro-versions",  [ VA_Settings_Page::class, "render_version_control"   ] );
         // Hirdetés lista + szerkesztő (rejtett almenük – saját oldalaink)
         add_submenu_page( "vadaszapro", "Hirdetések lista",  "", "edit_posts", "vadaszapro-listings",     [ VA_Listing_Edit::class, "render_list" ] );
         add_submenu_page( "vadaszapro", "Hirdetés szerkesztő", "", "edit_posts", "vadaszapro-listing-edit", [ VA_Listing_Edit::class, "render_edit" ] );
