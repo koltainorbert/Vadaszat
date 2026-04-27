@@ -369,7 +369,8 @@ hr { border-color: var(--border); }
   background: rgba(255,255,255,.06);
   border: 1px solid rgba(255,255,255,.12);
   color: #fff !important;
-  padding: 7px 18px;
+  padding: 0 18px;
+  height: 36px; box-sizing: border-box;
   font-size: .76rem; font-weight: 600;
   text-decoration: none; white-space: nowrap;
   border-radius: 999px;
@@ -385,7 +386,8 @@ hr { border-color: var(--border); }
   background: transparent;
   border: 1px solid rgba(255,255,255,.18);
   color: rgba(255,255,255,.7) !important;
-  padding: 8px 20px;
+  padding: 0 20px;
+  height: 36px; box-sizing: border-box;
   font-size: .76rem; font-weight: 600;
   text-decoration: none; white-space: nowrap;
   border-radius: 999px;
@@ -402,13 +404,13 @@ hr { border-color: var(--border); }
 .va-lang-sw__toggle {
   display:inline-flex; align-items:center; gap:8px;
   background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
-  border-radius:999px; padding:7px 18px;
+  border-radius:999px; padding:0 18px;
+  height:36px; box-sizing:border-box;
   color:#fff !important; font-size:.76rem; font-weight:600; cursor:pointer;
-  text-decoration:none; white-space:nowrap; line-height:1.5;
+  text-decoration:none; white-space:nowrap; line-height:1;
   transition:background .18s, border-color .18s;
   font-family:inherit; letter-spacing:inherit;
-  box-sizing:border-box; -webkit-appearance:none; appearance:none;
-  margin:0; vertical-align:middle;
+  -webkit-appearance:none; appearance:none; margin:0; vertical-align:middle;
 }
 .va-lang-sw__toggle:hover { background:rgba(255,255,255,.11); border-color:rgba(255,0,0,.35); color:#fff !important; }
 .va-lang-flag { font-size:15px; line-height:1; display:inline-flex; align-items:center; }
