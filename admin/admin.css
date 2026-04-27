@@ -201,17 +201,17 @@ body.va-admin-page .va-admin-wrap {
 }
 body.va-admin-page .wrap h1,
 body.va-admin-page .va-admin-wrap h1 {
-    font-size: 22px !important; font-weight: 800 !important; color: #fff !important;
+    font-size: 22px !important; font-weight: 800 !important; color: var(--va-text) !important;
     margin-bottom: 24px !important; padding-bottom: 16px !important;
     border-bottom: 1px solid var(--va-border) !important;
 }
 /* ── va-page-header / va-page-title / va-page-subtitle ── */
 .va-page-header { margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--va-border); }
-.va-page-title { font-size: 22px !important; font-weight: 800 !important; color: #fff !important; margin: 0 0 4px !important; padding: 0 !important; border: none !important; line-height: 1.3 !important; }
-.va-page-subtitle { font-size: 13px !important; color: rgba(255,255,255,.45) !important; margin: 0 !important; }
+.va-page-title { font-size: 22px !important; font-weight: 800 !important; color: var(--va-text) !important; margin: 0 0 4px !important; padding: 0 !important; border: none !important; line-height: 1.3 !important; }
+.va-page-subtitle { font-size: 13px !important; color: var(--va-muted) !important; margin: 0 !important; }
 body.va-admin-page .wrap h2,
 body.va-admin-page .va-admin-wrap h2 {
-    font-size: 13px !important; font-weight: 700 !important; color: rgba(255,255,255,.5) !important;
+    font-size: 13px !important; font-weight: 700 !important; color: var(--va-muted) !important;
     text-transform: uppercase !important; letter-spacing: 1px !important;
     margin: 28px 0 14px !important; padding-bottom: 8px !important;
     border-bottom: 1px solid var(--va-border) !important;
@@ -243,12 +243,12 @@ body.va-admin-page .va-admin-wrap h2 {
 .va-kpi-trend { font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 999px; border: 1px solid; }
 .va-kpi-trend.up { color: #4ade80; border-color: rgba(74,222,128,.3); background: rgba(74,222,128,.1); }
 .va-kpi-trend.dn { color: #f87171; border-color: rgba(248,113,113,.3); background: rgba(248,113,113,.1); }
-.va-kpi-num { font-size: 34px; font-weight: 900; line-height: 1; color: #fff; margin-bottom: 5px; letter-spacing: -1px; }
+.va-kpi-num { font-size: 34px; font-weight: 900; line-height: 1; color: var(--va-text); margin-bottom: 5px; letter-spacing: -1px; }
 .va-kpi-card--red    .va-kpi-num { color: #ff4444; }
 .va-kpi-card--orange .va-kpi-num { color: #ff8c42; }
 .va-kpi-card--blue   .va-kpi-num { color: #4da6ff; }
 .va-kpi-card--green  .va-kpi-num { color: #4ade80; }
-.va-kpi-label { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.75); margin-bottom: 4px; }
+.va-kpi-label { font-size: 13px; font-weight: 600; color: var(--va-text); margin-bottom: 4px; }
 .va-kpi-sub   { font-size: 11px; color: var(--va-muted); }
 .va-kpi-cta { font-size: 11px; font-weight: 600; color: #ff8c42 !important; text-decoration: none !important; padding: 3px 8px; border-radius: 6px; background: rgba(255,140,66,.1); border: 1px solid rgba(255,140,66,.25); white-space: nowrap; }
 
@@ -256,7 +256,7 @@ body.va-admin-page .va-admin-wrap h2 {
 .va-charts-row { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-bottom: 22px; }
 .va-chart-card { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: 16px; overflow: hidden; }
 .va-chart-card__hdr { display: flex; align-items: flex-start; justify-content: space-between; padding: 18px 20px 12px; border-bottom: 1px solid var(--va-border); }
-.va-chart-card__hdr h3 { margin: 0; font-size: 14px; font-weight: 700; color: #fff; }
+.va-chart-card__hdr h3 { margin: 0; font-size: 14px; font-weight: 700; color: var(--va-text); }
 .va-chart-card__hdr p  { margin: 3px 0 0; font-size: 11px; color: var(--va-muted); }
 .va-chart-card__badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: rgba(255,0,0,.12); border: 1px solid rgba(255,0,0,.25); color: #ff7070; white-space: nowrap; flex-shrink: 0; }
 .va-chart-card__body { padding: 18px 20px 16px; position: relative; height: 200px; }
@@ -266,15 +266,15 @@ body.va-admin-page .va-admin-wrap h2 {
 .va-chart-legend { flex: 1; min-width: 110px; }
 .va-leg-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 11px; }
 .va-leg-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.va-leg-name { flex: 1; color: rgba(255,255,255,.7); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.va-leg-val  { color: #fff; font-weight: 600; }
+.va-leg-name { flex: 1; color: var(--va-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.va-leg-val  { color: var(--va-text); font-weight: 600; }
 .va-leg-pct  { color: var(--va-muted); min-width: 30px; text-align: right; }
 
 /* ── Dashboard bottom ──────────────────────────────────────────── */
 .va-db-bottom { display: grid; grid-template-columns: 1fr 360px; gap: 16px; }
 .va-db-panel { background: var(--va-bg3); border: 1px solid var(--va-border); border-radius: 16px; overflow: hidden; }
 .va-db-panel__hdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--va-border); }
-.va-db-panel__hdr h3 { margin: 0; font-size: 14px; font-weight: 700; color: #fff; }
+.va-db-panel__hdr h3 { margin: 0; font-size: 14px; font-weight: 700; color: var(--va-text); }
 .va-btn-link { font-size: 12px; font-weight: 600; color: var(--va-accent2) !important; text-decoration: none !important; }
 .va-btn-link:hover { color: #fff !important; }
 
@@ -290,7 +290,7 @@ body.va-admin-page .va-admin-wrap h2 {
 .va-db-actions { white-space: nowrap; }
 .va-db-btn { display: inline-block; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 6px; text-decoration: none !important; background: var(--va-accent); color: #fff !important; margin-right: 4px; transition: background .12s; }
 .va-db-btn:hover { background: var(--va-accent2); color: #fff !important; }
-.va-db-btn--ghost { background: rgba(255,255,255,.07); color: rgba(255,255,255,.7) !important; border: 1px solid var(--va-border); }
+.va-db-btn--ghost { background: rgba(128,128,128,.12); color: var(--va-muted) !important; border: 1px solid var(--va-border); }
 .va-db-btn--ghost:hover { background: rgba(255,255,255,.12); color: #fff !important; }
 
 .va-empty-state { display: flex; flex-direction: column; align-items: center; padding: 40px; gap: 8px; color: var(--va-muted); }
@@ -309,7 +309,7 @@ body.va-admin-page .va-admin-wrap h2 {
 
 .va-db-side { display: flex; flex-direction: column; gap: 16px; }
 .va-db-panel--qa .va-qa-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px 14px 14px; }
-.va-qa-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; border-radius: 10px; background: rgba(255,255,255,.04); border: 1px solid var(--va-border); text-decoration: none !important; color: rgba(255,255,255,.65) !important; font-size: 11px; text-align: center; font-weight: 500; transition: background .15s, border-color .15s, color .15s; }
+.va-qa-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px; border-radius: 10px; background: rgba(128,128,128,.06); border: 1px solid var(--va-border); text-decoration: none !important; color: var(--va-muted) !important; font-size: 11px; text-align: center; font-weight: 500; transition: background .15s, border-color .15s, color .15s; }
 .va-qa-item:hover { background: rgba(255,30,30,.1); border-color: rgba(255,30,30,.3); color: #fff !important; }
 .va-qa-icon { font-size: 20px; }
 
@@ -336,7 +336,7 @@ body.va-admin-page .va-admin-wrap h2 {
 }
 .va-settings-card__icon { font-size: 18px; line-height: 1; }
 .va-settings-card__title {
-    font-size: 13px; font-weight: 700; color: #fff;
+    font-size: 13px; font-weight: 700; color: var(--va-text);
     letter-spacing: .3px; margin: 0;
 }
 .va-settings-card__desc {
@@ -395,7 +395,7 @@ body.va-admin-page .va-admin-wrap h2 {
 
 /* ── Form-table override ───────────────────────────────────────── */
 body.va-admin-page .form-table { width: 100%; border-collapse: collapse; margin: 0; }
-body.va-admin-page .form-table th { background: transparent !important; color: rgba(255,255,255,.65) !important; font-size: 13px !important; font-weight: 500 !important; padding: 14px 20px 14px 20px !important; width: 260px !important; vertical-align: middle !important; border-bottom: 1px solid var(--va-border) !important; }
+body.va-admin-page .form-table th { background: transparent !important; color: var(--va-muted) !important; font-size: 13px !important; font-weight: 500 !important; padding: 14px 20px 14px 20px !important; width: 260px !important; vertical-align: middle !important; border-bottom: 1px solid var(--va-border) !important; }
 body.va-admin-page .form-table td { background: transparent !important; padding: 12px 20px 12px 0 !important; vertical-align: middle !important; border-bottom: 1px solid var(--va-border) !important; color: var(--va-text) !important; }
 body.va-admin-page .form-table tr:last-child th,
 body.va-admin-page .form-table tr:last-child td { border-bottom: none !important; }
@@ -410,7 +410,7 @@ body.va-admin-page input[type="search"],
 body.va-admin-page select,
 body.va-admin-page textarea {
     background: var(--va-bg2) !important; color: var(--va-text) !important;
-    border: 1px solid rgba(255,255,255,.12) !important; border-radius: var(--va-radius-sm) !important;
+    border: 1px solid var(--va-border2) !important; border-radius: var(--va-radius-sm) !important;
     padding: 9px 12px !important; font-size: 13px !important; font-family: var(--va-font) !important;
     transition: border-color .15s, box-shadow .15s !important;
     min-width: 280px; max-width: 100%;
@@ -426,7 +426,7 @@ body.va-admin-page textarea:focus {
     outline: none !important;
 }
 body.va-admin-page input::placeholder,
-body.va-admin-page textarea::placeholder { color: rgba(255,255,255,.25) !important; }
+body.va-admin-page textarea::placeholder { color: var(--va-muted) !important; opacity: .6; }
 body.va-admin-page select { min-width: 200px; appearance: auto; }
 body.va-admin-page textarea { min-height: 90px; resize: vertical; }
 body.va-admin-page input[type="number"] { min-width: 100px; appearance: textfield; -moz-appearance: textfield; }
