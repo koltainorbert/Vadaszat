@@ -6734,7 +6734,7 @@ class VA_Settings_Page {
                         </div>
 
                         <div style="display:flex;gap:12px;margin-top:8px;align-items:center;">
-                            <button type="submit" class="va-btn va-btn--primary" style="font-size:14px;padding:10px 28px;">💾 Mentés</button>
+                            <button type="button" id="vacd-save-btn" class="va-btn va-btn--primary" style="font-size:14px;padding:10px 28px;">💾 Mentés</button>
                         </div>
                     </div><!-- /.vacd__editor -->
                 </div><!-- /.vacd -->
