@@ -402,15 +402,15 @@ hr { border-color: var(--border); }
 .va-lang-sw__toggle {
   display:flex; align-items:center; gap:6px;
   background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
-  border-radius:999px; padding:7px 14px;
+  border-radius:999px; padding:8px 20px;
   color:#fff !important; font-size:.76rem; font-weight:600; cursor:pointer;
   text-decoration:none; white-space:nowrap; line-height:1.4;
   transition:background .18s, border-color .18s;
-  font-family:inherit; letter-spacing:inherit;
+  font-family:inherit; letter-spacing:inherit; height:auto;
 }
 .va-lang-sw__toggle:hover { background:rgba(255,255,255,.11); border-color:rgba(255,0,0,.35); color:#fff !important; }
-.va-lang-flag { font-size:16px; line-height:1; }
-.va-lang-code { font-size:.72rem; color:rgba(255,255,255,.8) !important; letter-spacing:.04em; }
+.va-lang-flag { font-size:15px; line-height:1; display:flex; align-items:center; }
+.va-lang-code { font-size:.76rem; color:rgba(255,255,255,.9) !important; letter-spacing:.04em; }
 .va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:.7; }
 .va-lang-sw[aria-open] .va-lang-sw__arrow,
 .va-lang-sw__toggle[aria-expanded="true"] .va-lang-sw__arrow { transform:rotate(180deg); }
