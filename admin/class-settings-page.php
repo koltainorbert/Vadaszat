@@ -6241,6 +6241,7 @@ class VA_Settings_Page {
             'card_radius'           => 12,
             // Hover
             'hover_lift'            => 2,
+            'hover_border_width'    => 2,
             'hover_border_color'    => 'rgba(255,0,0,.85)',
             // Kép
             'img_aspect'            => '4/3',
@@ -6300,7 +6301,8 @@ class VA_Settings_Page {
         echo "\n<style id=\"va-card-styles\">\n";
         echo ".va-card{background:{$d['card_bg']};border:{$bw}px solid {$d['card_border_color']};border-radius:{$d['card_radius']}px;}\n";
         echo ".va-card:hover,.va-card:focus-within{transform:translateY(-{$d['hover_lift']}px);border-color:{$d['card_border_color']};box-shadow:none;}\n";
-        echo ".va-card:hover::after,.va-card:focus-within::after{border-color:{$d['hover_border_color']};box-shadow:none;}\n";
+        $hbw = (int) $d['hover_border_width'];
+        echo ".va-card:hover::after,.va-card:focus-within::after{border-color:{$d['hover_border_color']};border-width:{$hbw}px;box-shadow:none;}\n";
         echo ".va-card__img-wrap{aspect-ratio:{$d['img_aspect']};}\n";
         echo ".va-card__body{padding:{$d['body_pad_y']}px {$d['body_pad_x']}px;gap:{$d['body_gap']}px;}\n";
         echo ".va-card__title{color:{$d['title_color']};font-size:{$d['title_font_size']}px;font-weight:{$d['title_font_weight']};{$ff_title}-webkit-line-clamp:{$d['title_line_clamp']};}\n";
@@ -6517,6 +6519,10 @@ class VA_Settings_Page {
                                 <div class="vacd__row">
                                     <span class="vacd__label">Emelkedés <b class="vacd__val" id="lbl-hover_lift"><?php echo esc_html($d['hover_lift']); ?>px</b></span>
                                     <input type="range" class="vacd__range vacd-field" data-prop="hover_lift" min="0" max="12" step="1" value="<?php echo esc_attr($d['hover_lift']); ?>">
+                                </div>
+                                <div class="vacd__row">
+                                    <span class="vacd__label">Hover keret vastagság <b class="vacd__val" id="lbl-hover_border_width"><?php echo esc_html($d['hover_border_width']); ?>px</b></span>
+                                    <input type="range" class="vacd__range vacd-field" data-prop="hover_border_width" min="1" max="6" step="1" value="<?php echo esc_attr($d['hover_border_width']); ?>">
                                 </div>
                                 <div class="vacd__row">
                                     <span class="vacd__label">Hover keret szín</span>

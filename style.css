@@ -124,11 +124,11 @@ hr { border-color: var(--border); }
 }
 .va-header__search:hover {
   border-color: rgba(255,255,255,.28);
-  box-shadow: 0 0 12px rgba(255,0,0,.10);
+  box-shadow: none;
 }
 .va-header__search:focus-within {
   border-color: rgba(255,255,255,.38);
-  box-shadow: 0 0 14px rgba(255,0,0,.10);
+  box-shadow: none;
   background: rgba(255,255,255,.03);
 }
 .va-header__search-input {
