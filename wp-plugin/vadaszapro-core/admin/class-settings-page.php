@@ -2094,19 +2094,19 @@ class VA_Settings_Page {
         .va-aps-presets-box { background:var(--va-bg2); border:1px solid var(--va-border); border-radius:var(--va-radius); padding:20px 24px; margin-bottom:24px; }
         .va-aps-presets-hdr h2 { margin:0 0 2px; font-size:15px; color:var(--va-text); }
         .va-aps-presets-hdr p  { margin:0 0 16px; font-size:12px; color:var(--va-muted); }
-        .va-aps-presets-grid { display:flex; flex-wrap:wrap; gap:8px; }
+        .va-aps-presets-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(165px,1fr)); gap:8px; }
         .va-aps-pf { display:contents; }
         .va-aps-preset {
             display:flex; flex-direction:column; gap:5px; align-items:flex-start;
             background:var(--va-bg3); border:1px solid var(--va-border2);
             border-radius:10px; padding:10px 14px; cursor:pointer; color:var(--va-text);
-            text-align:left; min-width:150px; transition:.15s;
+            text-align:left; width:100%; transition:.15s;
         }
-        .va-aps-preset:hover { border-color:var(--va-accent); transform:translateY(-1px); box-shadow:0 4px 18px rgba(0,0,0,.4); }
+        .va-aps-preset:hover { border-color:var(--va-accent); transform:translateY(-2px); box-shadow:0 6px 22px rgba(0,0,0,.45); }
         .va-aps-preset strong { font-size:12px; font-weight:700; }
-        .va-aps-preset small  { font-size:11px; color:var(--va-muted); }
+        .va-aps-preset small  { font-size:11px; color:var(--va-muted); line-height:1.4; }
         .va-aps-swatches { display:flex; gap:4px; margin-bottom:2px; }
-        .va-aps-swatches span { width:14px; height:14px; border-radius:50%; border:1px solid rgba(255,255,255,.12); }
+        .va-aps-swatches span { width:16px; height:16px; border-radius:50%; border:1px solid rgba(255,255,255,.15); flex-shrink:0; }
 
         /* Main layout */
         .va-aps-main { display:grid; grid-template-columns:1fr; gap:24px; align-items:start; }
