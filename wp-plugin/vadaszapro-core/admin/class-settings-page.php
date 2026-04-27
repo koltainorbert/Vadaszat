@@ -1120,6 +1120,43 @@ class VA_Settings_Page {
             <h1>🎨 VadászApró – Design (globális + fejtől lábig)</h1>
             <p class="description">Külön oldalon kezelhető a teljes tipográfia és színvilág: globális, fejléc, tartalom és lábléc szinten.</p>
             <?php settings_errors( 'va_design_settings' ); ?>
+
+            <?php
+            if ( isset( $_GET['va_design_preset'] ) ) {
+                if ( $_GET['va_design_preset'] === 'ok' ) {
+                    echo '<div style="background:#0d3d1a;border:1px solid #1a7a2e;color:#7aff9d;padding:12px 18px;border-radius:8px;margin-bottom:20px;font-weight:600;">✅ Téma preset sikeresen alkalmazva!</div>';
+                } else {
+                    echo '<div style="background:#3d0d0d;border:1px solid #7a1a1a;color:#ff7a7a;padding:12px 18px;border-radius:8px;margin-bottom:20px;font-weight:600;">❌ Érvénytelen preset kulcs.</div>';
+                }
+            }
+            ?>
+
+            <?php $design_presets = self::get_design_presets(); ?>
+            <div class="va-settings-card" style="margin-bottom:28px;">
+                <div class="va-settings-card__title">🎨 Téma Presetek – 1 kattintás</div>
+                <p style="color:var(--va-muted);font-size:13px;margin:0 0 18px;">Kattints egy presetre a teljes frontend dizájn (színek + betűk) azonnali alkalmazásához.</p>
+                <div class="va-aps-presets-grid">
+                    <?php foreach ( $design_presets as $key => $p ) :
+                        $bg_style = 'background:' . esc_attr( $p['bg'] ) . ';';
+                        $text_color = ( isset( $p['text'] ) && $p['text'] ) ? $p['text'] : '#ffffff';
+                        // Fehér témákon: ha bg nagyon világos, ne fehér legyen a szöveg
+                        $lum = hexdec( substr( ltrim( $p['bg'], '#' ), 0, 2 ) );
+                        $text_style = $lum > 180 ? 'color:#111' : 'color:' . esc_attr( $text_color ) . ';';
+                    ?>
+                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0;">
+                        <input type="hidden" name="action" value="va_apply_design_preset">
+                        <input type="hidden" name="preset_key" value="<?php echo esc_attr( $key ); ?>">
+                        <?php wp_nonce_field( 'va_apply_design_preset' ); ?>
+                        <button type="submit" class="va-aps-preset-btn" style="<?php echo $bg_style; ?>border-color:<?php echo esc_attr( $p['accent'] ); ?>;">
+                            <span class="va-aps-preset-accent" style="background:<?php echo esc_attr( $p['accent'] ); ?>;"></span>
+                            <span class="va-aps-preset-label" style="<?php echo $text_style; ?>"><?php echo esc_html( $p['label'] ); ?></span>
+                            <span class="va-aps-preset-desc" style="<?php echo $text_style; ?>opacity:.7;"><?php echo esc_html( $p['desc'] ); ?></span>
+                        </button>
+                    </form>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_design_settings' ); ?>
 
@@ -3705,6 +3742,672 @@ class VA_Settings_Page {
 
         wp_safe_redirect( add_query_arg( 'va_ap_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
         exit;
+    }
+
+    public static function handle_apply_ap_preset(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
+        check_admin_referer( 'va_apply_ap_preset' );
+
+        $preset_key = sanitize_key( (string) ( $_POST['preset_key'] ?? '' ) );
+        $presets = self::get_adminpanel_presets();
+
+        if ( ! isset( $presets[ $preset_key ] ) ) {
+            wp_safe_redirect( add_query_arg( 'va_ap_preset', 'invalid', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
+            exit;
+        }
+
+        foreach ( $presets[ $preset_key ]['options'] as $key => $value ) {
+            update_option( (string) $key, $value );
+        }
+
+        wp_safe_redirect( add_query_arg( 'va_ap_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-adminpanel' ) ) );
+        exit;
+    }
+
+    public static function handle_apply_design_preset(): void {
+        if ( ! current_user_can( 'manage_options' ) ) wp_die( 'Nincs jogosultság.' );
+        check_admin_referer( 'va_apply_design_preset' );
+
+        $preset_key = sanitize_key( (string) ( $_POST['preset_key'] ?? '' ) );
+        $presets = self::get_design_presets();
+
+        if ( ! isset( $presets[ $preset_key ] ) ) {
+            wp_safe_redirect( add_query_arg( 'va_design_preset', 'invalid', admin_url( 'admin.php?page=vadaszapro-design' ) ) );
+            exit;
+        }
+
+        foreach ( $presets[ $preset_key ]['options'] as $key => $value ) {
+            update_option( (string) $key, $value );
+        }
+
+        wp_safe_redirect( add_query_arg( 'va_design_preset', 'ok', admin_url( 'admin.php?page=vadaszapro-design' ) ) );
+        exit;
+    }
+
+    private static function get_design_presets(): array {
+        return [
+
+            /* ── 1 ── */
+            'dark_hunter' => [
+                'label' => '🦌 Dark Hunter', 'desc' => 'Vadász – sötét, piros accent',
+                'bg' => '#060606', 'accent' => '#ff2020', 'text' => '#e8e8e8',
+                'options' => [
+                    'va_color_global_bg'             => '#060606',
+                    'va_color_global_text'           => '#e8e8e8',
+                    'va_color_global_muted'          => 'rgba(232,232,232,.45)',
+                    'va_color_global_accent'         => '#ff2020',
+                    'va_color_content_bg'            => '#0a0a0a',
+                    'va_color_content_text'          => '#e0e0e0',
+                    'va_color_content_headings'      => '#ffffff',
+                    'va_color_content_links'         => '#ff4444',
+                    'va_color_hero_title'            => '#ffffff',
+                    'va_color_hero_sub'              => 'rgba(255,255,255,.7)',
+                    'va_color_hero_badge_bg'         => 'rgba(255,32,32,.15)',
+                    'va_color_hero_badge_border'     => 'rgba(255,32,32,.4)',
+                    'va_color_hero_badge_text'       => '#ff6666',
+                    'va_color_hero_btn_primary_bg'   => '#ff2020',
+                    'va_color_hero_btn_primary_hover'=> '#cc0000',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(255,32,32,.5)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(255,255,255,.06)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(255,255,255,.25)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(255,255,255,.12)',
+                    'va_color_hero_btn_ghost_text'   => '#ffffff',
+                    'va_font_global'                 => 'inter',
+                    'va_font_headings'               => 'oswald',
+                ],
+            ],
+
+            /* ── 2 ── */
+            'arctic_clinic' => [
+                'label' => '🏥 Arctic Clinic', 'desc' => 'Orvosi fehér, kék accent, prémium',
+                'bg' => '#f8fafc', 'accent' => '#0066ff', 'text' => '#0d1117',
+                'options' => [
+                    'va_color_global_bg'             => '#f8fafc',
+                    'va_color_global_text'           => '#0d1117',
+                    'va_color_global_muted'          => 'rgba(13,17,23,.5)',
+                    'va_color_global_accent'         => '#0066ff',
+                    'va_color_content_bg'            => '#ffffff',
+                    'va_color_content_text'          => '#1a1a2e',
+                    'va_color_content_headings'      => '#0d1117',
+                    'va_color_content_links'         => '#0066ff',
+                    'va_color_hero_title'            => '#0d1117',
+                    'va_color_hero_sub'              => 'rgba(13,17,23,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(0,102,255,.1)',
+                    'va_color_hero_badge_border'     => 'rgba(0,102,255,.3)',
+                    'va_color_hero_badge_text'       => '#0055dd',
+                    'va_color_hero_btn_primary_bg'   => '#0066ff',
+                    'va_color_hero_btn_primary_hover'=> '#0052cc',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(0,102,255,.4)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(0,0,0,.04)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(0,0,0,.2)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(0,0,0,.08)',
+                    'va_color_hero_btn_ghost_text'   => '#0d1117',
+                    'va_font_global'                 => 'inter',
+                    'va_font_headings'               => 'plus-jakarta-sans',
+                ],
+            ],
+
+            /* ── 3 ── */
+            'mint_medical' => [
+                'label' => '🌿 Mint Medical', 'desc' => 'Letisztult fehér + mentazöld, bizalmi',
+                'bg' => '#f5faf8', 'accent' => '#00a878', 'text' => '#0a1e17',
+                'options' => [
+                    'va_color_global_bg'             => '#f5faf8',
+                    'va_color_global_text'           => '#0a1e17',
+                    'va_color_global_muted'          => 'rgba(10,30,23,.48)',
+                    'va_color_global_accent'         => '#00a878',
+                    'va_color_content_bg'            => '#ffffff',
+                    'va_color_content_text'          => '#0a1e17',
+                    'va_color_content_headings'      => '#062e20',
+                    'va_color_content_links'         => '#00a878',
+                    'va_color_hero_title'            => '#062e20',
+                    'va_color_hero_sub'              => 'rgba(6,46,32,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(0,168,120,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(0,168,120,.35)',
+                    'va_color_hero_badge_text'       => '#007a58',
+                    'va_color_hero_btn_primary_bg'   => '#00a878',
+                    'va_color_hero_btn_primary_hover'=> '#008862',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(0,168,120,.4)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(0,0,0,.04)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(0,168,120,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(0,168,120,.08)',
+                    'va_color_hero_btn_ghost_text'   => '#00a878',
+                    'va_font_global'                 => 'poppins',
+                    'va_font_headings'               => 'manrope',
+                ],
+            ],
+
+            /* ── 4 ── */
+            'speed_night' => [
+                'label' => '🏎 Speed Night', 'desc' => 'Racing fekete + elektromos piros glow',
+                'bg' => '#040404', 'accent' => '#ff0022', 'text' => '#f0f0f5',
+                'options' => [
+                    'va_color_global_bg'             => '#040404',
+                    'va_color_global_text'           => '#f0f0f5',
+                    'va_color_global_muted'          => 'rgba(240,240,245,.42)',
+                    'va_color_global_accent'         => '#ff0022',
+                    'va_color_content_bg'            => '#080808',
+                    'va_color_content_text'          => '#e8e8e8',
+                    'va_color_content_headings'      => '#ffffff',
+                    'va_color_content_links'         => '#ff3344',
+                    'va_color_hero_title'            => '#ffffff',
+                    'va_color_hero_sub'              => 'rgba(255,255,255,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(255,0,34,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(255,0,34,.4)',
+                    'va_color_hero_badge_text'       => '#ff4455',
+                    'va_color_hero_btn_primary_bg'   => '#ff0022',
+                    'va_color_hero_btn_primary_hover'=> '#cc0018',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(255,0,34,.6)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(255,255,255,.05)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(255,255,255,.2)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(255,255,255,.1)',
+                    'va_color_hero_btn_ghost_text'   => '#ffffff',
+                    'va_font_global'                 => 'barlow',
+                    'va_font_headings'               => 'barlow-condensed',
+                ],
+            ],
+
+            /* ── 5 ── */
+            'forest_camo' => [
+                'label' => '🌲 Forest Camo', 'desc' => 'Vadászos erdei, terepszín + lime zöld',
+                'bg' => '#0d110a', 'accent' => '#7aad2f', 'text' => '#e8f2d8',
+                'options' => [
+                    'va_color_global_bg'             => '#0d110a',
+                    'va_color_global_text'           => '#e8f2d8',
+                    'va_color_global_muted'          => 'rgba(232,242,216,.44)',
+                    'va_color_global_accent'         => '#7aad2f',
+                    'va_color_content_bg'            => '#111506',
+                    'va_color_content_text'          => '#deecc8',
+                    'va_color_content_headings'      => '#f0ffda',
+                    'va_color_content_links'         => '#a3d44e',
+                    'va_color_hero_title'            => '#f4ffe0',
+                    'va_color_hero_sub'              => 'rgba(244,255,224,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(122,173,47,.14)',
+                    'va_color_hero_badge_border'     => 'rgba(122,173,47,.4)',
+                    'va_color_hero_badge_text'       => '#a3d44e',
+                    'va_color_hero_btn_primary_bg'   => '#7aad2f',
+                    'va_color_hero_btn_primary_hover'=> '#618c24',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(122,173,47,.5)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(255,255,255,.05)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(122,173,47,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(122,173,47,.1)',
+                    'va_color_hero_btn_ghost_text'   => '#c8e896',
+                    'va_font_global'                 => 'roboto',
+                    'va_font_headings'               => 'oswald',
+                ],
+            ],
+
+            /* ── 6 ── */
+            'obsidian_gold' => [
+                'label' => '👑 Obsidian Gold', 'desc' => 'Obszidián fekete + nemes arany, luxury',
+                'bg' => '#080807', 'accent' => '#e8b840', 'text' => '#f5f0e0',
+                'options' => [
+                    'va_color_global_bg'             => '#080807',
+                    'va_color_global_text'           => '#f5f0e0',
+                    'va_color_global_muted'          => 'rgba(245,240,224,.44)',
+                    'va_color_global_accent'         => '#e8b840',
+                    'va_color_content_bg'            => '#0d0d0a',
+                    'va_color_content_text'          => '#ede8d5',
+                    'va_color_content_headings'      => '#fff8e8',
+                    'va_color_content_links'         => '#f5cf6a',
+                    'va_color_hero_title'            => '#fff8e8',
+                    'va_color_hero_sub'              => 'rgba(255,248,232,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(232,184,64,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(232,184,64,.4)',
+                    'va_color_hero_badge_text'       => '#f5cf6a',
+                    'va_color_hero_btn_primary_bg'   => '#e8b840',
+                    'va_color_hero_btn_primary_hover'=> '#c99c28',
+                    'va_color_hero_btn_primary_text' => '#0a0a06',
+                    'va_color_hero_btn_primary_glow' => 'rgba(232,184,64,.5)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(255,255,255,.05)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(232,184,64,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(232,184,64,.1)',
+                    'va_color_hero_btn_ghost_text'   => '#f5cf6a',
+                    'va_font_global'                 => 'cormorant-garamond',
+                    'va_font_headings'               => 'playfair',
+                ],
+            ],
+
+            /* ── 7 ── */
+            'neon_cyber' => [
+                'label' => '⚡ Neon Cyber', 'desc' => 'Cyberpunk 2026 – fekete + neon zöld glow',
+                'bg' => '#030a06', 'accent' => '#00ff88', 'text' => '#ccffe8',
+                'options' => [
+                    'va_color_global_bg'             => '#030a06',
+                    'va_color_global_text'           => '#ccffe8',
+                    'va_color_global_muted'          => 'rgba(204,255,232,.4)',
+                    'va_color_global_accent'         => '#00ff88',
+                    'va_color_content_bg'            => '#040e08',
+                    'va_color_content_text'          => '#c8fce0',
+                    'va_color_content_headings'      => '#e0fff0',
+                    'va_color_content_links'         => '#33ffaa',
+                    'va_color_hero_title'            => '#e0fff0',
+                    'va_color_hero_sub'              => 'rgba(224,255,240,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(0,255,136,.1)',
+                    'va_color_hero_badge_border'     => 'rgba(0,255,136,.4)',
+                    'va_color_hero_badge_text'       => '#00ff88',
+                    'va_color_hero_btn_primary_bg'   => '#00ff88',
+                    'va_color_hero_btn_primary_hover'=> '#00cc6a',
+                    'va_color_hero_btn_primary_text' => '#030a06',
+                    'va_color_hero_btn_primary_glow' => 'rgba(0,255,136,.6)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(0,255,136,.05)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(0,255,136,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(0,255,136,.12)',
+                    'va_color_hero_btn_ghost_text'   => '#00ff88',
+                    'va_font_global'                 => 'space-grotesk',
+                    'va_font_headings'               => 'syne',
+                ],
+            ],
+
+            /* ── 8 ── */
+            'midnight_navy' => [
+                'label' => '🌊 Midnight Navy', 'desc' => 'Mélytenger kék + neon kék, prémium',
+                'bg' => '#07090f', 'accent' => '#3b8af7', 'text' => '#dce8ff',
+                'options' => [
+                    'va_color_global_bg'             => '#07090f',
+                    'va_color_global_text'           => '#dce8ff',
+                    'va_color_global_muted'          => 'rgba(220,232,255,.44)',
+                    'va_color_global_accent'         => '#3b8af7',
+                    'va_color_content_bg'            => '#0b0f1a',
+                    'va_color_content_text'          => '#d4e0ff',
+                    'va_color_content_headings'      => '#eef4ff',
+                    'va_color_content_links'         => '#6aadff',
+                    'va_color_hero_title'            => '#eef4ff',
+                    'va_color_hero_sub'              => 'rgba(238,244,255,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(59,138,247,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(59,138,247,.4)',
+                    'va_color_hero_badge_text'       => '#6aadff',
+                    'va_color_hero_btn_primary_bg'   => '#3b8af7',
+                    'va_color_hero_btn_primary_hover'=> '#2270e0',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(59,138,247,.5)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(59,138,247,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(59,138,247,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(59,138,247,.14)',
+                    'va_color_hero_btn_ghost_text'   => '#6aadff',
+                    'va_font_global'                 => 'manrope',
+                    'va_font_headings'               => 'plus-jakarta-sans',
+                ],
+            ],
+
+            /* ── 9 ── */
+            'copper_outdoor' => [
+                'label' => '🔶 Copper Outdoor', 'desc' => 'Outdoor barna + réz, prémium vadász',
+                'bg' => '#0a0806', 'accent' => '#c97d3e', 'text' => '#f2e8d8',
+                'options' => [
+                    'va_color_global_bg'             => '#0a0806',
+                    'va_color_global_text'           => '#f2e8d8',
+                    'va_color_global_muted'          => 'rgba(242,232,216,.44)',
+                    'va_color_global_accent'         => '#c97d3e',
+                    'va_color_content_bg'            => '#100d09',
+                    'va_color_content_text'          => '#eadfc8',
+                    'va_color_content_headings'      => '#fff4e8',
+                    'va_color_content_links'         => '#e0a265',
+                    'va_color_hero_title'            => '#fff4e8',
+                    'va_color_hero_sub'              => 'rgba(255,244,232,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(201,125,62,.13)',
+                    'va_color_hero_badge_border'     => 'rgba(201,125,62,.4)',
+                    'va_color_hero_badge_text'       => '#e0a265',
+                    'va_color_hero_btn_primary_bg'   => '#c97d3e',
+                    'va_color_hero_btn_primary_hover'=> '#a6622f',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(201,125,62,.5)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(201,125,62,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(201,125,62,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(201,125,62,.13)',
+                    'va_color_hero_btn_ghost_text'   => '#e0a265',
+                    'va_font_global'                 => 'cabin',
+                    'va_font_headings'               => 'oswald',
+                ],
+            ],
+
+            /* ── 10 ── */
+            'sunset_blaze' => [
+                'label' => '🌅 Sunset Blaze', 'desc' => 'Napnyugta – korall narancs + arany',
+                'bg' => '#0f0a06', 'accent' => '#ff6b35', 'text' => '#fff0e8',
+                'options' => [
+                    'va_color_global_bg'             => '#0f0a06',
+                    'va_color_global_text'           => '#fff0e8',
+                    'va_color_global_muted'          => 'rgba(255,240,232,.44)',
+                    'va_color_global_accent'         => '#ff6b35',
+                    'va_color_content_bg'            => '#170e09',
+                    'va_color_content_text'          => '#f5e8dc',
+                    'va_color_content_headings'      => '#fffaf4',
+                    'va_color_content_links'         => '#ffa040',
+                    'va_color_hero_title'            => '#fffaf4',
+                    'va_color_hero_sub'              => 'rgba(255,250,244,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(255,107,53,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(255,107,53,.4)',
+                    'va_color_hero_badge_text'       => '#ffa040',
+                    'va_color_hero_btn_primary_bg'   => '#ff6b35',
+                    'va_color_hero_btn_primary_hover'=> '#e05520',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(255,107,53,.55)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(255,107,53,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(255,107,53,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(255,107,53,.13)',
+                    'va_color_hero_btn_ghost_text'   => '#ffa040',
+                    'va_font_global'                 => 'nunito',
+                    'va_font_headings'               => 'raleway',
+                ],
+            ],
+
+            /* ── 11 ── */
+            'ink_paper' => [
+                'label' => '📰 Ink & Paper', 'desc' => 'Editorial újság fehér, tinta fekete',
+                'bg' => '#fafafa', 'accent' => '#1a1a1a', 'text' => '#111111',
+                'options' => [
+                    'va_color_global_bg'             => '#fafafa',
+                    'va_color_global_text'           => '#111111',
+                    'va_color_global_muted'          => 'rgba(17,17,17,.5)',
+                    'va_color_global_accent'         => '#1a1a1a',
+                    'va_color_content_bg'            => '#ffffff',
+                    'va_color_content_text'          => '#222222',
+                    'va_color_content_headings'      => '#000000',
+                    'va_color_content_links'         => '#333333',
+                    'va_color_hero_title'            => '#000000',
+                    'va_color_hero_sub'              => 'rgba(0,0,0,.6)',
+                    'va_color_hero_badge_bg'         => 'rgba(0,0,0,.06)',
+                    'va_color_hero_badge_border'     => 'rgba(0,0,0,.2)',
+                    'va_color_hero_badge_text'       => '#333333',
+                    'va_color_hero_btn_primary_bg'   => '#111111',
+                    'va_color_hero_btn_primary_hover'=> '#000000',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(0,0,0,.3)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(0,0,0,.04)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(0,0,0,.2)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(0,0,0,.08)',
+                    'va_color_hero_btn_ghost_text'   => '#111111',
+                    'va_font_global'                 => 'merriweather',
+                    'va_font_headings'               => 'playfair',
+                ],
+            ],
+
+            /* ── 12 ── */
+            'purple_tech' => [
+                'label' => '🔮 Purple Tech', 'desc' => 'SaaS lila, tech 2026 vibe',
+                'bg' => '#090910', 'accent' => '#8b5cf6', 'text' => '#e4e4f0',
+                'options' => [
+                    'va_color_global_bg'             => '#090910',
+                    'va_color_global_text'           => '#e4e4f0',
+                    'va_color_global_muted'          => 'rgba(228,228,240,.42)',
+                    'va_color_global_accent'         => '#8b5cf6',
+                    'va_color_content_bg'            => '#0f0f18',
+                    'va_color_content_text'          => '#dcdcf0',
+                    'va_color_content_headings'      => '#f0f0ff',
+                    'va_color_content_links'         => '#a78bfa',
+                    'va_color_hero_title'            => '#f0f0ff',
+                    'va_color_hero_sub'              => 'rgba(240,240,255,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(139,92,246,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(139,92,246,.4)',
+                    'va_color_hero_badge_text'       => '#a78bfa',
+                    'va_color_hero_btn_primary_bg'   => '#8b5cf6',
+                    'va_color_hero_btn_primary_hover'=> '#7040e0',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(139,92,246,.55)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(139,92,246,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(139,92,246,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(139,92,246,.14)',
+                    'va_color_hero_btn_ghost_text'   => '#a78bfa',
+                    'va_font_global'                 => 'outfit',
+                    'va_font_headings'               => 'space-grotesk',
+                ],
+            ],
+
+            /* ── 13 ── */
+            'ocean_depth' => [
+                'label' => '🐋 Ocean Depth', 'desc' => 'Mélyvíz teal + aqua neon',
+                'bg' => '#040e12', 'accent' => '#00c8d4', 'text' => '#c8f4f8',
+                'options' => [
+                    'va_color_global_bg'             => '#040e12',
+                    'va_color_global_text'           => '#c8f4f8',
+                    'va_color_global_muted'          => 'rgba(200,244,248,.42)',
+                    'va_color_global_accent'         => '#00c8d4',
+                    'va_color_content_bg'            => '#081418',
+                    'va_color_content_text'          => '#c0ecf0',
+                    'va_color_content_headings'      => '#e0f8fc',
+                    'va_color_content_links'         => '#33dde6',
+                    'va_color_hero_title'            => '#e0f8fc',
+                    'va_color_hero_sub'              => 'rgba(224,248,252,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(0,200,212,.11)',
+                    'va_color_hero_badge_border'     => 'rgba(0,200,212,.4)',
+                    'va_color_hero_badge_text'       => '#33dde6',
+                    'va_color_hero_btn_primary_bg'   => '#00c8d4',
+                    'va_color_hero_btn_primary_hover'=> '#00a0aa',
+                    'va_color_hero_btn_primary_text' => '#030e12',
+                    'va_color_hero_btn_primary_glow' => 'rgba(0,200,212,.55)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(0,200,212,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(0,200,212,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(0,200,212,.14)',
+                    'va_color_hero_btn_ghost_text'   => '#33dde6',
+                    'va_font_global'                 => 'dm-sans',
+                    'va_font_headings'               => 'urbanist',
+                ],
+            ],
+
+            /* ── 14 ── */
+            'aurora_nord' => [
+                'label' => '🌌 Aurora Nord', 'desc' => 'Északi fény – nordic blue palette',
+                'bg' => '#0a0e14', 'accent' => '#88c0d0', 'text' => '#d8dee9',
+                'options' => [
+                    'va_color_global_bg'             => '#0a0e14',
+                    'va_color_global_text'           => '#d8dee9',
+                    'va_color_global_muted'          => 'rgba(216,222,233,.44)',
+                    'va_color_global_accent'         => '#88c0d0',
+                    'va_color_content_bg'            => '#111820',
+                    'va_color_content_text'          => '#d0d8e8',
+                    'va_color_content_headings'      => '#eceff4',
+                    'va_color_content_links'         => '#a3be8c',
+                    'va_color_hero_title'            => '#eceff4',
+                    'va_color_hero_sub'              => 'rgba(236,239,244,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(136,192,208,.1)',
+                    'va_color_hero_badge_border'     => 'rgba(136,192,208,.35)',
+                    'va_color_hero_badge_text'       => '#88c0d0',
+                    'va_color_hero_btn_primary_bg'   => '#88c0d0',
+                    'va_color_hero_btn_primary_hover'=> '#6aaabb',
+                    'va_color_hero_btn_primary_text' => '#0a0e14',
+                    'va_color_hero_btn_primary_glow' => 'rgba(136,192,208,.45)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(136,192,208,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(136,192,208,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(136,192,208,.14)',
+                    'va_color_hero_btn_ghost_text'   => '#88c0d0',
+                    'va_font_global'                 => 'ibm-plex-sans',
+                    'va_font_headings'               => 'syne',
+                ],
+            ],
+
+            /* ── 15 ── */
+            'sakura_light' => [
+                'label' => '🌸 Sakura Light', 'desc' => 'Japán prémium – fehér + rózsa pink',
+                'bg' => '#fdf7f9', 'accent' => '#e8558a', 'text' => '#1f0a14',
+                'options' => [
+                    'va_color_global_bg'             => '#fdf7f9',
+                    'va_color_global_text'           => '#1f0a14',
+                    'va_color_global_muted'          => 'rgba(31,10,20,.48)',
+                    'va_color_global_accent'         => '#e8558a',
+                    'va_color_content_bg'            => '#ffffff',
+                    'va_color_content_text'          => '#2a1020',
+                    'va_color_content_headings'      => '#0f0008',
+                    'va_color_content_links'         => '#e8558a',
+                    'va_color_hero_title'            => '#0f0008',
+                    'va_color_hero_sub'              => 'rgba(15,0,8,.6)',
+                    'va_color_hero_badge_bg'         => 'rgba(232,85,138,.1)',
+                    'va_color_hero_badge_border'     => 'rgba(232,85,138,.3)',
+                    'va_color_hero_badge_text'       => '#cc3070',
+                    'va_color_hero_btn_primary_bg'   => '#e8558a',
+                    'va_color_hero_btn_primary_hover'=> '#c83870',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(232,85,138,.4)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(232,85,138,.06)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(232,85,138,.25)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(232,85,138,.1)',
+                    'va_color_hero_btn_ghost_text'   => '#e8558a',
+                    'va_font_global'                 => 'quicksand',
+                    'va_font_headings'               => 'cormorant-garamond',
+                ],
+            ],
+
+            /* ── 16 ── */
+            'royal_plum' => [
+                'label' => '🍷 Royal Plum', 'desc' => 'Sötét lila-bordó, exkluzív premium',
+                'bg' => '#12091a', 'accent' => '#c75cff', 'text' => '#f8f0ff',
+                'options' => [
+                    'va_color_global_bg'             => '#12091a',
+                    'va_color_global_text'           => '#f8f0ff',
+                    'va_color_global_muted'          => 'rgba(248,240,255,.44)',
+                    'va_color_global_accent'         => '#c75cff',
+                    'va_color_content_bg'            => '#1a0f24',
+                    'va_color_content_text'          => '#f0e8ff',
+                    'va_color_content_headings'      => '#fff4ff',
+                    'va_color_content_links'         => '#da98ff',
+                    'va_color_hero_title'            => '#fff4ff',
+                    'va_color_hero_sub'              => 'rgba(255,244,255,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(199,92,255,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(199,92,255,.4)',
+                    'va_color_hero_badge_text'       => '#da98ff',
+                    'va_color_hero_btn_primary_bg'   => '#c75cff',
+                    'va_color_hero_btn_primary_hover'=> '#a840e0',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(199,92,255,.55)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(199,92,255,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(199,92,255,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(199,92,255,.14)',
+                    'va_color_hero_btn_ghost_text'   => '#da98ff',
+                    'va_font_global'                 => 'raleway',
+                    'va_font_headings'               => 'abril-fatface',
+                ],
+            ],
+
+            /* ── 17 ── */
+            'steel_ember' => [
+                'label' => '🔥 Steel Ember', 'desc' => 'Acélos szürke + izzó narancs',
+                'bg' => '#0d0e10', 'accent' => '#ff7a22', 'text' => '#f0f2f5',
+                'options' => [
+                    'va_color_global_bg'             => '#0d0e10',
+                    'va_color_global_text'           => '#f0f2f5',
+                    'va_color_global_muted'          => 'rgba(240,242,245,.44)',
+                    'va_color_global_accent'         => '#ff7a22',
+                    'va_color_content_bg'            => '#111317',
+                    'va_color_content_text'          => '#e8eaed',
+                    'va_color_content_headings'      => '#ffffff',
+                    'va_color_content_links'         => '#ffaa66',
+                    'va_color_hero_title'            => '#ffffff',
+                    'va_color_hero_sub'              => 'rgba(255,255,255,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(255,122,34,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(255,122,34,.4)',
+                    'va_color_hero_badge_text'       => '#ffaa66',
+                    'va_color_hero_btn_primary_bg'   => '#ff7a22',
+                    'va_color_hero_btn_primary_hover'=> '#e06010',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(255,122,34,.55)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(255,122,34,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(255,122,34,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(255,122,34,.14)',
+                    'va_color_hero_btn_ghost_text'   => '#ffaa66',
+                    'va_font_global'                 => 'barlow',
+                    'va_font_headings'               => 'barlow-condensed',
+                ],
+            ],
+
+            /* ── 18 ── */
+            'matrix_hack' => [
+                'label' => '💻 Matrix Hack', 'desc' => 'Hacker – mély fekete + lime zöld',
+                'bg' => '#020802', 'accent' => '#39ff14', 'text' => '#ccffcc',
+                'options' => [
+                    'va_color_global_bg'             => '#020802',
+                    'va_color_global_text'           => '#ccffcc',
+                    'va_color_global_muted'          => 'rgba(204,255,204,.4)',
+                    'va_color_global_accent'         => '#39ff14',
+                    'va_color_content_bg'            => '#040e04',
+                    'va_color_content_text'          => '#c4fcc4',
+                    'va_color_content_headings'      => '#e0ffe0',
+                    'va_color_content_links'         => '#66ff44',
+                    'va_color_hero_title'            => '#e0ffe0',
+                    'va_color_hero_sub'              => 'rgba(224,255,224,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(57,255,20,.1)',
+                    'va_color_hero_badge_border'     => 'rgba(57,255,20,.38)',
+                    'va_color_hero_badge_text'       => '#39ff14',
+                    'va_color_hero_btn_primary_bg'   => '#39ff14',
+                    'va_color_hero_btn_primary_hover'=> '#22cc0a',
+                    'va_color_hero_btn_primary_text' => '#020802',
+                    'va_color_hero_btn_primary_glow' => 'rgba(57,255,20,.6)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(57,255,20,.06)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(57,255,20,.28)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(57,255,20,.12)',
+                    'va_color_hero_btn_ghost_text'   => '#39ff14',
+                    'va_font_global'                 => 'fira-sans',
+                    'va_font_headings'               => 'oswald',
+                ],
+            ],
+
+            /* ── 19 ── */
+            'sand_desert' => [
+                'label' => '🏜️ Sand Desert', 'desc' => 'Sivatagi homok + rozsda, outdoor',
+                'bg' => '#15110c', 'accent' => '#ff9d4d', 'text' => '#fff5eb',
+                'options' => [
+                    'va_color_global_bg'             => '#15110c',
+                    'va_color_global_text'           => '#fff5eb',
+                    'va_color_global_muted'          => 'rgba(255,245,235,.44)',
+                    'va_color_global_accent'         => '#ff9d4d',
+                    'va_color_content_bg'            => '#1c1610',
+                    'va_color_content_text'          => '#f5eadb',
+                    'va_color_content_headings'      => '#fffaf4',
+                    'va_color_content_links'         => '#ffbf8b',
+                    'va_color_hero_title'            => '#fffaf4',
+                    'va_color_hero_sub'              => 'rgba(255,250,244,.65)',
+                    'va_color_hero_badge_bg'         => 'rgba(255,157,77,.12)',
+                    'va_color_hero_badge_border'     => 'rgba(255,157,77,.4)',
+                    'va_color_hero_badge_text'       => '#ffbf8b',
+                    'va_color_hero_btn_primary_bg'   => '#ff9d4d',
+                    'va_color_hero_btn_primary_hover'=> '#e07a2c',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(255,157,77,.5)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(255,157,77,.07)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(255,157,77,.3)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(255,157,77,.14)',
+                    'va_color_hero_btn_ghost_text'   => '#ffbf8b',
+                    'va_font_global'                 => 'work-sans',
+                    'va_font_headings'               => 'bebas-neue',
+                ],
+            ],
+
+            /* ── 20 ── */
+            'clean_saas' => [
+                'label' => '🚀 Clean SaaS', 'desc' => 'Modern fehér SaaS – lila/kék gradiens',
+                'bg' => '#f8f9fb', 'accent' => '#6366f1', 'text' => '#111827',
+                'options' => [
+                    'va_color_global_bg'             => '#f8f9fb',
+                    'va_color_global_text'           => '#111827',
+                    'va_color_global_muted'          => 'rgba(17,24,39,.48)',
+                    'va_color_global_accent'         => '#6366f1',
+                    'va_color_content_bg'            => '#ffffff',
+                    'va_color_content_text'          => '#1f2937',
+                    'va_color_content_headings'      => '#0f172a',
+                    'va_color_content_links'         => '#6366f1',
+                    'va_color_hero_title'            => '#0f172a',
+                    'va_color_hero_sub'              => 'rgba(15,23,42,.6)',
+                    'va_color_hero_badge_bg'         => 'rgba(99,102,241,.1)',
+                    'va_color_hero_badge_border'     => 'rgba(99,102,241,.3)',
+                    'va_color_hero_badge_text'       => '#4f46e5',
+                    'va_color_hero_btn_primary_bg'   => '#6366f1',
+                    'va_color_hero_btn_primary_hover'=> '#4f46e5',
+                    'va_color_hero_btn_primary_text' => '#ffffff',
+                    'va_color_hero_btn_primary_glow' => 'rgba(99,102,241,.4)',
+                    'va_color_hero_btn_ghost_bg'     => 'rgba(99,102,241,.06)',
+                    'va_color_hero_btn_ghost_border' => 'rgba(99,102,241,.25)',
+                    'va_color_hero_btn_ghost_hover'  => 'rgba(99,102,241,.1)',
+                    'va_color_hero_btn_ghost_text'   => '#6366f1',
+                    'va_font_global'                 => 'inter',
+                    'va_font_headings'               => 'plus-jakarta-sans',
+                ],
+            ],
+
+        ];
     }
 
     public static function handle_apply_single_preset(): void {
