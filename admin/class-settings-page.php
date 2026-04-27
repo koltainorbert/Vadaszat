@@ -4762,10 +4762,10 @@ class VA_Settings_Page {
         .va-pk-card__fields { padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px; }
         .va-pk-card__field-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
         .va-pk-card__field-row--3 { grid-template-columns:1fr 1fr 1fr; }
-        .va-pk-card__price-preview { text-align:center; padding:12px 0; }
-        .va-pk-card__price-preview .total { font-size:26px; font-weight:800; color:#fff; }
-        .va-pk-card__price-preview .unit  { font-size:12px; color:rgba(255,255,255,.4); margin-top:2px; }
-        .va-pk-card__price-preview .free-tag { font-size:16px; font-weight:700; color:#4ade80; }
+        .va-pk-card__price-preview { text-align:center; padding:14px 0; }
+        .va-pk-card__price-preview .total { font-size:38px; font-weight:800; color:#fff; line-height:1.1; }
+        .va-pk-card__price-preview .unit  { font-size:13px; color:rgba(255,255,255,.4); margin-top:4px; }
+        .va-pk-card__price-preview .free-tag { font-size:22px; font-weight:700; color:#4ade80; }
         .va-pk-save-bar { background:rgba(14,14,18,.95); border:1px solid rgba(255,255,255,.08); border-radius:12px; padding:16px 24px; display:flex; align-items:center; gap:14px; }
         .va-pk-save-bar .button-primary { background:#cc0000 !important; border-color:#cc0000 !important; color:#fff !important; padding:8px 24px !important; height:auto !important; border-radius:8px !important; font-weight:600 !important; font-size:13px !important; }
         .va-pk-save-bar .button-primary:hover { background:#aa0000 !important; border-color:#aa0000 !important; }
