@@ -104,18 +104,18 @@ hr { border-color: var(--border); }
   margin: 0 auto;
 }
 .va-header__inner .va-nav { flex: 0 0 auto; }
-.va-header__inner .va-header__search { flex: 1 1 420px; max-width: 460px; margin-left: 24px; }
+.va-header__inner .va-header__search { flex: 0 0 200px; width: 200px; max-width: 200px; margin-left: 24px; }
 .va-header__inner .va-header__right { flex: 0 0 auto; margin-left: auto; }
 
 /* ── Header kereső ── */
 .va-header__search {
   display: flex; align-items: center;
   margin: 0 20px;
-  border: 1px solid rgba(255,255,255,.14);
-  border-radius: 30px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: 999px;
   padding: 0 10px 0 18px;
-  flex: 1 1 380px; max-width: 420px;
-  height: 50px !important; min-height: 50px !important; max-height: 50px !important; box-sizing: border-box;
+  flex: 0 0 200px; width: 200px; max-width: 200px;
+  height: 36px; box-sizing: border-box;
   background: rgba(255,255,255,.02);
   outline: none;
   position: relative;
