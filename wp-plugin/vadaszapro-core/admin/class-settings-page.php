@@ -864,6 +864,31 @@ class VA_Settings_Page {
             register_setting( 'va_btt_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
+
+        /* Custom kód (CSS, JS, Head) */
+        $custom_code_keys = [
+            'va_custom_css'  => '',
+            'va_custom_js'   => '',
+            'va_custom_head' => '',
+        ];
+        foreach ( $custom_code_keys as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_custom_code_settings', $key, [ 'sanitize_callback' => [ __CLASS__, 'sanitize_code_field' ] ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        /* i18n */
+        $i18n_keys = [
+            'va_default_lang'        => 'hu',
+            'va_active_langs'        => '["hu"]',
+            'va_lang_show_switcher'  => '1',
+            'va_lang_switcher_pos'   => 'header',
+        ];
+        foreach ( $i18n_keys as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_i18n_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
     }
 
     private static function get_display_option( string $key, $fallback = '' ) {
