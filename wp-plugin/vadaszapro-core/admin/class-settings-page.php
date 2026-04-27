@@ -3353,17 +3353,23 @@ class VA_Settings_Page {
             $cnt  = absint( $_GET['count'] ?? 0 );
             $tax  = absint( $_GET['tax'] ?? 0 );
             $pages= absint( $_GET['pages'] ?? 0 );
-            $note = 'Import kész. Frissített opciók: ' . $cnt . ', taxonómiák: ' . $tax . ', oldalak: ' . $pages;
+            $note = '✅ Import sikeres! Frissített opciók: <strong>' . $cnt . '</strong>, taxonómiák: <strong>' . $tax . '</strong>, oldalak: <strong>' . $pages . '</strong>';
             $cls  = 'notice notice-success';
         } elseif ( $msg === 'reset_ok' ) {
             $cnt  = absint( $_GET['count'] ?? 0 );
-            $note = 'Alaphelyzet visszaállítva. Újra felvett alap opciók: ' . $cnt;
+            $note = '✅ Alaphelyzet visszaállítva. Újra felvett alap opciók: ' . $cnt;
             $cls  = 'notice notice-success';
         } elseif ( $msg === 'import_invalid' ) {
-            $note = 'Hibás import fájl. Kérlek ellenőrizd a JSON tartalmát.';
+            $note = '❌ Hibás import fájl. Kérlek ellenőrizd a JSON tartalmát (a <code>va_export_*.json</code> fájlt töltsd fel).';
             $cls  = 'notice notice-error';
         } elseif ( $msg === 'import_empty' ) {
-            $note = 'Nem érkezett import fájl.';
+            $note = '❌ Nem érkezett import fájl. Válassz ki egy <code>.json</code> fájlt és kattints az "Import indítása" gombra.';
+            $cls  = 'notice notice-error';
+        } elseif ( $msg === 'import_toolarge' ) {
+            $note = '❌ A feltöltött fájl túl nagy (PHP upload limit). A LocalWP PHP settings-ben növeld: <code>upload_max_filesize</code> és <code>post_max_size</code>.';
+            $cls  = 'notice notice-error';
+        } elseif ( $msg === 'import_partial' ) {
+            $note = '❌ A fájl feltöltése megszakadt. Próbáld újra.';
             $cls  = 'notice notice-error';
         }
         ?>
@@ -3384,7 +3390,7 @@ class VA_Settings_Page {
             </style>
 
             <?php if ( $note !== '' ): ?>
-                <div class="<?php echo esc_attr( $cls ); ?>"><p><?php echo esc_html( $note ); ?></p></div>
+                <div class="<?php echo esc_attr( $cls ); ?>" style="padding:10px 16px; border-left-width:4px; background:rgba(255,255,255,.06); color:#fff;"><p style="margin:.3em 0;"><?php echo wp_kses( $note, [ 'strong' => [], 'code' => [], 'em' => [] ] ); ?></p></div>
             <?php endif; ?>
 
             <div class="va-ei-card">
@@ -3480,34 +3486,67 @@ class VA_Settings_Page {
 
         $redirect = admin_url( 'admin.php?page=vadaszapro-tools' );
 
-        if ( empty( $_FILES['va_import_file']['tmp_name'] ) ) {
+        // Fájl feltöltés hibakód ellenőrzés
+        $upload_error = isset( $_FILES['va_import_file']['error'] ) ? (int) $_FILES['va_import_file']['error'] : UPLOAD_ERR_NO_FILE;
+        if ( $upload_error !== UPLOAD_ERR_OK ) {
+            $err_map = [
+                UPLOAD_ERR_NO_FILE   => 'import_empty',
+                UPLOAD_ERR_INI_SIZE  => 'import_toolarge',
+                UPLOAD_ERR_FORM_SIZE => 'import_toolarge',
+                UPLOAD_ERR_PARTIAL   => 'import_partial',
+            ];
+            $err_key = $err_map[ $upload_error ] ?? 'import_invalid';
+            error_log( '[VA Import] Upload error code: ' . $upload_error );
+            wp_safe_redirect( add_query_arg( 'va_tools_msg', $err_key, $redirect ) );
+            exit;
+        }
+
+        $tmp_name = (string) ( $_FILES['va_import_file']['tmp_name'] ?? '' );
+        if ( $tmp_name === '' || ! is_uploaded_file( $tmp_name ) ) {
             wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_empty', $redirect ) );
             exit;
         }
 
-        $tmp_name = (string) $_FILES['va_import_file']['tmp_name'];
-        $content  = file_get_contents( $tmp_name );
+        $content = file_get_contents( $tmp_name );
         if ( $content === false || trim( $content ) === '' ) {
+            error_log( '[VA Import] Cannot read tmp file: ' . $tmp_name );
             wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
             exit;
         }
 
+        // UTF-8 BOM eltávolítás
+        $content = ltrim( $content, "\xEF\xBB\xBF" );
+
         $data = json_decode( $content, true );
+        if ( json_last_error() !== JSON_ERROR_NONE ) {
+            error_log( '[VA Import] JSON decode error: ' . json_last_error_msg() );
+            wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
+            exit;
+        }
+
         if ( ! is_array( $data ) || ! isset( $data['options'] ) || ! is_array( $data['options'] ) ) {
+            error_log( '[VA Import] Missing options key. Keys: ' . implode( ',', array_keys( (array) $data ) ) );
             wp_safe_redirect( add_query_arg( 'va_tools_msg', 'import_invalid', $redirect ) );
             exit;
         }
 
         $count = 0;
-        $tax_count = 0;
-        $page_count = 0;
         foreach ( $data['options'] as $key => $value ) {
             if ( ! is_string( $key ) || strpos( $key, 'va_' ) !== 0 ) {
                 continue;
             }
-            update_option( $key, $value );
+            // Autoload: csak ha már létezik, megtartjuk az autoload értékét; egyébként nem autoload
+            $existing = get_option( $key, '__NOT_SET__' );
+            if ( $existing === '__NOT_SET__' ) {
+                add_option( $key, $value, '', 'no' );
+            } else {
+                update_option( $key, $value );
+            }
             $count++;
         }
+
+        $tax_count  = 0;
+        $page_count = 0;
 
         if ( (string) ( $_POST['va_import_taxonomies'] ?? '' ) === '1' && isset( $data['taxonomies'] ) && is_array( $data['taxonomies'] ) ) {
             $tax_count = self::import_taxonomies( $data['taxonomies'] );
@@ -3516,6 +3555,9 @@ class VA_Settings_Page {
         if ( (string) ( $_POST['va_import_pages'] ?? '' ) === '1' && isset( $data['pages'] ) && is_array( $data['pages'] ) ) {
             $page_count = self::import_pages( $data['pages'] );
         }
+
+        // Rewrite flush ha CPT/taxonomy érintett
+        flush_rewrite_rules( false );
 
         wp_safe_redirect( add_query_arg( [ 'va_tools_msg' => 'import_ok', 'count' => $count, 'tax' => $tax_count, 'pages' => $page_count ], $redirect ) );
         exit;
