@@ -334,6 +334,75 @@ add_action( 'wp_footer', function() {
     <?php
 }, 100 );
 
+/* ── Hero Carousel JS ─────────────────────────────── */
+add_action( 'wp_footer', function() {
+    if ( ! is_front_page() ) return;
+    $bg_type = get_option( 'va_home_hero_bg_type', 'video' );
+    if ( $bg_type !== 'carousel' ) return;
+    ?>
+    <script>
+    (function(){
+        var vh = document.querySelector('.vh--carousel');
+        if(!vh) return;
+        var speed    = parseInt(vh.dataset.speed    || 800,  10);
+        var interval = parseInt(vh.dataset.interval || 5000, 10);
+        var trans    = vh.dataset.transition || 'fade';
+        vh.style.setProperty('--vh-speed',    speed+'ms');
+        vh.style.setProperty('--vh-interval', interval+'ms');
+        vh.classList.add('vh--transition-' + trans);
+
+        var slides = Array.from(vh.querySelectorAll('.vh__slide'));
+        var dots   = Array.from(vh.querySelectorAll('.vh__carousel-dot'));
+        var current = 0;
+        var timer = null;
+
+        function goTo(next) {
+            if(next === current || slides.length < 2) return;
+            var leaving  = slides[current];
+            var entering = slides[next];
+            leaving.classList.add('vh__slide--leaving');
+            entering.classList.add('vh__slide--entering');
+            entering.classList.add('vh__slide--active');
+
+            var onEnd = function(){
+                leaving.classList.remove('vh__slide--active','vh__slide--leaving');
+                entering.classList.remove('vh__slide--entering');
+                entering.removeEventListener('animationend', onEnd);
+            };
+            entering.addEventListener('animationend', onEnd);
+
+            // fallback ha nincs animáció (pl. fade-nél opacity átmenet)
+            setTimeout(function(){
+                leaving.classList.remove('vh__slide--active','vh__slide--leaving');
+                entering.classList.remove('vh__slide--entering');
+            }, speed + 50);
+
+            if(dots[current]) dots[current].classList.remove('vh__carousel-dot--active');
+            if(dots[next])    dots[next].classList.add('vh__carousel-dot--active');
+            current = next;
+        }
+
+        function next() { goTo((current+1) % slides.length); }
+        function prev() { goTo((current - 1 + slides.length) % slides.length); }
+
+        function startTimer() { timer = setInterval(next, interval); }
+        function resetTimer()  { clearInterval(timer); startTimer(); }
+
+        var btnNext = vh.querySelector('.vh__carousel-arrow--next');
+        var btnPrev = vh.querySelector('.vh__carousel-arrow--prev');
+        if(btnNext) btnNext.addEventListener('click', function(){ next(); resetTimer(); });
+        if(btnPrev) btnPrev.addEventListener('click', function(){ prev(); resetTimer(); });
+
+        dots.forEach(function(dot, i){
+            dot.addEventListener('click', function(){ goTo(i); resetTimer(); });
+        });
+
+        if(slides.length > 1) startTimer();
+    })();
+    </script>
+    <?php
+}, 101 );
+
 /* ── Theme setup ──────────────────────────────────── */
 add_action( 'after_setup_theme', function () {
     add_theme_support( 'title-tag' );
