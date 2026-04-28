@@ -1350,6 +1350,207 @@ body.sl-viewer-open { overflow: hidden; }
   pointer-events: none;
 }
 
+/* ── Statikus háttérkép ── */
+.vh__static-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+/* ── Carousel ── */
+.vh__carousel-track {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.vh__slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: none;
+}
+.vh__slide--active {
+  opacity: 1;
+}
+.vh__slide--leaving {
+  z-index: 1;
+}
+.vh__slide--entering {
+  z-index: 2;
+}
+
+/* Átmenet: fade */
+.vh--transition-fade .vh__slide--entering {
+  opacity: 0;
+  animation: vhFadeIn var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Átmenet: slide (balra) */
+.vh--transition-slide .vh__slide--entering {
+  animation: vhSlideInLeft var(--vh-speed, 800ms) ease forwards;
+}
+.vh--transition-slide .vh__slide--leaving {
+  animation: vhSlideOutLeft var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhSlideInLeft  { from { transform: translateX(100%); opacity:1; } to { transform: translateX(0); } }
+@keyframes vhSlideOutLeft { from { transform: translateX(0); }               to { transform: translateX(-100%); } }
+
+/* Átmenet: slide-right (jobbra) */
+.vh--transition-slide-right .vh__slide--entering {
+  animation: vhSlideInRight var(--vh-speed, 800ms) ease forwards;
+}
+.vh--transition-slide-right .vh__slide--leaving {
+  animation: vhSlideOutRight var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhSlideInRight  { from { transform: translateX(-100%); opacity:1; } to { transform: translateX(0); } }
+@keyframes vhSlideOutRight { from { transform: translateX(0); }                 to { transform: translateX(100%); } }
+
+/* Átmenet: zoom-in */
+.vh--transition-zoom-in .vh__slide--entering {
+  animation: vhZoomIn var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhZoomIn { from { transform: scale(1.15); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Átmenet: zoom-out */
+.vh--transition-zoom-out .vh__slide--entering {
+  animation: vhZoomOut var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhZoomOut { from { transform: scale(0.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Átmenet: ken-burns (csak active slide-ra folyamatosan) */
+.vh--transition-ken-burns .vh__slide--active {
+  animation: vhKenBurns var(--vh-interval, 5000ms) linear forwards;
+}
+@keyframes vhKenBurns {
+  from { transform: scale(1)    translateX(0)     translateY(0); }
+  to   { transform: scale(1.12) translateX(-1.5%) translateY(-1%); }
+}
+.vh--transition-ken-burns .vh__slide--entering {
+  animation: vhFadeIn var(--vh-speed, 800ms) ease forwards;
+}
+
+/* Átmenet: blinds (függőleges lamellák – clip-path) */
+.vh--transition-blinds .vh__slide--entering {
+  animation: vhBlinds var(--vh-speed, 800ms) steps(10) forwards;
+}
+@keyframes vhBlinds {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+/* Átmenet: push */
+.vh--transition-push .vh__carousel-track { overflow: hidden; }
+.vh--transition-push .vh__slide--entering {
+  animation: vhPushIn var(--vh-speed, 800ms) ease forwards;
+}
+.vh--transition-push .vh__slide--leaving {
+  animation: vhPushOut var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhPushIn  { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes vhPushOut { from { transform: translateX(0); }    to { transform: translateX(-100%); } }
+
+/* Átmenet: wipe */
+.vh--transition-wipe .vh__slide--entering {
+  animation: vhWipe var(--vh-speed, 800ms) linear forwards;
+}
+@keyframes vhWipe {
+  from { clip-path: inset(0 100% 0 0); }
+  to   { clip-path: inset(0 0% 0 0); }
+}
+
+/* Átmenet: dissolve */
+.vh--transition-dissolve .vh__slide--entering {
+  animation: vhDissolve var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhDissolve {
+  0%   { opacity: 0; filter: blur(8px); }
+  100% { opacity: 1; filter: blur(0); }
+}
+
+/* Átmenet: flip */
+.vh--transition-flip .vh__carousel-track { perspective: 1200px; }
+.vh--transition-flip .vh__slide--entering {
+  animation: vhFlip var(--vh-speed, 800ms) ease forwards;
+}
+.vh--transition-flip .vh__slide--leaving {
+  animation: vhFlipOut var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhFlip    { from { transform: rotateY(-90deg); opacity:0; } to { transform: rotateY(0deg); opacity:1; } }
+@keyframes vhFlipOut { from { transform: rotateY(0deg); opacity:1; }   to { transform: rotateY(90deg); opacity:0; } }
+
+/* Átmenet: cube */
+.vh--transition-cube .vh__carousel-track { perspective: 1200px; transform-style: preserve-3d; overflow: visible; }
+.vh--transition-cube .vh__slide--entering {
+  animation: vhCubeIn var(--vh-speed, 800ms) ease forwards;
+}
+.vh--transition-cube .vh__slide--leaving {
+  animation: vhCubeOut var(--vh-speed, 800ms) ease forwards;
+}
+@keyframes vhCubeIn  { from { transform: rotateY(-90deg) translateZ(50vw); opacity:0; } to { transform: rotateY(0deg) translateZ(0); opacity:1; } }
+@keyframes vhCubeOut { from { transform: rotateY(0deg) translateZ(0); opacity:1; }      to { transform: rotateY(90deg) translateZ(50vw); opacity:0; } }
+
+/* ── Carousel nyilak ── */
+.vh__carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(0,0,0,.45);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+  line-height: 1;
+}
+.vh__carousel-arrow:hover { background: rgba(0,0,0,.75); }
+.vh__carousel-arrow--prev { left: 18px; }
+.vh__carousel-arrow--next { right: 18px; }
+
+/* ── Carousel pontok ── */
+.vh__carousel-dots {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+.vh__carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.7);
+  background: transparent;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+  padding: 0;
+}
+.vh__carousel-dot--active,
+.vh__carousel-dot:hover {
+  background: #fff;
+  border-color: #fff;
+}
+
+
 /* Overlay: teteje sötét (nav mögé) + alja teljesen rgb(6,6,6) */
 .vh__overlay {
   position: absolute;
