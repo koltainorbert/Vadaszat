@@ -961,7 +961,130 @@ class VA_Settings_Page {
                     <?php self::field_num(   'va_hero_logo_height',     'Hero logó magasság (px)', 30, 260 ); ?>
                     <?php self::field_select('va_hero_logo_position',   'Hero logó pozíció', [ 'left' => 'Bal', 'center' => 'Közép', 'right' => 'Jobb' ] ); ?>
                     <?php self::field_select('va_home_hero_align',      'Főoldal hero elemek igazítása', [ 'left' => 'Balra zárt', 'center' => 'Középre', 'right' => 'Jobbra zárt' ] ); ?>
-                    <?php self::field_video(  'va_home_hero_video_url',  'Főoldal hero videó URL' ); ?>
+                    <?php self::field_select('va_home_hero_bg_type', 'Főoldal hero háttér típusa', [
+                        'video'    => '🎬 Videó',
+                        'image'    => '🖼️ Statikus kép',
+                        'carousel' => '🎠 Carousel (több kép)',
+                    ]); ?>
+                    <?php self::field_video( 'va_home_hero_video_url', 'Főoldal hero videó URL' ); ?>
+                    <?php self::field_media( 'va_home_hero_static_image', 'Főoldal hero statikus kép' ); ?>
+                    <tr class="va-hero-carousel-row">
+                        <th colspan="2" style="padding-top:14px;">
+                            <strong>🎠 Carousel beállítások</strong>
+                        </th>
+                    </tr>
+                    <tr class="va-hero-carousel-row">
+                        <th><label>Carousel képek</label></th>
+                        <td>
+                            <?php
+                            $carousel_raw = get_option('va_home_hero_carousel_images', '[]');
+                            $carousel_imgs = json_decode($carousel_raw, true);
+                            if (!is_array($carousel_imgs)) $carousel_imgs = [];
+                            ?>
+                            <div id="va-carousel-repeater" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+                                <?php foreach ($carousel_imgs as $idx => $img_url): ?>
+                                <div class="va-carousel-item" style="position:relative;width:120px;">
+                                    <img src="<?php echo esc_url($img_url); ?>" style="width:120px;height:75px;object-fit:cover;border-radius:4px;border:1px solid #444;">
+                                    <input type="hidden" name="va_carousel_img[]" value="<?php echo esc_attr($img_url); ?>">
+                                    <button type="button" class="va-carousel-remove" style="position:absolute;top:2px;right:2px;background:#c00;color:#fff;border:none;border-radius:3px;cursor:pointer;padding:1px 5px;font-size:11px;" title="Törlés">✕</button>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <input type="hidden" id="va_home_hero_carousel_images" name="va_home_hero_carousel_images" value="<?php echo esc_attr($carousel_raw); ?>">
+                            <button type="button" id="va-carousel-add-btn" class="button">+ Kép hozzáadása</button>
+                            <p class="description" style="margin-top:6px;">Képek sorrendje áthúzással változtatható. Minimum 2 kép ajánlott.</p>
+                            <script>
+                            (function(){
+                                function updateCarouselJson(){
+                                    var items = document.querySelectorAll('#va-carousel-repeater .va-carousel-item input[type=hidden]');
+                                    var urls = Array.from(items).map(function(i){return i.value;});
+                                    document.getElementById('va_home_hero_carousel_images').value = JSON.stringify(urls);
+                                }
+                                document.getElementById('va-carousel-add-btn').addEventListener('click',function(){
+                                    if(typeof wp === 'undefined' || !wp.media) return;
+                                    var frame = wp.media({title:'Kép kiválasztása',multiple:true,library:{type:'image'},button:{text:'Kiválaszt'}});
+                                    frame.on('select',function(){
+                                        var sel = frame.state().get('selection');
+                                        sel.each(function(att){
+                                            var url = att.get('url');
+                                            var wrap = document.getElementById('va-carousel-repeater');
+                                            var div = document.createElement('div');
+                                            div.className = 'va-carousel-item';
+                                            div.style.cssText = 'position:relative;width:120px;';
+                                            div.innerHTML = '<img src="'+url+'" style="width:120px;height:75px;object-fit:cover;border-radius:4px;border:1px solid #444;">'
+                                                +'<input type="hidden" name="va_carousel_img[]" value="'+url+'">'
+                                                +'<button type="button" class="va-carousel-remove" style="position:absolute;top:2px;right:2px;background:#c00;color:#fff;border:none;border-radius:3px;cursor:pointer;padding:1px 5px;font-size:11px;" title="Törlés">✕</button>';
+                                            wrap.appendChild(div);
+                                            div.querySelector('.va-carousel-remove').addEventListener('click',function(){div.remove();updateCarouselJson();});
+                                            updateCarouselJson();
+                                        });
+                                    });
+                                    frame.open();
+                                });
+                                document.querySelectorAll('.va-carousel-remove').forEach(function(btn){
+                                    btn.addEventListener('click',function(){btn.closest('.va-carousel-item').remove();updateCarouselJson();});
+                                });
+                                // SortableJS ha elérhető
+                                if(typeof Sortable !== 'undefined'){
+                                    Sortable.create(document.getElementById('va-carousel-repeater'),{animation:150,onEnd:updateCarouselJson});
+                                } else {
+                                    // fallback: betöltjük
+                                    var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js';
+                                    s.onload=function(){Sortable.create(document.getElementById('va-carousel-repeater'),{animation:150,onEnd:updateCarouselJson});};
+                                    document.head.appendChild(s);
+                                }
+                            })();
+                            </script>
+                        </td>
+                    </tr>
+                    <tr class="va-hero-carousel-row">
+                        <th><label for="va_home_hero_carousel_transition">Átmenettípus</label></th>
+                        <td>
+                            <?php
+                            $transitions = [
+                                'fade'       => 'Fade (áttűnés)',
+                                'slide'      => 'Slide (balra csúszás)',
+                                'slide-right'=> 'Slide Right (jobbra csúszás)',
+                                'zoom-in'    => 'Zoom In (belé zoomol)',
+                                'zoom-out'   => 'Zoom Out (kifelé zoomol)',
+                                'ken-burns'  => 'Ken Burns (lassú zoom+pásztázás)',
+                                'blinds'     => 'Blinds (függőleges lamellák)',
+                                'push'       => 'Push (új kép tolja el)',
+                                'wipe'       => 'Wipe (kitörlés balról)',
+                                'dissolve'   => 'Dissolve (pixeles feloldás)',
+                                'flip'       => 'Flip (vízszintes flip)',
+                                'cube'       => 'Cube (3D kocka)',
+                            ];
+                            self::field_select('va_home_hero_carousel_transition', '', $transitions);
+                            ?>
+                        </td>
+                    </tr>
+                    <tr class="va-hero-carousel-row">
+                        <?php self::field_num('va_home_hero_carousel_interval', 'Képváltás időköze (ms)', 1000, 30000); ?>
+                    </tr>
+                    <tr class="va-hero-carousel-row">
+                        <?php self::field_num('va_home_hero_carousel_speed', 'Átmenet sebessége (ms)', 200, 3000); ?>
+                    </tr>
+                    <tr class="va-hero-carousel-row">
+                        <?php self::field_toggle('va_home_hero_carousel_arrows', 'Navigációs nyilak megjelenítése'); ?>
+                    </tr>
+                    <tr class="va-hero-carousel-row">
+                        <?php self::field_toggle('va_home_hero_carousel_dots', 'Pontok (slide indikátor) megjelenítése'); ?>
+                    </tr>
+                    <script>
+                    (function(){
+                        function vaToggleCarouselRows(){
+                            var sel = document.querySelector('[name="va_home_hero_bg_type"]');
+                            if(!sel) return;
+                            var type = sel.value;
+                            document.querySelectorAll('.va-hero-carousel-row').forEach(function(r){
+                                r.style.display = type==='carousel' ? '' : 'none';
+                            });
+                        }
+                        var sel = document.querySelector('[name="va_home_hero_bg_type"]');
+                        if(sel){ sel.addEventListener('change', vaToggleCarouselRows); vaToggleCarouselRows(); }
+                    })();
+                    </script>
                     <?php self::field_video(  'va_contact_hero_video_url', 'Kapcsolat oldal videó URL' ); ?>
                     <?php self::field_video(  'va_category_video_url', 'Kategória főoldal videó URL' ); ?>
                     <?php self::field_video(  'va_tax_category_video_url', 'Alkategória oldal videó URL' ); ?>
