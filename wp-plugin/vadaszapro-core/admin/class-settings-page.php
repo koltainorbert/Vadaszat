@@ -509,6 +509,36 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        /* Hero háttér típus + statikus kép + carousel beállítások */
+        $hero_bg_text = [
+            'va_home_hero_bg_type'             => 'video',   // video | image | carousel
+            'va_home_hero_carousel_transition' => 'fade',    // fade|slide|slide-right|zoom-in|zoom-out|ken-burns|blinds|push|wipe|dissolve|flip|cube
+            'va_home_hero_carousel_speed'      => '800',     // átmenet ms
+            'va_home_hero_carousel_interval'   => '5000',    // időköz ms
+            'va_home_hero_carousel_arrows'     => '1',
+            'va_home_hero_carousel_dots'       => '1',
+        ];
+        foreach ( $hero_bg_text as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_general_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+        // Statikus hero kép URL
+        register_setting( 'va_general_settings', 'va_home_hero_static_image', [ 'sanitize_callback' => 'esc_url_raw' ] );
+        self::$defaults['va_home_hero_static_image'] = '';
+        if ( get_option( 'va_home_hero_static_image' ) === false ) update_option( 'va_home_hero_static_image', '' );
+        // Carousel képek – JSON array of URLs
+        register_setting( 'va_general_settings', 'va_home_hero_carousel_images', [
+            'sanitize_callback' => function( $val ) {
+                $arr = json_decode( wp_unslash( $val ), true );
+                if ( ! is_array( $arr ) ) return '[]';
+                $clean = array_values( array_filter( array_map( 'esc_url_raw', $arr ) ) );
+                return wp_json_encode( $clean );
+            },
+        ] );
+        self::$defaults['va_home_hero_carousel_images'] = '[]';
+        if ( get_option( 'va_home_hero_carousel_images' ) === false ) update_option( 'va_home_hero_carousel_images', '[]' );
+
         /* Hero szekció – teljes vezérlés */
         $hero = [
             // Szövegek
