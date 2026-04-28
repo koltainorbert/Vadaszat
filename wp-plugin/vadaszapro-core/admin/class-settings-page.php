@@ -1037,49 +1037,41 @@ class VA_Settings_Page {
                             </script>
                         </td>
                     </tr>
-                    <tr class="va-hero-carousel-row">
-                        <th><label for="va_home_hero_carousel_transition">Átmenettípus</label></th>
-                        <td>
-                            <?php
-                            $transitions = [
-                                'fade'       => 'Fade (áttűnés)',
-                                'slide'      => 'Slide (balra csúszás)',
-                                'slide-right'=> 'Slide Right (jobbra csúszás)',
-                                'zoom-in'    => 'Zoom In (belé zoomol)',
-                                'zoom-out'   => 'Zoom Out (kifelé zoomol)',
-                                'ken-burns'  => 'Ken Burns (lassú zoom+pásztázás)',
-                                'blinds'     => 'Blinds (függőleges lamellák)',
-                                'push'       => 'Push (új kép tolja el)',
-                                'wipe'       => 'Wipe (kitörlés balról)',
-                                'dissolve'   => 'Dissolve (pixeles feloldás)',
-                                'flip'       => 'Flip (vízszintes flip)',
-                                'cube'       => 'Cube (3D kocka)',
-                            ];
-                            self::field_select('va_home_hero_carousel_transition', '', $transitions);
-                            ?>
-                        </td>
-                    </tr>
-                    <tr class="va-hero-carousel-row">
-                        <?php self::field_num('va_home_hero_carousel_interval', 'Képváltás időköze (ms)', 1000, 30000); ?>
-                    </tr>
-                    <tr class="va-hero-carousel-row">
-                        <?php self::field_num('va_home_hero_carousel_speed', 'Átmenet sebessége (ms)', 200, 3000); ?>
-                    </tr>
-                    <tr class="va-hero-carousel-row">
-                        <?php self::field_toggle('va_home_hero_carousel_arrows', 'Navigációs nyilak megjelenítése'); ?>
-                    </tr>
-                    <tr class="va-hero-carousel-row">
-                        <?php self::field_toggle('va_home_hero_carousel_dots', 'Pontok (slide indikátor) megjelenítése'); ?>
-                    </tr>
+                    <?php
+                    $transitions = [
+                        'fade'       => 'Fade (áttűnés)',
+                        'slide'      => 'Slide (balra csúszás)',
+                        'slide-right'=> 'Slide Right (jobbra csúszás)',
+                        'zoom-in'    => 'Zoom In (belé zoomol)',
+                        'zoom-out'   => 'Zoom Out (kifelé zoomol)',
+                        'ken-burns'  => 'Ken Burns (lassú zoom+pásztázás)',
+                        'blinds'     => 'Blinds (függőleges lamellák)',
+                        'push'       => 'Push (új kép tolja el)',
+                        'wipe'       => 'Wipe (kitörlés balról)',
+                        'dissolve'   => 'Dissolve (pixeles feloldás)',
+                        'flip'       => 'Flip (vízszintes flip)',
+                        'cube'       => 'Cube (3D kocka)',
+                    ];
+                    echo '<tbody class="va-hero-carousel-rows">';
+                    self::field_select('va_home_hero_carousel_transition', 'Átmenettípus', $transitions);
+                    self::field_num('va_home_hero_carousel_interval', 'Képváltás időköze (ms)', 1000, 30000);
+                    self::field_num('va_home_hero_carousel_speed', 'Átmenet sebessége (ms)', 200, 3000);
+                    self::field_toggle('va_home_hero_carousel_arrows', 'Navigációs nyilak megjelenítése');
+                    self::field_toggle('va_home_hero_carousel_dots', 'Pontok (slide indikátor) megjelenítése');
+                    echo '</tbody>';
+                    ?>
                     <script>
                     (function(){
                         function vaToggleCarouselRows(){
                             var sel = document.querySelector('[name="va_home_hero_bg_type"]');
                             if(!sel) return;
                             var type = sel.value;
-                            document.querySelectorAll('.va-hero-carousel-row').forEach(function(r){
-                                r.style.display = type==='carousel' ? '' : 'none';
+                            var show = type === 'carousel';
+                            document.querySelectorAll('.va-hero-carousel-row, .va-hero-carousel-rows tr').forEach(function(r){
+                                r.style.display = show ? '' : 'none';
                             });
+                            var carouselTbody = document.querySelector('.va-hero-carousel-rows');
+                            if(carouselTbody) carouselTbody.style.display = show ? '' : 'none';
                         }
                         var sel = document.querySelector('[name="va_home_hero_bg_type"]');
                         if(sel){ sel.addEventListener('change', vaToggleCarouselRows); vaToggleCarouselRows(); }
