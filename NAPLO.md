@@ -2,6 +2,51 @@
 
 ---
 
+## 2026. 04. 29. – Session #121 (Encoding katasztrófa + visszaállítás)
+
+### Mi történt
+- **KRITIKUS HIBA**: A tegnapi átnevezés script (`rename-to-listbomb.ps1`) PowerShell-lel tömegesen cserélte a szövegeket az összes PHP fájlban. A PowerShell alapból CP1252 encodingban olvassa a fájlokat UTF-8 helyett → az összes ékezetes karakter (`é`, `á`, `ő`, stb.) kettősen kódolódott be (`é` → `Ă©`, `ő` → `Ĺ'` stb.) az összes fájlban
+- **Tünet**: Admin színpaletta eltűnt, sok elem hiányzott, frontend teljesen tönkrement
+- **Megoldás**: `git reset --hard dfb9ae7` + force push → visszaállás a 2026.04.28 10:31-es állapotra (átnevezés ELŐTTI utolsó jó commit)
+
+### Mit csináltunk [x]
+- [x] Git history átvizsgálva, az átnevezés commit azonosítva: `3730412 Auto_2026.04.28_16.00` (itt jött létre a `rename-to-listbomb.ps1`)
+- [x] Visszaállítás: `git reset --hard dfb9ae7` (2026.04.28 10:31) + `git push -f`
+- [x] Encoding ellenőrzés: `check-encoding.py` megírva → 2 garbled fájl találva: `single-va_listing.php` (root + wp-theme)
+- [x] `fix-two-files.py` megírva – egymást követő non-ASCII karaktereket EGYÜTT kezel (cp1250 undouble chunk-onként, nem karakterenként)
+- [x] Mindkét `single-va_listing.php` javítva, újra ellenőrizve: **OK – nincs karakterhiba**
+- [x] Plugin ZIP: `vadaszapro-plugin.zip` (267 429 byte) és theme ZIP: `vadaszapro-theme.zip` (99 853 byte) elkészítve
+- [x] Push: a Watcher automatikusan pusholt, repó tiszta
+
+### Tanulságok – SOHA TÖBBÉ
+- **PowerShell-lel TILOS PHP fájlt szerkeszteni** `encoding` paraméter (`-Encoding UTF8`) nélkül
+- **Tömeges szövegcsere csak Python scripttel** (UTF-8 alapból)
+- Ha valaha ismét átnevezés kell: Python script, `open(f, encoding='utf-8')`
+- A `rename-to-listbomb.ps1` fájl törölve (revert eltüntette)
+
+### Encoding hiba diagnosztika (jövőre)
+- Tünet: `Ă©`, `Ĺ'`, `Ăş`, `Ăł`, `ĂˇZ` megjelenik PHP forrásban
+- Ellenőrzés: `python .vscode/check-encoding.py`
+- Javítás: `python .vscode/fix-two-files.py` (vagy új fájlt felsorolva benne)
+- Mechanizmus: `chunk.encode('cp1250').decode('utf-8')` – egymást követő non-ASCII karakterek együtt
+
+### Hol tartunk
+A projekt visszaállt a 2026.04.28 10:31-es tökéletes állapotba. Plugin neve: `vadaszapro-core`, CPT prefix: `va_`, téma: `vadaszapro-theme`. Karakterhiba mentes, ZIP-ek elkészítve, repó naprakész.
+
+### Következő session teendők
+- Folytatni amit 04.28 reggel csináltunk (functions.php fejlesztés volt az utolsó commit)
+- Frontend oldalak (login/register/submit/fiók) működése ellenőrzése az új szerveren
+
+---
+
+## 2026. 04. 28. – Session #120 (Átnevezési kísérlet – VISSZAVONVA)
+
+### Mi történt
+- Rename script futtatva `vadaszapro` → `listbomb` átnevezéshez → karakterhiba az összes PHP fájlban
+- Session végén visszaállítva (lásd 04.29 Session #121)
+
+---
+
 ## 2026. 04. 24. – Session #119 (Kártyaszerkesztő – live preview + frontend CSS debug)
 
 ### Mit csináltunk [x]
