@@ -2,14 +2,24 @@ import os
 
 def undouble(text):
     result = []
-    for ch in text:
-        if ord(ch) <= 0x7F:
+    i = 0
+    while i < len(text):
+        ch = text[i]
+        if ord(ch) < 0x80:
             result.append(ch)
-            continue
-        try:
-            result.append(ch.encode('cp1250').decode('utf-8'))
-        except (UnicodeEncodeError, UnicodeDecodeError):
-            result.append(ch)
+            i += 1
+        else:
+            # Egymást követő non-ASCII karaktereket EGYÜTT kell encode+decode-olni
+            j = i
+            while j < len(text) and ord(text[j]) >= 0x80:
+                j += 1
+            chunk = text[i:j]
+            try:
+                fixed = chunk.encode('cp1250').decode('utf-8')
+                result.append(fixed)
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                result.append(chunk)
+            i = j
     return ''.join(result)
 
 files = [
