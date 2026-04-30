@@ -12,6 +12,43 @@ class VA_Admin {
         add_filter( "admin_body_class",      [ __CLASS__, "body_class" ] );
         add_action( "in_admin_header",       [ __CLASS__, "render_shell" ] );
         add_action( "admin_head",            [ __CLASS__, "inject_admin_css" ] );
+        add_action( "admin_bar_menu",        [ __CLASS__, "register_admin_bar" ], 99 );
+    }
+
+    /* ── WordPress Admin Bar menü ───────────────────────────── */
+    public static function register_admin_bar( WP_Admin_Bar $admin_bar ): void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
+        $menu_title = (string) get_option( 'va_site_name', 'VA Admin' );
+        if ( $menu_title === '' ) $menu_title = 'VA Admin';
+
+        $admin_bar->add_node( [
+            'id'    => 'va-admin-root',
+            'title' => $menu_title,
+            'href'  => admin_url( 'admin.php?page=vadaszapro' ),
+        ] );
+
+        $items = [
+            [ 'id' => 'va-ab-dashboard',  'title' => '📊 Irányítópult',    'page' => 'vadaszapro-dashboard' ],
+            [ 'id' => 'va-ab-altalanos',  'title' => '⚙️ Általános',        'page' => 'vadaszapro' ],
+            [ 'id' => 'va-ab-design',     'title' => '🎨 Design',           'page' => 'vadaszapro-design' ],
+            [ 'id' => 'va-ab-hirdetes',   'title' => '📋 Hirdetések',       'page' => 'vadaszapro-hirdetes' ],
+            [ 'id' => 'va-ab-felhasznalo','title' => '👥 Felhasználók',     'page' => 'vadaszapro-users' ],
+            [ 'id' => 'va-ab-stats',      'title' => '📈 Statisztika',      'page' => 'vadaszapro-stats' ],
+            [ 'id' => 'va-ab-layout',     'title' => '📐 Layout Állító',    'page' => 'vadaszapro-layout' ],
+            [ 'id' => 'va-ab-customcode', 'title' => '💻 Egyedi kód',       'page' => 'vadaszapro-customcode' ],
+        ];
+
+        foreach ( $items as $item ) {
+            $admin_bar->add_node( [
+                'id'     => $item['id'],
+                'parent' => 'va-admin-root',
+                'title'  => $item['title'],
+                'href'   => admin_url( 'admin.php?page=' . $item['page'] ),
+            ] );
+        }
     }
 
     /* ── Dinamikus CSS változók injektálása ─────────────────── */

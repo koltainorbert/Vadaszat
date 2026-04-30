@@ -250,7 +250,7 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
 
     $admin_bar->add_node( [
         'id'    => 'va-breakpoint-preview',
-        'title' => 'VA Breakpoint Preview' . ( $current_vp ? ' (' . $current_vp . 'px)' : '' ),
+        'title' => 'LBreakpoint' . ( $current_vp ? ' (' . $current_vp . 'px)' : '' ),
         'href'  => '#',
     ] );
 
