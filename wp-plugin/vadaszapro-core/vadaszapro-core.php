@@ -40,12 +40,12 @@ require_once VA_PLUGIN_DIR . 'includes/helpers.php';
 
 require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php'; // frontend is használja (VA_Form_Builder::get_fields)
 require_once VA_PLUGIN_DIR . 'admin/class-settings-page.php'; // frontend is kell (wp_head CSS: pill + kártya stílusok)
+require_once VA_PLUGIN_DIR . 'admin/class-admin.php'; // admin_bar_menu hookhoz frontenden is kell
 
 if ( is_admin() ) {
     require_once VA_PLUGIN_DIR . 'admin/class-page-builder.php';
     require_once VA_PLUGIN_DIR . 'admin/class-dashboard.php';
     require_once VA_PLUGIN_DIR . 'admin/class-listing-edit.php';
-    require_once VA_PLUGIN_DIR . 'admin/class-admin.php';
     require_once VA_PLUGIN_DIR . 'admin/class-listing-columns.php';
 }
 
@@ -72,6 +72,9 @@ add_action( 'plugins_loaded', function () {
         VA_Listing_Columns::init();
         VA_Listing_Edit::init();
         VA_Form_Builder::init();
+    } else {
+        // Admin bar menü frontenden is kell
+        add_action( 'admin_bar_menu', [ VA_Admin::class, 'register_admin_bar' ], 99 );
     }
 });
 
