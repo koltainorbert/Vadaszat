@@ -1266,7 +1266,6 @@ class VA_Settings_Page {
             <p class="description">Külön oldalon kezelhető a teljes tipográfia és színvilág: globális, fejléc, tartalom és lábléc szinten.</p>
             <?php settings_errors( 'va_design_settings' ); ?>
 
-            <?php
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_design_settings' ); ?>
 
