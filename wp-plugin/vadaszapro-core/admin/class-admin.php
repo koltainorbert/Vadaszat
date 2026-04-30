@@ -17,6 +17,7 @@ class VA_Admin {
 
     /* ── WordPress Admin Bar menü ───────────────────────────── */
     public static function register_admin_bar( WP_Admin_Bar $admin_bar ): void {
+        error_log('register_admin_bar called');
         if ( ! current_user_can( 'manage_options' ) ) {
             return;
         }
