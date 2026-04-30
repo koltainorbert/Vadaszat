@@ -1046,12 +1046,57 @@ add_action( 'wp_enqueue_scripts', function () {
         '.va-header__submit-btn{display:' . ( $hf_mobile_show_submit ? 'inline-flex' : 'none' ) . ' !important;}' .
     '}' ;
 
-    // Hero dekoratív elemek: bal csík, badge-dot, scroll jelző – accent színnel
+    // Hero dekoratív elemek: bal csík, badge-dot, scroll jelző, overlay, span szín – saját opciókból
+    $hero_stripe_show    = get_option( 'va_hero_stripe_show', '1' ) === '1';
+    $hero_stripe_color   = va_design_css_color( (string) get_option( 'va_hero_stripe_color',   '#ff0000' ), '#ff0000' );
+    $hero_stripe_width   = max( 1, min( 20, absint( get_option( 'va_hero_stripe_width', 3 ) ) ) );
+    $hero_stripe_opacity = (float) get_option( 'va_hero_stripe_opacity', '0.55' );
+
+    $hero_badge_dot_show  = get_option( 'va_hero_badge_dot_show', '1' ) === '1';
+    $hero_badge_dot_color = va_design_css_color( (string) get_option( 'va_hero_badge_dot_color', '#ff0000' ), '#ff0000' );
+
+    $hero_scroll_show       = get_option( 'va_hero_scroll_show', '1' ) === '1';
+    $hero_scroll_line_color = va_design_css_color( (string) get_option( 'va_hero_scroll_line_color', '#ff0000' ), '#ff0000' );
+    $hero_scroll_dot_color  = va_design_css_color( (string) get_option( 'va_hero_scroll_dot_color',  '#ff0000' ), '#ff0000' );
+    $hero_scroll_opacity    = (float) get_option( 'va_hero_scroll_opacity', '0.50' );
+
+    $hero_title_span_color         = va_design_css_color( (string) get_option( 'va_color_hero_title_span',             '#ff0000' ), '#ff0000' );
+    $hero_btn_primary_hover_text   = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover_text', '#ffffff' ), '#ffffff' );
+    $hero_btn_ghost_hover_text     = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_hover_text',   '#ffffff' ), '#ffffff' );
+
+    $hero_ov_top    = (float) get_option( 'va_hero_overlay_top',      '0.72' );
+    $hero_ov_mid_a  = (float) get_option( 'va_hero_overlay_mid_a',    '0.18' );
+    $hero_ov_mid_b  = (float) get_option( 'va_hero_overlay_mid_b',    '0.25' );
+    $hero_ov_bottom = (float) get_option( 'va_hero_overlay_bottom_a', '0.85' );
+
     $css .=
-    '.vh__overlay::before{background:linear-gradient(to bottom,transparent,' . $global_accent . ' 40%,' . $global_accent . ' 60%,transparent) !important;}' .
-    '.vcp-hero__badge-dot{background:' . $global_accent . ' !important;}' .
-    '.vh__scroll-line{background:linear-gradient(to bottom,transparent,' . $global_accent . ') !important;}' .
-    '.vh__scroll-dot{background:' . $global_accent . ' !important;box-shadow:0 0 6px ' . $global_accent . ' !important;}';
+    // Overlay gradient opacitások
+    '.vh__overlay{background:linear-gradient(to bottom,' .
+        'rgba(6,6,6,' . $hero_ov_top . ') 0%,' .
+        'rgba(6,6,6,' . $hero_ov_mid_a . ') 30%,' .
+        'rgba(6,6,6,' . $hero_ov_mid_b . ') 55%,' .
+        'rgba(6,6,6,' . $hero_ov_bottom . ') 80%,' .
+        'rgb(6,6,6) 100%) !important;}' .
+    // Bal csík
+    ( $hero_stripe_show
+        ? '.vh__overlay::before{display:block !important;width:' . $hero_stripe_width . 'px !important;opacity:' . $hero_stripe_opacity . ' !important;background:linear-gradient(to bottom,transparent,' . $hero_stripe_color . ' 40%,' . $hero_stripe_color . ' 60%,transparent) !important;}'
+        : '.vh__overlay::before{display:none !important;}' ) .
+    // Badge dot
+    ( $hero_badge_dot_show
+        ? '.vcp-hero__badge-dot{display:inline-block !important;background:' . $hero_badge_dot_color . ' !important;}'
+        : '.vcp-hero__badge-dot{display:none !important;}' ) .
+    // Cím kiemelt szó (span)
+    '.vh__title span{color:' . $hero_title_span_color . ' !important;}' .
+    // Primary gomb hover szöveg
+    '.vh__btn--primary:hover{color:' . $hero_btn_primary_hover_text . ' !important;}' .
+    // Ghost gomb hover szöveg
+    '.vh__btn--ghost:hover{color:' . $hero_btn_ghost_hover_text . ' !important;}' .
+    // Scroll jelző
+    ( $hero_scroll_show
+        ? '.vh__scroll{display:flex !important;opacity:' . $hero_scroll_opacity . ' !important;}' .
+          '.vh__scroll-line{background:linear-gradient(to bottom,transparent,' . $hero_scroll_line_color . ') !important;}' .
+          '.vh__scroll-dot{background:' . $hero_scroll_dot_color . ' !important;box-shadow:0 0 6px ' . $hero_scroll_dot_color . ' !important;}'
+        : '.vh__scroll{display:none !important;}' );
 
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );
