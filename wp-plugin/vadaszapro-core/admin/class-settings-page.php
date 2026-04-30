@@ -1267,43 +1267,6 @@ class VA_Settings_Page {
             <?php settings_errors( 'va_design_settings' ); ?>
 
             <?php
-            if ( isset( $_GET['va_design_preset'] ) ) {
-                if ( $_GET['va_design_preset'] === 'ok' ) {
-                    echo '<div style="background:#0d3d1a;border:1px solid #1a7a2e;color:#7aff9d;padding:12px 18px;border-radius:8px;margin-bottom:20px;font-weight:600;">✅ Téma preset sikeresen alkalmazva!</div>';
-                } else {
-                    echo '<div style="background:#3d0d0d;border:1px solid #7a1a1a;color:#ff7a7a;padding:12px 18px;border-radius:8px;margin-bottom:20px;font-weight:600;">❌ Érvénytelen preset kulcs.</div>';
-                }
-            }
-            ?>
-
-            <?php $design_presets = self::get_design_presets(); ?>
-            <div class="va-settings-card" style="margin-bottom:28px;">
-                <div class="va-settings-card__title">🎨 Téma Presetek – 1 kattintás</div>
-                <p style="color:var(--va-muted);font-size:13px;margin:0 0 18px;">Kattints egy presetre a teljes frontend dizájn (színek + betűk) azonnali alkalmazásához.</p>
-                <div class="va-aps-presets-grid">
-                    <?php foreach ( $design_presets as $key => $p ) :
-                        $bg_style = 'background:' . esc_attr( $p['bg'] ) . ';';
-                        $text_color = ( isset( $p['text'] ) && $p['text'] ) ? $p['text'] : '#ffffff';
-                        // Fehér témákon: ha bg nagyon világos, ne fehér legyen a szöveg
-                        $lum = hexdec( substr( ltrim( $p['bg'], '#' ), 0, 2 ) );
-                        $text_style = $lum > 180 ? 'color:#111' : 'color:' . esc_attr( $text_color ) . ';';
-                    ?>
-                    <form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" style="margin:0;">
-                        <input type="hidden" name="action" value="va_apply_design_preset">
-                        <input type="hidden" name="preset_key" value="<?php echo esc_attr( $key ); ?>">
-                        <?php wp_nonce_field( 'va_apply_design_preset' ); ?>
-                        <button type="submit" class="va-aps-preset-btn" style="<?php echo $bg_style; ?>border-color:<?php echo esc_attr( $p['accent'] ); ?>;">
-                            <span class="va-aps-preset-accent" style="background:<?php echo esc_attr( $p['accent'] ); ?>;color:<?php echo esc_attr( $p['accent'] ); ?>;"></span>
-                            <span class="va-aps-preset-content">
-                                <span class="va-aps-preset-label" style="<?php echo $text_style; ?>"><?php echo esc_html( $p['label'] ); ?></span>
-                                <span class="va-aps-preset-desc" style="<?php echo $text_style; ?>"><?php echo esc_html( $p['desc'] ); ?></span>
-                            </span>
-                        </button>
-                    </form>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_design_settings' ); ?>
 
