@@ -248,12 +248,6 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
 
     $current_vp = va_get_preview_width();
 
-    $admin_bar->add_node( [
-        'id'    => 'va-breakpoint-preview',
-        'title' => 'LBreakpoint' . ( $current_vp ? ' (' . $current_vp . 'px)' : '' ),
-        'href'  => '#',
-    ] );
-
     $presets = [
         'Desktop 1440' => 1440,
         'Laptop 1280'  => 1280,
@@ -318,13 +312,6 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
         'parent' => 'va-breakpoint-preview',
         'title'  => 'Preview kikapcsolása',
         'href'   => esc_url( remove_query_arg( 'va_vp', $base_url ) ),
-    ] );
-
-    // Ha a root menü a LBreakpoint lesz, ügyeljünk rá, hogy a helyes szöveg jelenjen meg
-    $admin_bar->add_node( [
-        'id'    => 'lbreakpoint-label',
-        'title' => 'LBreakpoint',
-        'href'  => '#',
     ] );
 }, 100 );
 
