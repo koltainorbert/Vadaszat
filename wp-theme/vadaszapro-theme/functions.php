@@ -260,30 +260,6 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
     ];
 
     $admin_bar->add_node( [
-        'id'    => 'va-admin-menu',
-        'title' => 'VA Admin',
-        'href'  => admin_url( 'admin.php?page=vadaszapro' ),
-    ] );
-
-    $admin_menu_items = [
-        [ 'id' => 'va-admin-dashboard',  'title' => '📊 Irányítópult',    'href' => admin_url( 'admin.php?page=vadaszapro-dashboard' ) ],
-        [ 'id' => 'va-admin-general',    'title' => '⚙️ Általános',        'href' => admin_url( 'admin.php?page=vadaszapro' ) ],
-        [ 'id' => 'va-admin-design',     'title' => '🎨 Design',           'href' => admin_url( 'admin.php?page=vadaszapro-design' ) ],
-        [ 'id' => 'va-admin-listings',   'title' => '📋 Hirdetések',       'href' => admin_url( 'admin.php?page=vadaszapro-hirdetes' ) ],
-        [ 'id' => 'va-admin-users',      'title' => '👥 Felhasználók',     'href' => admin_url( 'admin.php?page=vadaszapro-users' ) ],
-        [ 'id' => 'va-admin-stats',      'title' => '📈 Statisztika',      'href' => admin_url( 'admin.php?page=vadaszapro-stats' ) ],
-    ];
-
-    foreach ( $admin_menu_items as $item ) {
-        $admin_bar->add_node( [
-            'id'     => $item['id'],
-            'parent' => 'va-admin-menu',
-            'title'  => $item['title'],
-            'href'   => esc_url( $item['href'] ),
-        ] );
-    }
-
-    $admin_bar->add_node( [
         'id'    => 'va-breakpoint-preview',
         'title' => 'LBreakpoint' . ( $current_vp ? ' (' . $current_vp . 'px)' : '' ),
         'href'  => '#',
