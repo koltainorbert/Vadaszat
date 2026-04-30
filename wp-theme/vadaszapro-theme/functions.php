@@ -265,16 +265,6 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
         'Mobile 320'   => 320,
     ];
 
-    foreach ( $presets as $label => $width ) {
-        $url = add_query_arg( 'va_vp', (string) $width, $base_url );
-        $admin_bar->add_node( [
-            'id'     => 'va-breakpoint-preview-' . $width,
-            'parent' => 'va-breakpoint-preview',
-            'title'  => $label . ' px',
-            'href'   => esc_url( $url ),
-        ] );
-    }
-
     $admin_bar->add_node( [
         'id'    => 'va-admin-menu',
         'title' => 'VA Admin',
@@ -296,6 +286,22 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
             'parent' => 'va-admin-menu',
             'title'  => $item['title'],
             'href'   => esc_url( $item['href'] ),
+        ] );
+    }
+
+    $admin_bar->add_node( [
+        'id'    => 'va-breakpoint-preview',
+        'title' => 'LBreakpoint' . ( $current_vp ? ' (' . $current_vp . 'px)' : '' ),
+        'href'  => '#',
+    ] );
+
+    foreach ( $presets as $label => $width ) {
+        $url = add_query_arg( 'va_vp', (string) $width, $base_url );
+        $admin_bar->add_node( [
+            'id'     => 'va-breakpoint-preview-' . $width,
+            'parent' => 'va-breakpoint-preview',
+            'title'  => $label . ' px',
+            'href'   => esc_url( $url ),
         ] );
     }
 
