@@ -225,6 +225,11 @@ if ( is_user_logged_in() ) {
 
 $remaining_free = $free_limit === 0 ? 9999 : max( 0, $free_limit - $user_listings_count );
 
+// Ha a user csomagja ismert és el van érve a limit, ne mutassuk az ingyenes keretet
+if ( $plan_remaining !== null && ! $plan_has_allowance ) {
+    $remaining_free = 0;
+}
+
 // ── Azonnali átirányítás ha nincs szabad keret és nem szerkesztés ──
 if ( ! $edit_mode && is_user_logged_in() ) {
     $has_any_allowance = $plan_has_allowance || $user_credit_balance > 0 || $remaining_free > 0;
