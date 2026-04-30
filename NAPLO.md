@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 04. 30. – Session #122 (Hero szín fix, deploy auto-detect, csomag limit fix)
+
+### Mit csináltunk [x]
+- [x] **Deploy auto-detect**: `deploy.ps1`, `deploy-plugin.ps1`, `deploy-theme.ps1` átírva — ha nincs `local-config.ps1` vagy rossz útvonalat mutat, automatikusan megkeresi a `vadaszapro-core`/`vadaszapro-theme` mappát a `D:\LocalWP\` alatt. Új gépen/szerveren 0 konfig kell.
+- [x] **local-config.ps1 javítva**: `apro/listbomb` → `listbomb/vadaszapro-core` + `listbomb/vadaszapro-theme`
+- [x] **Hero szín fix** (`functions.php`): a csík/badge-dot/scroll elemek hardkódolt `$global_accent`-et használtak → most saját opciókból (`va_hero_stripe_color`, `va_hero_badge_dot_color`, `va_hero_scroll_*`) olvassa. Overlay gradient opacitások, span szín, hover text mind saját admin opcióból jön.
+- [x] **Csomag limit üzenet fix** (`submit-form.php`): Basic csomag 1/1 hirdetésnél "Még 4 db ingyenes" felirat jelent meg — a `$remaining_free` nem vette figyelembe a csomag limitet. Fix: ha `$plan_remaining !== null && !$plan_has_allowance` → `$remaining_free = 0`
+- [x] **LBreakpoint + VA Admin menü** deployolva listbomb-ra (korábban nem jutott el)
+- [x] Minden fent van giten
+
+### Tanulságok
+- Deploy script csak 1 site esetén auto-detect, több site esetén `local-config.ps1` kell (ez gépenkénti, gitignorált)
+- A `va_free_listings_limit` globális opció és a csomag `monthly_limit` két különböző rendszer — össze kell kötni ha csomag van
+
+---
+
 ## 2026. 04. 29. – Session #121 (Encoding katasztrófa + visszaállítás)
 
 ### Mi történt
