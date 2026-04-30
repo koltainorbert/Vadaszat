@@ -276,25 +276,24 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
     }
 
     $admin_bar->add_node( [
-        'id'     => 'va-breakpoint-admin-root',
-        'parent' => 'va-breakpoint-preview',
-        'title'  => 'VA Admin menü',
-        'href'   => admin_url( 'admin.php?page=vadaszapro' ),
+        'id'    => 'va-admin-menu',
+        'title' => 'VA Admin',
+        'href'  => admin_url( 'admin.php?page=vadaszapro' ),
     ] );
 
     $admin_menu_items = [
-        [ 'id' => 'va-breakpoint-admin-dashboard',  'title' => '📊 Irányítópult',    'href' => admin_url( 'admin.php?page=vadaszapro-dashboard' ) ],
-        [ 'id' => 'va-breakpoint-admin-general',    'title' => '⚙️ Általános',        'href' => admin_url( 'admin.php?page=vadaszapro' ) ],
-        [ 'id' => 'va-breakpoint-admin-design',     'title' => '🎨 Design',           'href' => admin_url( 'admin.php?page=vadaszapro-design' ) ],
-        [ 'id' => 'va-breakpoint-admin-listings',   'title' => '📋 Hirdetések',       'href' => admin_url( 'admin.php?page=vadaszapro-hirdetes' ) ],
-        [ 'id' => 'va-breakpoint-admin-users',      'title' => '👥 Felhasználók',     'href' => admin_url( 'admin.php?page=vadaszapro-users' ) ],
-        [ 'id' => 'va-breakpoint-admin-stats',      'title' => '📈 Statisztika',      'href' => admin_url( 'admin.php?page=vadaszapro-stats' ) ],
+        [ 'id' => 'va-admin-dashboard',  'title' => '📊 Irányítópult',    'href' => admin_url( 'admin.php?page=vadaszapro-dashboard' ) ],
+        [ 'id' => 'va-admin-general',    'title' => '⚙️ Általános',        'href' => admin_url( 'admin.php?page=vadaszapro' ) ],
+        [ 'id' => 'va-admin-design',     'title' => '🎨 Design',           'href' => admin_url( 'admin.php?page=vadaszapro-design' ) ],
+        [ 'id' => 'va-admin-listings',   'title' => '📋 Hirdetések',       'href' => admin_url( 'admin.php?page=vadaszapro-hirdetes' ) ],
+        [ 'id' => 'va-admin-users',      'title' => '👥 Felhasználók',     'href' => admin_url( 'admin.php?page=vadaszapro-users' ) ],
+        [ 'id' => 'va-admin-stats',      'title' => '📈 Statisztika',      'href' => admin_url( 'admin.php?page=vadaszapro-stats' ) ],
     ];
 
     foreach ( $admin_menu_items as $item ) {
         $admin_bar->add_node( [
             'id'     => $item['id'],
-            'parent' => 'va-breakpoint-admin-root',
+            'parent' => 'va-admin-menu',
             'title'  => $item['title'],
             'href'   => esc_url( $item['href'] ),
         ] );
@@ -313,6 +312,13 @@ add_action( 'admin_bar_menu', function( WP_Admin_Bar $admin_bar ) {
         'parent' => 'va-breakpoint-preview',
         'title'  => 'Preview kikapcsolása',
         'href'   => esc_url( remove_query_arg( 'va_vp', $base_url ) ),
+    ] );
+
+    // Ha a root menü a LBreakpoint lesz, ügyeljünk rá, hogy a helyes szöveg jelenjen meg
+    $admin_bar->add_node( [
+        'id'    => 'lbreakpoint-label',
+        'title' => 'LBreakpoint',
+        'href'  => '#',
     ] );
 }, 100 );
 
