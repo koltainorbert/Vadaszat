@@ -17,6 +17,12 @@
 - A gombok kattinthatóságát blokkoló overlay hiba javítva.
 - Admin JS kompatibilitási hiba (UTF-16) megszüntetve.
 
+### Utókövetés [x]
+- [x] További kattinthatósági hotfix a fejléc interaktív elemekre (`style.css` root + theme mirror):
+  - `isolation: isolate` a `.va-header`-en
+  - explicit `z-index` réteg a `.va-header__inner`, `.va-header__right`, `.va-nav`, `.va-header__search` blokkokra
+  - explicit `z-index` + `pointer-events:auto` a fő kattintható elemekre (`.va-header__submit-btn`, `.va-header__user`, `.va-header__user-login`, `.va-header__search-btn`, `.va-nav__item`, nyelvváltó gombok)
+
 ---
 
 ## 2026. 05. 01. – Session #125 (Scroll videós pill gomb: videó + border állítható)

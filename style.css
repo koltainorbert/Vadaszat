@@ -344,6 +344,27 @@ hr { border-color: var(--border); }
   flex-shrink: 0; padding-left: 24px;
 }
 
+/* Header clickability hotfix: keep interactive controls above decorative layers */
+.va-header { isolation: isolate; }
+.va-header__inner,
+.va-header__right,
+.va-nav,
+.va-header__search {
+  position: relative;
+  z-index: 2;
+}
+.va-header__submit-btn,
+.va-header__user,
+.va-header__user-login,
+.va-header__search-btn,
+.va-nav__item,
+.va-lang-sw__toggle,
+.va-lang-sw__item {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}
+
 .va-header__submit-btn {
   position: relative;
   display: inline-flex; align-items: center; gap: 7px;
