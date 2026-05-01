@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #137 (Termékoldali email gomb: mailto -> Kapcsolat oldal)
+
+### Mit csináltunk [x]
+- [x] A termékoldali email CTA (`single-va_listing.php`) már nem `mailto:` link
+- [x] Új közös URL-feloldó függvény: `va_get_contact_page_url()` (root + theme mirror `functions.php`)
+- [x] A függvény feloldási sorrendje: opcionális page ID -> `page-kapcsolat.php` template -> `kapcsolat` slug -> `/kapcsolat/`
+- [x] Az email gomb linkje erre a függvényre kötve (root + theme mirror)
+- [x] Theme deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A termékoldali email gomb most webes Kapcsolat oldalra visz, ezért nem jelenik meg többé a Windows `mailto` alkalmazásválasztó.
+
+---
 ## 2026. 05. 01. – Session #136 (Kapcsolat redirect URL-változásbiztos)
 
 ### Mit csináltunk [x]
