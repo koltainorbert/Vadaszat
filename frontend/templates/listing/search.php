@@ -123,31 +123,61 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
         <div class="va-filter-bar__title"><?php echo esc_html( $lp_filter_title ); ?></div>
         <form id="va-filter-form" data-post-type="<?php echo esc_attr( $url_post_type ); ?>">
             <div class="va-filter-bar__grid">
-                <input type="text" id="va-kw" class="va-input" placeholder="<?php echo esc_attr( $lp_kw_placeholder ); ?>" value="<?php echo esc_attr( $url_s ); ?>">
-
-                <select id="va-cat" class="va-select">
-                    <option value=""><?php echo esc_html( $lp_cat_placeholder ); ?></option>
-                    <?php foreach ( $categories as $cat ): ?>
-                        <option value="<?php echo esc_attr( $cat->term_id ); ?>"><?php echo esc_html( $cat->name ); ?></option>
-                        <?php $children = get_terms( [ 'taxonomy' => 'va_category', 'parent' => $cat->term_id, 'hide_empty' => false ] );
-                        foreach ( $children as $child ): ?>
-                            <option value="<?php echo esc_attr( $child->term_id ); ?>">&nbsp;&nbsp;↳ <?php echo esc_html( $child->name ); ?></option>
-                        <?php endforeach; ?>
+                <select id="va-brand-search" class="va-select">
+                    <option value="">Márka: Mindegy</option>
+                    <?php foreach ( $vehicle_brands as $brand ): ?>
+                        <option value="<?php echo esc_attr( (string) $brand ); ?>"><?php echo esc_html( (string) $brand ); ?></option>
                     <?php endforeach; ?>
                 </select>
 
-                <select id="va-county" class="va-select">
-                    <option value=""><?php echo esc_html( $lp_co_placeholder ); ?></option>
-                    <?php foreach ( $counties as $county ): ?>
-                        <option value="<?php echo esc_attr( $county->term_id ); ?>"><?php echo esc_html( $county->name ); ?></option>
+                <select id="va-model-search" class="va-select">
+                    <option value="">Modell: Mindegy</option>
+                </select>
+
+                <select id="va-body-type" class="va-select">
+                    <option value="">Kivitel: Mindegy</option>
+                    <?php foreach ( $vehicle_body_types as $body_key => $body_label ): ?>
+                        <option value="<?php echo esc_attr( (string) $body_key ); ?>"><?php echo esc_html( (string) $body_label ); ?></option>
                     <?php endforeach; ?>
                 </select>
 
-                <select id="va-cond" class="va-select">
-                    <option value=""><?php echo esc_html( $lp_cond_placeholder ); ?></option>
-                    <?php foreach ( $conditions as $cond ): ?>
-                        <option value="<?php echo esc_attr( $cond->term_id ); ?>"><?php echo esc_html( $cond->name ); ?></option>
+                <select id="va-fuel-type" class="va-select">
+                    <option value="">Üzemanyag: Mindegy</option>
+                    <?php foreach ( $vehicle_fuel_types as $fuel_key => $fuel_label ): ?>
+                        <option value="<?php echo esc_attr( (string) $fuel_key ); ?>"><?php echo esc_html( (string) $fuel_label ); ?></option>
                     <?php endforeach; ?>
+                </select>
+
+                <input type="number" id="va-year-min" class="va-input" min="1900" max="2099" placeholder="Évjárat -tól">
+                <input type="number" id="va-year-max" class="va-input" min="1900" max="2099" placeholder="Évjárat -ig">
+
+                <input type="number" id="va-mileage-min" class="va-input" min="0" placeholder="Km óra állás -tól">
+                <input type="number" id="va-mileage-max" class="va-input" min="0" placeholder="Km óra állás -ig">
+
+                <input type="number" id="va-engine-min" class="va-input" min="0" placeholder="Hengerűrtartalom -tól (cm3)">
+                <input type="number" id="va-engine-max" class="va-input" min="0" placeholder="Hengerűrtartalom -ig (cm3)">
+
+                <select id="va-vehicle-condition" class="va-select">
+                    <option value="">Állapot: Mindegy</option>
+                    <?php foreach ( $vehicle_conditions as $cond_key => $cond_label ): ?>
+                        <option value="<?php echo esc_attr( (string) $cond_key ); ?>"><?php echo esc_html( (string) $cond_label ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+
+                <select id="va-doors" class="va-select">
+                    <option value="">Ajtók száma: Mindegy</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6+</option>
+                </select>
+
+                <select id="va-passengers" class="va-select">
+                    <option value="">Ülések száma: Mindegy</option>
+                    <?php for ( $i = 1; $i <= 9; $i++ ): ?>
+                        <option value="<?php echo esc_attr( (string) $i ); ?>"><?php echo esc_html( (string) $i ); ?></option>
+                    <?php endfor; ?>
                 </select>
 
                 <div class="va-price-slider-wrap">
@@ -168,6 +198,24 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                     <option value="price_desc"><?php echo esc_html( $lp_sort_price_desc ); ?></option>
                     <option value="views"><?php echo esc_html( $lp_sort_views ); ?></option>
                 </select>
+            </div>
+
+            <div class="va-car-extra-filters">
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" id="va-opt-automatic"> automata</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" data-extra="tempomat"> tempomat</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" id="va-opt-awd"> összkerékmeghajtás</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" data-extra="alloy_wheels"> alufelni</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" data-extra="elec_window_front"> elektromos ablak</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" data-extra="towbar"> vonóhorog</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" data-extra="isofix"> ISOFIX rendszer</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" data-extra="esp"> ESP (menetstabilizátor)</label>
+                <label class="va-check-label"><input type="checkbox" class="va-car-filter" id="va-opt-service-book"> szervizkönyv</label>
+            </div>
+
+            <div class="va-car-per-page">
+                <label class="va-check-label"><input type="radio" name="va-per-page" value="25" checked> 25 találat oldalanként</label>
+                <label class="va-check-label"><input type="radio" name="va-per-page" value="50"> 50 találat oldalanként</label>
+                <label class="va-check-label"><input type="radio" name="va-per-page" value="100"> 100 találat oldalanként</label>
             </div>
 
             <div class="va-filter-bar__actions">

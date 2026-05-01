@@ -924,6 +924,27 @@ class VA_Ajax {
         $max_price = floatval( $_POST['max_price'] ?? 0 );
         $keyword   = sanitize_text_field( wp_unslash( $_POST['keyword'] ?? '' ) );
         $sort      = sanitize_key( $_POST['sort'] ?? 'date' );
+
+        // Jármű specifikus részletes szűrők
+        $brand             = sanitize_text_field( wp_unslash( $_POST['brand'] ?? '' ) );
+        $model             = sanitize_text_field( wp_unslash( $_POST['model'] ?? '' ) );
+        $body_type         = sanitize_key( $_POST['body_type'] ?? '' );
+        $fuel_type         = sanitize_key( $_POST['fuel_type'] ?? '' );
+        $year_min          = max( 0, intval( $_POST['year_min'] ?? 0 ) );
+        $year_max          = max( 0, intval( $_POST['year_max'] ?? 0 ) );
+        $mileage_min       = max( 0, intval( $_POST['mileage_min'] ?? 0 ) );
+        $mileage_max       = max( 0, intval( $_POST['mileage_max'] ?? 0 ) );
+        $engine_min        = max( 0, intval( $_POST['engine_min'] ?? 0 ) );
+        $engine_max        = max( 0, intval( $_POST['engine_max'] ?? 0 ) );
+        $vehicle_condition = sanitize_key( $_POST['vehicle_condition'] ?? '' );
+        $doors             = sanitize_key( $_POST['doors'] ?? '' );
+        $passengers        = max( 0, intval( $_POST['passengers'] ?? 0 ) );
+        $opt_automatic     = ! empty( $_POST['opt_automatic'] );
+        $opt_awd           = ! empty( $_POST['opt_awd'] );
+        $opt_service_book  = ! empty( $_POST['opt_service_book'] );
+        $extra_keys_raw    = isset( $_POST['extras'] ) ? (array) $_POST['extras'] : [];
+        $valid_extra_keys  = class_exists( 'VA_Vehicle_Catalog' ) ? array_keys( VA_Vehicle_Catalog::get_extras_options() ) : [];
+        $extras            = array_values( array_intersect( array_map( 'sanitize_key', $extra_keys_raw ), $valid_extra_keys ) );
         $allowed_post_types = [ 'va_listing' ];
         if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
             $allowed_post_types[] = 'va_auction';
@@ -932,15 +953,17 @@ class VA_Ajax {
         $post_type = in_array( sanitize_key( $_POST['post_type'] ?? '' ), $allowed_post_types, true )
                      ? sanitize_key( $_POST['post_type'] )
                      : 'va_listing';
-        $keyword   = sanitize_text_field( wp_unslash( $_POST['keyword'] ?? '' ) );
-        $sort      = sanitize_key( $_POST['sort'] ?? 'date' );
-
-        $per_page = intval( get_option( 'va_listings_per_page', 20 ) );
+        $posted_per_page = intval( $_POST['per_page'] ?? 0 );
+        $per_page = in_array( $posted_per_page, [ 25, 50, 100 ], true )
+            ? $posted_per_page
+            : intval( get_option( 'va_listings_per_page', 20 ) );
         $offset   = ( $paged - 1 ) * $per_page;
 
         // ── Transient cache kulcs ─────────────────────────
         $cache_key = 'va_fl_' . md5( serialize( compact(
-            'paged','category','county','condition','min_price','max_price','keyword','sort','post_type','per_page'
+            'paged','category','county','condition','min_price','max_price','keyword','sort','post_type','per_page',
+            'brand','model','body_type','fuel_type','year_min','year_max','mileage_min','mileage_max',
+            'engine_min','engine_max','vehicle_condition','doors','passengers','opt_automatic','opt_awd','opt_service_book','extras'
         ) ) );
         $cached = get_transient( $cache_key );
         if ( $cached !== false ) {
