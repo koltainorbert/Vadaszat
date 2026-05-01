@@ -260,6 +260,39 @@ class VA_Settings_Page {
             'va_color_hero_btn_ghost_hover'    => 'rgba(255,255,255,.15)',
             'va_color_hero_btn_ghost_text'     => '#ffffff',
 
+            // Kapcsolat oldal színek – hero
+            'va_contact_color_hero_title'        => '#ffffff',
+            'va_contact_color_hero_lead'         => 'rgba(255,255,255,.72)',
+            'va_contact_color_hero_badge_bg'     => 'rgba(6,6,6,.34)',
+            'va_contact_color_hero_badge_border' => 'rgba(255,255,255,.14)',
+            'va_contact_color_hero_badge_text'   => '#ffffff',
+            'va_contact_color_hero_glow'         => '#ff0000',
+
+            // Kapcsolat oldal színek – kártyák
+            'va_contact_color_card_border'       => 'rgba(255,255,255,.08)',
+            'va_contact_color_card_accent_border'=> 'rgba(255,0,0,.22)',
+            'va_contact_color_card_icon'         => '#ff4040',
+            'va_contact_color_card_icon_bg'      => 'rgba(255,0,0,.08)',
+            'va_contact_color_card_icon_border'  => 'rgba(255,0,0,.18)',
+            'va_contact_color_card_title'        => '#ffffff',
+            'va_contact_color_card_mini'         => 'rgba(255,255,255,.82)',
+            'va_contact_color_card_text'         => 'rgba(255,255,255,.68)',
+            'va_contact_color_list_text'         => 'rgba(255,255,255,.74)',
+            'va_contact_color_list_dot'          => '#ff0000',
+
+            // Kapcsolat oldal színek – űrlap
+            'va_contact_color_form_title'        => '#ffffff',
+            'va_contact_color_form_label'        => 'rgba(255,255,255,.7)',
+            'va_contact_color_input_bg'          => 'rgba(255,255,255,.04)',
+            'va_contact_color_input_border'      => 'rgba(255,255,255,.1)',
+            'va_contact_color_input_text'        => '#ffffff',
+            'va_contact_color_input_focus_border'=> 'rgba(255,0,0,.45)',
+            'va_contact_color_btn_bg'            => '#ff0000',
+            'va_contact_color_btn_bg2'           => '#d90000',
+            'va_contact_color_btn_text'          => '#ffffff',
+            'va_contact_color_btn_glow'          => 'rgba(255,0,0,.26)',
+            'va_contact_color_btn_hover_glow'    => 'rgba(255,0,0,.34)',
+
             // Mobil skála (%)
             'va_mobile_factor_hero'        => 100,
             'va_mobile_factor_header'      => 100,
@@ -1418,6 +1451,45 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_size_contact_hero_badge', 'Kapcsolat hero badge méret (px)', 8, 32 ); ?>
                     <?php self::field_num( 'va_size_contact_hero_title', 'Kapcsolat hero cím méret (px)', 20, 120 ); ?>
                     <?php self::field_num( 'va_size_contact_hero_lead',  'Kapcsolat hero alcím méret (px)', 10, 40 ); ?>
+                </table>
+
+                <h2>Kapcsolat oldal színek – Hero szekció</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_contact_color_hero_title',        'Cím színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_hero_lead',         'Alcím / bev. szöveg színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_hero_badge_bg',     'Badge háttér' ); ?>
+                    <?php self::field_color( 'va_contact_color_hero_badge_border', 'Badge keret' ); ?>
+                    <?php self::field_color( 'va_contact_color_hero_badge_text',   'Badge szöveg színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_hero_glow',         'Háttér glow színe' ); ?>
+                </table>
+
+                <h2>Kapcsolat oldal színek – Bal kártyák</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_contact_color_card_border',        'Kártya keret (alap)' ); ?>
+                    <?php self::field_color( 'va_contact_color_card_accent_border', 'Kártya keret (accent / 1. kártya)' ); ?>
+                    <?php self::field_color( 'va_contact_color_card_icon',          'Ikon színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_card_icon_bg',       'Ikon háttér' ); ?>
+                    <?php self::field_color( 'va_contact_color_card_icon_border',   'Ikon keret' ); ?>
+                    <?php self::field_color( 'va_contact_color_card_title',         'Kártya cím színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_card_mini',          'Mini felirat színe (2-3. kártya cím)' ); ?>
+                    <?php self::field_color( 'va_contact_color_card_text',          'Kártya szöveg színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_list_text',          'Lista elemek színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_list_dot',           'Lista bullet pont színe' ); ?>
+                </table>
+
+                <h2>Kapcsolat oldal színek – Űrlap</h2>
+                <table class="form-table">
+                    <?php self::field_color( 'va_contact_color_form_title',         'Űrlap cím színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_form_label',         'Mező feliratok színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_input_bg',           'Input mező háttér' ); ?>
+                    <?php self::field_color( 'va_contact_color_input_border',       'Input mező keret' ); ?>
+                    <?php self::field_color( 'va_contact_color_input_text',         'Input mező szöveg színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_input_focus_border', 'Input fókusz keret színe' ); ?>
+                    <?php self::field_color( 'va_contact_color_btn_bg',             'Küldés gomb háttér (alap)' ); ?>
+                    <?php self::field_color( 'va_contact_color_btn_bg2',            'Küldés gomb gradiens vége' ); ?>
+                    <?php self::field_color( 'va_contact_color_btn_text',           'Küldés gomb szöveg' ); ?>
+                    <?php self::field_color( 'va_contact_color_btn_glow',           'Küldés gomb glow' ); ?>
+                    <?php self::field_color( 'va_contact_color_btn_hover_glow',     'Küldés gomb hover glow' ); ?>
                 </table>
 
                 <h2>Hero sorköz magasságok</h2>
