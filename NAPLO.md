@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 01. – Session #128 (Kapcsolat oldal dupla render fix)
+
+### Mit csináltunk [x]
+- [x] Beazonosítva: a kapcsolat oldal sablonja kétszer szerepelt a fájlban
+- [x] A sablon első `get_footer();` hívása után bent maradt egy teljes duplikált `section + script + get_footer` blokk
+- [x] A duplikált második blokk törölve mindkét másolatból (root + theme mirror)
+- [x] Theme deploy lefuttatva LocalWP-re
+
+### Root cause
+- A `page-kapcsolat.php` fájl véletlenül duplikálódott, ezért a lábléc után újra megjelent ugyanaz az oldalrész.
+
+### Hol tartunk
+- A kapcsolat oldal most egyszer renderelődik, nem tölt be újra a lábléc alatt.
+
+---
+
 ## 2026. 05. 01. – Session #127 (Aloldalak tartalma hiányzott – shortcode fix)
 
 ### Mit csináltunk [x]
