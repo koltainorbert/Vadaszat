@@ -36,10 +36,26 @@ class VA_Meta_Fields {
                         'options' => [ '2'=>'2', '3'=>'3', '4'=>'4', '5'=>'5' ] ],
                     'va_owners'          => [ 'label' => 'Tulajdonosok száma',       'type' => 'number', 'min' => 1, 'max' => 20 ],
                     'va_keys'            => [ 'label' => 'Kulcsok száma',            'type' => 'number', 'min' => 0, 'max' => 10 ],
-                    'va_previous_damage' => [ 'label' => 'Korábbi kár / baleset',   'type' => 'checkbox' ],
-                    'va_service_book'    => [ 'label' => 'Szervizkönyv megvan',      'type' => 'checkbox' ],
-                    'va_tech_inspect'    => [ 'label' => 'Műszaki vizsga lejár',     'type' => 'date' ],
-                    'va_first_reg'       => [ 'label' => 'Első forgalomba hely. (év.hó)', 'type' => 'text' ],
+                    'va_previous_damage'    => [ 'label' => 'Korábbi kár / baleset',       'type' => 'checkbox' ],
+                    'va_service_book'       => [ 'label' => 'Szervizkönyv megvan',          'type' => 'checkbox' ],
+                    'va_tech_inspect'       => [ 'label' => 'Műszaki vizsga lejár',         'type' => 'date' ],
+                    'va_first_reg'          => [ 'label' => 'Első forgalomba hely. (év.hó)', 'type' => 'text' ],
+                    'va_drive'              => [ 'label' => 'Hajtás',                       'type' => 'select',
+                        'options' => class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_drive_options() : [] ],
+                    'va_vehicle_condition'  => [ 'label' => 'Jármű állapota',               'type' => 'select',
+                        'options' => class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_condition_options() : [] ],
+                    'va_doc_type'           => [ 'label' => 'Okmányok jellege',             'type' => 'select',
+                        'options' => class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_type_options() : [] ],
+                    'va_doc_validity'       => [ 'label' => 'Okmányok érvényessége',        'type' => 'select',
+                        'options' => class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_validity_options() : [] ],
+                    'va_ac_type'            => [ 'label' => 'Klíma',                        'type' => 'select',
+                        'options' => class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_ac_type_options() : [] ],
+                    'va_eco_class'          => [ 'label' => 'Környezetvédelmi osztály',     'type' => 'select',
+                        'options' => class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [] ],
+                    'va_cylinder_layout'    => [ 'label' => 'Henger-elrendezés',            'type' => 'select',
+                        'options' => class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [] ],
+                    'va_own_weight'         => [ 'label' => 'Saját tömeg (kg)',             'type' => 'number', 'min' => 0 ],
+                    'va_extras'             => [ 'label' => 'Extra felszereltség',          'type' => 'checkboxes' ],
                 ];
             case 'ingatlan':
                 return [
@@ -139,6 +155,19 @@ class VA_Meta_Fields {
                     echo '<option value="' . esc_attr( $optval ) . '"' . selected( $val, $optval, false ) . '>' . esc_html( $optlabel ) . '</option>';
                 }
                 echo '</select>';
+            } elseif ( $f['type'] === 'checkboxes' ) {
+                $checked_arr = [];
+                if ( is_string( $val ) && $val !== '' ) {
+                    $decoded = json_decode( $val, true );
+                    if ( is_array( $decoded ) ) $checked_arr = $decoded;
+                }
+                $opts = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_extras_options() : [];
+                echo '<div style="display:flex;flex-wrap:wrap;gap:6px;">';
+                foreach ( $opts as $optkey => $optlabel ) {
+                    $ch = in_array( $optkey, $checked_arr, true ) ? ' checked' : '';
+                    echo '<label style="display:inline-flex;align-items:center;gap:4px;white-space:nowrap;"><input type="checkbox" name="' . esc_attr( $key ) . '[]" value="' . esc_attr( $optkey ) . '"' . $ch . '> ' . esc_html( $optlabel ) . '</label>';
+                }
+                echo '</div>';
             } elseif ( $f['type'] === 'checkbox' ) {
                 echo '<input type="checkbox" id="' . esc_attr( $key ) . '" name="' . esc_attr( $key ) . '" value="1"' . checked( $val, '1', false ) . '>';
             } else {
