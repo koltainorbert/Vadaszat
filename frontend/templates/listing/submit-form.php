@@ -498,9 +498,10 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         .va-specs-grid .va-form-group { margin-bottom:0; }
         .va-extras-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
         @media(max-width:600px){ .va-extras-grid { grid-template-columns:1fr 1fr; } }
-        .va-extra-check { display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:6px 8px;border:1px solid rgba(255,255,255,.1);border-radius:6px;transition:border-color .15s,background .15s; }
+        .va-extra-check { display:flex;align-items:center;gap:6px;font-size:13px;color:#fff;cursor:pointer;padding:6px 8px;border:1px solid rgba(255,255,255,.1);border-radius:6px;transition:border-color .15s,background .15s; }
         .va-extra-check:has(input:checked) { border-color:rgba(255,60,60,.5);background:rgba(255,60,60,.07); }
         .va-extra-check input { accent-color:#ff3030;flex-shrink:0; }
+        .va-vehicle-specs + button, .va-vehicle-specs ~ button { margin-top:20px; }
         </style>
         <div class="va-vehicle-specs">
             <h3 class="va-specs-heading">⚙️ Motor / Hajtástechnika</h3>
