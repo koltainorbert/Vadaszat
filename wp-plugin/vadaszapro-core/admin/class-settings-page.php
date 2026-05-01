@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Settings oldal – minden beállítás egy helyen
  * Lapok: Általános | Reklámzónák | Hirdetések | Aukciók | Felhasználók | Statisztika
@@ -1029,17 +1029,17 @@ class VA_Settings_Page {
             'va_search_dd_price_size'          => 12,
             'va_search_dd_badge_size'          => 10,
             'va_search_dd_badge_radius'        => 20,
-            'va_search_dd_badge_listing_bg'    => 'rgba(255,0,0,.18)',
-            'va_search_dd_badge_listing_text'  => '#ff4040',
+            'va_search_dd_badge_listing_bg'    => 'rgba(255,136,0,.22)',
+            'va_search_dd_badge_listing_text'  => '#ff8800',
             'va_search_dd_badge_auction_bg'    => 'rgba(255,140,0,.25)',
             'va_search_dd_badge_auction_text'  => '#ff8c00',
             'va_search_dd_badge_category_bg'   => 'rgba(0,200,100,.18)',
             'va_search_dd_badge_category_text' => '#00e070',
             'va_search_dd_badge_user_bg'       => 'rgba(80,140,255,.18)',
             'va_search_dd_badge_user_text'     => '#6fa0ff',
-            'va_search_dd_all_color'           => '#ff0000',
+            'va_search_dd_all_color'           => '#ff8800',
             'va_search_dd_all_size'            => 12,
-            'va_search_dd_all_hover_bg'        => 'rgba(255,0,0,.06)',
+            'va_search_dd_all_hover_bg'        => 'rgba(255,136,0,.10)',
         ];
         foreach ( $search_designer as $key => $default ) {
             self::$defaults[ $key ] = $default;
@@ -1047,6 +1047,19 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) {
                 update_option( $key, $default );
             }
+        }
+        // Finom migracio: korabbi piros kereso defaultok -> narancs (#ff8800)
+        if ( (string) get_option( 'va_search_dd_badge_listing_text', '' ) === '#ff4040' ) {
+            update_option( 'va_search_dd_badge_listing_text', '#ff8800' );
+        }
+        if ( (string) get_option( 'va_search_dd_badge_listing_bg', '' ) === 'rgba(255,0,0,.18)' ) {
+            update_option( 'va_search_dd_badge_listing_bg', 'rgba(255,136,0,.22)' );
+        }
+        if ( (string) get_option( 'va_search_dd_all_color', '' ) === '#ff0000' ) {
+            update_option( 'va_search_dd_all_color', '#ff8800' );
+        }
+        if ( (string) get_option( 'va_search_dd_all_hover_bg', '' ) === 'rgba(255,0,0,.06)' ) {
+            update_option( 'va_search_dd_all_hover_bg', 'rgba(255,136,0,.10)' );
         }
 
         /* Back-to-top gomb (va_btt_*) */
@@ -9423,4 +9436,5 @@ class VA_Settings_Page {
         <?php
     }
 }
+
 
