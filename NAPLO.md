@@ -1,6 +1,17 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #140 (Kényelmi felszereltség cím narancs)
+
+### Mit csináltunk [x]
+- [x] A termékoldali Részletek blokk extras csoportcímében csoport-specifikus CSS osztály bevezetve
+- [x] A `Kényelmi felszereltség` (`kenyemi`) cím narancs színt kapott: `#ff8800`
+- [x] Theme mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A `Kényelmi felszereltség` cím vizuálisan kiemelve jelenik meg a kért narancs színnel.
+
+---
 ## 2026. 05. 01. – Session #139 (Termékoldal Részletek blokk belső scroll)
 
 ### Mit csináltunk [x]
