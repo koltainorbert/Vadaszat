@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * single-va_listing.php - Hirdetes reszletes oldal (v2 - modern 2026)
  */
@@ -168,7 +168,54 @@ if ( ! in_array( $sl_gallery_fit, [ 'cover', 'contain' ], true ) ) {
 $sl_viewer_bg = sanitize_text_field( (string) get_option( 'va_single_viewer_bg', 'rgba(4,4,4,.96)' ) );
 $sl_accent    = sanitize_hex_color( (string) get_option( 'va_single_accent', '#ff2a2a' ) ) ?: '#ff2a2a';
 $sl_glass     = sanitize_text_field( (string) get_option( 'va_single_glass', 'rgba(255,255,255,.07)' ) );
-$sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'rgba(255,255,255,.12)' ) );
+$sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'rgba(255,255,255,.12)' ) );
+
+// Extra szin opciok
+$sl_card_title_color      = sanitize_text_field( (string) get_option( 'va_sl_card_title_color',      'rgba(255,255,255,.55)' ) );
+$sl_title_color           = sanitize_text_field( (string) get_option( 'va_sl_title_color',           '#ffffff' ) );
+$sl_meta_color            = sanitize_text_field( (string) get_option( 'va_sl_meta_color',            'rgba(255,255,255,.55)' ) );
+$sl_spec_label_color      = sanitize_text_field( (string) get_option( 'va_sl_spec_label_color',      'rgba(255,255,255,.45)' ) );
+$sl_spec_val_color        = sanitize_text_field( (string) get_option( 'va_sl_spec_val_color',        '#ffffff' ) );
+$sl_desc_color            = sanitize_text_field( (string) get_option( 'va_sl_desc_color',            'rgba(255,255,255,.82)' ) );
+$sl_seller_name_color     = sanitize_text_field( (string) get_option( 'va_sl_seller_name_color',     '#ffffff' ) );
+$sl_seller_since_color    = sanitize_text_field( (string) get_option( 'va_sl_seller_since_color',    'rgba(255,255,255,.45)' ) );
+$sl_demand_bg             = sanitize_text_field( (string) get_option( 'va_sl_demand_bg',             'rgba(255,100,0,.12)' ) );
+$sl_demand_border         = sanitize_text_field( (string) get_option( 'va_sl_demand_border',         'rgba(255,100,0,.3)' ) );
+$sl_demand_text           = sanitize_text_field( (string) get_option( 'va_sl_demand_text',           '#ff9550' ) );
+$sl_featured_pill_bg      = sanitize_text_field( (string) get_option( 'va_sl_featured_pill_bg',      'rgba(255,180,0,.15)' ) );
+$sl_featured_pill_border  = sanitize_text_field( (string) get_option( 'va_sl_featured_pill_border',  'rgba(255,180,0,.3)' ) );
+$sl_featured_pill_text    = sanitize_text_field( (string) get_option( 'va_sl_featured_pill_text',    '#ffd060' ) );
+$sl_views_color           = sanitize_text_field( (string) get_option( 'va_sl_views_color',           'rgba(255,255,255,.45)' ) );
+$sl_share_label_color     = sanitize_text_field( (string) get_option( 'va_sl_share_label_color',     'rgba(255,255,255,.45)' ) );
+$sl_expired_color         = sanitize_text_field( (string) get_option( 'va_sl_expired_color',         '#ff6060' ) );
+$sl_sticky_bg             = sanitize_text_field( (string) get_option( 'va_sl_sticky_bg',             'rgba(10,10,10,.95)' ) );
+$sl_sticky_title_color    = sanitize_text_field( (string) get_option( 'va_sl_sticky_title_color',    '#ffffff' ) );
+$sl_related_border        = sanitize_text_field( (string) get_option( 'va_sl_related_border',        'rgba(255,255,255,.1)' ) );
+$sl_related_title_color   = sanitize_text_field( (string) get_option( 'va_sl_related_title_color',   '#ffffff' ) );
+$sl_related_meta_color    = sanitize_text_field( (string) get_option( 'va_sl_related_meta_color',    'rgba(255,255,255,.4)' ) );
+
+// Szoveg label opciok
+$sl_lbl_description     = (string) get_option( 'va_sl_lbl_description',     'Le&#237;r&#225;s' );
+$sl_lbl_details         = (string) get_option( 'va_sl_lbl_details',         'R&#233;szletek' );
+$sl_lbl_seller          = (string) get_option( 'va_sl_lbl_seller',          'Felad&#243;' );
+$sl_lbl_more_listings   = (string) get_option( 'va_sl_lbl_more_listings',   'Felad&#243; tov&#225;bbi hirdet&#233;sei' );
+$sl_lbl_related         = (string) get_option( 'va_sl_lbl_related',         'Hasonl&#243; hirdet&#233;sek' );
+$sl_lbl_phone_btn       = (string) get_option( 'va_sl_lbl_phone_btn',       '&#128222; Telefonsz&#225;m megjelen&#237;t&#233;se' );
+$sl_lbl_email_btn       = (string) get_option( 'va_sl_lbl_email_btn',       '&#9993; E-mail &#252;zenet k&#252;ld&#233;se' );
+$sl_lbl_watch_add       = (string) get_option( 'va_sl_lbl_watch_add',       '&#9734; Ment&#233;s kedvencekbe' );
+$sl_lbl_watch_remove    = (string) get_option( 'va_sl_lbl_watch_remove',    '&#9733; Kedvencekb&#337;l elt&#225;vol&#237;t&#225;s' );
+$sl_lbl_share           = (string) get_option( 'va_sl_lbl_share',           'Megoszt&#225;s:' );
+$sl_lbl_zoom            = (string) get_option( 'va_sl_lbl_zoom',            'Nagy&#237;t&#225;s' );
+$sl_lbl_no_image        = (string) get_option( 'va_sl_lbl_no_image',        'Nincs k&#233;p' );
+$sl_lbl_views_suffix    = (string) get_option( 'va_sl_lbl_views_suffix',    'megtekint&#233;s' );
+$sl_lbl_posted          = (string) get_option( 'va_sl_lbl_posted',          'Feladva:' );
+$sl_lbl_expires         = (string) get_option( 'va_sl_lbl_expires',         'Lej&#225;r:' );
+$sl_lbl_expired_label   = (string) get_option( 'va_sl_lbl_expired_label',   'Lej&#225;rt:' );
+$sl_lbl_member_since_pre= (string) get_option( 'va_sl_lbl_member_since_pre', 'Tag' );
+$sl_lbl_member_since_suf= (string) get_option( 'va_sl_lbl_member_since_suf', '&#243;ta' );
+$sl_lbl_condition_pre   = (string) get_option( 'va_sl_lbl_condition_pre',   '&#193;llapot:' );
+$sl_lbl_demand          = (string) get_option( 'va_sl_lbl_demand',          '&#233;rdekl&#337;d&#337; az elm&#250;lt 24 &#243;r&#225;ban figyel&#337;list&#225;j&#225;ra vette' );
+$sl_lbl_featured_pill   = (string) get_option( 'va_sl_lbl_featured_pill',   '&#11088; Kiemelt' );
 
 // Demand indikátor: figyelőlistára adások az elmúlt 24 órában
 $demand_count = 0;
