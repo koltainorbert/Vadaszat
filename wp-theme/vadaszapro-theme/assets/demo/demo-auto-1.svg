@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="980" viewBox="0 0 1400 980" role="img" aria-label="Demo auto 1">
+  <defs>
+    <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1c1f26"/>
+      <stop offset="100%" stop-color="#0a0b0f"/>
+    </linearGradient>
+    <linearGradient id="car1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff3b30"/>
+      <stop offset="100%" stop-color="#c61209"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="980" fill="url(#bg1)"/>
+  <g opacity="0.2" stroke="#ffffff" stroke-width="1">
+    <path d="M0 80h1400M0 160h1400M0 240h1400M0 320h1400M0 400h1400M0 480h1400M0 560h1400M0 640h1400M0 720h1400M0 800h1400"/>
+  </g>
+  <text x="80" y="120" fill="#ffffff" opacity="0.75" font-family="Arial, sans-serif" font-size="56" font-weight="700">Weingartner Auto - Demo 1</text>
+  <g transform="translate(160 360)">
+    <path d="M80 220h850c58 0 105 47 105 105v12H0v-18c0-55 45-99 100-99h115l105-128c35-43 87-68 142-68h290c55 0 107 24 142 67l94 114z" fill="url(#car1)"/>
+    <rect x="365" y="54" width="292" height="112" rx="22" fill="#14161b" opacity="0.9"/>
+    <circle cx="235" cy="342" r="80" fill="#121318"/>
+    <circle cx="235" cy="342" r="42" fill="#9fa4ad"/>
+    <circle cx="805" cy="342" r="80" fill="#121318"/>
+    <circle cx="805" cy="342" r="42" fill="#9fa4ad"/>
+  </g>
+</svg>
