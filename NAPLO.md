@@ -2,6 +2,24 @@
 
 ---
 
+## 2026. 05. 01. – Session #123 (Fejléc/Lábléc szín vezérlés + Vásárlás gomb toggle)
+
+### Mit csináltunk [x]
+- [x] `class-settings-page.php` (root + plugin mirror): új opció hozzáadva `va_hf_header_show_buy_button` (alapértelmezett: `1`), regisztrálva a `va_header_footer_settings` csoportban
+- [x] Header/Footer admin oldalon új kapcsoló: **"Vásárlás gomb megjelenítése"**
+- [x] `header.php` (root + theme mirror): a "Vásárlás" gomb megjelenése most opcióhoz kötött (bejelentkezett és vendég állapotban is)
+- [x] `functions.php` (root + theme mirror): fejléc/lábléc háttér CSS javítva úgy, hogy a **Fejléc háttér** (`va_color_header_bg`) és **Lábléc háttér** (`va_color_footer_bg`) ténylegesen látszódjon (gradient első stopjába bekötve)
+- [x] Deploy LocalWP-re kész (`weingartner-aut.local`)
+
+### Mi volt a hiba oka
+- A háttérszínek beállíthatók voltak adminban, de a renderelt gradient teljesen elfedte őket, ezért úgy tűnt, mintha a háttér színmezők nem működnének.
+
+### Hol tartunk
+- A fejléc és lábléc háttérszínei most láthatóan reagálnak az admin beállításokra.
+- A fejléc "Vásárlás" gomb külön ki/be kapcsolható.
+
+---
+
 ## 2026. 04. 30. – Session #122 (Hero szín fix, deploy auto-detect, csomag limit fix)
 
 ### Mit csináltunk [x]
