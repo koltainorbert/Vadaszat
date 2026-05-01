@@ -151,11 +151,11 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                 <input type="number" id="va-year-min" class="va-input" min="1900" max="2099" placeholder="Évjárat -tól">
                 <input type="number" id="va-year-max" class="va-input" min="1900" max="2099" placeholder="Évjárat -ig">
 
-                <input type="number" id="va-mileage-min" class="va-input" min="0" placeholder="Km óra állás -tól">
-                <input type="number" id="va-mileage-max" class="va-input" min="0" placeholder="Km óra állás -ig">
+                <input type="number" id="va-mileage-min" class="va-input" min="0" placeholder="Kilométer -tól">
+                <input type="number" id="va-mileage-max" class="va-input" min="0" placeholder="Kilométer -ig">
 
-                <input type="number" id="va-engine-min" class="va-input" min="0" placeholder="Hengerűrtartalom -tól (cm3)">
-                <input type="number" id="va-engine-max" class="va-input" min="0" placeholder="Hengerűrtartalom -ig (cm3)">
+                <input type="number" id="va-engine-min" class="va-input" min="0" placeholder="Hengerűrt. -tól (cm3)">
+                <input type="number" id="va-engine-max" class="va-input" min="0" placeholder="Hengerűrt. -ig (cm3)">
 
                 <select id="va-vehicle-condition" class="va-select">
                     <option value="">Állapot: Mindegy</option>

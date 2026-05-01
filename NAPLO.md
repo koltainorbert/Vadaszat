@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #147 (Számmező UI modernizálás + kilógó szövegek javítása)
+
+### Mit csináltunk [x]
+- [x] A number input mezők natív böngésző spinner (régi fel/le nyilak) megjelenítése kikapcsolva (`.va-input[type="number"]`)
+- [x] Input padding finomhangolás: text/number mezők kisebb jobb oldali paddinget kaptak, a select maradt nyíl-kompatibilis
+- [x] Kereső filter rács mezőminimum szélessége növelve (`minmax(220px, 1fr)`), hogy ne lógjanak bele a feliratok
+- [x] Hosszú placeholder szövegek rövidítve (km és hengerűrtartalom mezők), hogy ne vágódjanak le
+- [x] Plugin mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A keresőben és a hirdetésfeladóban a számmezők modernebbek (spinner nélkül), és a mezőszövegek jobban kiférnek, nem lógnak bele.
+
+---
 ## 2026. 05. 02. – Session #146 (Keresőben minden szöveg fehér)
 
 ### Mit csináltunk [x]

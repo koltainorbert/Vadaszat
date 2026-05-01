@@ -168,10 +168,22 @@
 .va-btn--outline { background: transparent; color: var(--va-text); border: 1px solid var(--va-border); box-sizing: border-box; }
 .va-form-group label .required { color: #ff0000; margin-left: 2px; }
 .va-input, .va-select, .va-textarea {
-  width: 100%; padding: 10px 38px 10px 14px; border-radius: var(--va-radius, 6px);
+  width: 100%; padding: 10px 14px; border-radius: var(--va-radius, 6px);
   background: #0e0e0e; border: 1px solid rgba(255,255,255,.12);
   color: #fff; font-size: 14px;
   transition: border-color .22s ease;
+}
+.va-select { padding-right: 38px; }
+
+/* Modern number input: hide old browser spinner arrows */
+.va-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.va-input[type="number"]::-webkit-outer-spin-button,
+.va-input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .va-select option { background: #1a1a1a; color: #fff; }
 .va-input:focus, .va-select:focus, .va-textarea:focus {
@@ -414,7 +426,7 @@
 /* ── Szűrő sáv ────────────────────────────────────── */
 .va-filter-bar { background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); padding: 20px; margin-bottom: 24px; }
 .va-filter-bar__title { font-size: 13px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
-.va-filter-bar__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.va-filter-bar__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
 .va-filter-bar__actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 .va-filter-bar,
 .va-filter-bar label,
