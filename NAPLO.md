@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 01. – Session #126 (Gombok nem működnek fix)
+
+### Mit csináltunk [x]
+- [x] Beazonosítva: a jobb alsó `#va-scroll-ring` rejtett állapotban is kattintást fogott (`opacity:0`, de `pointer-events` nem volt tiltva)
+- [x] Javítás `footer.php` (root + theme mirror):
+  - `#va-scroll-ring` alapállapot: `pointer-events: none;`
+  - `#va-scroll-ring.va-ring--visible`: `pointer-events: auto;`
+- [x] Beazonosítva egy további hibaforrás: admin JS fájlok UTF-16 LE kódolásban voltak
+- [x] `admin/admin.js` + `wp-plugin/vadaszapro-core/admin/admin.js` UTF-8-ra konvertálva
+- [x] LocalWP deploy kész (`Deploy All`)
+
+### Hol tartunk
+- A gombok kattinthatóságát blokkoló overlay hiba javítva.
+- Admin JS kompatibilitási hiba (UTF-16) megszüntetve.
+
+---
+
 ## 2026. 05. 01. – Session #125 (Scroll videós pill gomb: videó + border állítható)
 
 ### Mit csináltunk [x]

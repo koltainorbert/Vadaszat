@@ -190,6 +190,7 @@ if ( $va_scroll_ring_border_color === '' ) {
     cursor: pointer;
     opacity: 0;
     transform: translateY(14px);
+    pointer-events: none;
     transition: opacity .3s, transform .3s;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
@@ -197,6 +198,7 @@ if ( $va_scroll_ring_border_color === '' ) {
 #va-scroll-ring.va-ring--visible {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
 }
 #va-scroll-ring:hover #va-ring-el { stroke: var(--va-scroll-ring-color); }
 #va-scroll-ring:hover #va-ring-inner { transform: scale(1.03); }
