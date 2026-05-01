@@ -6,7 +6,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* ── Helper: egyes mező HTML kimenete ──────────────── */
 if ( ! function_exists( 'self_render_listing_field' ) ) {
-    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions, array $ev = [] ): void {
+    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions, array $brands = [], array $body_types = [], array $ev = [] ): void {
         $val = $ev[ $key ] ?? '';
         switch ( $key ) {
             case 'title':
@@ -44,10 +44,29 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'brand':
-                echo '<input type="text" name="brand" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                echo '<select name="brand" class="va-select">';
+                echo '<option value="">– Válasszon –</option>';
+                if ( $val !== '' && ! in_array( (string) $val, $brands, true ) ) {
+                    echo '<option value="' . esc_attr( (string) $val ) . '" selected>' . esc_html( (string) $val ) . '</option>';
+                }
+                foreach ( $brands as $brand ) {
+                    echo '<option value="' . esc_attr( $brand ) . '"' . selected( (string) $val, $brand, false ) . '>' . esc_html( $brand ) . '</option>';
+                }
+                echo '</select>';
                 break;
             case 'model':
                 echo '<input type="text" name="model" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                break;
+            case 'body_type':
+                echo '<select name="body_type" class="va-select">';
+                echo '<option value="">– Válasszon –</option>';
+                if ( $val !== '' && ! array_key_exists( (string) $val, $body_types ) ) {
+                    echo '<option value="' . esc_attr( (string) $val ) . '" selected>' . esc_html( (string) $val ) . '</option>';
+                }
+                foreach ( $body_types as $body_key => $body_label ) {
+                    echo '<option value="' . esc_attr( $body_key ) . '"' . selected( (string) $val, $body_key, false ) . '>' . esc_html( $body_label ) . '</option>';
+                }
+                echo '</select>';
                 break;
             case 'caliber':
                 echo '<input type="text" name="caliber" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
@@ -135,6 +154,8 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
 $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false ] );
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
+$brands     = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_brands() : [];
+$body_types = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_body_type_options() : [];
 
 /* ── Edit mód felismerés ───────────────────────────── */
 $edit_post_id = 0;
@@ -157,6 +178,7 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'location'    => get_post_meta( $maybe_id, 'va_location',    true ),
             'brand'       => get_post_meta( $maybe_id, 'va_brand',       true ),
             'model'       => get_post_meta( $maybe_id, 'va_model',       true ),
+            'body_type'   => get_post_meta( $maybe_id, 'va_body_type',   true ),
             'caliber'     => get_post_meta( $maybe_id, 'va_caliber',     true ),
             'year'        => get_post_meta( $maybe_id, 'va_year',        true ),
             'license_req' => get_post_meta( $maybe_id, 'va_license_req', true ),
@@ -369,12 +391,12 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 // Mező 1
                 echo '<div class="va-form-group">';
                 echo "<label>{$label}{$req_html}</label>";
-                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $edit_meta );
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $brands, $body_types, $edit_meta );
                 echo '</div>';
                 // Mező 2
                 echo '<div class="va-form-group">';
                 echo "<label>{$p2_label}{$p2_req_html}</label>";
-                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions, $edit_meta );
+                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions, $brands, $body_types, $edit_meta );
                 echo '</div>';
                 echo '</div>';
             else:
@@ -382,7 +404,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 // Teljes soros mező
                 echo '<div class="va-form-group">';
                 echo "<label>{$label}{$req_html}</label>";
-                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $edit_meta );
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $brands, $body_types, $edit_meta );
                 echo '</div>';
             endif;
         endforeach;

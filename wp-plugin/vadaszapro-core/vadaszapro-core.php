@@ -25,6 +25,7 @@ if ( ! defined( 'VA_GITHUB_TOKEN' ) ) define( 'VA_GITHUB_TOKEN', '' );
 
 /* ── Autoload includes ────────────────────────────── */
 require_once VA_PLUGIN_DIR . 'includes/class-post-types.php';
+require_once VA_PLUGIN_DIR . 'includes/class-vehicle-catalog.php';
 require_once VA_PLUGIN_DIR . 'includes/class-taxonomy.php';
 require_once VA_PLUGIN_DIR . 'includes/class-meta-fields.php';
 require_once VA_PLUGIN_DIR . 'includes/class-mailer.php';

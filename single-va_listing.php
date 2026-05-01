@@ -352,7 +352,7 @@ $fuel_labels = [ 'benzin'=>'Benzin','diesel'=>'Dízel','hybrid'=>'Hibrid','elect
 $trans_labels = [ 'manual'=>'Kéziváltó','automatic'=>'Automata','semi_auto'=>'Félautomata','cvt'=>'CVT' ];
 
 
-$body_labels = [ 'sedan'=>'Szedán','combi'=>'Kombi','hatchback'=>'Ferdehátú','suv'=>'SUV/Terepjáró','coupe'=>'Kupé','cabrio'=>'Kabrió','van'=>'Furgon','pickup'=>'Pickup','motor'=>'Motor','egyeb'=>'Egyéb' ];
+$body_labels = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_body_type_options() : [ 'sedan'=>'sedan','hatchback'=>'ferdehátú','wagon'=>'kombi','cabrio'=>'cabrio','mpv'=>'egyterű','coupe'=>'coupe','crossover'=>'városi terepjáró (crossover)','closed'=>'zárt','double_cab_chassis'=>'duplakabinos alváz','pickup'=>'pickup','minibus'=>'kisbusz','single_cab_chassis'=>'alváz szimpla kabin' ];
 
 
 $park_labels = [ 'none'=>'Nincs','street'=>'Utcai','private'=>'Saját','garage'=>'Garázs' ];

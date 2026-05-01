@@ -30,7 +30,7 @@ class VA_Meta_Fields {
                     'va_transmission'    => [ 'label' => 'Sebességváltó',            'type' => 'select',
                         'options' => [ 'manual'=>'Kéziváltó','automatic'=>'Automata','semi_auto'=>'Félautomata','cvt'=>'CVT' ] ],
                     'va_body_type'       => [ 'label' => 'Felépítmény',             'type' => 'select',
-                        'options' => [ 'sedan'=>'Szedán','combi'=>'Kombi','hatchback'=>'Ferdehátú','suv'=>'SUV/Terepjáró','coupe'=>'Kupé','cabrio'=>'Kabrió','van'=>'Furgon/Van','pickup'=>'Pickup','motor'=>'Motor','egyeb'=>'Egyéb' ] ],
+                        'options' => class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_body_type_options() : [ 'sedan'=>'sedan','hatchback'=>'ferdehátú','wagon'=>'kombi','cabrio'=>'cabrio','mpv'=>'egyterű','coupe'=>'coupe','crossover'=>'városi terepjáró (crossover)','closed'=>'zárt','double_cab_chassis'=>'duplakabinos alváz','pickup'=>'pickup','minibus'=>'kisbusz','single_cab_chassis'=>'alváz szimpla kabin' ] ],
                     'va_color'           => [ 'label' => 'Szín',                     'type' => 'text' ],
                     'va_doors'           => [ 'label' => 'Ajtók száma',              'type' => 'select',
                         'options' => [ '2'=>'2', '3'=>'3', '4'=>'4', '5'=>'5' ] ],

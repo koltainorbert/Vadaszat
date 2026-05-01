@@ -60,82 +60,7 @@ class VA_Taxonomy {
     }
 
     private static function insert_default_terms() {
-
-        /* Kategóriák */
-        $categories = [
-            'Fegyverek'              => [
-                'Golyós puska',
-                'Sörétes puska',
-                'Vegyescsövű puska',
-                'Maroklőfegyver',
-                'Légfegyver',
-                'Hatástalanított',
-                'Egyéb fegyver',
-            ],
-            'Lőszer & Töltény'       => [
-                'Golyós lőszer',
-                'Sörétes lőszer',
-                'Légpuska lőszer',
-            ],
-            'Optika & Elektronika'   => [
-                'Céltávcsövek',
-                'Éjjellátó',
-                'Hőkamera',
-                'Vadkamera',
-                'Vadászlámpa',
-            ],
-            'Kések & Eszközök'       => [
-                'Kések',
-                'Kürtök & Sípok',
-            ],
-            'Ruházat'                => [
-                'Vadász ruházat',
-                'Cipő & Bakancs',
-                'Egyéb ruházat',
-            ],
-            'Felszerelés'            => [
-                'Vadász felszerelés',
-                'Sportlövő felszerelés',
-            ],
-            'Trófea & Dísztárgy'     => [
-                'Trófeák',
-                'Dísztárgyak',
-            ],
-            'Vadászkutya'            => [],
-            'Vadászterület & Bérlet' => [
-                'Vadászati lehetőség',
-                'Vadkárelhárítás',
-            ],
-            'Jármű'                  => [],
-            'Ingatlan & Szállás'     => [
-                'Ingatlan',
-                'Szállás',
-            ],
-            'Egyéb'                  => [
-                'Takarmány',
-                'Könyv & Folyóirat',
-                'Vadászati hagyaték',
-                'Állás',
-                'Csere',
-                'Szolgáltatás',
-            ],
-        ];
-
-        foreach ( $categories as $parent => $children ) {
-            if ( ! term_exists( $parent, 'va_category' ) ) {
-                $parent_term = wp_insert_term( $parent, 'va_category' );
-                $parent_id   = is_wp_error( $parent_term ) ? 0 : $parent_term['term_id'];
-            } else {
-                $t         = get_term_by( 'name', $parent, 'va_category' );
-                $parent_id = $t ? $t->term_id : 0;
-            }
-
-            foreach ( $children as $child ) {
-                if ( ! term_exists( $child, 'va_category' ) ) {
-                    wp_insert_term( $child, 'va_category', [ 'parent' => $parent_id ] );
-                }
-            }
-        }
+        self::sync_vehicle_categories();
 
         /* Állapot */
         $conditions = [ 'Új', 'Használt – Kiváló', 'Használt – Jó', 'Használt – Közepes', 'Sérült / Alkatrésznek' ];
@@ -155,6 +80,44 @@ class VA_Taxonomy {
         foreach ( $counties as $county ) {
             if ( ! term_exists( $county, 'va_county' ) ) {
                 wp_insert_term( $county, 'va_county' );
+            }
+        }
+    }
+
+    private static function sync_vehicle_categories(): void {
+        if ( ! class_exists( 'VA_Vehicle_Catalog' ) ) {
+            return;
+        }
+
+        $dataset_version = VA_Vehicle_Catalog::get_dataset_version();
+        $categories      = VA_Vehicle_Catalog::get_categories();
+
+        if ( get_option( 'va_category_dataset_ver' ) !== $dataset_version ) {
+            $existing_ids = get_terms( [
+                'taxonomy'   => 'va_category',
+                'hide_empty' => false,
+                'fields'     => 'ids',
+            ] );
+
+            if ( ! is_wp_error( $existing_ids ) ) {
+                foreach ( $existing_ids as $term_id ) {
+                    wp_delete_term( (int) $term_id, 'va_category' );
+                }
+            }
+
+            update_option( 'va_category_dataset_ver', $dataset_version, false );
+
+            if ( get_option( 'va_site_type', 'vadaszat' ) !== 'jarmu' ) {
+                update_option( 'va_site_type', 'jarmu' );
+            }
+        }
+
+        foreach ( $categories as $category ) {
+            $existing = get_term_by( 'slug', (string) $category['slug'], 'va_category' );
+            if ( ! $existing ) {
+                wp_insert_term( (string) $category['name'], 'va_category', [
+                    'slug' => (string) $category['slug'],
+                ] );
             }
         }
     }

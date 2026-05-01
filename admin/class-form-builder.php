@@ -10,15 +10,33 @@ class VA_Form_Builder {
     /* ── Alapértelmezett mezők minden formhoz ──────────── */
 
     public static function get_default_fields( string $form_id ): array {
-        $defaults = [
-            'va_listing_submit' => [
+        $site_type = sanitize_key( (string) get_option( 'va_site_type', 'vadaszat' ) );
+        $listing_submit_defaults = $site_type === 'jarmu'
+            ? [
+                [ 'key' => 'title',       'label' => 'Hirdetés címe',          'placeholder' => 'pl. Skoda Octavia 1.6 TDI',      'type' => 'text',     'required' => true,  'enabled' => true,  'order' => 1  ],
+                [ 'key' => 'category',    'label' => 'Járműkategória',          'placeholder' => '',                                 'type' => 'select',   'required' => true,  'enabled' => true,  'order' => 2  ],
+                [ 'key' => 'county',      'label' => 'Megye',                   'placeholder' => '',                                 'type' => 'select',   'required' => true,  'enabled' => true,  'order' => 3  ],
+                [ 'key' => 'condition',   'label' => 'Állapot',                 'placeholder' => '',                                 'type' => 'select',   'required' => false, 'enabled' => true,  'order' => 4  ],
+                [ 'key' => 'location',    'label' => 'Helyszín (város)',         'placeholder' => 'pl. Budapest, Győr...',            'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 5  ],
+                [ 'key' => 'brand',       'label' => 'Márka',                   'placeholder' => '',                                 'type' => 'select',   'required' => false, 'enabled' => true,  'order' => 6  ],
+                [ 'key' => 'model',       'label' => 'Modell / Típus',          'placeholder' => 'pl. Octavia, A4, Focus',          'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 7  ],
+                [ 'key' => 'body_type',   'label' => 'Kivitel',                 'placeholder' => '',                                 'type' => 'select',   'required' => false, 'enabled' => true,  'order' => 8  ],
+                [ 'key' => 'year',        'label' => 'Évjárat',                 'placeholder' => 'pl. 2019',                         'type' => 'number',   'required' => false, 'enabled' => true,  'order' => 9  ],
+                [ 'key' => 'price',       'label' => 'Ár (Ft)',                 'placeholder' => '0',                                'type' => 'number',   'required' => false, 'enabled' => true,  'order' => 10 ],
+                [ 'key' => 'price_type',  'label' => 'Árazás típusa',           'placeholder' => '',                                 'type' => 'select',   'required' => false, 'enabled' => true,  'order' => 11 ],
+                [ 'key' => 'description', 'label' => 'Leírás',                  'placeholder' => 'Részletes leírás...',              'type' => 'textarea', 'required' => true,  'enabled' => true,  'order' => 12 ],
+                [ 'key' => 'images',      'label' => 'Képek',                   'placeholder' => '',                                 'type' => 'file',     'required' => false, 'enabled' => true,  'order' => 13 ],
+                [ 'key' => 'phone',       'label' => 'Telefonszám',             'placeholder' => '+36 30 000 0000',                  'type' => 'tel',      'required' => true,  'enabled' => true,  'order' => 14 ],
+                [ 'key' => 'email_show',  'label' => 'E-mail megjelenítése',    'placeholder' => '',                                 'type' => 'checkbox', 'required' => false, 'enabled' => true,  'order' => 15 ],
+            ]
+            : [
                 [ 'key' => 'title',       'label' => 'Hirdetés címe',          'placeholder' => 'pl. Beretta A400 sörétes puska',  'type' => 'text',     'required' => true,  'enabled' => true,  'order' => 1  ],
                 [ 'key' => 'category',    'label' => 'Kategória',               'placeholder' => '',                                 'type' => 'select',   'required' => true,  'enabled' => true,  'order' => 2  ],
                 [ 'key' => 'county',      'label' => 'Megye',                   'placeholder' => '',                                 'type' => 'select',   'required' => true,  'enabled' => true,  'order' => 3  ],
                 [ 'key' => 'condition',   'label' => 'Állapot',                 'placeholder' => '',                                 'type' => 'select',   'required' => false, 'enabled' => true,  'order' => 4  ],
                 [ 'key' => 'location',    'label' => 'Helyszín (város)',         'placeholder' => 'pl. Budapest, Győr...',            'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 5  ],
                 [ 'key' => 'brand',       'label' => 'Márka / Gyártó',          'placeholder' => 'pl. Beretta, Sauer...',            'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 6  ],
-                [ 'key' => 'model',       'label' => 'Modell / Típus',          'placeholder' => 'pl. A400 Xcel',                   'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 7  ],
+                [ 'key' => 'model',       'label' => 'Modell / Típus',          'placeholder' => 'pl. A400 Xcel',                    'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 7  ],
                 [ 'key' => 'caliber',     'label' => 'Kaliber',                 'placeholder' => 'pl. 12/70, .308 Win',              'type' => 'text',     'required' => false, 'enabled' => true,  'order' => 8  ],
                 [ 'key' => 'year',        'label' => 'Gyártási év',             'placeholder' => 'pl. 2018',                         'type' => 'number',   'required' => false, 'enabled' => true,  'order' => 9  ],
                 [ 'key' => 'license_req', 'label' => 'Fegyverengedély szükséges', 'placeholder' => '',                              'type' => 'checkbox', 'required' => false, 'enabled' => true,  'order' => 10 ],
@@ -28,7 +46,9 @@ class VA_Form_Builder {
                 [ 'key' => 'images',      'label' => 'Képek',                   'placeholder' => '',                                 'type' => 'file',     'required' => false, 'enabled' => true,  'order' => 14 ],
                 [ 'key' => 'phone',       'label' => 'Telefonszám',             'placeholder' => '+36 30 000 0000',                  'type' => 'tel',      'required' => true,  'enabled' => true,  'order' => 15 ],
                 [ 'key' => 'email_show',  'label' => 'E-mail megjelenítése',    'placeholder' => '',                                 'type' => 'checkbox', 'required' => false, 'enabled' => true,  'order' => 16 ],
-            ],
+            ];
+        $defaults = [
+            'va_listing_submit' => $listing_submit_defaults,
             'va_register' => [
                 [ 'key' => 'account_type',   'label' => 'Fiók típus (Magánszemély / Cég)', 'placeholder' => '', 'type' => 'toggle',   'required' => false, 'enabled' => true, 'order' => 1  ],
                 [ 'key' => 'reg_firstname',  'label' => 'Keresztnév',             'placeholder' => 'pl. András',           'type' => 'text',     'required' => true,  'enabled' => true, 'order' => 2  ],
