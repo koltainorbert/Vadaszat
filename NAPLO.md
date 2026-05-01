@@ -20,6 +20,30 @@
 
 ---
 
+## 2026. 05. 01. – Session #124 (Nav hover/underline + kereső színek bővítése)
+
+### Mit csináltunk [x]
+- [x] Header/Footer admin beállítások bővítése új színkulcsokkal:
+  - `va_color_header_nav_underline`
+  - `va_color_header_search_border`
+  - `va_color_header_search_hover_border`
+  - `va_color_header_search_focus_border`
+  - `va_color_header_search_text`
+  - `va_color_header_search_placeholder`
+  - `va_color_header_search_btn_bg`
+  - `va_color_header_search_btn_hover_bg`
+- [x] Új mezők megjelenítése a Fejléc + Lábléc admin oldalon (nav + kereső blokk)
+- [x] Dinamikus CSS bekötés (`functions.php` root + theme mirror):
+  - nav hover szín működése javítva helyes szelektorral
+  - nav alsó vonal (`::after`) színe külön állítható
+  - kereső keret (alap/hover/fókusz), input betűszín, placeholder, gomb és gomb-hover szín külön állítható
+- [x] LocalWP deploy kész
+
+### Hol tartunk
+- A kért header nav és kereső színek most adminból szabadon állíthatók.
+
+---
+
 ## 2026. 04. 30. – Session #122 (Hero szín fix, deploy auto-detect, csomag limit fix)
 
 ### Mit csináltunk [x]
