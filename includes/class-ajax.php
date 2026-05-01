@@ -983,9 +983,13 @@ class VA_Ajax {
         }
 
         // ── Rendezés ─────────────────────────────────────
-        $order_sql = $boost_order_prefix . match ( $sort ) {
-            'price_asc'  => 'lm.featured DESC, lm.price ASC,  p.post_date DESC',
-            'price_desc' => 'lm.featured DESC, lm.price DESC, p.post_date DESC',
+        $is_price_sort = in_array( $sort, [ 'price_asc', 'price_desc' ], true );
+        $order_prefix  = $is_price_sort ? '' : $boost_order_prefix;
+
+        $order_sql = $order_prefix . match ( $sort ) {
+            // Ár rendezésnél legyen tiszta ár szerinti sorrend
+            'price_asc'  => 'lm.price ASC,  p.post_date DESC',
+            'price_desc' => 'lm.price DESC, p.post_date DESC',
             'views'      => 'lm.featured DESC, lm.views DESC, p.post_date DESC',
             default      => 'lm.featured DESC, p.post_date DESC',
         };

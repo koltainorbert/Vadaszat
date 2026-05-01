@@ -1,6 +1,18 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #143 (Kereső ár rendezés javítás)
+
+### Mit csináltunk [x]
+- [x] Beazonosítva: `Ár szerint` rendezésnél a `featured/boost` előresorolás felülírta a tiszta ár szerinti sorrendet
+- [x] Javítva a `va_filter_listings` rendezés: `price_asc` / `price_desc` esetén nincs `boost` prefix és nincs `featured` előresorolás
+- [x] Így ár rendezésnél ténylegesen az `lm.price` mező alapján történik a sorrend
+- [x] Plugin mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A keresőben az `Ár: csökkenő` most már valódi legdrágább->olcsóbb sorrendet ad.
+
+---
 ## 2026. 05. 02. – Session #142 (Kereső ár tartomány: 1 Ft – 100M Ft)
 
 ### Mit csináltunk [x]
