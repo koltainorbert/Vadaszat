@@ -1209,11 +1209,19 @@ updateHnOverflowState();
 
 <!-- HIRDETÉSEK -->
 <div style="margin-bottom:24px;">
+  <?php
+  $home_latest_label = (string) get_option( 'va_home_latest_label_text', 'ÚJ' );
+  $home_all_text     = (string) get_option( 'va_home_all_link_text', 'Összes →' );
+  $home_acc_color    = (string) get_option( 'va_home_section_accent_color', '#e27019' );
+  if ( ! preg_match( '/^#([A-Fa-f0-9]{3}|[A-Fa-f0-9]{6})$/', $home_acc_color ) ) {
+    $home_acc_color = '#e27019';
+  }
+  ?>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-        <h2 style="font-size:18px;font-weight:800;"><span style="display:inline-block;padding:1px 5px;margin-right:8px;border-radius:4px;background:#ff0000;color:#fff;font-size:10px;letter-spacing:.08em;vertical-align:2px;">ÚJ</span>Legújabb hirdetések</h2>
+    <h2 style="font-size:18px;font-weight:800;"><span style="display:inline-block;padding:1px 5px;margin-right:8px;border-radius:4px;background:<?php echo esc_attr( $home_acc_color ); ?>;color:#fff;font-size:10px;letter-spacing:.08em;vertical-align:2px;"><?php echo esc_html( $home_latest_label ); ?></span>Legújabb hirdetések</h2>
         <?php $search = get_page_by_path('va-hirdetes-kereses'); ?>
         <?php if ($search): ?>
-            <a href="<?php echo esc_url(get_permalink($search)); ?>" style="color:#ff0000;font-size:13px;text-decoration:none;">Összes →</a>
+      <a href="<?php echo esc_url(get_permalink($search)); ?>" style="color:<?php echo esc_attr( $home_acc_color ); ?>;font-size:13px;text-decoration:none;"><?php echo esc_html( $home_all_text ); ?></a>
         <?php endif; ?>
     </div>
 
@@ -1270,7 +1278,7 @@ if ($auctions->have_posts()): ?>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <h2 style="font-size:18px;font-weight:800;">🔨 Futó aukciók</h2>
         <?php $ap = get_page_by_path('va-aukciok'); ?>
-        <?php if ($ap): ?><a href="<?php echo esc_url(get_permalink($ap)); ?>" style="color:#ff0000;font-size:13px;text-decoration:none;">Összes →</a><?php endif; ?>
+        <?php if ($ap): ?><a href="<?php echo esc_url(get_permalink($ap)); ?>" style="color:<?php echo esc_attr( $home_acc_color ); ?>;font-size:13px;text-decoration:none;"><?php echo esc_html( $home_all_text ); ?></a><?php endif; ?>
     </div>
     <div class="va-grid">
         <?php while ($auctions->have_posts()): $auctions->the_post();

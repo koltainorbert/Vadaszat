@@ -93,6 +93,9 @@ class VA_Settings_Page {
             'va_home_hero_sub_text'          => 'Magyarország első vadászati hirdetőoldala',
             'va_home_hero_primary_cta_text'  => '+ Hirdetés feladása',
             'va_home_hero_secondary_cta_text'=> 'Hirdetések böngészése →',
+            'va_home_latest_label_text'      => 'ÚJ',
+            'va_home_all_link_text'          => 'Összes →',
+            'va_home_section_accent_color'   => '#e27019',
 
             // Kategória oldal hero szövegek
             'va_kategoria_hero_badge_text'   => 'Vadász Apróhirdetések',
@@ -1395,6 +1398,9 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_home_hero_sub_text',           'Főoldal hero alcím' ); ?>
                     <?php self::field_text(  'va_home_hero_primary_cta_text',   'Főoldal hero első gomb szöveg' ); ?>
                     <?php self::field_text(  'va_home_hero_secondary_cta_text', 'Főoldal hero második gomb szöveg' ); ?>
+                    <?php self::field_text(  'va_home_latest_label_text',       'Főoldal: „ÚJ” címke szöveg (Legújabb hirdetések)' ); ?>
+                    <?php self::field_text(  'va_home_all_link_text',           'Főoldal: „Összes” link szöveg (nyíllal)' ); ?>
+                    <?php self::field_color( 'va_home_section_accent_color',    'Főoldal: „ÚJ” + „Összes” accent szín' ); ?>
 
                     <?php self::field_text(  'va_kategoria_hero_badge_text',    'Kategória hero badge szöveg' ); ?>
                     <?php self::field_text(  'va_kategoria_hero_title_top',     'Kategória hero cím 1. sor' ); ?>
