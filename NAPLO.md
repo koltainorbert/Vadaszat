@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #134 (Telefon ikon eltávolítás)
+
+### Mit csináltunk [x]
+- [x] A `Telefonszám megjelenítése` gombból eltávolítva a telefon ikon
+- [x] A sticky mobil telefon gombból is eltávolítva az ikon
+- [x] Módosítva mind root, mind theme mirror sablonban
+- [x] Theme deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A telefon gomb csak szöveget jelenít meg, ikon nélkül.
+
+---
+
 ## 2026. 05. 01. – Session #133 (Főoldali „ÚJ” + „Összes →” szerkeszthető)
 
 ### Mit csináltunk [x]
