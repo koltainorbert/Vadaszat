@@ -989,7 +989,97 @@ class VA_Ajax {
             $params[] = $like;
         }
 
+        $meta_joins = [];
+
+        if ( $brand !== '' ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_brand ON (pm_brand.post_id = p.ID AND pm_brand.meta_key = 'va_brand')";
+            $where[] = 'pm_brand.meta_value = %s';
+            $params[] = $brand;
+        }
+
+        if ( $model !== '' ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_model ON (pm_model.post_id = p.ID AND pm_model.meta_key = 'va_model')";
+            $where[] = 'pm_model.meta_value = %s';
+            $params[] = $model;
+        }
+
+        if ( $body_type !== '' ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_body ON (pm_body.post_id = p.ID AND pm_body.meta_key = 'va_body_type')";
+            $where[] = 'pm_body.meta_value = %s';
+            $params[] = $body_type;
+        }
+
+        if ( $fuel_type !== '' ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_fuel ON (pm_fuel.post_id = p.ID AND pm_fuel.meta_key = 'va_fuel_type')";
+            $where[] = 'pm_fuel.meta_value = %s';
+            $params[] = $fuel_type;
+        }
+
+        if ( $year_min > 0 || $year_max > 0 ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_year ON (pm_year.post_id = p.ID AND pm_year.meta_key = 'va_year')";
+            if ( $year_min > 0 ) { $where[] = 'CAST(pm_year.meta_value AS UNSIGNED) >= %d'; $params[] = $year_min; }
+            if ( $year_max > 0 ) { $where[] = 'CAST(pm_year.meta_value AS UNSIGNED) <= %d'; $params[] = $year_max; }
+        }
+
+        if ( $mileage_min > 0 || $mileage_max > 0 ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_mileage ON (pm_mileage.post_id = p.ID AND pm_mileage.meta_key = 'va_mileage')";
+            if ( $mileage_min > 0 ) { $where[] = 'CAST(pm_mileage.meta_value AS UNSIGNED) >= %d'; $params[] = $mileage_min; }
+            if ( $mileage_max > 0 ) { $where[] = 'CAST(pm_mileage.meta_value AS UNSIGNED) <= %d'; $params[] = $mileage_max; }
+        }
+
+        if ( $engine_min > 0 || $engine_max > 0 ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_engine ON (pm_engine.post_id = p.ID AND pm_engine.meta_key = 'va_engine_size')";
+            if ( $engine_min > 0 ) { $where[] = 'CAST(pm_engine.meta_value AS UNSIGNED) >= %d'; $params[] = $engine_min; }
+            if ( $engine_max > 0 ) { $where[] = 'CAST(pm_engine.meta_value AS UNSIGNED) <= %d'; $params[] = $engine_max; }
+        }
+
+        if ( $vehicle_condition !== '' ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_vcond ON (pm_vcond.post_id = p.ID AND pm_vcond.meta_key = 'va_vehicle_condition')";
+            $where[] = 'pm_vcond.meta_value = %s';
+            $params[] = $vehicle_condition;
+        }
+
+        if ( $doors !== '' ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_doors ON (pm_doors.post_id = p.ID AND pm_doors.meta_key = 'va_doors')";
+            if ( $doors === '6' ) {
+                $where[] = 'CAST(pm_doors.meta_value AS UNSIGNED) >= 6';
+            } else {
+                $where[] = 'pm_doors.meta_value = %s';
+                $params[] = $doors;
+            }
+        }
+
+        if ( $passengers > 0 ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_pass ON (pm_pass.post_id = p.ID AND pm_pass.meta_key = 'va_passengers')";
+            $where[] = 'CAST(pm_pass.meta_value AS UNSIGNED) = %d';
+            $params[] = $passengers;
+        }
+
+        if ( $opt_automatic ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_trans ON (pm_trans.post_id = p.ID AND pm_trans.meta_key = 'va_transmission')";
+            $where[] = "(pm_trans.meta_value = 'automatic' OR pm_trans.meta_value = 'semi_auto' OR pm_trans.meta_value = 'cvt')";
+        }
+
+        if ( $opt_awd ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_drive ON (pm_drive.post_id = p.ID AND pm_drive.meta_key = 'va_drive')";
+            $where[] = "(pm_drive.meta_value = 'osszkerek_kapc' OR pm_drive.meta_value = 'osszkerek_allando')";
+        }
+
+        if ( $opt_service_book ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_srv ON (pm_srv.post_id = p.ID AND pm_srv.meta_key = 'va_service_book')";
+            $where[] = "pm_srv.meta_value = '1'";
+        }
+
+        if ( ! empty( $extras ) ) {
+            $meta_joins[] = "LEFT JOIN {$wpdb->postmeta} pm_extras ON (pm_extras.post_id = p.ID AND pm_extras.meta_key = 'va_extras')";
+            foreach ( $extras as $ex ) {
+                $where[] = 'pm_extras.meta_value LIKE %s';
+                $params[] = '%"' . $wpdb->esc_like( $ex ) . '"%';
+            }
+        }
+
         $where_sql = 'WHERE ' . implode( ' AND ', $where );
+        $meta_join_sql = implode( "\n", array_values( array_unique( $meta_joins ) ) );
 
         // ── Boost rendezés konfig ─────────────────────────
         $boost_join         = '';
@@ -1021,6 +1111,7 @@ class VA_Ajax {
         $count_sql = $wpdb->prepare(
             "SELECT COUNT(*) FROM {$posts} p
              LEFT JOIN {$lm} lm ON lm.post_id = p.ID
+             {$meta_join_sql}
              {$boost_join}
              {$where_sql}",
             ...$params
@@ -1031,6 +1122,7 @@ class VA_Ajax {
         $id_sql = $wpdb->prepare(
             "SELECT p.ID FROM {$posts} p
              LEFT JOIN {$lm} lm ON lm.post_id = p.ID
+             {$meta_join_sql}
              {$boost_join}
              {$where_sql}
              ORDER BY {$order_sql}

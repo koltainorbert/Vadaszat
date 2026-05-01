@@ -1,6 +1,31 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #145 (Használtautó jellegű részletes autós szűrők)
+
+### Mit csináltunk [x]
+- [x] A kereső űrlap kibővítve részletes autós mezőkkel:
+  - Márka, Modell (függő), Kivitel, Üzemanyag
+  - Évjárat tól/ig, Km óra tól/ig, Hengerűrtartalom tól/ig
+  - Állapot, Ajtók száma, Ülések száma
+  - Checkbox alapú extra szűrők (automata, tempomat, összkerék, alufelni, elektromos ablak, vonóhorog, ISOFIX, ESP, szervizkönyv)
+  - Találat/oldal választó (25 / 50 / 100)
+- [x] Frontend JS bővítve:
+  - Márka -> modell dinamikus opciófrissítés (`vehicle_brand_models` alapján)
+  - Új mezők beküldése AJAX payloadban
+  - Új mezőkre automatikus újraszűrés (change/input)
+  - Reset után modell lista + range vizuális állapot frissítés
+- [x] Backend (`va_filter_listings`) bővítve:
+  - Új paraméterek fogadása és cache kulcsba emelése
+  - SQL `postmeta` joinok + WHERE szűrések a fenti autós mezőkre
+  - Extra checkbox szűrés `va_extras` JSON-ben `LIKE` kereséssel
+  - `per_page` kezelés: 25/50/100 whitelist
+- [x] Plugin mirror + deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A kereső oldalon már a kért Használtautó-szerű autós feltételek szerint lehet szűrni, backendben tényleges SQL szűréssel.
+
+---
 ## 2026. 05. 02. – Session #144 (Keresőben hiányzó hirdetés default árszűrő miatt)
 
 ### Mit csináltunk [x]

@@ -80,6 +80,25 @@
     var right = 100 - (maxV / total) * 100;
     $('#va-range-fill').css({ left: left + '%', right: right + '%' });
   }
+
+  function va_update_model_options(selectedModel) {
+    var $brand = $('#va-brand-search');
+    var $model = $('#va-model-search');
+    if (!$brand.length || !$model.length) return;
+
+    var map = (typeof VA_Data !== 'undefined' && VA_Data.vehicle_brand_models) ? VA_Data.vehicle_brand_models : {};
+    var brand = ($brand.val() || '').trim();
+    var models = (brand && map[brand] && Array.isArray(map[brand])) ? map[brand] : [];
+
+    var html = '<option value="">Modell: Mindegy</option>';
+    models.forEach(function(m) {
+      var safe = $('<div>').text(m).html();
+      var sel = (selectedModel && selectedModel === m) ? ' selected' : '';
+      html += '<option value="' + safe + '"' + sel + '>' + safe + '</option>';
+    });
+    $model.html(html);
+  }
+
   $(document).on('input', '#va-min-price, #va-max-price', function() {
     va_update_range();
     clearTimeout(filterTimeout);
@@ -163,6 +182,11 @@
     var maxLimit  = parseInt($minR.attr('max') || 100000000);
     var minVal    = $minR.length ? parseInt($minR.val()) : 1;
     var maxVal    = $maxR.length ? parseInt($maxR.val()) : maxLimit;
+    var extras = [];
+    $('.va-car-filter[data-extra]:checked').each(function() {
+      var key = ($(this).data('extra') || '').toString().trim();
+      if (key) extras.push(key);
+    });
 
     var data = {
       action:     'va_filter_listings',
@@ -175,7 +199,25 @@
       max_price:  (maxVal > 0 && maxVal < maxLimit) ? maxVal : 0,
       sort:       $('#va-sort').val(),
       post_type:  $form.data('post-type') || 'va_listing',
-      author_id:  $form.data('author-id') || 0
+      author_id:  $form.data('author-id') || 0,
+      brand:      $('#va-brand-search').val() || '',
+      model:      $('#va-model-search').val() || '',
+      body_type:  $('#va-body-type').val() || '',
+      fuel_type:  $('#va-fuel-type').val() || '',
+      year_min:   parseInt($('#va-year-min').val() || 0),
+      year_max:   parseInt($('#va-year-max').val() || 0),
+      mileage_min: parseInt($('#va-mileage-min').val() || 0),
+      mileage_max: parseInt($('#va-mileage-max').val() || 0),
+      engine_min: parseInt($('#va-engine-min').val() || 0),
+      engine_max: parseInt($('#va-engine-max').val() || 0),
+      vehicle_condition: $('#va-vehicle-condition').val() || '',
+      doors:      $('#va-doors').val() || '',
+      passengers: $('#va-passengers').val() || '',
+      opt_automatic: $('#va-opt-automatic').is(':checked') ? 1 : 0,
+      opt_awd:    $('#va-opt-awd').is(':checked') ? 1 : 0,
+      opt_service_book: $('#va-opt-service-book').is(':checked') ? 1 : 0,
+      extras:     extras,
+      per_page:   parseInt($('input[name="va-per-page"]:checked').val() || 25)
     };
 
     $.post(VA_Data.ajax_url, data, function(res) {
@@ -192,17 +234,27 @@
   }
 
   // filter esemény
-  $(document).on('change', '#va-cat, #va-county, #va-cond, #va-sort', function() {
+  $(document).on('change', '#va-cat, #va-county, #va-cond, #va-sort, #va-brand-search, #va-model-search, #va-body-type, #va-fuel-type, #va-vehicle-condition, #va-doors, #va-passengers, input[name="va-per-page"]', function() {
+    if (this.id === 'va-brand-search') {
+      va_update_model_options('');
+    }
     va_load_listings(1);
   });
 
-  $(document).on('input', '#va-kw, #va-min-price, #va-max-price', function() {
+  $(document).on('input', '#va-kw, #va-min-price, #va-max-price, #va-year-min, #va-year-max, #va-mileage-min, #va-mileage-max, #va-engine-min, #va-engine-max', function() {
+    clearTimeout(filterTimeout);
+    filterTimeout = setTimeout(function() { va_load_listings(1); }, 450);
+  });
+
+  $(document).on('change', '.va-car-filter, #va-opt-automatic, #va-opt-awd, #va-opt-service-book', function() {
     clearTimeout(filterTimeout);
     filterTimeout = setTimeout(function() { va_load_listings(1); }, 450);
   });
 
   $(document).on('click', '#va-filter-reset', function() {
     $('#va-filter-form')[0].reset();
+    va_update_model_options('');
+    va_update_range();
     va_load_listings(1);
   });
 
@@ -391,6 +443,7 @@
 
   // ── Oldal betöltésekor szűrő init ────────────────────────
   if ($('#va-filter-form').length && $('#va-listing-results').length) {
+    va_update_model_options('');
     if (typeof VA_Data !== 'undefined') {
       if (VA_Data.initial_s)          { $('#va-kw').val(VA_Data.initial_s); }
       if (parseInt(VA_Data.initial_cat) > 0)        { $('#va-cat').val(VA_Data.initial_cat); }
