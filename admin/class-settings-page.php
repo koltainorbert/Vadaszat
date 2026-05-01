@@ -994,6 +994,7 @@ class VA_Settings_Page {
             'va_sl_share_label_color'      => 'rgba(255,255,255,.45)',
             'va_sl_phone_icon_size'        => 16,
             'va_sl_phone_icon_color'       => '#ffffff',
+            'va_sl_watch_btn_color'        => 'rgba(255,255,255,.75)',
             'va_sl_expired_color'          => '#ff6060',
             'va_sl_sticky_bg'              => 'rgba(10,10,10,.95)',
             'va_sl_sticky_title_color'     => '#ffffff',
@@ -5685,6 +5686,7 @@ class VA_Settings_Page {
                                 <?php self::field_color( 'va_sl_share_label_color',  '"Megosztás:" felirat szín' ); ?>
                                 <?php self::field_num( 'va_sl_phone_icon_size', 'Telefon ikon méret (px)', 12, 32 ); ?>
                                 <?php self::field_color( 'va_sl_phone_icon_color', 'Telefon ikon szín' ); ?>
+                                <?php self::field_color( 'va_sl_watch_btn_color', '"Mentés kedvencekbe" gomb betűszín' ); ?>
                             </table>
                         </div>
 

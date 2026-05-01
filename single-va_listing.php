@@ -543,6 +543,7 @@ $sl_lbl_related         = (string) get_option( 'va_sl_lbl_related',         'Has
 $sl_lbl_phone_btn_text   = (string) get_option( 'va_sl_lbl_phone_btn',       'Telefonsz&#225;m megjelen&#237;t&#233;se' );
 $sl_phone_icon_size     = max( 12, min( 32, absint( get_option( 'va_sl_phone_icon_size', 16 ) ) ) );
 $sl_phone_icon_color    = sanitize_text_field( (string) get_option( 'va_sl_phone_icon_color', '#ffffff' ) );
+$sl_watch_btn_color     = sanitize_text_field( (string) get_option( 'va_sl_watch_btn_color', 'rgba(255,255,255,.75)' ) );
 $sl_lbl_email_btn       = (string) get_option( 'va_sl_lbl_email_btn',       '&#9993; E-mail &#252;zenet k&#252;ld&#233;se' );
 $sl_lbl_watch_add       = (string) get_option( 'va_sl_lbl_watch_add',       '&#9734; Ment&#233;s kedvencekbe' );
 $sl_lbl_watch_remove    = (string) get_option( 'va_sl_lbl_watch_remove',    '&#9733; Kedvencekb&#337;l elt&#225;vol&#237;t&#225;s' );
@@ -889,6 +890,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__rel-title { color: <?php echo esc_attr( $sl_related_title_color ); ?> !important; }
 .sl__rel-meta { color: <?php echo esc_attr( $sl_related_meta_color ); ?> !important; }
 .sl__phone-icon { font-size: <?php echo esc_attr( (string) $sl_phone_icon_size ); ?>px !important; color: <?php echo esc_attr( $sl_phone_icon_color ); ?> !important; line-height:1; vertical-align:middle; margin-right:5px; }
+.sl__btn--watch { color: <?php echo esc_attr( $sl_watch_btn_color ); ?> !important; }
 </style>
 
 
