@@ -1,6 +1,20 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #135 (Kapcsolat űrlap redirect fix)
+
+### Mit csináltunk [x]
+- [x] A kapcsolat űrlap küldése utáni redirect fixen a `/kapcsolat/` oldalra állítva
+- [x] A korábbi referer-alapú visszairányítás eltávolítva
+- [x] Módosítva root és theme mirror `functions.php` fájlban
+- [x] Theme deploy lefuttatva LocalWP-re
+- [x] Ellenőrzés: `admin-post.php?action=va_contact_form` -> `302 Location: /kapcsolat/`
+
+### Hol tartunk
+- Email küldésnél a visszairányítás most mindig a kapcsolat oldalra történik.
+
+---
+
 ## 2026. 05. 01. – Session #134 (Telefon ikon eltávolítás)
 
 ### Mit csináltunk [x]
