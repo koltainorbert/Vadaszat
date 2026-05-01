@@ -4,9 +4,11 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+$site_type = sanitize_key( (string) get_option( 'va_site_type', 'vadaszat' ) );
+
 /* ── Helper: egyes mező HTML kimenete ──────────────── */
 if ( ! function_exists( 'self_render_listing_field' ) ) {
-    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions, array $brands = [], array $body_types = [], array $ev = [] ): void {
+    function self_render_listing_field( string $key, string $ph, string $req_attr, array $categories, array $counties, array $conditions, array $brands = [], array $body_types = [], array $brand_models = [], string $site_type = 'vadaszat', array $ev = [] ): void {
         $val = $ev[ $key ] ?? '';
         switch ( $key ) {
             case 'title':
@@ -44,7 +46,11 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'brand':
-                echo '<select name="brand" class="va-select">';
+                if ( $site_type !== 'jarmu' ) {
+                    echo '<input type="text" name="brand" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                    break;
+                }
+                echo '<select name="brand" id="va-brand" class="va-select">';
                 echo '<option value="">– Válasszon –</option>';
                 if ( $val !== '' && ! in_array( (string) $val, $brands, true ) ) {
                     echo '<option value="' . esc_attr( (string) $val ) . '" selected>' . esc_html( (string) $val ) . '</option>';
@@ -55,7 +61,21 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '</select>';
                 break;
             case 'model':
-                echo '<input type="text" name="model" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                if ( $site_type !== 'jarmu' ) {
+                    echo '<input type="text" name="model" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                    break;
+                }
+                $brand_value = (string) ( $ev['brand'] ?? '' );
+                $models_for_brand = isset( $brand_models[ $brand_value ] ) && is_array( $brand_models[ $brand_value ] ) ? $brand_models[ $brand_value ] : [];
+                echo '<select name="model" id="va-model" class="va-select" data-placeholder="' . esc_attr( $ph ) . '">';
+                echo '<option value="">– Válasszon –</option>';
+                if ( $val !== '' && ! in_array( (string) $val, $models_for_brand, true ) ) {
+                    echo '<option value="' . esc_attr( (string) $val ) . '" selected>' . esc_html( (string) $val ) . '</option>';
+                }
+                foreach ( $models_for_brand as $model ) {
+                    echo '<option value="' . esc_attr( $model ) . '"' . selected( (string) $val, $model, false ) . '>' . esc_html( $model ) . '</option>';
+                }
+                echo '</select>';
                 break;
             case 'body_type':
                 echo '<select name="body_type" class="va-select">';
@@ -155,6 +175,7 @@ $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false ] 
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 $brands     = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_brands() : [];
+$brand_models = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_brand_models() : [];
 $body_types = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_body_type_options() : [];
 
 /* ── Edit mód felismerés ───────────────────────────── */
@@ -274,6 +295,8 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         return [ 'id' => $id, 'url' => $src ?: '' ];
     }, $edit_gallery ?? [] ) : [],
     'edit_thumb'     => $edit_mode ? $edit_thumb : 0,
+    'site_type'      => $site_type,
+    'vehicle_brand_models' => $site_type === 'jarmu' ? $brand_models : [],
 ]);
 ?>
 <div class="va-wrap">
@@ -330,14 +353,23 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         $opened_sections = [];
 
         // Párba rakandó mezők (2-oszlopos sor)
-        $pair_groups = [
-            ['category', 'county'],
-            ['condition','location'],
-            ['brand',    'model'],
-            ['caliber',  'year'],
-            ['price',    'price_type'],
-            ['phone',    'email_show'],
-        ];
+        $pair_groups = $site_type === 'jarmu'
+            ? [
+                ['category', 'county'],
+                ['condition','location'],
+                ['brand',    'model'],
+                ['body_type','year'],
+                ['price',    'price_type'],
+                ['phone',    'email_show'],
+            ]
+            : [
+                ['category', 'county'],
+                ['condition','location'],
+                ['brand',    'model'],
+                ['caliber',  'year'],
+                ['price',    'price_type'],
+                ['phone',    'email_show'],
+            ];
         $pair_map = [];
         foreach ( $pair_groups as $pair ) {
             $pair_map[ $pair[0] ] = $pair[1];
@@ -391,12 +423,12 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 // Mező 1
                 echo '<div class="va-form-group">';
                 echo "<label>{$label}{$req_html}</label>";
-                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $brands, $body_types, $edit_meta );
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $brands, $body_types, $brand_models, $site_type, $edit_meta );
                 echo '</div>';
                 // Mező 2
                 echo '<div class="va-form-group">';
                 echo "<label>{$p2_label}{$p2_req_html}</label>";
-                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions, $brands, $body_types, $edit_meta );
+                self_render_listing_field( $partner_key, $p2_ph, $p2_req_attr, $categories, $counties, $conditions, $brands, $body_types, $brand_models, $site_type, $edit_meta );
                 echo '</div>';
                 echo '</div>';
             else:
@@ -404,7 +436,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 // Teljes soros mező
                 echo '<div class="va-form-group">';
                 echo "<label>{$label}{$req_html}</label>";
-                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $brands, $body_types, $edit_meta );
+                self_render_listing_field( $fkey, $ph, $req_attr, $categories, $counties, $conditions, $brands, $body_types, $brand_models, $site_type, $edit_meta );
                 echo '</div>';
             endif;
         endforeach;
@@ -667,6 +699,39 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     })();
+
+    function rebuildVehicleModelOptions() {
+        if (typeof VA_Data === 'undefined' || VA_Data.site_type !== 'jarmu') return;
+
+        var $brand = $('#va-brand');
+        var $model = $('#va-model');
+        if (!$brand.length || !$model.length) return;
+
+        var brand = $brand.val() || '';
+        var models = (VA_Data.vehicle_brand_models && VA_Data.vehicle_brand_models[brand]) ? VA_Data.vehicle_brand_models[brand] : [];
+        var current = $model.data('selected') || $model.val() || '';
+        var html = '<option value="">– Válasszon –</option>';
+
+        if (current && models.indexOf(current) === -1) {
+            html += '<option value="' + $('<div>').text(current).html() + '">' + $('<div>').text(current).html() + '</option>';
+        }
+
+        models.forEach(function(model) {
+            var safe = $('<div>').text(model).html();
+            html += '<option value="' + safe + '">' + safe + '</option>';
+        });
+
+        $model.html(html);
+        if (current) {
+            $model.val(current);
+        }
+    }
+
+    $('#va-brand').on('change', function(){
+        $('#va-model').data('selected', '');
+        rebuildVehicleModelOptions();
+    });
+    rebuildVehicleModelOptions();
 
     /* ══ Form submit ═════════════════════════════════════ */
     $('#va-submit-form').on('submit', function(e){

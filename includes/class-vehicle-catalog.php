@@ -7,6 +7,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 class VA_Vehicle_Catalog {
 
+    private static $brand_models = null;
+
     public static function get_dataset_version(): string {
         return 'hasznaltauto-2026-05-01';
     }
@@ -54,5 +56,81 @@ class VA_Vehicle_Catalog {
             'minibus'             => 'kisbusz',
             'single_cab_chassis'  => 'alváz szimpla kabin',
         ];
+    }
+
+    public static function get_brand_models(): array {
+        if ( self::$brand_models !== null ) {
+            return self::$brand_models;
+        }
+
+        $file = __DIR__ . '/vehicle-brand-models.json';
+        if ( ! file_exists( $file ) ) {
+            self::$brand_models = [];
+            return self::$brand_models;
+        }
+
+        $raw = file_get_contents( $file );
+        if ( ! is_string( $raw ) || trim( $raw ) === '' ) {
+            self::$brand_models = [];
+            return self::$brand_models;
+        }
+
+        $decoded = json_decode( $raw, true );
+        if ( ! is_array( $decoded ) ) {
+            self::$brand_models = [];
+            return self::$brand_models;
+        }
+
+        $normalized = [];
+        foreach ( $decoded as $brand => $models ) {
+            $brand_name = self::normalize_label( (string) $brand );
+            if ( $brand_name === '' || ! is_array( $models ) ) {
+                continue;
+            }
+
+            $clean_models = [];
+            foreach ( $models as $model ) {
+                $model_name = self::normalize_label( (string) $model );
+                if ( $model_name !== '' ) {
+                    $clean_models[] = $model_name;
+                }
+            }
+
+            $normalized[ $brand_name ] = array_values( array_unique( $clean_models ) );
+        }
+
+        self::$brand_models = $normalized;
+        return self::$brand_models;
+    }
+
+    private static function normalize_label( string $value ): string {
+        $value = trim( $value );
+        if ( $value === '' ) {
+            return '';
+        }
+
+        $replacements = [
+            "â€“Â " => '- ',
+            "â€“ "  => '- ',
+            'â€“'    => '-',
+            'Â '     => ' ',
+            'NÂ°'    => 'N°',
+            'Ă–'    => 'Ö',
+            'Ă'    => 'Á',
+            'Ă‰'    => 'É',
+            'Ă“'    => 'Ó',
+            'Ăś'    => 'ö',
+            'Ăź'    => 'ü',
+            'Ăš'    => 'Ú',
+            'Ăœ'    => 'Ü',
+            'NĂś'   => 'NÖ',
+            'SĂś'   => 'SÖ',
+            'BOGĂR' => 'BOGÁR',
+        ];
+
+        $value = str_replace( array_keys( $replacements ), array_values( $replacements ), $value );
+        $value = preg_replace( '/\s+/u', ' ', $value );
+
+        return trim( (string) $value );
     }
 }
