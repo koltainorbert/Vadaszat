@@ -6,28 +6,29 @@
     <?php wp_head(); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
     <style>
-        .va-lang-sw__toggle { color: #1e3154 !important; background: rgba(255,255,255,.85) !important; border-color: rgba(30,49,84,.25) !important; }
-        .va-lang-sw__toggle .va-lang-code, .va-lang-sw__toggle svg { color: #1e3154 !important; stroke: #1e3154 !important; }
-        .va-lang-sw__toggle .fi { width: 1.33em; height: 1em; vertical-align: middle; border-radius: 2px; }
-        .va-lang-sw__item, .va-lang-sw__item span, .va-lang-code { color: #fff !important; }
-        .va-lang-sw__item .fi { width: 1.33em; height: 1em; vertical-align: middle; border-radius: 2px; }
+        /* Lang switcher toggle gomb */
         .va-lang-sw__toggle {
+            color: #1e3154 !important;
+            background: rgba(255,255,255,.88) !important;
+            border-color: rgba(30,49,84,.25) !important;
+        }
+        .va-lang-sw__toggle .va-lang-code { color: #1e3154 !important; }
+        .va-lang-sw__toggle svg path { stroke: #1e3154 !important; }
+        /* flag-icons: ne törd felül, csak igazíts */
+        .va-lang-sw__toggle .fi,
+        .va-lang-sw__item .fi {
+            vertical-align: middle;
+            border-radius: 2px;
+            margin-right: 2px;
+        }
+        /* Dropdown tételek */
+        .va-lang-sw__item, .va-lang-sw__item span { color: #fff !important; }
         .va-lang-sw__dropdown {
             background: #1a1a1a !important;
             border: 1px solid rgba(255,255,255,.12) !important;
         }
-        .va-lang-sw__item:hover {
-            background: rgba(255,255,255,.09) !important;
-        }
-        .va-lang-sw__item.active {
-            background: rgba(255,200,0,.13) !important;
-            color: #fff !important;
-        }
-        .va-lang-flag {
-            color: unset !important;
-            filter: none !important;
-            opacity: 1 !important;
-        }
+        .va-lang-sw__item:hover { background: rgba(255,255,255,.09) !important; }
+        .va-lang-sw__item.active { background: rgba(255,200,0,.13) !important; color: #fff !important; }
     </style>
 </head>
 <body <?php body_class(); ?>>
