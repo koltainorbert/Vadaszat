@@ -20,6 +20,7 @@ class VA_Vehicle_Catalog {
             [ 'name' => 'Családi autó',   'slug' => 'csaladi-auto' ],
             [ 'name' => 'Terepjáró',      'slug' => 'terepjaro' ],
             [ 'name' => 'Kishaszonjármű', 'slug' => 'kishaszonjarmu' ],
+            [ 'name' => 'Motor',          'slug' => 'motor' ],
         ];
     }
 
