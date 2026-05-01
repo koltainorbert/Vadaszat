@@ -6,16 +6,12 @@
     <?php wp_head(); ?>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
     <style>
-        .fi { font-size: 18px; line-height: 1; display: inline-block; vertical-align: middle; }
-        .va-lang-sw__toggle, .va-lang-sw__toggle *,
-        .va-lang-sw__item, .va-lang-sw__item *,
-        .va-lang-sw__item span, .va-lang-code {
-            color: #fff !important;
-        }
+        .va-lang-sw__toggle { color: #1e3154 !important; background: rgba(255,255,255,.85) !important; border-color: rgba(30,49,84,.25) !important; }
+        .va-lang-sw__toggle .va-lang-code, .va-lang-sw__toggle svg { color: #1e3154 !important; stroke: #1e3154 !important; }
+        .va-lang-sw__toggle .fi { width: 1.33em; height: 1em; vertical-align: middle; border-radius: 2px; }
+        .va-lang-sw__item, .va-lang-sw__item span, .va-lang-code { color: #fff !important; }
+        .va-lang-sw__item .fi { width: 1.33em; height: 1em; vertical-align: middle; border-radius: 2px; }
         .va-lang-sw__toggle {
-            background: rgba(255,255,255,.06) !important;
-            border-color: rgba(255,255,255,.12) !important;
-        }
         .va-lang-sw__dropdown {
             background: #1a1a1a !important;
             border: 1px solid rgba(255,255,255,.12) !important;
@@ -258,10 +254,10 @@
                 ?>
                         <div class="va-lang-sw notranslate" id="va-lang-sw" translate="no">
                             <button type="button" class="va-lang-sw__toggle notranslate" id="va-lang-toggle"
-                                    aria-haspopup="true" aria-expanded="false" translate="no" style="color:#fff !important;">
+                                    aria-haspopup="true" aria-expanded="false" translate="no" style="color:#1e3154 !important;">
                                 <?php $fc = isset($va_flag_map[$curr_code]) ? $va_flag_map[$curr_code] : $curr_code; ?>
                                 <span class="fi fi-<?php echo esc_attr($fc); ?>" style="border-radius:2px;"></span>
-                                <span class="va-lang-code" style="color:#fff !important;"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
+                                <span class="va-lang-code" style="color:#1e3154 !important;"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
                                 <svg class="va-lang-sw__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                             </button>
                             <div class="va-lang-sw__dropdown notranslate" id="va-lang-dropdown" hidden translate="no">
