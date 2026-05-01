@@ -27,7 +27,7 @@ $lp_cat_placeholder = (string) get_option( 'va_lp_cat_placeholder', '– Kategó
 $lp_co_placeholder  = (string) get_option( 'va_lp_county_placeholder', '– Megye –' );
 $lp_cond_placeholder= (string) get_option( 'va_lp_cond_placeholder', '– Állapot –' );
 $lp_slider_label    = (string) get_option( 'va_lp_slider_label_text', 'Ár szűrő' );
-$lp_slider_max      = max( 100, (int) get_option( 'va_lp_slider_max', 5000000 ) );
+$lp_slider_max      = max( 100000000, (int) get_option( 'va_lp_slider_max', 100000000 ) );
 $lp_slider_step     = max( 1, (int) get_option( 'va_lp_slider_step', 500 ) );
 $lp_sort_default    = (string) get_option( 'va_lp_sort_default_lbl', 'Legújabb' );
 $lp_sort_price_asc  = (string) get_option( 'va_lp_sort_price_asc_lbl', 'Ár: növekvő' );
@@ -138,11 +138,11 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                 <div class="va-price-slider-wrap">
                     <div class="va-price-slider-labels">
                         <span><?php echo esc_html( $lp_slider_label ); ?></span>
-                        <span class="va-price-slider-display"><span id="va-min-price-display">0</span> – <span id="va-max-price-display"><?php echo esc_html( number_format( $lp_slider_max, 0, ',', ' ' ) ); ?></span> Ft</span>
+                        <span class="va-price-slider-display"><span id="va-min-price-display">1</span> – <span id="va-max-price-display"><?php echo esc_html( number_format( $lp_slider_max, 0, ',', ' ' ) ); ?></span> Ft</span>
                     </div>
                     <div class="va-price-slider-track">
-                        <input type="range" id="va-min-price" class="va-range" min="0" max="<?php echo esc_attr( $lp_slider_max ); ?>" step="<?php echo esc_attr( $lp_slider_step ); ?>" value="0">
-                        <input type="range" id="va-max-price" class="va-range" min="0" max="<?php echo esc_attr( $lp_slider_max ); ?>" step="<?php echo esc_attr( $lp_slider_step ); ?>" value="<?php echo esc_attr( $lp_slider_max ); ?>">
+                        <input type="range" id="va-min-price" class="va-range" min="1" max="<?php echo esc_attr( $lp_slider_max ); ?>" step="<?php echo esc_attr( $lp_slider_step ); ?>" value="1">
+                        <input type="range" id="va-max-price" class="va-range" min="1" max="<?php echo esc_attr( $lp_slider_max ); ?>" step="<?php echo esc_attr( $lp_slider_step ); ?>" value="<?php echo esc_attr( $lp_slider_max ); ?>">
                         <div class="va-range-fill" id="va-range-fill"></div>
                     </div>
                 </div>

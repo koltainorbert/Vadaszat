@@ -67,7 +67,7 @@
     if (!$min.length) return;
     var minV  = parseInt($min.val());
     var maxV  = parseInt($max.val());
-    var total = parseInt($min.attr('max')) || 50000000;
+    var total = parseInt($min.attr('max')) || 100000000;
     // csere ha min > max
     if (minV > maxV) {
       var tmp = minV; minV = maxV; maxV = tmp;
@@ -160,9 +160,9 @@
 
     var $minR     = $('#va-min-price');
     var $maxR     = $('#va-max-price');
-    var maxLimit  = parseInt($minR.attr('max') || 50000000);
-    var minVal    = $minR.length ? parseInt($minR.val()) : 0;
-    var maxVal    = $maxR.length ? parseInt($maxR.val()) : 0;
+    var maxLimit  = parseInt($minR.attr('max') || 100000000);
+    var minVal    = $minR.length ? parseInt($minR.val()) : 1;
+    var maxVal    = $maxR.length ? parseInt($maxR.val()) : maxLimit;
 
     var data = {
       action:     'va_filter_listings',
@@ -171,7 +171,7 @@
       category:   $('#va-cat').val(),
       county:     $('#va-county').val(),
       condition:  $('#va-cond').val(),
-      min_price:  minVal > 0 ? minVal : 0,
+      min_price:  minVal > 0 ? minVal : 1,
       max_price:  (maxVal > 0 && maxVal < maxLimit) ? maxVal : 0,
       sort:       $('#va-sort').val(),
       post_type:  $form.data('post-type') || 'va_listing',
