@@ -329,9 +329,19 @@
         </div>
     </header>
 
-    <!-- ═══ VIDEO HERO (csak főoldalon) ════════════════════ -->
+    <!-- ═══ HERO (csak főoldalon) ════════════════════ -->
     <?php if ( is_front_page() ):
-        $hero_video = get_option( 'va_home_hero_video_url', content_url( 'uploads/2026/04/521380_Gun_Woman_1920x1080.mp4' ) );
+        $hero_bg_type      = get_option( 'va_home_hero_bg_type', 'video' );
+        $hero_video        = get_option( 'va_home_hero_video_url', content_url( 'uploads/2026/04/521380_Gun_Woman_1920x1080.mp4' ) );
+        $hero_static_img   = get_option( 'va_home_hero_static_image', '' );
+        $carousel_raw      = get_option( 'va_home_hero_carousel_images', '[]' );
+        $carousel_imgs     = json_decode( $carousel_raw, true );
+        if ( ! is_array( $carousel_imgs ) ) $carousel_imgs = [];
+        $carousel_trans    = get_option( 'va_home_hero_carousel_transition', 'fade' );
+        $carousel_speed    = (int) get_option( 'va_home_hero_carousel_speed', 800 );
+        $carousel_interval = (int) get_option( 'va_home_hero_carousel_interval', 5000 );
+        $carousel_arrows   = get_option( 'va_home_hero_carousel_arrows', '1' ) === '1';
+        $carousel_dots     = get_option( 'va_home_hero_carousel_dots', '1' ) === '1';
         $submit_page = get_page_by_path('va-hirdetes-feladas');
         $search_page = get_page_by_path('va-hirdetes-kereses');
         $home_badge  = get_option( 'va_home_hero_badge_text', 'Magyarország első vadászati hirdetőoldala' );
@@ -341,12 +351,40 @@
         $home_cta_1  = get_option( 'va_home_hero_primary_cta_text', '+ Hirdetés feladása' );
         $home_cta_2  = get_option( 'va_home_hero_secondary_cta_text', 'Hirdetések böngészése →' );
     ?>
-    <div class="vh">
-        <?php if ( $hero_video ): ?>
-        <video class="vh__video" autoplay muted loop playsinline preload="auto"
-               aria-hidden="true">
+    <div class="vh<?php echo $hero_bg_type === 'carousel' ? ' vh--carousel' : ''; ?>"
+         <?php if ( $hero_bg_type === 'carousel' ): ?>
+         data-transition="<?php echo esc_attr($carousel_trans); ?>"
+         data-speed="<?php echo esc_attr($carousel_speed); ?>"
+         data-interval="<?php echo esc_attr($carousel_interval); ?>"
+         <?php endif; ?>>
+
+        <?php if ( $hero_bg_type === 'video' && $hero_video ): ?>
+        <video class="vh__video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
             <source src="<?php echo esc_url($hero_video); ?>" type="video/mp4">
         </video>
+
+        <?php elseif ( $hero_bg_type === 'image' && $hero_static_img ): ?>
+        <div class="vh__static-bg" style="background-image:url('<?php echo esc_url($hero_static_img); ?>')" aria-hidden="true"></div>
+
+        <?php elseif ( $hero_bg_type === 'carousel' && ! empty($carousel_imgs) ): ?>
+        <div class="vh__carousel-track" aria-hidden="true">
+            <?php foreach ( $carousel_imgs as $idx => $img_url ): ?>
+            <div class="vh__slide<?php echo $idx === 0 ? ' vh__slide--active' : ''; ?>"
+                 style="background-image:url('<?php echo esc_url($img_url); ?>')"></div>
+            <?php endforeach; ?>
+        </div>
+        <?php if ( $carousel_arrows && count($carousel_imgs) > 1 ): ?>
+        <button class="vh__carousel-arrow vh__carousel-arrow--prev" aria-label="Előző">&#10094;</button>
+        <button class="vh__carousel-arrow vh__carousel-arrow--next" aria-label="Következő">&#10095;</button>
+        <?php endif; ?>
+        <?php if ( $carousel_dots && count($carousel_imgs) > 1 ): ?>
+        <div class="vh__carousel-dots">
+            <?php foreach ( $carousel_imgs as $idx => $_ ): ?>
+            <button class="vh__carousel-dot<?php echo $idx === 0 ? ' vh__carousel-dot--active' : ''; ?>"
+                    aria-label="<?php echo ($idx+1); ?>. dia"></button>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
         <?php endif; ?>
 
         <div class="vh__overlay"></div>

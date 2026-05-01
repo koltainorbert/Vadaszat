@@ -96,17 +96,6 @@
         </div>
     </footer>
 
-    <button class="va-scrolltop" id="va-scrolltop" type="button" aria-label="Ugrás az oldal tetejére">
-        <svg class="va-scrolltop__track" viewBox="0 0 62 62" aria-hidden="true">
-            <circle cx="31" cy="31" r="27"></circle>
-        </svg>
-        <svg class="va-scrolltop__ring" viewBox="0 0 62 62" aria-hidden="true">
-            <circle id="va-scrolltop-ring" cx="31" cy="31" r="27"></circle>
-        </svg>
-        <span class="va-scrolltop__core" aria-hidden="true">
-            <span class="va-scrolltop__arrow"></span>
-        </span>
-    </button>
 
 </div><!-- .va-site-wrap -->
 
@@ -116,35 +105,15 @@
     var hdr  = document.querySelector('.va-header');
     var hbtn = document.getElementById('va-hamburger');
     var nav  = document.getElementById('va-main-nav');
-    var scrollTopBtn = document.getElementById('va-scrolltop');
-    var scrollTopRing = document.getElementById('va-scrolltop-ring');
-    var ringLength = 169.65;
 
     // Scroll: header glass-effect bekapcsol
     function onScroll(){
         if( window.scrollY > 40 ) hdr.classList.add('scrolled');
         else hdr.classList.remove('scrolled');
-
-        if (scrollTopBtn && scrollTopRing) {
-            var top = window.pageYOffset || document.documentElement.scrollTop || 0;
-            var height = document.documentElement.scrollHeight - window.innerHeight;
-            var pct = height > 0 ? (top / height) : 0;
-            if (pct < 0) pct = 0;
-            if (pct > 1) pct = 1;
-
-            scrollTopBtn.classList.toggle('is-visible', top > 220);
-            scrollTopRing.style.strokeDashoffset = String(ringLength * (1 - pct));
-        }
     }
     window.addEventListener('scroll', onScroll, {passive:true});
     window.addEventListener('resize', onScroll);
     onScroll();
-
-    if (scrollTopBtn) {
-        scrollTopBtn.addEventListener('click', function(){
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    }
 
     // Hamburger toggle
     if(hbtn && nav){
@@ -174,5 +143,112 @@
 </script>
 
 <?php wp_footer(); ?>
+
+<!-- ── Scroll-progress pill videó widget ──────────────────── -->
+<div id="va-scroll-ring" role="button" aria-label="Vissza a tetejére" tabindex="0">    <!-- progress border SVG (pill alak) – pathLength=100 → nincs kerület-hiba -->
+    <svg id="va-ring-svg" viewBox="0 0 178 66" width="178" height="66" aria-hidden="true" style="position:absolute;top:0;left:0;pointer-events:none;z-index:3;">
+        <rect x="2" y="2" width="174" height="62" rx="31" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="1.5" pathLength="100"/>
+        <rect id="va-ring-el" x="2" y="2" width="174" height="62" rx="31" fill="none"
+            stroke="#00e676" stroke-width="1.8" stroke-linecap="round"
+            pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
+            transform="rotate(180 89 33)"
+            style="transition:stroke-dashoffset .12s linear;"/>
+    </svg>
+    <!-- videó + bal arrow réteg -->
+    <div id="va-ring-inner">
+        <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="<?php echo esc_url( content_url('uploads/2026/04/0_Ride_Street_1920x1080.mp4') ); ?>" type="video/mp4">
+        </video>
+        <!-- bal oldali sötét átmenet + nyil -->
+        <div id="va-ring-arrow">
+            <div class="va-arr">
+                <svg viewBox="0 0 32 20" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" width="32" height="20"><polyline points="4 16 16 4 28 16"/></svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+#va-scroll-ring {
+    position: fixed;
+    right: 18px;
+    bottom: 18px;
+    width: 178px;
+    height: 66px;
+    z-index: 9999;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity .3s, transform .3s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+}
+#va-scroll-ring.va-ring--visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+#va-scroll-ring:hover #va-ring-el { stroke: #69f0ae; }
+#va-scroll-ring:hover #va-ring-inner { transform: scale(1.03); }
+
+#va-ring-inner {
+    position: absolute;
+    top: 4px; left: 4px; right: 4px; bottom: 4px;
+    border-radius: 28px;
+    overflow: hidden;
+    transition: transform .2s;
+}
+#va-ring-inner video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+#va-ring-arrow {
+    position: absolute;
+    top: 0; left: 0;
+    width: 62px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,.78) 50%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.va-arr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px;
+    animation: va-arr-bounce 2.8s ease-in-out infinite;
+}
+.va-arr svg:first-child { animation: va-arr-fade 2.8s ease-in-out infinite; }
+@keyframes va-arr-bounce {
+    0%,100% { transform: translateY(2px); }
+    50%      { transform: translateY(-4px); }
+}
+@keyframes va-arr-fade {
+    0%,100% { opacity: 1; }
+    50%      { opacity: .5; }
+}
+</style>
+<script>
+(function(){
+    var ring  = document.getElementById('va-scroll-ring');
+    var el    = document.getElementById('va-ring-el');
+    var perim = 100;
+    function update() {
+        var doc     = document.documentElement;
+        var scrollH = doc.scrollHeight - doc.clientHeight;
+        var pct     = scrollH > 0 ? window.scrollY / scrollH : 0;
+        el.style.strokeDashoffset = perim * (1 - pct);
+        ring.classList.toggle('va-ring--visible', window.scrollY > 80);
+    }
+    window.addEventListener('scroll', update, {passive:true});
+    ring.addEventListener('click', function(){ window.scrollTo({top:0, behavior:'smooth'}); });
+    ring.addEventListener('keydown', function(e){
+        if(e.key==='Enter'||e.key===' '){ window.scrollTo({top:0,behavior:'smooth'}); }
+    });
+    update();
+})();
+</script>
 </body>
 </html>

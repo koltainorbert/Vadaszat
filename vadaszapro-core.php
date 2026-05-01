@@ -74,8 +74,7 @@ add_action( 'plugins_loaded', function () {
         VA_Form_Builder::init();
     } else {
         // Admin bar menü frontenden is kell
-        add_action( 'admin_bar_menu', [ VA_Admin::class, 'register_admin_bar' ], 99 );
-        error_log('admin_bar_menu hook registered for frontend');
+        add_action( 'admin_bar_menu', [ VA_Admin::class, 'register_admin_bar' ], 90 );
     }
 });
 

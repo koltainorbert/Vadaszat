@@ -336,6 +336,75 @@ add_action( 'wp_footer', function() {
     <?php
 }, 100 );
 
+/* ── Hero Carousel JS ─────────────────────────────── */
+add_action( 'wp_footer', function() {
+    if ( ! is_front_page() ) return;
+    $bg_type = get_option( 'va_home_hero_bg_type', 'video' );
+    if ( $bg_type !== 'carousel' ) return;
+    ?>
+    <script>
+    (function(){
+        var vh = document.querySelector('.vh--carousel');
+        if(!vh) return;
+        var speed    = parseInt(vh.dataset.speed    || 800,  10);
+        var interval = parseInt(vh.dataset.interval || 5000, 10);
+        var trans    = vh.dataset.transition || 'fade';
+        vh.style.setProperty('--vh-speed',    speed+'ms');
+        vh.style.setProperty('--vh-interval', interval+'ms');
+        vh.classList.add('vh--transition-' + trans);
+
+        var slides = Array.from(vh.querySelectorAll('.vh__slide'));
+        var dots   = Array.from(vh.querySelectorAll('.vh__carousel-dot'));
+        var current = 0;
+        var timer = null;
+
+        function goTo(next) {
+            if(next === current || slides.length < 2) return;
+            var leaving  = slides[current];
+            var entering = slides[next];
+            leaving.classList.add('vh__slide--leaving');
+            entering.classList.add('vh__slide--entering');
+            entering.classList.add('vh__slide--active');
+
+            var onEnd = function(){
+                leaving.classList.remove('vh__slide--active','vh__slide--leaving');
+                entering.classList.remove('vh__slide--entering');
+                entering.removeEventListener('animationend', onEnd);
+            };
+            entering.addEventListener('animationend', onEnd);
+
+            // fallback ha nincs animáció (pl. fade-nél opacity átmenet)
+            setTimeout(function(){
+                leaving.classList.remove('vh__slide--active','vh__slide--leaving');
+                entering.classList.remove('vh__slide--entering');
+            }, speed + 50);
+
+            if(dots[current]) dots[current].classList.remove('vh__carousel-dot--active');
+            if(dots[next])    dots[next].classList.add('vh__carousel-dot--active');
+            current = next;
+        }
+
+        function next() { goTo((current+1) % slides.length); }
+        function prev() { goTo((current - 1 + slides.length) % slides.length); }
+
+        function startTimer() { timer = setInterval(next, interval); }
+        function resetTimer()  { clearInterval(timer); startTimer(); }
+
+        var btnNext = vh.querySelector('.vh__carousel-arrow--next');
+        var btnPrev = vh.querySelector('.vh__carousel-arrow--prev');
+        if(btnNext) btnNext.addEventListener('click', function(){ next(); resetTimer(); });
+        if(btnPrev) btnPrev.addEventListener('click', function(){ prev(); resetTimer(); });
+
+        dots.forEach(function(dot, i){
+            dot.addEventListener('click', function(){ goTo(i); resetTimer(); });
+        });
+
+        if(slides.length > 1) startTimer();
+    })();
+    </script>
+    <?php
+}, 101 );
+
 /* ── Theme setup ──────────────────────────────────── */
 add_action( 'after_setup_theme', function () {
     add_theme_support( 'title-tag' );
@@ -381,6 +450,7 @@ add_action( 'wp_enqueue_scripts', function () {
             'post_id'  => is_singular() ? get_the_ID() : 0,
         ] );
     }
+
 });
 
 function va_design_font_map(): array {
@@ -882,7 +952,7 @@ add_action( 'wp_enqueue_scripts', function () {
     '}' .
     '.va-footer__col-title{color:' . $footer_headings . ';}' .
     '.va-footer__link,.va-footer__bottom a{color:' . $footer_links . ';}' .
-    '.va-footer__link:hover,.va-footer__bottom a:hover{color:' . $hf_footer_link_hover_color . ';}' .
+    '.va-footer__link:hover,.va-footer__bottom a:hover{color:' . $hf_footer_link_hover_color . ';}';
 
     // Hero badge + gomb színek
     $hero_badge_bg          = va_design_css_color( (string) get_option( 'va_color_hero_badge_bg',          'rgba(6,6,6,.56)' ),          'rgba(6,6,6,.56)' );
@@ -908,7 +978,7 @@ add_action( 'wp_enqueue_scripts', function () {
     $header_register_hover_text = va_design_css_color( (string) get_option( 'va_color_header_register_hover_text', '#ffffff' ),          '#ffffff' );
 
     // Hero méretek – összes oldal
-    '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;background:' . $hero_badge_bg . ' !important;border-color:' . $hero_badge_border . ' !important;color:' . $hero_badge_text . ' !important;}' .
+    $css .= '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;background:' . $hero_badge_bg . ' !important;border-color:' . $hero_badge_border . ' !important;color:' . $hero_badge_text . ' !important;}' .
     '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;color:' . $hero_title_color . ' !important;}' .
     '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;color:' . $hero_sub_color . ' !important;}' .
     '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
@@ -951,6 +1021,58 @@ add_action( 'wp_enqueue_scripts', function () {
         '.va-header__search{display:' . ( $hf_mobile_show_search ? 'flex' : 'none' ) . ' !important;}' .
         '.va-header__submit-btn{display:' . ( $hf_mobile_show_submit ? 'inline-flex' : 'none' ) . ' !important;}' .
     '}' ;
+
+    // Hero dekoratív elemek: bal csík, badge-dot, scroll jelző, overlay, span szín – saját opciókból
+    $hero_stripe_show    = get_option( 'va_hero_stripe_show', '1' ) === '1';
+    $hero_stripe_color   = va_design_css_color( (string) get_option( 'va_hero_stripe_color',   '#ff0000' ), '#ff0000' );
+    $hero_stripe_width   = max( 1, min( 20, absint( get_option( 'va_hero_stripe_width', 3 ) ) ) );
+    $hero_stripe_opacity = (float) get_option( 'va_hero_stripe_opacity', '0.55' );
+
+    $hero_badge_dot_show  = get_option( 'va_hero_badge_dot_show', '1' ) === '1';
+    $hero_badge_dot_color = va_design_css_color( (string) get_option( 'va_hero_badge_dot_color', '#ff0000' ), '#ff0000' );
+
+    $hero_scroll_show       = get_option( 'va_hero_scroll_show', '1' ) === '1';
+    $hero_scroll_line_color = va_design_css_color( (string) get_option( 'va_hero_scroll_line_color', '#ff0000' ), '#ff0000' );
+    $hero_scroll_dot_color  = va_design_css_color( (string) get_option( 'va_hero_scroll_dot_color',  '#ff0000' ), '#ff0000' );
+    $hero_scroll_opacity    = (float) get_option( 'va_hero_scroll_opacity', '0.50' );
+
+    $hero_title_span_color         = va_design_css_color( (string) get_option( 'va_color_hero_title_span',             '#ff0000' ), '#ff0000' );
+    $hero_btn_primary_hover_text   = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover_text', '#ffffff' ), '#ffffff' );
+    $hero_btn_ghost_hover_text     = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_hover_text',   '#ffffff' ), '#ffffff' );
+
+    $hero_ov_top    = (float) get_option( 'va_hero_overlay_top',      '0.72' );
+    $hero_ov_mid_a  = (float) get_option( 'va_hero_overlay_mid_a',    '0.18' );
+    $hero_ov_mid_b  = (float) get_option( 'va_hero_overlay_mid_b',    '0.25' );
+    $hero_ov_bottom = (float) get_option( 'va_hero_overlay_bottom_a', '0.85' );
+
+    $css .=
+    // Overlay gradient opacitások
+    '.vh__overlay{background:linear-gradient(to bottom,' .
+        'rgba(6,6,6,' . $hero_ov_top . ') 0%,' .
+        'rgba(6,6,6,' . $hero_ov_mid_a . ') 30%,' .
+        'rgba(6,6,6,' . $hero_ov_mid_b . ') 55%,' .
+        'rgba(6,6,6,' . $hero_ov_bottom . ') 80%,' .
+        'rgb(6,6,6) 100%) !important;}' .
+    // Bal csík
+    ( $hero_stripe_show
+        ? '.vh__overlay::before{display:block !important;width:' . $hero_stripe_width . 'px !important;opacity:' . $hero_stripe_opacity . ' !important;background:linear-gradient(to bottom,transparent,' . $hero_stripe_color . ' 40%,' . $hero_stripe_color . ' 60%,transparent) !important;}'
+        : '.vh__overlay::before{display:none !important;}' ) .
+    // Badge dot
+    ( $hero_badge_dot_show
+        ? '.vcp-hero__badge-dot{display:inline-block !important;background:' . $hero_badge_dot_color . ' !important;}'
+        : '.vcp-hero__badge-dot{display:none !important;}' ) .
+    // Cím kiemelt szó (span)
+    '.vh__title span{color:' . $hero_title_span_color . ' !important;}' .
+    // Primary gomb hover szöveg
+    '.vh__btn--primary:hover{color:' . $hero_btn_primary_hover_text . ' !important;}' .
+    // Ghost gomb hover szöveg
+    '.vh__btn--ghost:hover{color:' . $hero_btn_ghost_hover_text . ' !important;}' .
+    // Scroll jelző
+    ( $hero_scroll_show
+        ? '.vh__scroll{display:flex !important;opacity:' . $hero_scroll_opacity . ' !important;}' .
+          '.vh__scroll-line{background:linear-gradient(to bottom,transparent,' . $hero_scroll_line_color . ') !important;}' .
+          '.vh__scroll-dot{background:' . $hero_scroll_dot_color . ' !important;box-shadow:0 0 6px ' . $hero_scroll_dot_color . ' !important;}'
+        : '.vh__scroll{display:none !important;}' );
 
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );
