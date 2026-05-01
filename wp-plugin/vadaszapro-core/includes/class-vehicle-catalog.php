@@ -70,6 +70,10 @@ class VA_Vehicle_Catalog {
         }
 
         $raw = file_get_contents( $file );
+        // UTF-8 BOM eltávolítása ha szükséges
+        if ( is_string( $raw ) && substr( $raw, 0, 3 ) === "\xEF\xBB\xBF" ) {
+            $raw = substr( $raw, 3 );
+        }
         if ( ! is_string( $raw ) || trim( $raw ) === '' ) {
             self::$brand_models = [];
             return self::$brand_models;
