@@ -3938,6 +3938,265 @@ class VA_Settings_Page {
         <?php
     }
 
+    public static function render_listing_search_designer(): void {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>📋 Hirdetés keresési oldal – teljes szerkesztő</h1>
+            <p class="description">A <code>/va-hirdetes-kereses</code> oldal minden elemét – szűrő sáv, beviteli mezők, ár csúszka, kártyák, lapozó, szövegek – itt tudod testreszabni.</p>
+            <?php settings_errors( 'va_lp_settings' ); ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_lp_settings' ); ?>
+
+                <!-- ═══ SZŰRŐ SÁV ══════════════════════════════════════════ -->
+                <h2 style="margin:28px 0 12px;font-size:16px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:8px;">🗂 Szűrő sáv</h2>
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🎨</span>
+                            <span class="va-settings-card__title">Szűrő sáv háttér</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_filter_bg', 'Háttér szín' ); ?>
+                                <?php self::field_color( 'va_lp_filter_border', 'Keret szín' ); ?>
+                                <?php self::field_num( 'va_lp_filter_radius', 'Lekerekítés (px)', 0, 40 ); ?>
+                                <?php self::field_num( 'va_lp_filter_padding', 'Belső margó (px)', 6, 60 ); ?>
+                                <?php self::field_color( 'va_lp_filter_title_color', 'Cím szöveg szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📝</span>
+                            <span class="va-settings-card__title">Bemenetek (input, select)</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_input_bg', 'Bemenet háttér' ); ?>
+                                <?php self::field_color( 'va_lp_input_border', 'Bemenet keret' ); ?>
+                                <?php self::field_color( 'va_lp_input_color', 'Bemenet szöveg' ); ?>
+                                <?php self::field_color( 'va_lp_input_focus_border', 'Fókusz keret szín' ); ?>
+                                <?php self::field_num( 'va_lp_input_radius', 'Lekerekítés (px)', 0, 40 ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ ÁR CSÚSZKA ══════════════════════════════════════════ -->
+                <h2 style="margin:28px 0 12px;font-size:16px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:8px;">🎚 Ár csúszka</h2>
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔴</span>
+                            <span class="va-settings-card__title">Csúszka színek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_slider_fill_color', 'Kitöltés szín' ); ?>
+                                <?php self::field_color( 'va_lp_slider_thumb_color', 'Gomb szín' ); ?>
+                                <?php self::field_color( 'va_lp_slider_track_bg', 'Sáv háttér' ); ?>
+                                <?php self::field_color( 'va_lp_slider_display_color', 'Ár kijelző szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">⚙️</span>
+                            <span class="va-settings-card__title">Csúszka tartomány</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_lp_slider_max', 'Maximum érték (Ft)', 1000, 999999999 ); ?>
+                                <?php self::field_num( 'va_lp_slider_step', 'Lépésköz (Ft)', 1, 100000 ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ EREDMÉNY SOR + NÉZET VÁLTÓ ══════════════════════════ -->
+                <h2 style="margin:28px 0 12px;font-size:16px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:8px;">🔢 Eredmény sor & nézet váltó</h2>
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📊</span>
+                            <span class="va-settings-card__title">Találat szám & gomb</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_results_count_color', 'Találat szám szín' ); ?>
+                                <?php self::field_color( 'va_lp_reset_btn_color', 'Szűrők törlése szöveg' ); ?>
+                                <?php self::field_color( 'va_lp_reset_btn_border', 'Szűrők törlése keret' ); ?>
+                                <?php self::field_color( 'va_lp_reset_btn_hover_color', 'Szűrők törlése hover szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔲</span>
+                            <span class="va-settings-card__title">Nézet váltó (rács/lista ikon)</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_view_active_color', 'Aktív ikon szín' ); ?>
+                                <?php self::field_color( 'va_lp_view_active_glow', 'Aktív ikon fény (glow)' ); ?>
+                                <?php self::field_color( 'va_lp_view_border_active', 'Aktív keret szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ KÁRTYÁK ══════════════════════════════════════════════ -->
+                <h2 style="margin:28px 0 12px;font-size:16px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:8px;">🃏 Hirdetés kártyák</h2>
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🎨</span>
+                            <span class="va-settings-card__title">Kártya alap</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_card_bg', 'Kártya háttér' ); ?>
+                                <?php self::field_color( 'va_lp_card_border', 'Kártya keret' ); ?>
+                                <?php self::field_num( 'va_lp_card_radius', 'Kártya lekerekítés (px)', 0, 40 ); ?>
+                                <?php self::field_num( 'va_lp_card_gap', 'Rács hézag (px)', 4, 60 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔤</span>
+                            <span class="va-settings-card__title">Kártya szövegek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_card_title_color', 'Cím szín' ); ?>
+                                <?php self::field_num( 'va_lp_card_title_size', 'Cím méret (px)', 10, 28 ); ?>
+                                <?php self::field_color( 'va_lp_card_title_hover', 'Cím hover szín' ); ?>
+                                <?php self::field_color( 'va_lp_card_price_color', 'Ár szín' ); ?>
+                                <?php self::field_num( 'va_lp_card_price_size', 'Ár méret (px)', 10, 32 ); ?>
+                                <?php self::field_color( 'va_lp_card_meta_color', 'Meta szöveg szín' ); ?>
+                                <?php self::field_num( 'va_lp_card_meta_size', 'Meta méret (px)', 9, 20 ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">❤️</span>
+                            <span class="va-settings-card__title">Kedvencek (watchlist) gomb</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_card_watchlist_color', 'Szív ikon szín' ); ?>
+                                <?php self::field_color( 'va_lp_card_watchlist_border', 'Keret szín' ); ?>
+                                <?php self::field_color( 'va_lp_card_watchlist_bg', 'Háttér szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🏷️</span>
+                            <span class="va-settings-card__title">Kártya badge-ek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_card_featured_color', 'Kiemelt szöveg szín' ); ?>
+                                <?php self::field_color( 'va_lp_card_featured_border', 'Kiemelt keret szín' ); ?>
+                                <?php self::field_color( 'va_lp_card_boost_color', 'Előre téve szöveg szín' ); ?>
+                                <?php self::field_color( 'va_lp_card_boost_bg', 'Előre téve háttér' ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ LAPOZÓ ═══════════════════════════════════════════════ -->
+                <h2 style="margin:28px 0 12px;font-size:16px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:8px;">📄 Lapozó (pagination)</h2>
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🎨</span>
+                            <span class="va-settings-card__title">Lapozó gomb</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_pag_bg', 'Háttér szín' ); ?>
+                                <?php self::field_color( 'va_lp_pag_color', 'Szöveg szín' ); ?>
+                                <?php self::field_color( 'va_lp_pag_border', 'Keret szín' ); ?>
+                                <?php self::field_num( 'va_lp_pag_radius', 'Lekerekítés (px)', 0, 40 ); ?>
+                                <?php self::field_num( 'va_lp_pag_size', 'Betűméret (px)', 9, 22 ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">✅</span>
+                            <span class="va-settings-card__title">Aktív lap gomb</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_lp_pag_active_bg', 'Aktív háttér' ); ?>
+                                <?php self::field_color( 'va_lp_pag_active_color', 'Aktív szöveg szín' ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ═══ SZÖVEGEK ══════════════════════════════════════════════ -->
+                <h2 style="margin:28px 0 12px;font-size:16px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:8px;">💬 Szövegek & feliratok</h2>
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📋</span>
+                            <span class="va-settings-card__title">Szűrő sáv feliratok</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_text( 'va_lp_filter_title_text', 'Szűrő sáv cím' ); ?>
+                                <?php self::field_text( 'va_lp_kw_placeholder', 'Kulcsszó placeholder' ); ?>
+                                <?php self::field_text( 'va_lp_cat_placeholder', 'Kategória placeholder' ); ?>
+                                <?php self::field_text( 'va_lp_county_placeholder', 'Megye placeholder' ); ?>
+                                <?php self::field_text( 'va_lp_cond_placeholder', 'Állapot placeholder' ); ?>
+                                <?php self::field_text( 'va_lp_slider_label_text', 'Ár csúszka felirat' ); ?>
+                                <?php self::field_text( 'va_lp_reset_btn_text', 'Szűrők törlése gomb' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔄</span>
+                            <span class="va-settings-card__title">Rendezés & betöltő</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_text( 'va_lp_sort_default_lbl', 'Legújabb opció' ); ?>
+                                <?php self::field_text( 'va_lp_sort_price_asc_lbl', 'Ár: növekvő opció' ); ?>
+                                <?php self::field_text( 'va_lp_sort_price_desc_lbl', 'Ár: csökkenő opció' ); ?>
+                                <?php self::field_text( 'va_lp_sort_views_lbl', 'Legtöbb megtekintés opció' ); ?>
+                                <?php self::field_text( 'va_lp_loader_text', 'Betöltés szöveg' ); ?>
+                                <?php self::field_color( 'va_lp_loader_color', 'Betöltés szöveg szín' ); ?>
+                                <?php self::field_text( 'va_lp_empty_text', 'Nincs találat szöveg' ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <?php submit_button( 'Keresési oldal beállítások mentése' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
     public static function render_tools() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
