@@ -4,6 +4,33 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php wp_head(); ?>
+    <style>
+        .va-lang-sw__toggle, .va-lang-sw__toggle *,
+        .va-lang-sw__item, .va-lang-sw__item *,
+        .va-lang-sw__item span, .va-lang-code {
+            color: #fff !important;
+        }
+        .va-lang-sw__toggle {
+            background: rgba(255,255,255,.06) !important;
+            border-color: rgba(255,255,255,.12) !important;
+        }
+        .va-lang-sw__dropdown {
+            background: #1a1a1a !important;
+            border: 1px solid rgba(255,255,255,.12) !important;
+        }
+        .va-lang-sw__item:hover {
+            background: rgba(255,255,255,.09) !important;
+        }
+        .va-lang-sw__item.active {
+            background: rgba(255,200,0,.13) !important;
+            color: #fff !important;
+        }
+        .va-lang-flag {
+            color: unset !important;
+            filter: none !important;
+            opacity: 1 !important;
+        }
+    </style>
 </head>
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
