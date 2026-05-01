@@ -973,6 +973,14 @@ add_action( 'wp_enqueue_scripts', function () {
     $header_submit_hover_text = va_design_css_color( (string) get_option( 'va_color_header_submit_hover_text', '#ffffff' ),              '#ffffff' );
     $header_nav_link          = va_design_css_color( (string) get_option( 'va_color_header_nav_link',          '#ffffff' ),              '#ffffff' );
     $header_nav_hover         = va_design_css_color( (string) get_option( 'va_color_header_nav_hover',         '#ff2020' ),              '#ff2020' );
+    $header_nav_underline     = va_design_css_color( (string) get_option( 'va_color_header_nav_underline',     '#ff0000' ),              '#ff0000' );
+    $header_search_border_color = va_design_css_color( (string) get_option( 'va_color_header_search_border',       'rgba(255,255,255,.18)' ), 'rgba(255,255,255,.18)' );
+    $header_search_hover_border = va_design_css_color( (string) get_option( 'va_color_header_search_hover_border', 'rgba(255,255,255,.28)' ), 'rgba(255,255,255,.28)' );
+    $header_search_focus_border = va_design_css_color( (string) get_option( 'va_color_header_search_focus_border', 'rgba(255,255,255,.38)' ), 'rgba(255,255,255,.38)' );
+    $header_search_text_color   = va_design_css_color( (string) get_option( 'va_color_header_search_text',         '#ffffff' ),              '#ffffff' );
+    $header_search_placeholder  = va_design_css_color( (string) get_option( 'va_color_header_search_placeholder',  'rgba(255,255,255,.40)' ), 'rgba(255,255,255,.40)' );
+    $header_search_btn_bg       = va_design_css_color( (string) get_option( 'va_color_header_search_btn_bg',       'rgba(255,255,255,.14)' ), 'rgba(255,255,255,.14)' );
+    $header_search_btn_hover_bg = va_design_css_color( (string) get_option( 'va_color_header_search_btn_hover_bg', 'rgba(255,255,255,.22)' ), 'rgba(255,255,255,.22)' );
     $header_login_hover_bg    = va_design_css_color( (string) get_option( 'va_color_header_login_hover_bg',    'rgba(255,255,255,.08)' ), 'rgba(255,255,255,.08)' );
     $header_login_hover_text  = va_design_css_color( (string) get_option( 'va_color_header_login_hover_text',  '#ffffff' ),              '#ffffff' );
     $header_register_hover_bg = va_design_css_color( (string) get_option( 'va_color_header_register_hover_bg', '#cc0000' ),              '#cc0000' );
@@ -988,8 +996,17 @@ add_action( 'wp_enqueue_scripts', function () {
     '.vh__btn--ghost{background:' . $hero_btn_ghost_bg . ' !important;border-color:' . $hero_btn_ghost_border . ' !important;color:' . $hero_btn_ghost_text . ' !important;}' .
     '.vh__btn--ghost:hover{background:' . $hero_btn_ghost_hover . ' !important;}' .
     '.va-nav__item--accent:hover,.va-header__submit-btn:hover{background-color:' . $header_submit_hover_bg . ' !important;color:' . $header_submit_hover_text . ' !important;}' .
-    '.va-nav__item a,.va-nav__item button{color:' . $header_nav_link . ' !important;}' .
-    '.va-nav__item a:hover,.va-nav__item button:hover{color:' . $header_nav_hover . ' !important;}' .
+    '.va-nav li > a,.va-nav__item{color:' . $header_nav_link . ' !important;}' .
+    '.va-nav li > a:hover,.va-nav__item:hover,.va-nav__item.active{color:' . $header_nav_hover . ' !important;}' .
+    '.va-nav li > a::after,.va-nav__item::after{background:' . $header_nav_underline . ' !important;}' .
+    '.va-header__search{border-color:' . $header_search_border_color . ' !important;}' .
+    '.va-header__search:hover{border-color:' . $header_search_hover_border . ' !important;}' .
+    '.va-header__search:focus-within{border-color:' . $header_search_focus_border . ' !important;}' .
+    '.va-header__search-input{color:' . $header_search_text_color . ' !important;}' .
+    '.va-header__search-input::placeholder{color:' . $header_search_placeholder . ' !important;}' .
+    '.va-header__search-input:-webkit-autofill{-webkit-text-fill-color:' . $header_search_text_color . ' !important;}' .
+    '.va-header__search-btn{background-color:' . $header_search_btn_bg . ' !important;}' .
+    '.va-header__search-btn:hover{background-color:' . $header_search_btn_hover_bg . ' !important;}' .
     '.va-header__user-login:hover{background:' . $header_login_hover_bg . ' !important;color:' . $header_login_hover_text . ' !important;}' .
     '.va-header__register-btn:hover{background:' . $header_register_hover_bg . ' !important;color:' . $header_register_hover_text . ' !important;}' .
 

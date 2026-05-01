@@ -289,10 +289,18 @@ class VA_Settings_Page {
             // Fejléc nav link és gomb hover színek
             'va_color_header_nav_link'             => '#ffffff',
             'va_color_header_nav_hover'            => '#ff2020',
+            'va_color_header_nav_underline'        => '#ff0000',
             'va_color_header_login_hover_bg'       => 'rgba(255,255,255,.08)',
             'va_color_header_login_hover_text'     => '#ffffff',
             'va_color_header_register_hover_bg'    => '#cc0000',
             'va_color_header_register_hover_text'  => '#ffffff',
+            'va_color_header_search_border'        => 'rgba(255,255,255,.18)',
+            'va_color_header_search_hover_border'  => 'rgba(255,255,255,.28)',
+            'va_color_header_search_focus_border'  => 'rgba(255,255,255,.38)',
+            'va_color_header_search_text'          => '#ffffff',
+            'va_color_header_search_placeholder'   => 'rgba(255,255,255,.40)',
+            'va_color_header_search_btn_bg'        => 'rgba(255,255,255,.14)',
+            'va_color_header_search_btn_hover_bg'  => 'rgba(255,255,255,.22)',
 
             // Lábléc layout/kinézet
             'va_hf_footer_top_padding'             => 48,
@@ -385,10 +393,18 @@ class VA_Settings_Page {
             'va_color_header_submit_hover_text',
             'va_color_header_nav_link',
             'va_color_header_nav_hover',
+            'va_color_header_nav_underline',
             'va_color_header_login_hover_bg',
             'va_color_header_login_hover_text',
             'va_color_header_register_hover_bg',
             'va_color_header_register_hover_text',
+            'va_color_header_search_border',
+            'va_color_header_search_hover_border',
+            'va_color_header_search_focus_border',
+            'va_color_header_search_text',
+            'va_color_header_search_placeholder',
+            'va_color_header_search_btn_bg',
+            'va_color_header_search_btn_hover_bg',
             'va_hf_header_user_border_alpha',
             'va_hf_header_user_bg_alpha',
             'va_hf_header_mobile_show_search',
@@ -1539,6 +1555,7 @@ class VA_Settings_Page {
                             <table class="form-table">
                                 <?php self::field_color( 'va_color_header_nav_link',  'Nav link alap szín' ); ?>
                                 <?php self::field_color( 'va_color_header_nav_hover', 'Nav link hover szín' ); ?>
+                                <?php self::field_color( 'va_color_header_nav_underline', 'Nav alsó vonal szín' ); ?>
                             </table>
                         </div>
                     </div>
@@ -1621,6 +1638,13 @@ class VA_Settings_Page {
                                 <?php self::field_num( 'va_hf_header_search_icon_size',              'Nagyító ikon méret (px)', 10, 28 ); ?>
                                 <?php self::field_decimal( 'va_hf_header_search_icon_bg_alpha',       'Nagyító háttér opacitás', 0, 1, 0.01 ); ?>
                                 <?php self::field_decimal( 'va_hf_header_search_icon_bg_hover_alpha', 'Nagyító háttér hover opacitás', 0, 1, 0.01 ); ?>
+                                <?php self::field_color( 'va_color_header_search_border',             'Kereső keret szín' ); ?>
+                                <?php self::field_color( 'va_color_header_search_hover_border',       'Kereső keret hover szín' ); ?>
+                                <?php self::field_color( 'va_color_header_search_focus_border',       'Kereső keret fókusz szín' ); ?>
+                                <?php self::field_color( 'va_color_header_search_text',               'Kereső betűszín' ); ?>
+                                <?php self::field_color( 'va_color_header_search_placeholder',        'Kereső placeholder szín' ); ?>
+                                <?php self::field_color( 'va_color_header_search_btn_bg',             'Kereső gomb szín' ); ?>
+                                <?php self::field_color( 'va_color_header_search_btn_hover_bg',       'Kereső gomb hover szín' ); ?>
                                 <?php self::field_text( 'va_hf_header_search_placeholder',           'Placeholder szöveg' ); ?>
                             </table>
                         </div>
