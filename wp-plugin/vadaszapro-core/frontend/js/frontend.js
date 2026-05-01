@@ -258,6 +258,21 @@
     va_load_listings(1);
   });
 
+  $(document).on('click', '#va-advanced-toggle', function() {
+    var $btn = $(this);
+    var $panel = $('#va-advanced-panel');
+    if (!$panel.length) return;
+
+    var isOpen = $btn.attr('aria-expanded') === 'true';
+    if (isOpen) {
+      $panel.stop(true, true).slideUp(180).addClass('is-collapsed');
+      $btn.attr('aria-expanded', 'false');
+    } else {
+      $panel.stop(true, true).slideDown(180).removeClass('is-collapsed');
+      $btn.attr('aria-expanded', 'true');
+    }
+  });
+
   // ── Pagination build ─────────────────────────────────────
   function va_build_pagination(maxPages, currentPage) {
     var $pag = $('#va-pagination');

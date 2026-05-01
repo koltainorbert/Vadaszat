@@ -447,6 +447,38 @@
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 10px 14px;
 }
+.va-advanced-toggle {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.12);
+  color: #fff;
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.va-advanced-toggle:hover,
+.va-advanced-toggle[aria-expanded="true"] {
+  border-color: rgba(255,0,0,.6);
+  background: rgba(255,0,0,.12);
+}
+.va-advanced-toggle::after {
+  content: '▾';
+  font-size: 12px;
+  line-height: 1;
+  transition: transform .2s;
+}
+.va-advanced-toggle[aria-expanded="true"]::after {
+  transform: rotate(180deg);
+}
+.va-advanced-panel.is-collapsed {
+  display: none;
+}
 .va-car-per-page {
   margin-top: 10px;
   display: flex;

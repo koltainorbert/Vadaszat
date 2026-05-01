@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #148 (Részletes kereső lenyitható blokk)
+
+### Mit csináltunk [x]
+- [x] A túl magas extra szűrő részt lenyitható panelbe szerveztük a kereső oldalon
+- [x] Új nyitó gomb neve pontosan: `Részletes kereső`
+- [x] A panel alapállapotban csukva indul (`is-collapsed`), kattintásra nyit/zár
+- [x] `aria-expanded` állapot frissül a gombon (akadálymentesebb működés)
+- [x] Plugin mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A kereső teteje alacsonyabb lett, a korábbi magas checkbox/rádió blokk csak igény esetén nyílik le a `Részletes kereső` gombra.
+
+---
 ## 2026. 05. 02. – Session #147 (Számmező UI modernizálás + kilógó szövegek javítása)
 
 ### Mit csináltunk [x]
