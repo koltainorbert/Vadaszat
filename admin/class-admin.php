@@ -27,6 +27,8 @@ class VA_Admin {
             'id'    => 'va-admin-root',
             'title' => $menu_title,
             'href'  => admin_url( 'admin.php?page=vadaszapro' ),
+            'meta'  => [ 'class' => 'va-admin-root' ],
+            'order' => 5,
         ] );
 
         $items = [
