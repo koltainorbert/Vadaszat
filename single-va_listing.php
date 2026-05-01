@@ -1549,7 +1549,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     <button class="sl__btn sl__btn--phone" data-phone="<?php echo esc_attr($show_phone); ?>">
 
 
-                        <span class="sl__phone-icon">&#128222;</span><?php echo $sl_lbl_phone_btn_text; ?>
+                        <?php echo $sl_lbl_phone_btn_text; ?>
 
 
                     </button>
@@ -1984,7 +1984,7 @@ $watching_sticky   = is_user_logged_in() ? va_user_watches($post_id) : false;
     <button class="sl__sticky-btn sl__sticky-btn--phone" id="sl-sticky-phone" data-phone="<?php echo esc_attr($show_phone_sticky); ?>">
 
 
-        <span class="sl__phone-icon">&#128222;</span> Telefon
+        Telefon
 
 
     </button>
