@@ -1,6 +1,24 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #132 (Kártyaszerkesztő színek nem érvényesültek)
+
+### Mit csináltunk [x]
+- [x] Beazonosítva: a Keresési oldal (va_lp_*) CSS blokk globálisan felülírta a kártya stílusokat `!important` szabályokkal
+- [x] Emiatt a Kártyaszerkesztőben állított ár/meta/kedvenc (és egyéb kártya) színek nem tudtak érvényesülni
+- [x] A konfliktusos kártya szabályok kivezetve a theme `functions.php` va_lp CSS blokkjából (root + theme mirror)
+- [x] Theme deploy lefuttatva LocalWP-re
+- [x] Ellenőrzés: a kereső oldal HTML-ben már nincs `!important` a `.va-card__price`, `.va-card__meta`, `.va-card__watchlist` szabályokon
+
+### Root cause
+A `va_lp_*` (Keresési oldal) dizájn szabályok között globális `.va-card*` felülírások voltak `!important`-tel. Ezek felülírták a Kártyaszerkesztő (`va_card_styles`) frontend kimenetét.
+
+### Hol tartunk
+- A Kártyaszerkesztő színei újra érvényesülnek a kártyákon.
+- A keresőben az ár/meta/kedvenc színek már nem vannak erőből felülírva.
+
+---
+
 ## 2026. 05. 01. – Session #131 (Kereső AJAX fix – BOM eltávolítás)
 
 ### Mit csináltunk [x]
