@@ -1,6 +1,22 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #138 (Használtautó teljes márka-modell-kivitel bekötés)
+
+### Mit csináltunk [x]
+- [x] A Használtautó alapú autós dataset kiegészítve teljes márka -> modell fával (`vehicle-brand-models.json` a root + plugin copy alatt)
+- [x] Új helper betöltés: `VA_Vehicle_Catalog::get_brand_models()` JSON-ból olvas, cache-el és normalizálja a külső forrásból érkező hibás karaktereket
+- [x] A hirdetésfeladó űrlapon a jármű mód már függő legördülőket használ: `Márka` -> `Modell`, plusz külön `Kivitel`
+- [x] A `Modell` mező szerkesztés módban is megtartja a korábban mentett értéket, akkor is ha az nincs az aktuális listában
+- [x] A jármű űrlap páros elrendezése frissítve: `Kivitel` + `Évjárat`
+- [x] LocalWP deploy lefuttatva (`Deploy All`)
+- [x] Nyilvános ellenőrzés: az autós kategóriák már élnek a local oldalon
+
+### Hol tartunk
+- A kategóriák, márkák, modellek és kivitelek kódszinten teljesen be vannak kötve.
+- A feladási űrlap interaktív ellenőrzéséhez bejelentkezett állapot kell; publikus nézetből ez most nem volt végignyomható.
+
+---
 ## 2026. 05. 01. – Session #137 (Termékoldali email gomb: mailto -> Kapcsolat oldal)
 
 ### Mit csináltunk [x]
