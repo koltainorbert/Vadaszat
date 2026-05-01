@@ -21,8 +21,7 @@ class VA_Admin {
             return;
         }
 
-        $menu_title = (string) get_option( 'va_site_name', 'VA Admin' );
-        if ( $menu_title === '' ) $menu_title = 'VA Admin';
+        $menu_title = 'LocalBomb';
 
         $admin_bar->add_node( [
             'id'    => 'va-admin-root',
