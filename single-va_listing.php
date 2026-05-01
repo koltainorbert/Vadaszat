@@ -348,6 +348,18 @@ $ac_type          = get_post_meta( $post_id, 'va_ac_type',          true );
 $eco_class        = get_post_meta( $post_id, 'va_eco_class',        true );
 $cylinder_layout  = get_post_meta( $post_id, 'va_cylinder_layout',  true );
 $own_weight       = get_post_meta( $post_id, 'va_own_weight',       true );
+$gross_weight     = get_post_meta( $post_id, 'va_gross_weight',     true );
+$passengers       = get_post_meta( $post_id, 'va_passengers',       true );
+$trunk_liters     = get_post_meta( $post_id, 'va_trunk_liters',     true );
+$range_gearbox    = get_post_meta( $post_id, 'va_range_gearbox',    true );
+$roof_type        = get_post_meta( $post_id, 'va_roof_type',        true );
+$color_metallic   = get_post_meta( $post_id, 'va_color_metallic',   true );
+$upholstery_1     = get_post_meta( $post_id, 'va_upholstery_1',     true );
+$upholstery_2     = get_post_meta( $post_id, 'va_upholstery_2',     true );
+$summer_tire_front= get_post_meta( $post_id, 'va_summer_tire_front',true );
+$summer_tire_rear = get_post_meta( $post_id, 'va_summer_tire_rear', true );
+$winter_tire_front= get_post_meta( $post_id, 'va_winter_tire_front',true );
+$winter_tire_rear = get_post_meta( $post_id, 'va_winter_tire_rear', true );
 $vehicle_type     = get_post_meta( $post_id, 'va_vehicle_type',     true );
 $extras_raw       = get_post_meta( $post_id, 'va_extras',           true );
 $extras_arr       = ( is_string( $extras_raw ) && $extras_raw !== '' ) ? json_decode( $extras_raw, true ) : [];
@@ -385,7 +397,9 @@ $ac_labels        = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get
 $eco_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
 $cyl_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
 $vtype_labels     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_type_options() : [];
+$roof_labels      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_roof_type_options() : [];
 $extras_opts      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
+$extras_by_grp    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_by_group() : [];
 // Kepek gyujtese: va_gallery_ids meta (elsődleges) + featured image
 
 

@@ -565,6 +565,24 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                     <label>Saját tömeg (kg)</label>
                     <input type="number" name="own_weight" class="va-input" min="0" placeholder="pl. 1450" value="<?php echo esc_attr( (string)( $ev['own_weight'] ?? '' ) ); ?>">
                 </div>
+                <div class="va-form-group">
+                    <label>Össztömeg (kg)</label>
+                    <input type="number" name="gross_weight" class="va-input" min="0" placeholder="pl. 1900" value="<?php echo esc_attr( (string)( $ev['gross_weight'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Szállítható személyek száma</label>
+                    <input type="number" name="passengers" class="va-input" min="1" max="100" placeholder="pl. 5" value="<?php echo esc_attr( (string)( $ev['passengers'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Csomagtartó (liter)</label>
+                    <input type="number" name="trunk_liters" class="va-input" min="0" placeholder="pl. 350" value="<?php echo esc_attr( (string)( $ev['trunk_liters'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group" style="display:flex;align-items:center;gap:10px;padding-top:22px;">
+                    <label class="va-check-label">
+                        <input type="checkbox" name="range_gearbox" value="1"<?php echo ( ( $ev['range_gearbox'] ?? '' ) === '1' ) ? ' checked' : ''; ?>>
+                        Felező váltó
+                    </label>
+                </div>
             </div>
 
             <h3 class="va-specs-heading">🚘 Karosszéria / Állapot</h3>
@@ -581,6 +599,16 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                     <label>Szín</label>
                     <input type="text" name="color" class="va-input" placeholder="pl. Fehér, Fekete..." value="<?php echo esc_attr( (string)( $ev['color'] ?? '' ) ); ?>">
                 </div>
+                <div class="va-form-group" style="display:flex;align-items:center;gap:10px;padding-top:22px;">
+                    <label class="va-check-label">
+                        <input type="checkbox" name="color_metallic" value="1"<?php echo ( ( $ev['color_metallic'] ?? '' ) === '1' ) ? ' checked' : ''; ?>>
+                        Metál fényezés
+                    </label>
+                </div>
+                <div class="va-form-group">
+                    <label>Tető típusa</label>
+                    <?php $render_select( 'roof_type', $roof_opts, (string)( $ev['roof_type'] ?? '' ) ); ?>
+                </div>
                 <div class="va-form-group">
                     <label>Klíma</label>
                     <?php $render_select( 'ac_type', $ac_opts, (string)( $ev['ac_type'] ?? '' ) ); ?>
@@ -592,6 +620,14 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 <div class="va-form-group">
                     <label>Tulajdonosok száma</label>
                     <input type="number" name="owners" class="va-input" min="1" max="20" placeholder="pl. 2" value="<?php echo esc_attr( (string)( $ev['owners'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Kárpit színe (1)</label>
+                    <input type="text" name="upholstery_1" class="va-input" placeholder="pl. Fekete" value="<?php echo esc_attr( (string)( $ev['upholstery_1'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Kárpit színe (2)</label>
+                    <input type="text" name="upholstery_2" class="va-input" placeholder="pl. Szürke" value="<?php echo esc_attr( (string)( $ev['upholstery_2'] ?? '' ) ); ?>">
                 </div>
             </div>
 
@@ -627,9 +663,42 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 </div>
             </div>
 
-            <h3 class="va-specs-heading">✅ Extra felszereltség</h3>
+            <h3 class="va-specs-heading">🔧 Gumi méretek / Egyéb</h3>
+            <div class="va-specs-grid">
+                <div class="va-form-group">
+                    <label>Nyári gumi (első, pl. 205/55R16)</label>
+                    <input type="text" name="summer_tire_front" class="va-input" placeholder="205/55R16" value="<?php echo esc_attr( (string)( $ev['summer_tire_front'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Nyári gumi (hátsó)</label>
+                    <input type="text" name="summer_tire_rear" class="va-input" placeholder="205/55R16" value="<?php echo esc_attr( (string)( $ev['summer_tire_rear'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Téli gumi (első)</label>
+                    <input type="text" name="winter_tire_front" class="va-input" placeholder="205/55R16" value="<?php echo esc_attr( (string)( $ev['winter_tire_front'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Téli gumi (hátsó)</label>
+                    <input type="text" name="winter_tire_rear" class="va-input" placeholder="205/55R16" value="<?php echo esc_attr( (string)( $ev['winter_tire_rear'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Alvázszám (VIN)</label>
+                    <input type="text" name="vin" class="va-input" placeholder="17 karakteres VIN" maxlength="17" value="<?php echo esc_attr( (string)( $ev['vin'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Belső azonosító</label>
+                    <input type="text" name="internal_id" class="va-input" placeholder="Saját belső azonosító" value="<?php echo esc_attr( (string)( $ev['internal_id'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>2. telefonszám</label>
+                    <input type="tel" name="second_phone" class="va-input" placeholder="+36..." value="<?php echo esc_attr( (string)( $ev['second_phone'] ?? '' ) ); ?>">
+                </div>
+            </div>
+
+            <?php foreach ( $extras_by_grp as $grp_key => $grp ): ?>
+            <h3 class="va-specs-heading">✅ <?php echo esc_html( $grp['label'] ); ?></h3>
             <div class="va-extras-grid">
-                <?php foreach ( $extras_opts as $ekey => $elabel ):
+                <?php foreach ( $grp['items'] as $ekey => $elabel ):
                     $is_checked = in_array( $ekey, $ev_extras, true );
                 ?>
                 <label class="va-extra-check">
@@ -638,6 +707,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 </label>
                 <?php endforeach; ?>
             </div>
+            <?php endforeach; ?>
         </div>
         <?php endif; ?>
 
