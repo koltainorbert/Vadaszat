@@ -5649,6 +5649,80 @@ class VA_Settings_Page {
                             </table>
                         </div>
 
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🎨 Szöveg és kártya színek</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_title_color',         'Hirdetés cím színe' ); ?>
+                                <?php self::field_color( 'va_sl_card_title_color',    'Kártya szekciócím (Leírás / Részletek / Feladó...)' ); ?>
+                                <?php self::field_color( 'va_sl_meta_color',          'Meta sor szöveg (helyszín, dátum, megtekintés...)' ); ?>
+                                <?php self::field_color( 'va_sl_views_color',         'Megtekintések szám színe' ); ?>
+                                <?php self::field_color( 'va_sl_desc_color',          'Leírás szöveg színe' ); ?>
+                                <?php self::field_color( 'va_sl_spec_label_color',    'Műszaki adat cimke (pl. Gyártó, Kaliber...)' ); ?>
+                                <?php self::field_color( 'va_sl_spec_val_color',      'Műszaki adat érték színe' ); ?>
+                                <?php self::field_color( 'va_sl_expired_color',       'Lejárt hirdetés dátum szín' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🏷 Pill, badge és demand</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_featured_pill_bg',     '"Kiemelt" pill háttér' ); ?>
+                                <?php self::field_color( 'va_sl_featured_pill_border',  '"Kiemelt" pill keret' ); ?>
+                                <?php self::field_color( 'va_sl_featured_pill_text',    '"Kiemelt" pill szöveg' ); ?>
+                                <?php self::field_color( 'va_sl_demand_bg',            'Kereslet-indikátor háttér' ); ?>
+                                <?php self::field_color( 'va_sl_demand_border',        'Kereslet-indikátor keret' ); ?>
+                                <?php self::field_color( 'va_sl_demand_text',          'Kereslet-indikátor szöveg' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">👤 Feladó és megosztás</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_seller_name_color',  'Feladó neve szín' ); ?>
+                                <?php self::field_color( 'va_sl_seller_since_color', '"Tag X óta" szín' ); ?>
+                                <?php self::field_color( 'va_sl_share_label_color',  '"Megosztás:" felirat szín' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">📌 Sticky sáv + kapcsolódó hirdetések</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_sticky_bg',           'Sticky sáv háttér' ); ?>
+                                <?php self::field_color( 'va_sl_sticky_title_color',  'Sticky sáv cím szín' ); ?>
+                                <?php self::field_color( 'va_sl_related_border',      'Kapcsolódó kártya keret' ); ?>
+                                <?php self::field_color( 'va_sl_related_title_color', 'Kapcsolódó cím szín' ); ?>
+                                <?php self::field_color( 'va_sl_related_meta_color',  'Kapcsolódó meta szín' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">✏️ Feliratok és szövegek</div>
+                            <p class="description" style="padding:0 0 10px 10px;">Minden statikus szöveg megváltoztatható – pl. "Leírás" → "Termékleírás".</p>
+                            <table class="form-table">
+                                <?php self::field_text( 'va_sl_lbl_description',     '"Leírás" szekció cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_details',         '"Részletek" szekció cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_seller',          '"Feladó" szekció cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_more_listings',   '"Feladó további hirdetései" cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_related',         '"Hasonló hirdetések" cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_phone_btn',       'Telefonszám gomb szövege' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_email_btn',       'E-mail gomb szövege' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_watch_add',       '"Mentés kedvencekbe" gomb' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_watch_remove',    '"Eltávolítás kedvencekből" gomb' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_share',           '"Megosztás:" felirat' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_zoom',            '"Nagyítás" gomb szöveg' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_no_image',        '"Nincs kép" placeholder szöveg' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_views_suffix',    '"megtekintés" utótag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_posted',          '"Feladva:" előtag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_expires',         '"Lejár:" előtag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_expired_label',   '"Lejárt:" előtag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_member_since_pre','Tag X óta – "Tag" szó' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_member_since_suf','Tag X óta – "óta" szó' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_condition_pre',   '"Állapot:" előtag a meta sorban' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_demand',          'Kereslet szöveg (az "%d érdeklődő..." utáni rész)' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_featured_pill',   '"Kiemelt" pill szövege' ); ?>
+                            </table>
+                        </div>
+
                         <?php submit_button( 'Termékoldal dizájn mentése', 'primary', 'submit', false, [ 'style' => 'margin-top:14px;' ] ); ?>
                     </div>
 
