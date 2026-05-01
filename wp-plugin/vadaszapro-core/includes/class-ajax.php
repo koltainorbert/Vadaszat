@@ -128,9 +128,10 @@ class VA_Ajax {
 
         // Típus-specifikus extra mezők mentése
         $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect' ];
-        $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys',
+        $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys', 'va_own_weight',
                              'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
-        $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating' ];
+        $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating',
+                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout' ];
         $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
         foreach ( $type_extra_text as $k ) {
             if ( isset( $_POST[ str_replace( 'va_', '', $k ) ] ) ) {
@@ -156,6 +157,14 @@ class VA_Ajax {
 
         foreach ( $metas as $k => $v ) {
             update_post_meta( $post_id, $k, $v );
+        }
+
+        // va_extras – JSON tömb
+        if ( isset( $_POST['extras'] ) ) {
+            $raw_extras   = is_array( $_POST['extras'] ) ? (array) $_POST['extras'] : [];
+            $valid_extras = array_keys( class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [] );
+            $clean_extras = array_values( array_intersect( array_map( 'sanitize_key', $raw_extras ), $valid_extras ) );
+            update_post_meta( $post_id, 'va_extras', wp_json_encode( $clean_extras ) );
         }
 
         if ( $category ) wp_set_post_terms( $post_id, [ $category ], 'va_category' );
@@ -292,9 +301,10 @@ class VA_Ajax {
 
         // Típus-specifikus extra mezők mentése (submit)
         $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect' ];
-        $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys',
+        $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys', 'va_own_weight',
                              'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
-        $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating' ];
+        $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating',
+                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout' ];
         $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
         foreach ( $type_extra_text as $k ) {
             $short = str_replace( 'va_', '', $k );
@@ -314,6 +324,14 @@ class VA_Ajax {
         }
         foreach ( $metas as $k => $v ) {
             update_post_meta( $post_id, $k, $v );
+        }
+
+        // va_extras – JSON tömb
+        if ( isset( $_POST['extras'] ) ) {
+            $raw_extras   = is_array( $_POST['extras'] ) ? (array) $_POST['extras'] : [];
+            $valid_extras = array_keys( class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [] );
+            $clean_extras = array_values( array_intersect( array_map( 'sanitize_key', $raw_extras ), $valid_extras ) );
+            update_post_meta( $post_id, 'va_extras', wp_json_encode( $clean_extras ) );
         }
 
         // Taxonómiák

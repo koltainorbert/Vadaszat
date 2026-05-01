@@ -203,6 +203,32 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'caliber'     => get_post_meta( $maybe_id, 'va_caliber',     true ),
             'year'        => get_post_meta( $maybe_id, 'va_year',        true ),
             'license_req' => get_post_meta( $maybe_id, 'va_license_req', true ),
+            // Jármű extra mezők
+            'mileage'          => get_post_meta( $maybe_id, 'va_mileage',          true ),
+            'fuel_type'        => get_post_meta( $maybe_id, 'va_fuel_type',        true ),
+            'performance_kw'   => get_post_meta( $maybe_id, 'va_performance_kw',   true ),
+            'engine_size'      => get_post_meta( $maybe_id, 'va_engine_size',      true ),
+            'transmission'     => get_post_meta( $maybe_id, 'va_transmission',     true ),
+            'color'            => get_post_meta( $maybe_id, 'va_color',            true ),
+            'doors'            => get_post_meta( $maybe_id, 'va_doors',            true ),
+            'drive'            => get_post_meta( $maybe_id, 'va_drive',            true ),
+            'vehicle_condition'=> get_post_meta( $maybe_id, 'va_vehicle_condition',true ),
+            'doc_type'         => get_post_meta( $maybe_id, 'va_doc_type',         true ),
+            'doc_validity'     => get_post_meta( $maybe_id, 'va_doc_validity',     true ),
+            'ac_type'          => get_post_meta( $maybe_id, 'va_ac_type',          true ),
+            'eco_class'        => get_post_meta( $maybe_id, 'va_eco_class',        true ),
+            'cylinder_layout'  => get_post_meta( $maybe_id, 'va_cylinder_layout',  true ),
+            'own_weight'       => get_post_meta( $maybe_id, 'va_own_weight',       true ),
+            'tech_inspect'     => get_post_meta( $maybe_id, 'va_tech_inspect',     true ),
+            'first_reg'        => get_post_meta( $maybe_id, 'va_first_reg',        true ),
+            'owners'           => get_post_meta( $maybe_id, 'va_owners',           true ),
+            'previous_damage'  => get_post_meta( $maybe_id, 'va_previous_damage',  true ),
+            'service_book'     => get_post_meta( $maybe_id, 'va_service_book',     true ),
+            'extras'           => (function( $raw ) {
+                                    if ( ! is_string( $raw ) || $raw === '' ) return [];
+                                    $d = json_decode( $raw, true );
+                                    return is_array( $d ) ? $d : [];
+                                })( get_post_meta( $maybe_id, 'va_extras', true ) ),
             'category'    => (int) ( wp_get_post_terms( $maybe_id, 'va_category', ['fields'=>'ids'] )[0] ?? 0 ),
             'county'      => (int) ( wp_get_post_terms( $maybe_id, 'va_county',   ['fields'=>'ids'] )[0] ?? 0 ),
             'condition'   => (int) ( wp_get_post_terms( $maybe_id, 'va_condition',['fields'=>'ids'] )[0] ?? 0 ),
@@ -441,6 +467,151 @@ wp_localize_script( 'va-submit', 'VA_Data', [
             endif;
         endforeach;
         ?>
+
+        <?php if ( $site_type === 'jarmu' ):
+            $ev = $edit_meta;
+            $drive_opts     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_drive_options() : [];
+            $vcond_opts     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_condition_options() : [];
+            $doc_type_opts  = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_type_options() : [];
+            $doc_val_opts   = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_validity_options() : [];
+            $ac_opts        = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_ac_type_options() : [];
+            $eco_opts       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
+            $cyl_opts       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
+            $extras_opts    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
+            $ev_extras      = is_array( $ev['extras'] ?? null ) ? $ev['extras'] : [];
+
+            // Helper: select mező
+            $render_select = function( string $name, array $options, string $saved ) {
+                echo '<select name="' . esc_attr( $name ) . '" class="va-select">';
+                echo '<option value="">– Válasszon –</option>';
+                foreach ( $options as $k => $l ) {
+                    echo '<option value="' . esc_attr( $k ) . '"' . selected( $saved, $k, false ) . '>' . esc_html( $l ) . '</option>';
+                }
+                echo '</select>';
+            };
+        ?>
+        <style>
+        .va-vehicle-specs { margin-top:28px; }
+        .va-vehicle-specs h3.va-specs-heading { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.5);margin:22px 0 12px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,.08); }
+        .va-specs-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px; }
+        @media(max-width:600px){ .va-specs-grid { grid-template-columns:1fr; } }
+        .va-specs-grid .va-form-group { margin-bottom:0; }
+        .va-extras-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:8px; }
+        @media(max-width:600px){ .va-extras-grid { grid-template-columns:1fr 1fr; } }
+        .va-extra-check { display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;padding:6px 8px;border:1px solid rgba(255,255,255,.1);border-radius:6px;transition:border-color .15s,background .15s; }
+        .va-extra-check:has(input:checked) { border-color:rgba(255,60,60,.5);background:rgba(255,60,60,.07); }
+        .va-extra-check input { accent-color:#ff3030;flex-shrink:0; }
+        </style>
+        <div class="va-vehicle-specs">
+            <h3 class="va-specs-heading">⚙️ Motor / Hajtástechnika</h3>
+            <div class="va-specs-grid">
+                <div class="va-form-group">
+                    <label>Futásteljesítmény (km)</label>
+                    <input type="number" name="mileage" class="va-input" min="0" placeholder="pl. 125000" value="<?php echo esc_attr( (string)( $ev['mileage'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Üzemanyag</label>
+                    <?php $render_select( 'fuel_type', [ 'benzin'=>'Benzin','diesel'=>'Dízel','hybrid'=>'Hibrid','electric'=>'Elektromos','lpg'=>'LPG','cng'=>'CNG','egyeb'=>'Egyéb' ], (string)( $ev['fuel_type'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Hengerűrtartalom (cm³)</label>
+                    <input type="number" name="engine_size" class="va-input" min="0" placeholder="pl. 1598" value="<?php echo esc_attr( (string)( $ev['engine_size'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Teljesítmény (kW)</label>
+                    <input type="number" name="performance_kw" class="va-input" min="0" placeholder="pl. 85" value="<?php echo esc_attr( (string)( $ev['performance_kw'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Sebességváltó</label>
+                    <?php $render_select( 'transmission', [ 'manual'=>'Kéziváltó','automatic'=>'Automata','semi_auto'=>'Félautomata','cvt'=>'CVT','egyeb'=>'Egyéb' ], (string)( $ev['transmission'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Hajtás</label>
+                    <?php $render_select( 'drive', $drive_opts, (string)( $ev['drive'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Henger-elrendezés</label>
+                    <?php $render_select( 'cylinder_layout', $cyl_opts, (string)( $ev['cylinder_layout'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Saját tömeg (kg)</label>
+                    <input type="number" name="own_weight" class="va-input" min="0" placeholder="pl. 1450" value="<?php echo esc_attr( (string)( $ev['own_weight'] ?? '' ) ); ?>">
+                </div>
+            </div>
+
+            <h3 class="va-specs-heading">🚘 Karosszéria / Állapot</h3>
+            <div class="va-specs-grid">
+                <div class="va-form-group">
+                    <label>Jármű állapota</label>
+                    <?php $render_select( 'vehicle_condition', $vcond_opts, (string)( $ev['vehicle_condition'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Ajtók száma</label>
+                    <?php $render_select( 'doors', [ '2'=>'2','3'=>'3','4'=>'4','5'=>'5','6'=>'6+' ], (string)( $ev['doors'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Szín</label>
+                    <input type="text" name="color" class="va-input" placeholder="pl. Fehér, Fekete..." value="<?php echo esc_attr( (string)( $ev['color'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Klíma</label>
+                    <?php $render_select( 'ac_type', $ac_opts, (string)( $ev['ac_type'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Környezetvédelmi osztály</label>
+                    <?php $render_select( 'eco_class', $eco_opts, (string)( $ev['eco_class'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Tulajdonosok száma</label>
+                    <input type="number" name="owners" class="va-input" min="1" max="20" placeholder="pl. 2" value="<?php echo esc_attr( (string)( $ev['owners'] ?? '' ) ); ?>">
+                </div>
+            </div>
+
+            <h3 class="va-specs-heading">📄 Okmányok / Műszaki</h3>
+            <div class="va-specs-grid">
+                <div class="va-form-group">
+                    <label>Okmányok jellege</label>
+                    <?php $render_select( 'doc_type', $doc_type_opts, (string)( $ev['doc_type'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Okmányok érvényessége</label>
+                    <?php $render_select( 'doc_validity', $doc_val_opts, (string)( $ev['doc_validity'] ?? '' ) ); ?>
+                </div>
+                <div class="va-form-group">
+                    <label>Műszaki vizsga lejár</label>
+                    <input type="month" name="tech_inspect" class="va-input" value="<?php echo esc_attr( (string)( $ev['tech_inspect'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Első forgalomba helyezés (év.hó)</label>
+                    <input type="text" name="first_reg" class="va-input" placeholder="pl. 2019-03" value="<?php echo esc_attr( (string)( $ev['first_reg'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group" style="display:flex;align-items:center;gap:10px;padding-top:22px;">
+                    <label class="va-check-label">
+                        <input type="checkbox" name="previous_damage" value="1"<?php echo ( ( $ev['previous_damage'] ?? '' ) === '1' ) ? ' checked' : ''; ?>>
+                        Korábbi kár / baleset
+                    </label>
+                </div>
+                <div class="va-form-group" style="display:flex;align-items:center;gap:10px;padding-top:22px;">
+                    <label class="va-check-label">
+                        <input type="checkbox" name="service_book" value="1"<?php echo ( ( $ev['service_book'] ?? '' ) === '1' ) ? ' checked' : ''; ?>>
+                        Szervizkönyv megvan
+                    </label>
+                </div>
+            </div>
+
+            <h3 class="va-specs-heading">✅ Extra felszereltség</h3>
+            <div class="va-extras-grid">
+                <?php foreach ( $extras_opts as $ekey => $elabel ):
+                    $is_checked = in_array( $ekey, $ev_extras, true );
+                ?>
+                <label class="va-extra-check">
+                    <input type="checkbox" name="extras[]" value="<?php echo esc_attr( $ekey ); ?>"<?php echo $is_checked ? ' checked' : ''; ?>>
+                    <?php echo esc_html( $elabel ); ?>
+                </label>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <button type="submit" class="va-btn va-btn--primary va-btn--block" id="va-submit-btn">
             <?php echo $edit_mode ? '💾 Változások mentése' : '📤 Hirdetés feladása'; ?>

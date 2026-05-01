@@ -339,6 +339,19 @@ $heating         = get_post_meta( $post_id, 'va_heating',         true );
 
 $balcony         = get_post_meta( $post_id, 'va_balcony',         true );
 
+// Új jármű mezők
+$drive            = get_post_meta( $post_id, 'va_drive',            true );
+$vehicle_cond     = get_post_meta( $post_id, 'va_vehicle_condition',true );
+$doc_type         = get_post_meta( $post_id, 'va_doc_type',         true );
+$doc_validity     = get_post_meta( $post_id, 'va_doc_validity',     true );
+$ac_type          = get_post_meta( $post_id, 'va_ac_type',          true );
+$eco_class        = get_post_meta( $post_id, 'va_eco_class',        true );
+$cylinder_layout  = get_post_meta( $post_id, 'va_cylinder_layout',  true );
+$own_weight       = get_post_meta( $post_id, 'va_own_weight',       true );
+$extras_raw       = get_post_meta( $post_id, 'va_extras',           true );
+$extras_arr       = ( is_string( $extras_raw ) && $extras_raw !== '' ) ? json_decode( $extras_raw, true ) : [];
+$extras_arr       = is_array( $extras_arr ) ? $extras_arr : [];
+
 
 
 
@@ -363,10 +376,14 @@ $furn_labels = [ 'no'=>'Nem','partial'=>'Részben','yes'=>'Igen' ];
 
 $heat_labels = [ 'gas'=>'Gáz','electric'=>'Elektromos','district'=>'Távfűtés','wood'=>'Fa/szilárd','heat_pump'=>'Hőszivattyú' ];
 
-
-
-
-
+$drive_labels     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_drive_options() : [];
+$vcond_labels     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_condition_options() : [];
+$doctype_labels   = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_type_options() : [];
+$docval_labels    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_validity_options() : [];
+$ac_labels        = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_ac_type_options() : [];
+$eco_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
+$cyl_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
+$extras_opts      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
 // Kepek gyujtese: va_gallery_ids meta (elsődleges) + featured image
 
 
@@ -747,6 +764,11 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 .sl__spec-row--full { grid-column:1/-1;padding-right:0 !important;border-left:none !important; }
 
+/* Extras pills */
+.sl__extras-section { margin-top:18px; }
+.sl__extras-heading { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.45);margin-bottom:10px; }
+.sl__extras-pills { display:flex;flex-wrap:wrap;gap:6px; }
+.sl__extra-pill { font-size:12px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.85); }
 
 /* Highlight badge */
 
@@ -1238,6 +1260,14 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 if ( $tech_inspect )   $specs[] = [ 'M&#369;szaki lej&#225;r',        $tech_inspect,false ];
+                if ( $drive )          $specs[] = [ 'Hajt&#225;s',                $drive_labels[$drive] ?? $drive, false ];
+                if ( $vehicle_cond )   $specs[] = [ 'J&#225;rm&#369; &#225;llapota',      $vcond_labels[$vehicle_cond] ?? $vehicle_cond, false ];
+                if ( $doc_type )       $specs[] = [ 'Okiratok jellege',       $doctype_labels[$doc_type] ?? $doc_type, false ];
+                if ( $doc_validity )   $specs[] = [ 'Okiratok &#233;rv&#233;nyess&#233;ge', $docval_labels[$doc_validity] ?? $doc_validity, false ];
+                if ( $ac_type )        $specs[] = [ 'Kl&#237;ma',                 $ac_labels[$ac_type] ?? $ac_type, false ];
+                if ( $eco_class )      $specs[] = [ 'K&#246;rny. oszt&#225;ly',        $eco_labels[$eco_class] ?? $eco_class, false ];
+                if ( $cylinder_layout )$specs[] = [ 'Henger-elrendez&#233;s',   $cyl_labels[$cylinder_layout] ?? $cylinder_layout, false ];
+                if ( $own_weight )     $specs[] = [ 'Saj&#225;t t&#246;meg',           number_format((int)$own_weight,0,',',' ').' kg', false ];
 
 
             } elseif ( $site_type === 'ingatlan' ) {
@@ -1389,10 +1419,19 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
                 <?php endif; ?>
 
+                <?php if ( $site_type === 'jarmu' && ! empty( $extras_arr ) ): ?>
+                <div class="sl__extras-section">
+                    <div class="sl__extras-heading">Extra felszereltség</div>
+                    <div class="sl__extras-pills">
+                        <?php foreach ( $extras_arr as $ekey ):
+                            $elabel = $extras_opts[ $ekey ] ?? $ekey; ?>
+                        <span class="sl__extra-pill"><?php echo esc_html( $elabel ); ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
 
             </div>
-
-
             <?php endif; ?>
 
 

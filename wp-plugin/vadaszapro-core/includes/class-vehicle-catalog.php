@@ -58,6 +58,106 @@ class VA_Vehicle_Catalog {
         ];
     }
 
+    public static function get_drive_options(): array {
+        return [
+            'elso'                => 'Első kerék meghajtás',
+            'hatso'               => 'Hátsó kerék meghajtás',
+            'osszkerek_kapc'      => 'Összkerék meghajtás (kapcsolható)',
+            'osszkerek_allando'   => 'Összkerék meghajtás (állandó 4×4)',
+        ];
+    }
+
+    public static function get_vehicle_condition_options(): array {
+        return [
+            'kituno'    => 'Kiváló',
+            'jo'        => 'Jó',
+            'kozepes'   => 'Közepes',
+            'felujitando' => 'Felújítandó',
+            'serult'    => 'Sérült / balesetes',
+            'bontott'   => 'Bontott',
+            'bemutato'  => 'Bemutatóautó',
+        ];
+    }
+
+    public static function get_doc_type_options(): array {
+        return [
+            'magyar'           => 'Magyar',
+            'kulfoldi'         => 'Külföldi',
+            'import'           => 'Importált',
+            'regisztralas_alatt' => 'Regisztrálás alatt',
+        ];
+    }
+
+    public static function get_doc_validity_options(): array {
+        return [
+            'ervenyes'             => 'Érvényes okmányokkal',
+            'lejart'               => 'Lejárt okmányokkal',
+            'ideiglenesen_kivont'  => 'Ideiglenesen forgalomból kivont',
+            'nelkul'               => 'Okmányok nélkül',
+        ];
+    }
+
+    public static function get_ac_type_options(): array {
+        return [
+            'nincs'       => 'Nincs',
+            'manualis'    => 'Manuális',
+            'automata'    => 'Automata',
+            'digitalis'   => 'Digitális',
+            'ketzonas'    => 'Kétzónás',
+            'tobbzonas'   => 'Többzónás',
+            'hoszivattyus' => 'Hőszivattyús',
+        ];
+    }
+
+    public static function get_eco_class_options(): array {
+        return [
+            'euro1'    => 'Euro 1',
+            'euro2'    => 'Euro 2',
+            'euro3'    => 'Euro 3',
+            'euro4'    => 'Euro 4',
+            'euro5'    => 'Euro 5',
+            'euro6'    => 'Euro 6',
+            'euro7'    => 'Euro 7',
+            'electric' => 'Elektromos / Nulla emissziós',
+            'egyeb'    => 'Egyéb',
+        ];
+    }
+
+    public static function get_cylinder_layout_options(): array {
+        return [
+            'soros'  => 'Soros',
+            'v'      => 'V-elrendezés',
+            'boxer'  => 'Boxer',
+            'w'      => 'W-elrendezés',
+        ];
+    }
+
+    public static function get_extras_options(): array {
+        return [
+            '4ws'                   => '4WS – összkerékkormányzás',
+            'adjustable_suspension' => 'Állítható felfüggesztés',
+            'adjustable_steering'   => 'Állítható kormány',
+            'auto_cyl_shutdown'     => 'Automatikus hengerlekapcsolás',
+            'central_lock'          => 'Centrálzár',
+            'chiptuning'            => 'Chiptuning',
+            'edc'                   => 'EDC (elektr. lengéscsillapítás)',
+            'alarm'                 => 'Riasztó',
+            'speed_servo'           => 'Sebességfüggő szervókormány',
+            'sperr_diff'            => 'Sperr differenciálmű',
+            'sport_suspension'      => 'Sportfutómű',
+            'sport_seats'           => 'Sportülések',
+            'start_stop'            => 'Start-stop rendszer',
+            'power_steering'        => 'Szervokormány',
+            'tinted_windows'        => 'Színezett üveg',
+            'sliding_door'          => 'Tolóajtó',
+            'elec_sliding_roof'     => 'Tolótető (elektromos)',
+            'sunroof'               => 'Napfénytető / tolótető',
+            'towbar'                => 'Vonóhorog',
+            'elec_towbar'           => 'Vonóhorog (elektromos)',
+            'removable_towbar'      => 'Vonóhorog (levehető)',
+        ];
+    }
+
     public static function get_brand_models(): array {
         if ( self::$brand_models !== null ) {
             return self::$brand_models;
