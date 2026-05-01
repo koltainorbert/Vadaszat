@@ -1011,6 +1011,44 @@ class VA_Settings_Page {
             }
         }
 
+        /* Kereső legördülő designer (va_search_dd_*) */
+        $search_designer = [
+            'va_search_dd_bg'                  => '#111111',
+            'va_search_dd_border'              => 'rgba(255,255,255,.10)',
+            'va_search_dd_radius'              => 14,
+            'va_search_dd_shadow'              => '0 16px 48px rgba(0,0,0,.70)',
+            'va_search_dd_item_border'         => 'rgba(255,255,255,.05)',
+            'va_search_dd_item_hover_bg'       => 'rgba(255,255,255,.06)',
+            'va_search_dd_item_pad_y'          => 10,
+            'va_search_dd_item_pad_x'          => 14,
+            'va_search_dd_thumb_radius'        => 8,
+            'va_search_dd_noimg_bg'            => 'rgba(255,255,255,.06)',
+            'va_search_dd_title_color'         => '#ffffff',
+            'va_search_dd_title_size'          => 13,
+            'va_search_dd_price_color'         => '#ff0000',
+            'va_search_dd_price_size'          => 12,
+            'va_search_dd_badge_size'          => 10,
+            'va_search_dd_badge_radius'        => 20,
+            'va_search_dd_badge_listing_bg'    => 'rgba(255,0,0,.18)',
+            'va_search_dd_badge_listing_text'  => '#ff4040',
+            'va_search_dd_badge_auction_bg'    => 'rgba(255,140,0,.25)',
+            'va_search_dd_badge_auction_text'  => '#ff8c00',
+            'va_search_dd_badge_category_bg'   => 'rgba(0,200,100,.18)',
+            'va_search_dd_badge_category_text' => '#00e070',
+            'va_search_dd_badge_user_bg'       => 'rgba(80,140,255,.18)',
+            'va_search_dd_badge_user_text'     => '#6fa0ff',
+            'va_search_dd_all_color'           => '#ff0000',
+            'va_search_dd_all_size'            => 12,
+            'va_search_dd_all_hover_bg'        => 'rgba(255,0,0,.06)',
+        ];
+        foreach ( $search_designer as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_search_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) {
+                update_option( $key, $default );
+            }
+        }
+
         /* Back-to-top gomb (va_btt_*) */
         $btt = [
             'va_btt_enabled'      => '1',
