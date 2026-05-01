@@ -1291,7 +1291,7 @@ add_action( 'wp_loaded', function () {
 add_action( 'admin_post_nopriv_va_contact_form', 'va_handle_contact_form' );
 add_action( 'admin_post_va_contact_form', 'va_handle_contact_form' );
 
-function va_handle_contact_form(): void {
+function va_get_contact_page_url(): string {
     $contact_page_id = 0;
 
     // 1) Opcionális direkt page ID (ha egyszer bevezetésre kerül admin oldalon)
@@ -1327,9 +1327,11 @@ function va_handle_contact_form(): void {
     }
 
     $redirect = $contact_page_id ? get_permalink( $contact_page_id ) : '';
-    if ( ! $redirect ) {
-        $redirect = home_url( '/kapcsolat/' );
-    }
+    return $redirect ?: home_url( '/kapcsolat/' );
+}
+
+function va_handle_contact_form(): void {
+    $redirect = va_get_contact_page_url();
 
     if ( strtoupper( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' ) {
         wp_safe_redirect( $redirect );

@@ -1576,7 +1576,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 <?php if ( $email_show === '1' && $author ): ?>
 
 
-                    <a href="mailto:<?php echo esc_attr($author->user_email); ?>" class="sl__btn sl__btn--email">
+                    <a href="<?php echo esc_url( function_exists( 'va_get_contact_page_url' ) ? va_get_contact_page_url() : home_url( '/kapcsolat/' ) ); ?>" class="sl__btn sl__btn--email">
 
 
                         &#9993; E-mail &#252;zenet k&#252;ld&#233;se
