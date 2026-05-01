@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 05. 01. – Session #129 (Új Kereső menüpont + header dropdown teljes dizájn vezérlés)
+
+### Mit csináltunk [x]
+- [x] Új admin menüpont létrehozva: **Kereső** (`vadaszapro-search`) a sidebarban, submenu-ben és admin bar menüben
+- [x] Új beállítási oldal: `render_search_designer()`
+  - panel háttér/keret/radius/árnyék
+  - találati sor border + hover háttér + padding
+  - bélyegkép/no-image megjelenés
+  - cím/ár/összes találat színek és betűméretek
+  - pill badge (hirdetés/aukció/kategória/felhasználó) háttér + szövegszín + méret + radius
+- [x] Új opciókulcsok regisztrálva `va_search_settings` csoportban (`va_search_dd_*`)
+- [x] Frontenden dinamikus CSS bekötve (`functions.php` root + theme mirror), hogy a dropdown elemei élőben kövessék az admin értékeket
+- [x] Plugin + Theme deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A header keresőből nyíló dropdown panel minden fontos vizuális eleme paraméterezhető adminból külön **Kereső** oldalon.
+
+---
+
 ## 2026. 05. 01. – Session #128 (Kapcsolat oldal dupla render fix)
 
 ### Mit csináltunk [x]
