@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 02. – Session #154 (Teljes mentes: repo + local)
+
+### Mit csinaltunk [x]
+- [x] Teljes allapot ellenorizve git oldalon (HEAD, origin/main, status)
+- [x] Session allapot naplozva a fejlesztesi naploba
+- [x] LocalWP deploy kor lefuttatasa (`Deploy All`)
+- [x] Minden valtozas commit + push a GitHub repoba
+
+### Hol tartunk
+A kod allapot most szinkronban van helyben, LocalWP-ben es a tavoli repoban is.
+
+### TODO
+- [ ] Clean install smoke teszt kulon korben (friss, ures WP peldanyon)
+
+---
+
 ## 2026. 05. 02. – Session #153 (3 minta termek kepestol a tema packba)
 
 ### Mit csinaltunk [x]
