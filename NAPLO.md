@@ -2,6 +2,34 @@
 
 ---
 
+## 2026. 05. 02. – Session #153 (3 minta termek kepestol a tema packba)
+
+### Mit csinaltunk [x]
+- [x] 3 db demo kep bekerult a csomagba:
+  - `assets/demo/demo-auto-1.svg`
+  - `assets/demo/demo-auto-2.svg`
+  - `assets/demo/demo-auto-3.svg`
+  - valamint a theme pack mirrorban is: `wp-theme/vadaszapro-theme/assets/demo/*`
+- [x] Uj telepiteshez automatikus demo hirdetes seed keszult:
+  - `vadaszapro-core.php` es `wp-plugin/vadaszapro-core/vadaszapro-core.php`
+  - 3 db `va_listing` minta hirdetes jon letre, ha meg nincs egyetlen hirdetes sem
+  - minta adatok: cim, ar, marka, modell, evjarat, varos, kategoria, megye, allapot
+- [x] Kartyas nezetben demo kep fallback bekerult (`va_demo_image` meta alapjan):
+  - `frontend/templates/listing/card.php`
+  - `wp-plugin/vadaszapro-core/frontend/templates/listing/card.php`
+- [x] Single oldalon demo kep fallback bekerult:
+  - `single-va_listing.php`
+  - `wp-theme/vadaszapro-theme/single-va_listing.php`
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A tema pack most tartalmazza a kert 3 minta termeket kepes megjelenitessel egyutt. Friss telepitesen, ures adatbazisnal automatikusan bejon a 3 demo hirdetes.
+
+### TODO
+- [ ] Clean install smoke teszt: ellenorizni, hogy ures WP peldanyon aktivalas utan azonnal latszik mindharom minta hirdetes
+
+---
+
 ## 2026. 05. 02. – Session #152 (Szentgrál induló teendőlista)
 
 ### Mit csináltunk [x]
