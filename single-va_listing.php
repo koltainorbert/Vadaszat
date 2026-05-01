@@ -1451,13 +1451,10 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 <div class="sl__card-title">R&#233;szletek</div>
 
 
-                <div class="sl__params-scroll">
-
-
                 <div class="sl__params-scroll-wrap">
 
 
-                <div class="sl__params-flowbar" id="sl-params-flowbar" aria-hidden="true"><span class="sl__params-flowbar-glow"></span></div>
+                <div class="sl__params-scroll">
 
 
                 <?php if ( ! empty($badges) ): ?>
@@ -1536,6 +1533,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 </div>
+
+
+                <div class="sl__params-flowbar" id="sl-params-flowbar" aria-hidden="true"><span class="sl__params-flowbar-glow"></span></div>
 
 
                 </div>
@@ -2169,24 +2169,26 @@ $watching_sticky   = is_user_logged_in() ? va_user_watches($post_id) : false;
 
 
         mainImg.src = src;
-        var paramsScroll = document.querySelector('.sl__params-scroll');
-        var paramsFlowbar = document.getElementById('sl-params-flowbar');
-        if (paramsScroll && paramsFlowbar) {
-            var updateFlowbar = function() {
-                var hasMore = (paramsScroll.scrollHeight - paramsScroll.clientHeight) > 8;
-                var atBottom = (paramsScroll.scrollTop + paramsScroll.clientHeight) >= (paramsScroll.scrollHeight - 6);
-                paramsFlowbar.style.opacity = (hasMore && !atBottom) ? '1' : '0';
-            };
-            updateFlowbar();
-            paramsScroll.addEventListener('scroll', updateFlowbar, { passive: true });
-            window.addEventListener('resize', updateFlowbar);
-            if (typeof ResizeObserver !== 'undefined') {
-                var flowObserver = new ResizeObserver(updateFlowbar);
-                flowObserver.observe(paramsScroll);
-            }
+
+
+    }
+
+
+    var paramsScroll = document.querySelector('.sl__params-scroll');
+    var paramsFlowbar = document.getElementById('sl-params-flowbar');
+    if (paramsScroll && paramsFlowbar) {
+        var updateFlowbar = function() {
+            var hasMore = (paramsScroll.scrollHeight - paramsScroll.clientHeight) > 8;
+            var atBottom = (paramsScroll.scrollTop + paramsScroll.clientHeight) >= (paramsScroll.scrollHeight - 6);
+            paramsFlowbar.style.opacity = (hasMore && !atBottom) ? '1' : '0';
+        };
+        updateFlowbar();
+        paramsScroll.addEventListener('scroll', updateFlowbar, { passive: true });
+        window.addEventListener('resize', updateFlowbar);
+        if (typeof ResizeObserver !== 'undefined') {
+            var flowObserver = new ResizeObserver(updateFlowbar);
+            flowObserver.observe(paramsScroll);
         }
-
-
     }
 
 
