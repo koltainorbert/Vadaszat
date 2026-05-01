@@ -348,6 +348,7 @@ $ac_type          = get_post_meta( $post_id, 'va_ac_type',          true );
 $eco_class        = get_post_meta( $post_id, 'va_eco_class',        true );
 $cylinder_layout  = get_post_meta( $post_id, 'va_cylinder_layout',  true );
 $own_weight       = get_post_meta( $post_id, 'va_own_weight',       true );
+$vehicle_type     = get_post_meta( $post_id, 'va_vehicle_type',     true );
 $extras_raw       = get_post_meta( $post_id, 'va_extras',           true );
 $extras_arr       = ( is_string( $extras_raw ) && $extras_raw !== '' ) ? json_decode( $extras_raw, true ) : [];
 $extras_arr       = is_array( $extras_arr ) ? $extras_arr : [];
@@ -383,6 +384,7 @@ $docval_labels    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get
 $ac_labels        = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_ac_type_options() : [];
 $eco_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
 $cyl_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
+$vtype_labels     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_type_options() : [];
 $extras_opts      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
 // Kepek gyujtese: va_gallery_ids meta (elsődleges) + featured image
 
@@ -1221,6 +1223,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
             if ( $site_type === 'jarmu' ) {
+
+
+                if ( $vehicle_type )   $specs[] = [ 'J&#225;rm&#369;kateg&#243;ria',       $vtype_labels[$vehicle_type] ?? $vehicle_type, false ];
 
 
                 if ( $brand )          $specs[] = [ 'Gy&#225;rt&#243;',               $brand,       false ];
