@@ -127,12 +127,16 @@ class VA_Ajax {
         ];
 
         // Típus-specifikus extra mezők mentése
-        $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect' ];
+        $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect',
+                             'va_upholstery_1', 'va_upholstery_2', 'va_internal_id', 'va_vin', 'va_second_phone',
+                             'va_summer_tire_front', 'va_summer_tire_rear', 'va_winter_tire_front', 'va_winter_tire_rear' ];
         $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys', 'va_own_weight',
+                             'va_gross_weight', 'va_passengers', 'va_trunk_liters',
                              'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
         $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating',
-                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout', 'va_vehicle_type' ];
-        $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
+                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class',
+                             'va_cylinder_layout', 'va_vehicle_type', 'va_roof_type' ];
+        $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony', 'va_color_metallic', 'va_range_gearbox' ];
         foreach ( $type_extra_text as $k ) {
             if ( isset( $_POST[ str_replace( 'va_', '', $k ) ] ) ) {
                 $metas[ $k ] = sanitize_text_field( wp_unslash( $_POST[ str_replace( 'va_', '', $k ) ] ) );
@@ -300,12 +304,16 @@ class VA_Ajax {
         ];
 
         // Típus-specifikus extra mezők mentése (submit)
-        $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect' ];
+        $type_extra_text = [ 'va_color', 'va_first_reg', 'va_tech_inspect',
+                             'va_upholstery_1', 'va_upholstery_2', 'va_internal_id', 'va_vin', 'va_second_phone',
+                             'va_summer_tire_front', 'va_summer_tire_rear', 'va_winter_tire_front', 'va_winter_tire_rear' ];
         $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys', 'va_own_weight',
+                             'va_gross_weight', 'va_passengers', 'va_trunk_liters',
                              'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
         $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating',
-                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout', 'va_vehicle_type' ];
-        $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
+                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class',
+                             'va_cylinder_layout', 'va_vehicle_type', 'va_roof_type' ];
+        $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony', 'va_color_metallic', 'va_range_gearbox' ];
         foreach ( $type_extra_text as $k ) {
             $short = str_replace( 'va_', '', $k );
             if ( isset( $_POST[ $short ] ) ) $metas[ $k ] = sanitize_text_field( wp_unslash( $_POST[ $short ] ) );

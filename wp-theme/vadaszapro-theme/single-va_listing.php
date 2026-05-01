@@ -348,6 +348,18 @@ $ac_type          = get_post_meta( $post_id, 'va_ac_type',          true );
 $eco_class        = get_post_meta( $post_id, 'va_eco_class',        true );
 $cylinder_layout  = get_post_meta( $post_id, 'va_cylinder_layout',  true );
 $own_weight       = get_post_meta( $post_id, 'va_own_weight',       true );
+$gross_weight     = get_post_meta( $post_id, 'va_gross_weight',     true );
+$passengers       = get_post_meta( $post_id, 'va_passengers',       true );
+$trunk_liters     = get_post_meta( $post_id, 'va_trunk_liters',     true );
+$range_gearbox    = get_post_meta( $post_id, 'va_range_gearbox',    true );
+$roof_type        = get_post_meta( $post_id, 'va_roof_type',        true );
+$color_metallic   = get_post_meta( $post_id, 'va_color_metallic',   true );
+$upholstery_1     = get_post_meta( $post_id, 'va_upholstery_1',     true );
+$upholstery_2     = get_post_meta( $post_id, 'va_upholstery_2',     true );
+$summer_tire_front= get_post_meta( $post_id, 'va_summer_tire_front',true );
+$summer_tire_rear = get_post_meta( $post_id, 'va_summer_tire_rear', true );
+$winter_tire_front= get_post_meta( $post_id, 'va_winter_tire_front',true );
+$winter_tire_rear = get_post_meta( $post_id, 'va_winter_tire_rear', true );
 $vehicle_type     = get_post_meta( $post_id, 'va_vehicle_type',     true );
 $extras_raw       = get_post_meta( $post_id, 'va_extras',           true );
 $extras_arr       = ( is_string( $extras_raw ) && $extras_raw !== '' ) ? json_decode( $extras_raw, true ) : [];
@@ -385,7 +397,9 @@ $ac_labels        = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get
 $eco_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
 $cyl_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
 $vtype_labels     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_type_options() : [];
+$roof_labels      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_roof_type_options() : [];
 $extras_opts      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
+$extras_by_grp    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_by_group() : [];
 // Kepek gyujtese: va_gallery_ids meta (elsődleges) + featured image
 
 
@@ -1278,7 +1292,19 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 if ( $ac_type )        $specs[] = [ 'Kl&#237;ma',                 $ac_labels[$ac_type] ?? $ac_type, false ];
                 if ( $eco_class )      $specs[] = [ 'K&#246;rny. oszt&#225;ly',        $eco_labels[$eco_class] ?? $eco_class, false ];
                 if ( $cylinder_layout )$specs[] = [ 'Henger-elrendez&#233;s',   $cyl_labels[$cylinder_layout] ?? $cylinder_layout, false ];
-                if ( $own_weight )     $specs[] = [ 'Saj&#225;t t&#246;meg',           number_format((int)$own_weight,0,',',' ').' kg', false ];
+                if ( $own_weight )     $specs[] = [ 'Saját tömeg',           number_format((int)$own_weight,0,',',' ').' kg', false ];
+                if ( $gross_weight )   $specs[] = [ 'Össztömeg',              number_format((int)$gross_weight,0,',',' ').' kg', false ];
+                if ( $passengers )     $specs[] = [ 'Szállítható személyek', (int)$passengers.' fő', false ];
+                if ( $trunk_liters )   $specs[] = [ 'Csomagtartó',           (int)$trunk_liters.' l', false ];
+                if ( $roof_type )      $specs[] = [ 'Tető',                  $roof_labels[$roof_type] ?? $roof_type, false ];
+                if ( $color_metallic === '1' ) $specs[] = [ 'Fényezés', 'Metál', false ];
+                if ( $upholstery_1 )   $specs[] = [ 'Kárpit (1)',            esc_html($upholstery_1), false ];
+                if ( $upholstery_2 )   $specs[] = [ 'Kárpit (2)',            esc_html($upholstery_2), false ];
+                if ( $range_gearbox === '1' ) $specs[] = [ 'Felező váltó', 'Igen', false ];
+                if ( $summer_tire_front ) $specs[] = [ 'Nyári gumi (első)',  esc_html($summer_tire_front), false ];
+                if ( $summer_tire_rear )  $specs[] = [ 'Nyári gumi (hátsó)', esc_html($summer_tire_rear), false ];
+                if ( $winter_tire_front ) $specs[] = [ 'Téli gumi (első)',   esc_html($winter_tire_front), false ];
+                if ( $winter_tire_rear )  $specs[] = [ 'Téli gumi (hátsó)',  esc_html($winter_tire_rear), false ];
 
 
             } elseif ( $site_type === 'ingatlan' ) {
@@ -1432,13 +1458,19 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
                 <?php if ( $site_type === 'jarmu' && ! empty( $extras_arr ) ): ?>
                 <div class="sl__extras-section">
-                    <div class="sl__extras-heading">Extra felszereltség</div>
+                    <?php foreach ( $extras_by_grp as $grp_key => $grp ):
+                        $grp_items = array_filter( $grp['items'], function( $ekey ) use ( $extras_arr ) {
+                            return in_array( $ekey, $extras_arr, true );
+                        }, ARRAY_FILTER_USE_KEY );
+                        if ( empty( $grp_items ) ) continue;
+                    ?>
+                    <div class="sl__extras-heading"><?php echo esc_html( $grp['label'] ); ?></div>
                     <div class="sl__extras-pills">
-                        <?php foreach ( $extras_arr as $ekey ):
-                            $elabel = $extras_opts[ $ekey ] ?? $ekey; ?>
+                        <?php foreach ( $grp_items as $ekey => $elabel ): ?>
                         <span class="sl__extra-pill"><?php echo esc_html( $elabel ); ?></span>
                         <?php endforeach; ?>
                     </div>
+                    <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
 
