@@ -171,7 +171,7 @@
       category:   $('#va-cat').val(),
       county:     $('#va-county').val(),
       condition:  $('#va-cond').val(),
-      min_price:  minVal > 0 ? minVal : 1,
+      min_price:  minVal > 1 ? minVal : 0,
       max_price:  (maxVal > 0 && maxVal < maxLimit) ? maxVal : 0,
       sort:       $('#va-sort').val(),
       post_type:  $form.data('post-type') || 'va_listing',

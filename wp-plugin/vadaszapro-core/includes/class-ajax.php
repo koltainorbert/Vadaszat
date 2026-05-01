@@ -957,7 +957,7 @@ class VA_Ajax {
         if ( $category  ) { $where[] = 'lm.category_id  = %d'; $params[] = $category;  }
         if ( $county    ) { $where[] = 'lm.county_id    = %d'; $params[] = $county;    }
         if ( $condition ) { $where[] = 'lm.condition_id = %d'; $params[] = $condition; }
-        if ( $min_price > 0 ) { $where[] = 'lm.price >= %f'; $params[] = $min_price; }
+        if ( $min_price > 1 ) { $where[] = 'lm.price >= %f'; $params[] = $min_price; }
         if ( $max_price > 0 ) { $where[] = 'lm.price <= %f'; $params[] = $max_price; }
 
         if ( $keyword !== '' ) {

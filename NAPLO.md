@@ -1,6 +1,18 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #144 (Keresőben hiányzó hirdetés default árszűrő miatt)
+
+### Mit csináltunk [x]
+- [x] Beazonosítva: a default `min_price=1` feltétel SQL oldalon kizárhatott olyan rekordokat, ahol a `wp_va_listing_meta` ár mező még nem volt szinkronban
+- [x] Frontend javítás: `frontend.js` csak akkor küld `min_price` szűrést, ha a felhasználó 1 Ft fölé állítja a minimumot
+- [x] Backend védelem: `class-ajax.php` csak `min_price > 1` esetén tesz `lm.price >= ...` WHERE feltételt
+- [x] Plugin mirror + deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- Alap állásban a kereső már nem dob el hirdetést a kötelező `min_price=1` miatt, így a kezdőlapon látható hirdetésnek meg kell jelennie keresőben is.
+
+---
 ## 2026. 05. 02. – Session #143 (Kereső ár rendezés javítás)
 
 ### Mit csináltunk [x]
