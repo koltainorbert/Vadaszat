@@ -169,7 +169,15 @@ class VA_User_Roles {
         self::$_cfg_cache = null;
     }
 
+    private static function is_admin_user( int $user_id ): bool {
+        return user_can( $user_id, 'administrator' );
+    }
+
     public static function get_user_plan( int $user_id ): string {
+        if ( self::is_admin_user( $user_id ) ) {
+            return 'platinum';
+        }
+
         $plan = (string) get_user_meta( $user_id, 'va_plan', true );
         $all  = self::get_all_plan_configs();
         // _global key nem plan slug
@@ -183,6 +191,12 @@ class VA_User_Roles {
     public static function get_plan_config( string $plan, int $user_id = 0 ): array {
         $all = self::get_all_plan_configs();
         $cfg = ( isset( $all[ $plan ] ) && $plan !== '_global' ) ? $all[ $plan ] : $all['basic'];
+
+        if ( self::is_admin_user( $user_id ) ) {
+            $cfg['monthly_limit'] = 0;
+            $cfg['boost_cooldown'] = 0;
+            return $cfg;
+        }
 
         if ( $plan === 'platinum' && $user_id > 0 ) {
             $custom_limit = (int) get_user_meta( $user_id, 'va_plan_listing_limit', true );
