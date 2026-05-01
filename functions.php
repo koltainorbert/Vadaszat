@@ -1292,8 +1292,44 @@ add_action( 'admin_post_nopriv_va_contact_form', 'va_handle_contact_form' );
 add_action( 'admin_post_va_contact_form', 'va_handle_contact_form' );
 
 function va_handle_contact_form(): void {
-    $contact_page = get_page_by_path( 'kapcsolat' );
-    $redirect = $contact_page ? get_permalink( $contact_page ) : home_url( '/kapcsolat/' );
+    $contact_page_id = 0;
+
+    // 1) Opcionális direkt page ID (ha egyszer bevezetésre kerül admin oldalon)
+    $opt_contact_page_id = absint( get_option( 'va_contact_page_id', 0 ) );
+    if ( $opt_contact_page_id > 0 && get_post_type( $opt_contact_page_id ) === 'page' ) {
+        $contact_page_id = $opt_contact_page_id;
+    }
+
+    // 2) Elsődleges feloldás template alapján (slug változás esetén is stabil)
+    if ( ! $contact_page_id ) {
+        $template_pages = get_posts([
+            'post_type'      => 'page',
+            'post_status'    => 'publish',
+            'numberposts'    => 1,
+            'fields'         => 'ids',
+            'meta_key'       => '_wp_page_template',
+            'meta_value'     => 'page-kapcsolat.php',
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+            'no_found_rows'  => true,
+        ]);
+        if ( ! empty( $template_pages ) ) {
+            $contact_page_id = (int) $template_pages[0];
+        }
+    }
+
+    // 3) Fallback: hagyományos slug keresés
+    if ( ! $contact_page_id ) {
+        $contact_page = get_page_by_path( 'kapcsolat' );
+        if ( $contact_page instanceof WP_Post ) {
+            $contact_page_id = (int) $contact_page->ID;
+        }
+    }
+
+    $redirect = $contact_page_id ? get_permalink( $contact_page_id ) : '';
+    if ( ! $redirect ) {
+        $redirect = home_url( '/kapcsolat/' );
+    }
 
     if ( strtoupper( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' ) {
         wp_safe_redirect( $redirect );

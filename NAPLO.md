@@ -1,6 +1,21 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #136 (Kapcsolat redirect URL-változásbiztos)
+
+### Mit csináltunk [x]
+- [x] A kapcsolat űrlap redirect logika tovább erősítve: már nem slug-függő
+- [x] Elsődleges feloldás: `page-kapcsolat.php` template alapján megtalálja a Kapcsolat oldalt
+- [x] Fallback-ek: opcionális page ID opció, majd `kapcsolat` slug, végül `/kapcsolat/`
+- [x] Módosítva root + theme mirror `functions.php` fájlban
+- [x] Theme deploy lefuttatva
+- [x] Ellenőrzés: `admin-post.php?action=va_contact_form` -> `302 Location: /kapcsolat/`
+
+### Hol tartunk
+- Email küldés után a rendszer a Kapcsolat oldal permalinkjére irányít, akkor is ha a slug később megváltozik.
+
+---
+
 ## 2026. 05. 01. – Session #135 (Kapcsolat űrlap redirect fix)
 
 ### Mit csináltunk [x]
