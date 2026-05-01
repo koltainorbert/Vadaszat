@@ -1255,6 +1255,14 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 if ( $tech_inspect )   $specs[] = [ 'M&#369;szaki lej&#225;r',        $tech_inspect,false ];
+                if ( $drive )          $specs[] = [ 'Hajt&#225;s',                $drive_labels[$drive] ?? $drive, false ];
+                if ( $vehicle_cond )   $specs[] = [ 'J&#225;rm&#369; &#225;llapota',      $vcond_labels[$vehicle_cond] ?? $vehicle_cond, false ];
+                if ( $doc_type )       $specs[] = [ 'Okiratok jellege',       $doctype_labels[$doc_type] ?? $doc_type, false ];
+                if ( $doc_validity )   $specs[] = [ 'Okiratok &#233;rv&#233;nyess&#233;ge', $docval_labels[$doc_validity] ?? $doc_validity, false ];
+                if ( $ac_type )        $specs[] = [ 'Kl&#237;ma',                 $ac_labels[$ac_type] ?? $ac_type, false ];
+                if ( $eco_class )      $specs[] = [ 'K&#246;rny. oszt&#225;ly',        $eco_labels[$eco_class] ?? $eco_class, false ];
+                if ( $cylinder_layout )$specs[] = [ 'Henger-elrendez&#233;s',   $cyl_labels[$cylinder_layout] ?? $cylinder_layout, false ];
+                if ( $own_weight )     $specs[] = [ 'Saj&#225;t t&#246;meg',           number_format((int)$own_weight,0,',',' ').' kg', false ];
 
 
             } elseif ( $site_type === 'ingatlan' ) {
@@ -1406,10 +1414,19 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
                 <?php endif; ?>
 
+                <?php if ( $site_type === 'jarmu' && ! empty( $extras_arr ) ): ?>
+                <div class="sl__extras-section">
+                    <div class="sl__extras-heading">Extra felszereltség</div>
+                    <div class="sl__extras-pills">
+                        <?php foreach ( $extras_arr as $ekey ):
+                            $elabel = $extras_opts[ $ekey ] ?? $ekey; ?>
+                        <span class="sl__extra-pill"><?php echo esc_html( $elabel ); ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
 
             </div>
-
-
             <?php endif; ?>
 
 
