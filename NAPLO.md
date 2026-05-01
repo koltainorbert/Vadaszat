@@ -2,6 +2,26 @@
 
 ---
 
+## 2026. 05. 01. – Session #125 (Scroll videós pill gomb: videó + border állítható)
+
+### Mit csináltunk [x]
+- [x] Beazonosítva a komponens: `footer.php` `#va-scroll-ring` (jobb alsó videós scroll-progress gomb)
+- [x] Új admin opciók a Hero beállításokhoz:
+  - `va_scroll_ring_video_url`
+  - `va_scroll_ring_border_color`
+- [x] Új mezők a Hero admin oldalon:
+  - Háttér videó URL
+  - Border szín
+- [x] `footer.php` (root + theme mirror):
+  - videó source most opcióból jön
+  - progress border stroke szín most opcióból jön (`--va-scroll-ring-color` CSS változó)
+- [x] LocalWP deploy kész
+
+### Hol tartunk
+- A képen látható gomb háttérvideója és keretszíne most adminból szabadon állítható.
+
+---
+
 ## 2026. 05. 01. – Session #123 (Fejléc/Lábléc szín vezérlés + Vásárlás gomb toggle)
 
 ### Mit csináltunk [x]
