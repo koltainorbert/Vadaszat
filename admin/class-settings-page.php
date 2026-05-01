@@ -1062,6 +1062,88 @@ class VA_Settings_Page {
             update_option( 'va_search_dd_all_hover_bg', 'rgba(255,136,0,.10)' );
         }
 
+        /* Hirdetés keresési oldal designer (va_lp_*) */
+        $lp_settings = [
+            // Szűrő sáv
+            'va_lp_filter_bg'             => '#141414',
+            'va_lp_filter_border'         => 'rgba(255,255,255,.08)',
+            'va_lp_filter_radius'         => '14',
+            'va_lp_filter_padding'        => '20',
+            'va_lp_filter_title_color'    => 'rgba(255,255,255,.55)',
+            'va_lp_filter_title_text'     => '🔍 Hirdetések keresése',
+            // Bemenetek
+            'va_lp_input_bg'              => '#0e0e0e',
+            'va_lp_input_border'          => 'rgba(255,255,255,.12)',
+            'va_lp_input_color'           => '#ffffff',
+            'va_lp_input_focus_border'    => '#ff0000',
+            'va_lp_input_radius'          => '14',
+            'va_lp_kw_placeholder'        => 'Kulcsszó...',
+            'va_lp_cat_placeholder'       => '– Kategória –',
+            'va_lp_county_placeholder'    => '– Megye –',
+            'va_lp_cond_placeholder'      => '– Állapot –',
+            // Ár csúszka
+            'va_lp_slider_fill_color'     => '#ff0000',
+            'va_lp_slider_thumb_color'    => '#ff0000',
+            'va_lp_slider_track_bg'       => 'rgba(255,255,255,.12)',
+            'va_lp_slider_display_color'  => '#ff4040',
+            'va_lp_slider_label_text'     => 'Ár szűrő',
+            'va_lp_slider_max'            => '5000000',
+            'va_lp_slider_step'           => '500',
+            // Szortírozás szövegek
+            'va_lp_sort_default_lbl'      => 'Legújabb',
+            'va_lp_sort_price_asc_lbl'    => 'Ár: növekvő',
+            'va_lp_sort_price_desc_lbl'   => 'Ár: csökkenő',
+            'va_lp_sort_views_lbl'        => 'Legtöbb megtekintés',
+            // Gombok
+            'va_lp_reset_btn_text'        => 'Szűrők törlése',
+            'va_lp_reset_btn_color'       => '#ffffff',
+            'va_lp_reset_btn_border'      => 'rgba(255,255,255,.08)',
+            'va_lp_reset_btn_hover_color' => '#ff0000',
+            'va_lp_results_count_color'   => 'rgba(255,255,255,.5)',
+            // Nézet váltó
+            'va_lp_view_active_color'     => '#ff2f2f',
+            'va_lp_view_active_glow'      => 'rgba(255,0,0,.5)',
+            'va_lp_view_border_active'    => 'rgba(255,0,0,.72)',
+            // Betöltő / üres állapot
+            'va_lp_loader_text'           => 'Betöltés...',
+            'va_lp_loader_color'          => 'rgba(255,255,255,.5)',
+            'va_lp_empty_text'            => 'Nincs találat.',
+            // Kártyák
+            'va_lp_card_bg'               => '#141414',
+            'va_lp_card_border'           => 'rgba(255,255,255,.08)',
+            'va_lp_card_radius'           => '14',
+            'va_lp_card_title_color'      => '#ffffff',
+            'va_lp_card_title_size'       => '15',
+            'va_lp_card_title_hover'      => '#ff0000',
+            'va_lp_card_price_color'      => '#ff0000',
+            'va_lp_card_price_size'       => '17',
+            'va_lp_card_meta_color'       => 'rgba(255,255,255,.55)',
+            'va_lp_card_meta_size'        => '12',
+            'va_lp_card_gap'              => '20',
+            'va_lp_card_watchlist_color'  => '#ff2a2a',
+            'va_lp_card_watchlist_border' => 'rgba(255,0,0,.45)',
+            'va_lp_card_watchlist_bg'     => 'rgba(0,0,0,.62)',
+            'va_lp_card_featured_color'   => '#ffc840',
+            'va_lp_card_featured_border'  => 'rgba(255,180,0,.5)',
+            'va_lp_card_boost_color'      => '#ff2a2a',
+            'va_lp_card_boost_bg'         => 'rgba(255,42,42,.18)',
+            // Lapozó
+            'va_lp_pag_bg'                => 'rgb(20,20,20)',
+            'va_lp_pag_color'             => 'rgba(255,255,255,.55)',
+            'va_lp_pag_border'            => 'rgba(255,255,255,.08)',
+            'va_lp_pag_radius'            => '14',
+            'va_lp_pag_active_bg'         => '#ff0000',
+            'va_lp_pag_active_color'      => '#ffffff',
+            'va_lp_pag_size'              => '13',
+        ];
+        foreach ( $lp_settings as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_lp_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) {
+                update_option( $key, $default );
+            }
+        }
+
         /* Back-to-top gomb (va_btt_*) */
         $btt = [
             'va_btt_enabled'      => '1',
