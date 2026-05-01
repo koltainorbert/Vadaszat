@@ -1,6 +1,18 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #130 (Kereső dropdown piros -> #ff8800)
+
+### Mit csináltunk [x]
+- [x] A kereső dropdown piros elemei (#ff0000 / #ff4040) átállítva #ff8800 árnyalatra
+- [x] Érintett elemek: hirdetés badge szöveg/háttér, "Összes találat" szín + hover háttér
+- [x] Migráció hozzáadva: ha régi piros érték van mentve opcióban, automatikusan #ff8800-ra vált
+- [x] Plugin deploy kész LocalWP-re
+
+### Hol tartunk
+- A kereső dropdown piros elemei most narancs (#ff8800) tónusúak.
+
+---
 
 ## 2026. 05. 01. – Session #129 (Új Kereső menüpont + header dropdown teljes dizájn vezérlés)
 
@@ -2087,3 +2099,4 @@ emoji kategória ikonokkal – pontosan a referencia (vadasz-apro/public/index.h
 - [ ] Push (Ctrl+Shift+B)
 
 ---
+
