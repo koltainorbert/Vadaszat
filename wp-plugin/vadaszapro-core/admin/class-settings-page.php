@@ -111,6 +111,34 @@ class VA_Settings_Page {
             'va_contact_hero_badge_text'     => 'Kapcsolat',
             'va_contact_hero_title_text'     => 'Írj nekünk e-mailt',
             'va_contact_hero_lead_text'      => 'A kapcsolatfelvétel kizárólag e-mailben történik. Az itt elküldött üzenetek WordPress oldalon keresztül, a WP Mail SMTP bővítményen át jutnak el hozzánk.',
+
+            // Kapcsolat oldal kártyák szövegei
+            'va_contact_card1_title'         => 'Csak e-mailes megkeresés',
+            'va_contact_card1_text'          => 'Telefonszámot és nyilvános közvetlen címet nem jelenítünk meg. Minden megkeresést ezen az űrlapon keresztül fogadunk.',
+            'va_contact_card2_title'         => 'Mit írj meg?',
+            'va_contact_card2_item1'         => 'melyik témában keresel minket',
+            'va_contact_card2_item2'         => 'mi a kérdésed vagy problémád röviden',
+            'va_contact_card2_item3'         => 'milyen e-mail címre válaszoljunk',
+            'va_contact_card3_title'         => 'Technikai háttér',
+            'va_contact_card3_text'          => 'Az üzenetküldés a WordPress wp_mail() rendszerén keresztül történik, így a küldést a WP Mail SMTP plugin kezeli.',
+
+            // Kapcsolat oldal form szövegek
+            'va_contact_form_title'          => 'Üzenet küldése',
+            'va_contact_form_btn_text'       => 'Üzenet elküldése',
+            'va_contact_form_label_name'     => 'Név',
+            'va_contact_form_label_email'    => 'E-mail',
+            'va_contact_form_label_phone'    => 'Telefonszám',
+            'va_contact_form_label_subject'  => 'Tárgy',
+            'va_contact_form_label_message'  => 'Üzenet',
+            'va_contact_form_ph_name'        => 'Teljes neved',
+            'va_contact_form_ph_email'       => 'pelda@email.hu',
+            'va_contact_form_ph_phone'       => '+36 30 123 4567',
+            'va_contact_form_ph_subject'     => 'Miben tudunk segíteni?',
+            'va_contact_form_ph_message'     => 'Írd le röviden a kérdésedet vagy megkeresésed részleteit...',
+            'va_contact_form_msg_success'    => 'Az üzenetedet elküldtük. Hamarosan e-mailben válaszolunk.',
+            'va_contact_form_msg_invalid'    => 'Kérlek tölts ki minden kötelező mezőt érvényes adatokkal.',
+            'va_contact_form_msg_error'      => 'Az üzenet küldése nem sikerült. Ellenőrizd az SMTP beállítást, majd próbáld újra.',
+            'va_contact_form_msg_nonce'      => 'A kérés érvénytelen volt. Kérlek küldd el újra az űrlapot.',
         ];
 
         foreach ( $general as $key => $default ) {
@@ -1165,6 +1193,34 @@ class VA_Settings_Page {
                     <?php self::field_text(  'va_contact_hero_badge_text',      'Kapcsolat hero badge szöveg' ); ?>
                     <?php self::field_text(  'va_contact_hero_title_text',      'Kapcsolat hero cím' ); ?>
                     <?php self::field_text(  'va_contact_hero_lead_text',       'Kapcsolat hero alcím' ); ?>
+
+                    <tr><th colspan="2" style="padding-top:18px;"><h2 style="margin:0;">Kapcsolat oldal – Bal oldali kártyák</h2></th></tr>
+                    <?php self::field_text( 'va_contact_card1_title',  'Kártya 1 – cím' ); ?>
+                    <?php self::field_text( 'va_contact_card1_text',   'Kártya 1 – szöveg' ); ?>
+                    <?php self::field_text( 'va_contact_card2_title',  'Kártya 2 – cím' ); ?>
+                    <?php self::field_text( 'va_contact_card2_item1',  'Kártya 2 – lista 1. elem' ); ?>
+                    <?php self::field_text( 'va_contact_card2_item2',  'Kártya 2 – lista 2. elem' ); ?>
+                    <?php self::field_text( 'va_contact_card2_item3',  'Kártya 2 – lista 3. elem' ); ?>
+                    <?php self::field_text( 'va_contact_card3_title',  'Kártya 3 – cím' ); ?>
+                    <?php self::field_text( 'va_contact_card3_text',   'Kártya 3 – szöveg' ); ?>
+
+                    <tr><th colspan="2" style="padding-top:18px;"><h2 style="margin:0;">Kapcsolat oldal – Űrlap szövegek</h2></th></tr>
+                    <?php self::field_text( 'va_contact_form_title',         'Űrlap cím ("Üzenet küldése")' ); ?>
+                    <?php self::field_text( 'va_contact_form_btn_text',      'Küldés gomb felirata' ); ?>
+                    <?php self::field_text( 'va_contact_form_label_name',    'Mező felirat: Név' ); ?>
+                    <?php self::field_text( 'va_contact_form_label_email',   'Mező felirat: E-mail' ); ?>
+                    <?php self::field_text( 'va_contact_form_label_phone',   'Mező felirat: Telefonszám' ); ?>
+                    <?php self::field_text( 'va_contact_form_label_subject', 'Mező felirat: Tárgy' ); ?>
+                    <?php self::field_text( 'va_contact_form_label_message', 'Mező felirat: Üzenet' ); ?>
+                    <?php self::field_text( 'va_contact_form_ph_name',       'Placeholder: Név' ); ?>
+                    <?php self::field_text( 'va_contact_form_ph_email',      'Placeholder: E-mail' ); ?>
+                    <?php self::field_text( 'va_contact_form_ph_phone',      'Placeholder: Telefonszám' ); ?>
+                    <?php self::field_text( 'va_contact_form_ph_subject',    'Placeholder: Tárgy' ); ?>
+                    <?php self::field_text( 'va_contact_form_ph_message',    'Placeholder: Üzenet (textarea)' ); ?>
+                    <?php self::field_text( 'va_contact_form_msg_success',   'Sikeres küldés üzenet' ); ?>
+                    <?php self::field_text( 'va_contact_form_msg_invalid',   'Hibás adatok üzenet' ); ?>
+                    <?php self::field_text( 'va_contact_form_msg_error',     'SMTP hiba üzenet' ); ?>
+                    <?php self::field_text( 'va_contact_form_msg_nonce',     'Érvénytelen nonce üzenet' ); ?>
                 </table>
                 <?php submit_button( 'Mentés' ); ?>
             </form>
