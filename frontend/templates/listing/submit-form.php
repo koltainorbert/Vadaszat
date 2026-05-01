@@ -203,6 +203,32 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'caliber'     => get_post_meta( $maybe_id, 'va_caliber',     true ),
             'year'        => get_post_meta( $maybe_id, 'va_year',        true ),
             'license_req' => get_post_meta( $maybe_id, 'va_license_req', true ),
+            // Jármű extra mezők
+            'mileage'          => get_post_meta( $maybe_id, 'va_mileage',          true ),
+            'fuel_type'        => get_post_meta( $maybe_id, 'va_fuel_type',        true ),
+            'performance_kw'   => get_post_meta( $maybe_id, 'va_performance_kw',   true ),
+            'engine_size'      => get_post_meta( $maybe_id, 'va_engine_size',      true ),
+            'transmission'     => get_post_meta( $maybe_id, 'va_transmission',     true ),
+            'color'            => get_post_meta( $maybe_id, 'va_color',            true ),
+            'doors'            => get_post_meta( $maybe_id, 'va_doors',            true ),
+            'drive'            => get_post_meta( $maybe_id, 'va_drive',            true ),
+            'vehicle_condition'=> get_post_meta( $maybe_id, 'va_vehicle_condition',true ),
+            'doc_type'         => get_post_meta( $maybe_id, 'va_doc_type',         true ),
+            'doc_validity'     => get_post_meta( $maybe_id, 'va_doc_validity',     true ),
+            'ac_type'          => get_post_meta( $maybe_id, 'va_ac_type',          true ),
+            'eco_class'        => get_post_meta( $maybe_id, 'va_eco_class',        true ),
+            'cylinder_layout'  => get_post_meta( $maybe_id, 'va_cylinder_layout',  true ),
+            'own_weight'       => get_post_meta( $maybe_id, 'va_own_weight',       true ),
+            'tech_inspect'     => get_post_meta( $maybe_id, 'va_tech_inspect',     true ),
+            'first_reg'        => get_post_meta( $maybe_id, 'va_first_reg',        true ),
+            'owners'           => get_post_meta( $maybe_id, 'va_owners',           true ),
+            'previous_damage'  => get_post_meta( $maybe_id, 'va_previous_damage',  true ),
+            'service_book'     => get_post_meta( $maybe_id, 'va_service_book',     true ),
+            'extras'           => (function( $raw ) {
+                                    if ( ! is_string( $raw ) || $raw === '' ) return [];
+                                    $d = json_decode( $raw, true );
+                                    return is_array( $d ) ? $d : [];
+                                })( get_post_meta( $maybe_id, 'va_extras', true ) ),
             'category'    => (int) ( wp_get_post_terms( $maybe_id, 'va_category', ['fields'=>'ids'] )[0] ?? 0 ),
             'county'      => (int) ( wp_get_post_terms( $maybe_id, 'va_county',   ['fields'=>'ids'] )[0] ?? 0 ),
             'condition'   => (int) ( wp_get_post_terms( $maybe_id, 'va_condition',['fields'=>'ids'] )[0] ?? 0 ),
