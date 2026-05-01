@@ -339,6 +339,19 @@ $heating         = get_post_meta( $post_id, 'va_heating',         true );
 
 $balcony         = get_post_meta( $post_id, 'va_balcony',         true );
 
+// Új jármű mezők
+$drive            = get_post_meta( $post_id, 'va_drive',            true );
+$vehicle_cond     = get_post_meta( $post_id, 'va_vehicle_condition',true );
+$doc_type         = get_post_meta( $post_id, 'va_doc_type',         true );
+$doc_validity     = get_post_meta( $post_id, 'va_doc_validity',     true );
+$ac_type          = get_post_meta( $post_id, 'va_ac_type',          true );
+$eco_class        = get_post_meta( $post_id, 'va_eco_class',        true );
+$cylinder_layout  = get_post_meta( $post_id, 'va_cylinder_layout',  true );
+$own_weight       = get_post_meta( $post_id, 'va_own_weight',       true );
+$extras_raw       = get_post_meta( $post_id, 'va_extras',           true );
+$extras_arr       = ( is_string( $extras_raw ) && $extras_raw !== '' ) ? json_decode( $extras_raw, true ) : [];
+$extras_arr       = is_array( $extras_arr ) ? $extras_arr : [];
+
 
 
 
@@ -363,10 +376,14 @@ $furn_labels = [ 'no'=>'Nem','partial'=>'Részben','yes'=>'Igen' ];
 
 $heat_labels = [ 'gas'=>'Gáz','electric'=>'Elektromos','district'=>'Távfűtés','wood'=>'Fa/szilárd','heat_pump'=>'Hőszivattyú' ];
 
-
-
-
-
+$drive_labels     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_drive_options() : [];
+$vcond_labels     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_condition_options() : [];
+$doctype_labels   = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_type_options() : [];
+$docval_labels    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_doc_validity_options() : [];
+$ac_labels        = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_ac_type_options() : [];
+$eco_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
+$cyl_labels       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
+$extras_opts      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
 // Kepek gyujtese: va_gallery_ids meta (elsődleges) + featured image
 
 
