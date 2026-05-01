@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #150 (Részletek: csak scrollbar animáció)
+
+### Mit csináltunk [x]
+- [x] A korábbi "Huzd le" scroll hint overlay teljesen eltávolítva
+- [x] A `Részletek` blokkban csak a scrollbar thumb kapott animált narancs „lefolyó” effektet
+- [x] Animáció: folyamatos vertikális gradient mozgás (akku/töltés jellegű vizuál)
+- [x] A kapcsolódó, már felesleges JS hint logika eltávolítva
+- [x] Theme mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A jelzés most kizárólag a görgetősávon történik: diszkrét, modern, és a kért narancs flow effektet adja.
+
+---
 ## 2026. 05. 02. – Session #149 (Részletek scroll animált jelzés)
 
 ### Mit csináltunk [x]

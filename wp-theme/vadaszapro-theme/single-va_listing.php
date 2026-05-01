@@ -782,53 +782,16 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 .sl__params-scroll { position:relative; max-height:min(68vh,720px);overflow:auto;padding-right:6px; }
 .sl__params-scroll::-webkit-scrollbar { width:8px; }
-.sl__params-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,.2);border-radius:8px; }
+.sl__params-scroll::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(224,119,39,.18) 0%, rgba(224,119,39,.95) 45%, rgba(255,157,72,.9) 70%, rgba(224,119,39,.18) 100%);
+    background-size: 100% 220%;
+    animation: sl_scrollbar_flow 1.4s linear infinite;
+}
 .sl__params-scroll::-webkit-scrollbar-track { background:transparent; }
-.sl__params-scroll::before,
-.sl__params-scroll::after {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity .22s ease;
-}
-.sl__params-scroll::before {
-    content: '';
-    position: sticky;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: block;
-    height: 36px;
-    margin-top: -36px;
-    background: linear-gradient(180deg, rgba(10,10,10,0) 0%, rgba(10,10,10,.9) 80%, rgba(10,10,10,1) 100%);
-}
-.sl__params-scroll::after {
-    content: 'Huzd le';
-    position: sticky;
-    left: 50%;
-    bottom: 8px;
-    transform: translateX(-50%);
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.82);
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.16);
-    width: fit-content;
-    animation: sl_scroll_hint 1.2s ease-in-out infinite;
-}
-.sl__params-scroll--has-more:not(.sl__params-scroll--at-bottom)::before,
-.sl__params-scroll--has-more:not(.sl__params-scroll--at-bottom)::after {
-    opacity: 1;
-}
-@keyframes sl_scroll_hint {
-    0%,100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(3px); }
+@keyframes sl_scrollbar_flow {
+    0% { background-position: 0 0; }
+    100% { background-position: 0 220%; }
 }
 
 /* Extras pills */
@@ -2172,26 +2135,6 @@ $watching_sticky   = is_user_logged_in() ? va_user_watches($post_id) : false;
 
     }
 
-
-    // Részletek scroll hint: jelezze ha van még lent tartalom
-    var paramsScroll = document.querySelector('.sl__params-scroll');
-    if (paramsScroll) {
-        var updateParamsScrollHint = function() {
-            var hasMore = (paramsScroll.scrollHeight - paramsScroll.clientHeight) > 8;
-            var atBottom = (paramsScroll.scrollTop + paramsScroll.clientHeight) >= (paramsScroll.scrollHeight - 6);
-            paramsScroll.classList.toggle('sl__params-scroll--has-more', hasMore);
-            paramsScroll.classList.toggle('sl__params-scroll--at-bottom', !hasMore || atBottom);
-        };
-
-        updateParamsScrollHint();
-        paramsScroll.addEventListener('scroll', updateParamsScrollHint, { passive: true });
-        window.addEventListener('resize', updateParamsScrollHint);
-
-        if (typeof ResizeObserver !== 'undefined') {
-            var paramsObserver = new ResizeObserver(updateParamsScrollHint);
-            paramsObserver.observe(paramsScroll);
-        }
-    }
 
 
 
