@@ -2601,7 +2601,6 @@ class VA_Settings_Page {
         $offset   = ( $paged - 1 ) * $per_page;
 
         $user_args = [
-            'role__not_in' => [ 'administrator' ],
             'number'       => $per_page,
             'offset'       => $offset,
             'orderby'      => 'registered',
@@ -2639,8 +2638,9 @@ class VA_Settings_Page {
                         'count_total'  => true,
                         'number'       => 0,
                     ]);
+                    $counts = count_users();
                     $cnt = ( $pk === 'basic' )
-                        ? (int) count_users()['total_users'] // basic = mindenki alapból
+                        ? (int) $counts['total_users'] - (int) ( $counts['avail_roles']['administrator'] ?? 0 )
                         : (int) $cnt_q->get_total();
                     ?>
                     <div class="va-upm-plan-card" style="--pc:<?php echo esc_attr( $pcfg['color'] ); ?>">
