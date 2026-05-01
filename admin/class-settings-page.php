@@ -995,6 +995,7 @@ class VA_Settings_Page {
             'va_sl_phone_icon_size'        => 16,
             'va_sl_phone_icon_color'       => '#ffffff',
             'va_sl_watch_btn_color'        => 'rgba(255,255,255,.75)',
+            'va_sl_watch_btn_border'       => 'rgba(255,255,255,.2)',
             'va_sl_expired_color'          => '#ff6060',
             'va_sl_sticky_bg'              => 'rgba(10,10,10,.95)',
             'va_sl_sticky_title_color'     => '#ffffff',
@@ -5687,6 +5688,7 @@ class VA_Settings_Page {
                                 <?php self::field_num( 'va_sl_phone_icon_size', 'Telefon ikon méret (px)', 12, 32 ); ?>
                                 <?php self::field_color( 'va_sl_phone_icon_color', 'Telefon ikon szín' ); ?>
                                 <?php self::field_color( 'va_sl_watch_btn_color', '"Mentés kedvencekbe" gomb betűszín' ); ?>
+                                <?php self::field_color( 'va_sl_watch_btn_border', '"Mentés kedvencekbe" gomb keret szín' ); ?>
                             </table>
                         </div>
 
@@ -5710,7 +5712,7 @@ class VA_Settings_Page {
                                 <?php self::field_text( 'va_sl_lbl_seller',          '"Feladó" szekció cím' ); ?>
                                 <?php self::field_text( 'va_sl_lbl_more_listings',   '"Feladó további hirdetései" cím' ); ?>
                                 <?php self::field_text( 'va_sl_lbl_related',         '"Hasonló hirdetések" cím' ); ?>
-                                <?php self::field_text( 'va_sl_lbl_phone_btn',       'Telefonszám gomb szövege' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_phone_btn_label', 'Telefonszám gomb szövege' ); ?>
                                 <?php self::field_text( 'va_sl_lbl_email_btn',       'E-mail gomb szövege' ); ?>
                                 <?php self::field_text( 'va_sl_lbl_watch_add',       '"Mentés kedvencekbe" gomb' ); ?>
                                 <?php self::field_text( 'va_sl_lbl_watch_remove',    '"Eltávolítás kedvencekből" gomb' ); ?>
