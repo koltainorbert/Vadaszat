@@ -2,6 +2,34 @@
 
 ---
 
+## 2026. 05. 01. – Session #127 (Aloldalak tartalma hiányzott – shortcode fix)
+
+### Mit csináltunk [x]
+- [x] **KRITIKUS HIBA JAVÍTVA**: 6 WP oldal üres tartalommal rendelkezett (nem volt shortcode-juk)
+- [x] MySQL-en keresztül beírtuk a hiányzó shortcode-okat:
+  - `va-fiok` → `[va_user_dashboard]`
+  - `va-hirdetes-feladas` → `[va_submit_listing]`
+  - `va-hirdetes-kereses` → `[va_listing_search]`
+  - `va-bejelentkezes` → `[va_login_form]`
+  - `va-regisztracio` → `[va_register_form]`
+  - `va-aukciok` → `[va_auction_list]`
+- [x] WP transient cache törölve
+- [x] WP_DEBUG + WP_DEBUG_LOG engedélyezve a LocalWP wp-config.php-ban
+- [x] `va-setup-pages.php` slug-ok javítva (DB-ben lévő valós slug-okra: `va-fiok`, `va-hirdetes-kereses`, `va-aukciok`)
+
+### Root cause
+A `va-setup-pages.php` beállító script hibás slug-okkal lett írva:
+- `va-fiokom` helyett a WP-ban `va-fiok` volt a slug
+- `va-hirdetesek` helyett `va-hirdetes-kereses`
+- `va-aukcio` helyett `va-aukciok`
+A script sosem frissítette ezeket az oldalakat, ezért maradtak üresek.
+
+### Hol tartunk
+- Összes shortcode-os aloldal tartalmát beállítottuk.
+- A single listing oldal (`hirdetes/slug/`) az `single-va_listing.php` template-et használja és a listing adatai megvannak a DB-ben.
+
+---
+
 ## 2026. 05. 01. – Session #126 (Gombok nem működnek fix)
 
 ### Mit csináltunk [x]

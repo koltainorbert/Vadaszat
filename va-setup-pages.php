@@ -29,17 +29,17 @@ $pages = [
         'shortcode' => '[va_submit_listing]',
     ],
     [
-        'slug'      => 'va-fiokom',
+        'slug'      => 'va-fiok',
         'title'     => 'Fiókom',
         'shortcode' => '[va_user_dashboard]',
     ],
     [
-        'slug'      => 'va-hirdetesek',
+        'slug'      => 'va-hirdetes-kereses',
         'title'     => 'Hirdetések',
         'shortcode' => '[va_listing_search]',
     ],
     [
-        'slug'      => 'va-aukcio',
+        'slug'      => 'va-aukciok',
         'title'     => 'Aukciók',
         'shortcode' => '[va_auction_list]',
     ],
