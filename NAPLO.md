@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #149 (Részletek scroll animált jelzés)
+
+### Mit csináltunk [x]
+- [x] A termékoldali `Részletek` scroll konténerhez animált "Huzd le" jelzés hozzáadva
+- [x] A jelzés csak akkor látszik, ha ténylegesen van még lejjebb tartalom
+- [x] A jelzés eltűnik, amikor a felhasználó leér a blokk aljára
+- [x] Scroll/resize/ResizeObserver figyeléssel dinamikusan frissül az állapot
+- [x] Theme mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A Részletek doboz vizuálisan jelzi, hogy folytatódik lefelé a tartalom, így egyértelműbb a további görgetés lehetősége.
+
+---
 ## 2026. 05. 02. – Session #148 (Részletes kereső lenyitható blokk)
 
 ### Mit csináltunk [x]
