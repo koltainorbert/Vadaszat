@@ -281,6 +281,7 @@ class VA_Settings_Page {
             'va_hf_header_user_bg_alpha'           => '0.06',
             'va_hf_header_mobile_show_search'      => '0',
             'va_hf_header_mobile_show_submit'      => '0',
+            'va_hf_header_show_buy_button'         => '1',
             'va_hf_header_submit_text'             => '+ Hirdetés feladása',
             'va_hf_header_register_text'           => 'Regisztráció',
             'va_hf_header_login_text'              => 'Bejelentkezés',
@@ -392,6 +393,7 @@ class VA_Settings_Page {
             'va_hf_header_user_bg_alpha',
             'va_hf_header_mobile_show_search',
             'va_hf_header_mobile_show_submit',
+            'va_hf_header_show_buy_button',
             'va_hf_header_submit_text',
             'va_hf_header_register_text',
             'va_hf_header_login_text',
@@ -1708,6 +1710,7 @@ class VA_Settings_Page {
                             <table class="form-table">
                                 <?php self::field_toggle( 'va_hf_header_mobile_show_search', 'Kereső mobilon is' ); ?>
                                 <?php self::field_toggle( 'va_hf_header_mobile_show_submit', 'CTA gomb mobilon is' ); ?>
+                                <?php self::field_toggle( 'va_hf_header_show_buy_button', 'Vásárlás gomb megjelenítése' ); ?>
                             </table>
                         </div>
                     </div>

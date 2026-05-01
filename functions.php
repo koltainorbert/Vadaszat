@@ -853,8 +853,8 @@ add_action( 'wp_enqueue_scripts', function () {
     '}' .
     '.va-header{' .
         'height:' . $hf_header_height . 'px;' .
-        'background-color:rgba(6,4,4,' . $hf_header_bg_opacity . ');' .
-        'background-image:linear-gradient(120deg,' . $hf_header_color_base . ',' . $hf_header_color_alt . ');' .
+        'background-color:' . $header_bg . ';' .
+        'background-image:linear-gradient(120deg,' . $header_bg . ' 0%,' . $hf_header_color_base . ' 56%,' . $hf_header_color_alt . ' 100%);' .
         'background-blend-mode:overlay;' .
         'backdrop-filter:blur(' . $hf_header_blur . 'px) saturate(1.4);' .
         '-webkit-backdrop-filter:blur(' . $hf_header_blur . 'px) saturate(1.4);' .
@@ -862,7 +862,8 @@ add_action( 'wp_enqueue_scripts', function () {
         'box-shadow:0 1px 30px ' . $hf_header_glow_color . ';' .
     '}' .
     '.va-header.scrolled{' .
-        'background-color:rgba(6,4,4,' . $hf_header_bg_opacity_scroll . ');' .
+        'background-color:' . $header_bg . ';' .
+        'background-image:linear-gradient(120deg,' . $header_bg . ' 0%,' . $hf_header_color_base . ' 56%,' . $hf_header_color_alt . ' 100%);' .
         'backdrop-filter:blur(' . $hf_header_blur_scroll . 'px) saturate(1.4);' .
         '-webkit-backdrop-filter:blur(' . $hf_header_blur_scroll . 'px) saturate(1.4);' .
         'box-shadow:0 1px 60px rgba(0,0,0,' . $hf_header_shadow_alpha . '),0 0 42px ' . $hf_header_shadow_color . ';' .
@@ -932,7 +933,7 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-footer,.va-footer *{font-family:' . $font_footer . ';}' .
     '.va-footer{' .
         'background-color:' . $footer_bg . ';' .
-        'background-image:linear-gradient(140deg,' . $hf_footer_color_base . ',' . $hf_footer_color_alt . ');' .
+        'background-image:linear-gradient(140deg,' . $footer_bg . ' 0%,' . $hf_footer_color_base . ' 56%,' . $hf_footer_color_alt . ' 100%);' .
         'color:' . $footer_text . ';' .
         'padding:' . $hf_footer_top_padding . 'px 20px ' . $hf_footer_bottom_padding . 'px;' .
         'border-top:1px solid ' . $hf_footer_border_color . ';' .
