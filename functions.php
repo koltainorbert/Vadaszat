@@ -721,6 +721,37 @@ add_action( 'wp_enqueue_scripts', function () {
     $hf_search_glow_color        = va_design_css_color( (string) get_option( 'va_hf_header_search_glow_color', 'rgba(255,0,0,.18)' ), 'rgba(255,0,0,.18)' );
     $hf_search_btn_size          = max( 24, min( 44, $hf_search_icon_size + 12 ) );
 
+    $search_dd_bg                = va_design_css_color( (string) get_option( 'va_search_dd_bg', '#111111' ), '#111111' );
+    $search_dd_border            = va_design_css_color( (string) get_option( 'va_search_dd_border', 'rgba(255,255,255,.10)' ), 'rgba(255,255,255,.10)' );
+    $search_dd_radius            = va_design_int_option( 'va_search_dd_radius', 14, 0, 30 );
+    $search_dd_shadow            = trim( (string) get_option( 'va_search_dd_shadow', '0 16px 48px rgba(0,0,0,.70)' ) );
+    if ( $search_dd_shadow === '' ) {
+        $search_dd_shadow = '0 16px 48px rgba(0,0,0,.70)';
+    }
+    $search_dd_item_border       = va_design_css_color( (string) get_option( 'va_search_dd_item_border', 'rgba(255,255,255,.05)' ), 'rgba(255,255,255,.05)' );
+    $search_dd_item_hover_bg     = va_design_css_color( (string) get_option( 'va_search_dd_item_hover_bg', 'rgba(255,255,255,.06)' ), 'rgba(255,255,255,.06)' );
+    $search_dd_item_pad_y        = va_design_int_option( 'va_search_dd_item_pad_y', 10, 4, 30 );
+    $search_dd_item_pad_x        = va_design_int_option( 'va_search_dd_item_pad_x', 14, 6, 40 );
+    $search_dd_thumb_radius      = va_design_int_option( 'va_search_dd_thumb_radius', 8, 0, 20 );
+    $search_dd_noimg_bg          = va_design_css_color( (string) get_option( 'va_search_dd_noimg_bg', 'rgba(255,255,255,.06)' ), 'rgba(255,255,255,.06)' );
+    $search_dd_title_color       = va_design_css_color( (string) get_option( 'va_search_dd_title_color', '#ffffff' ), '#ffffff' );
+    $search_dd_title_size        = va_design_int_option( 'va_search_dd_title_size', 13, 10, 24 );
+    $search_dd_price_color       = va_design_css_color( (string) get_option( 'va_search_dd_price_color', '#ff0000' ), '#ff0000' );
+    $search_dd_price_size        = va_design_int_option( 'va_search_dd_price_size', 12, 10, 24 );
+    $search_dd_badge_size        = va_design_int_option( 'va_search_dd_badge_size', 10, 9, 18 );
+    $search_dd_badge_radius      = va_design_int_option( 'va_search_dd_badge_radius', 20, 4, 40 );
+    $search_dd_badge_listing_bg  = va_design_css_color( (string) get_option( 'va_search_dd_badge_listing_bg', 'rgba(255,0,0,.18)' ), 'rgba(255,0,0,.18)' );
+    $search_dd_badge_listing_txt = va_design_css_color( (string) get_option( 'va_search_dd_badge_listing_text', '#ff4040' ), '#ff4040' );
+    $search_dd_badge_auction_bg  = va_design_css_color( (string) get_option( 'va_search_dd_badge_auction_bg', 'rgba(255,140,0,.25)' ), 'rgba(255,140,0,.25)' );
+    $search_dd_badge_auction_txt = va_design_css_color( (string) get_option( 'va_search_dd_badge_auction_text', '#ff8c00' ), '#ff8c00' );
+    $search_dd_badge_cat_bg      = va_design_css_color( (string) get_option( 'va_search_dd_badge_category_bg', 'rgba(0,200,100,.18)' ), 'rgba(0,200,100,.18)' );
+    $search_dd_badge_cat_txt     = va_design_css_color( (string) get_option( 'va_search_dd_badge_category_text', '#00e070' ), '#00e070' );
+    $search_dd_badge_user_bg     = va_design_css_color( (string) get_option( 'va_search_dd_badge_user_bg', 'rgba(80,140,255,.18)' ), 'rgba(80,140,255,.18)' );
+    $search_dd_badge_user_txt    = va_design_css_color( (string) get_option( 'va_search_dd_badge_user_text', '#6fa0ff' ), '#6fa0ff' );
+    $search_dd_all_color         = va_design_css_color( (string) get_option( 'va_search_dd_all_color', '#ff0000' ), '#ff0000' );
+    $search_dd_all_size          = va_design_int_option( 'va_search_dd_all_size', 12, 10, 24 );
+    $search_dd_all_hover_bg      = va_design_css_color( (string) get_option( 'va_search_dd_all_hover_bg', 'rgba(255,0,0,.06)' ), 'rgba(255,0,0,.06)' );
+
     $hf_btn_radius               = va_design_int_option( 'va_hf_header_btn_radius', 999, 8, 999 );
     $hf_btn_pad_y                = va_design_int_option( 'va_hf_header_btn_pad_y', 8, 4, 20 );
     $hf_btn_pad_x                = va_design_int_option( 'va_hf_header_btn_pad_x', 20, 8, 40 );
@@ -1007,6 +1038,20 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-header__search-input:-webkit-autofill{-webkit-text-fill-color:' . $header_search_text_color . ' !important;}' .
     '.va-header__search-btn{background-color:' . $header_search_btn_bg . ' !important;}' .
     '.va-header__search-btn:hover{background-color:' . $header_search_btn_hover_bg . ' !important;}' .
+    '.va-search-dropdown{background:' . $search_dd_bg . ' !important;border-color:' . $search_dd_border . ' !important;border-radius:' . $search_dd_radius . 'px !important;box-shadow:' . $search_dd_shadow . ' !important;}' .
+    '.va-sd__item{padding:' . $search_dd_item_pad_y . 'px ' . $search_dd_item_pad_x . 'px !important;border-bottom-color:' . $search_dd_item_border . ' !important;}' .
+    '.va-sd__item:hover{background:' . $search_dd_item_hover_bg . ' !important;}' .
+    '.va-sd__thumb,.va-sd__no-img{border-radius:' . $search_dd_thumb_radius . 'px !important;}' .
+    '.va-sd__no-img{background:' . $search_dd_noimg_bg . ' !important;}' .
+    '.va-sd__title{color:' . $search_dd_title_color . ' !important;font-size:' . $search_dd_title_size . 'px !important;}' .
+    '.va-sd__price{color:' . $search_dd_price_color . ' !important;font-size:' . $search_dd_price_size . 'px !important;}' .
+    '.va-sd__badge{font-size:' . $search_dd_badge_size . 'px !important;border-radius:' . $search_dd_badge_radius . 'px !important;}' .
+    '.va-sd__badge--va_listing{background:' . $search_dd_badge_listing_bg . ' !important;color:' . $search_dd_badge_listing_txt . ' !important;}' .
+    '.va-sd__badge--va_auction{background:' . $search_dd_badge_auction_bg . ' !important;color:' . $search_dd_badge_auction_txt . ' !important;}' .
+    '.va-sd__badge--category{background:' . $search_dd_badge_cat_bg . ' !important;color:' . $search_dd_badge_cat_txt . ' !important;}' .
+    '.va-sd__badge--user{background:' . $search_dd_badge_user_bg . ' !important;color:' . $search_dd_badge_user_txt . ' !important;}' .
+    '.va-sd__all{color:' . $search_dd_all_color . ' !important;font-size:' . $search_dd_all_size . 'px !important;border-top-color:' . $search_dd_item_border . ' !important;}' .
+    '.va-sd__all:hover{background:' . $search_dd_all_hover_bg . ' !important;}' .
     '.va-header__user-login:hover{background:' . $header_login_hover_bg . ' !important;color:' . $header_login_hover_text . ' !important;}' .
     '.va-header__register-btn:hover{background:' . $header_register_hover_bg . ' !important;color:' . $header_register_hover_text . ' !important;}' .
 
