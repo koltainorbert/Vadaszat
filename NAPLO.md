@@ -1,6 +1,23 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #133 (Főoldali „ÚJ” + „Összes →” szerkeszthető)
+
+### Mit csináltunk [x]
+- [x] A főoldali `Legújabb hirdetések` blokk `ÚJ` címkéje és `Összes →` linkje adminból szerkeszthető lett
+- [x] Új opciók hozzáadva:
+  - `va_home_latest_label_text` (alap: `ÚJ`)
+  - `va_home_all_link_text` (alap: `Összes →`)
+  - `va_home_section_accent_color` (alap: `#e27019`)
+- [x] Az accent szín rákötve a `ÚJ` badge háttérre és az összes `Összes →` link színére a főoldalon
+- [x] Plugin + Theme deploy lefuttatva
+- [x] Élő ellenőrzés: a főoldalon mindkét elem színe `rgb(226, 112, 25)` (`#e27019`)
+
+### Hol tartunk
+- A kért feliratok és a nyilas `Összes` linkek most narancsra vannak állítva, és adminból szerkeszthetők.
+
+---
+
 ## 2026. 05. 01. – Session #132 (Kártyaszerkesztő színek nem érvényesültek)
 
 ### Mit csináltunk [x]
