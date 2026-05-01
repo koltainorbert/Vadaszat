@@ -1967,6 +1967,7 @@ body.sl-viewer-open { overflow: hidden; }
   text-align: center;
   min-height: 360px;
   border-radius: 20px;
+  margin-bottom: 2px;
 }
 .va-contact-page__video {
   position: absolute;
