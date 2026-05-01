@@ -94,6 +94,9 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     'initial_cat'      => $url_cat,
     'initial_author_id'=> $url_author_id,
     'initial_post_type'=> $url_post_type,
+    'slider_max'       => $lp_slider_max,
+    'slider_step'      => $lp_slider_step,
+    'empty_text'       => $lp_empty_text,
 ]);
 wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 ?>

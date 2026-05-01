@@ -20,6 +20,23 @@ if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
 }
 $url_post_type   = in_array( $_GET['post_type'] ?? '', $allowed_post_types, true ) ? $_GET['post_type'] : 'va_listing';
 
+// ── Keresési oldal szövegek / opciók ────────────────────────────
+$lp_filter_title    = (string) get_option( 'va_lp_filter_title_text', '🔍 Hirdetések keresése' );
+$lp_kw_placeholder  = (string) get_option( 'va_lp_kw_placeholder', 'Kulcsszó...' );
+$lp_cat_placeholder = (string) get_option( 'va_lp_cat_placeholder', '– Kategória –' );
+$lp_co_placeholder  = (string) get_option( 'va_lp_county_placeholder', '– Megye –' );
+$lp_cond_placeholder= (string) get_option( 'va_lp_cond_placeholder', '– Állapot –' );
+$lp_slider_label    = (string) get_option( 'va_lp_slider_label_text', 'Ár szűrő' );
+$lp_slider_max      = max( 100, (int) get_option( 'va_lp_slider_max', 5000000 ) );
+$lp_slider_step     = max( 1, (int) get_option( 'va_lp_slider_step', 500 ) );
+$lp_sort_default    = (string) get_option( 'va_lp_sort_default_lbl', 'Legújabb' );
+$lp_sort_price_asc  = (string) get_option( 'va_lp_sort_price_asc_lbl', 'Ár: növekvő' );
+$lp_sort_price_desc = (string) get_option( 'va_lp_sort_price_desc_lbl', 'Ár: csökkenő' );
+$lp_sort_views      = (string) get_option( 'va_lp_sort_views_lbl', 'Legtöbb megtekintés' );
+$lp_reset_btn       = (string) get_option( 'va_lp_reset_btn_text', 'Szűrők törlése' );
+$lp_loader_text     = (string) get_option( 'va_lp_loader_text', 'Betöltés...' );
+$lp_empty_text      = (string) get_option( 'va_lp_empty_text', 'Nincs találat.' );
+
 // ── Felhasználó-kereső mód ────────────────────────────────────
 if ( $url_user_search ) {
     wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
@@ -77,6 +94,9 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     'initial_cat'      => $url_cat,
     'initial_author_id'=> $url_author_id,
     'initial_post_type'=> $url_post_type,
+    'slider_max'       => $lp_slider_max,
+    'slider_step'      => $lp_slider_step,
+    'empty_text'       => $lp_empty_text,
 ]);
 wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 ?>
@@ -85,13 +105,13 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
 
     <!-- Szűrő sáv -->
     <div class="va-filter-bar">
-        <div class="va-filter-bar__title">🔍 Hirdetések keresése</div>
+        <div class="va-filter-bar__title"><?php echo esc_html( $lp_filter_title ); ?></div>
         <form id="va-filter-form" data-post-type="<?php echo esc_attr( $url_post_type ); ?>">
             <div class="va-filter-bar__grid">
-                <input type="text" id="va-kw" class="va-input" placeholder="Kulcsszó..." value="<?php echo esc_attr( $url_s ); ?>">
+                <input type="text" id="va-kw" class="va-input" placeholder="<?php echo esc_attr( $lp_kw_placeholder ); ?>" value="<?php echo esc_attr( $url_s ); ?>">
 
                 <select id="va-cat" class="va-select">
-                    <option value="">– Kategória –</option>
+                    <option value=""><?php echo esc_html( $lp_cat_placeholder ); ?></option>
                     <?php foreach ( $categories as $cat ): ?>
                         <option value="<?php echo esc_attr( $cat->term_id ); ?>"><?php echo esc_html( $cat->name ); ?></option>
                         <?php $children = get_terms( [ 'taxonomy' => 'va_category', 'parent' => $cat->term_id, 'hide_empty' => false ] );
@@ -102,14 +122,14 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                 </select>
 
                 <select id="va-county" class="va-select">
-                    <option value="">– Megye –</option>
+                    <option value=""><?php echo esc_html( $lp_co_placeholder ); ?></option>
                     <?php foreach ( $counties as $county ): ?>
                         <option value="<?php echo esc_attr( $county->term_id ); ?>"><?php echo esc_html( $county->name ); ?></option>
                     <?php endforeach; ?>
                 </select>
 
                 <select id="va-cond" class="va-select">
-                    <option value="">– Állapot –</option>
+                    <option value=""><?php echo esc_html( $lp_cond_placeholder ); ?></option>
                     <?php foreach ( $conditions as $cond ): ?>
                         <option value="<?php echo esc_attr( $cond->term_id ); ?>"><?php echo esc_html( $cond->name ); ?></option>
                     <?php endforeach; ?>
@@ -117,26 +137,26 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
 
                 <div class="va-price-slider-wrap">
                     <div class="va-price-slider-labels">
-                        <span>&#193;r szűrő</span>
-                        <span class="va-price-slider-display"><span id="va-min-price-display">0</span> – <span id="va-max-price-display">5 000 000</span> Ft</span>
+                        <span><?php echo esc_html( $lp_slider_label ); ?></span>
+                        <span class="va-price-slider-display"><span id="va-min-price-display">0</span> – <span id="va-max-price-display"><?php echo esc_html( number_format( $lp_slider_max, 0, ',', ' ' ) ); ?></span> Ft</span>
                     </div>
                     <div class="va-price-slider-track">
-                        <input type="range" id="va-min-price" class="va-range" min="0" max="5000000" step="500" value="0">
-                        <input type="range" id="va-max-price" class="va-range" min="0" max="5000000" step="500" value="5000000">
+                        <input type="range" id="va-min-price" class="va-range" min="0" max="<?php echo esc_attr( $lp_slider_max ); ?>" step="<?php echo esc_attr( $lp_slider_step ); ?>" value="0">
+                        <input type="range" id="va-max-price" class="va-range" min="0" max="<?php echo esc_attr( $lp_slider_max ); ?>" step="<?php echo esc_attr( $lp_slider_step ); ?>" value="<?php echo esc_attr( $lp_slider_max ); ?>">
                         <div class="va-range-fill" id="va-range-fill"></div>
                     </div>
                 </div>
 
                 <select id="va-sort" class="va-select">
-                    <option value="date">Legújabb</option>
-                    <option value="price_asc">Ár: növekvő</option>
-                    <option value="price_desc">Ár: csökkenő</option>
-                    <option value="views">Legtöbb megtekintés</option>
+                    <option value="date"><?php echo esc_html( $lp_sort_default ); ?></option>
+                    <option value="price_asc"><?php echo esc_html( $lp_sort_price_asc ); ?></option>
+                    <option value="price_desc"><?php echo esc_html( $lp_sort_price_desc ); ?></option>
+                    <option value="views"><?php echo esc_html( $lp_sort_views ); ?></option>
                 </select>
             </div>
 
             <div class="va-filter-bar__actions">
-                <button type="button" id="va-filter-reset" class="va-btn va-btn--outline va-btn--sm">Szűrők törlése</button>
+                <button type="button" id="va-filter-reset" class="va-btn va-btn--outline va-btn--sm"><?php echo esc_html( $lp_reset_btn ); ?></button>
                 <span id="va-results-count" style="font-size:13px;color:rgba(255,255,255,0.5);align-self:center;"></span>
                 <div class="va-view-toggle" style="margin-left:auto;display:flex;gap:10px;">
                     <button type="button" class="va-view-btn va-view-btn--grid" id="va-view-grid" title="Rács nézet" aria-label="Rács nézet">
@@ -160,8 +180,8 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
     </div>
 
     <!-- Loader -->
-    <div id="va-listing-loader" style="display:none;text-align:center;padding:20px;color:rgba(255,255,255,0.5);">
-        Betöltés...
+    <div id="va-listing-loader" style="display:none;text-align:center;padding:20px;">
+        <?php echo esc_html( $lp_loader_text ); ?>
     </div>
 
     <!-- Eredmények -->

@@ -1187,6 +1187,84 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-contact-form__submit{background:linear-gradient(135deg,' . $cc_btn_bg . ',' . $cc_btn_bg2 . ') !important;color:' . $cc_btn_text . ' !important;box-shadow:0 10px 30px ' . $cc_btn_glow . ' !important;}' .
     '.va-contact-form__submit:hover{box-shadow:0 14px 34px ' . $cc_btn_hglow . ' !important;}';
 
+    // ── Listing search page (va_lp_*) ──────────────────────────────
+    $lp_filter_bg         = va_design_css_color( (string) get_option( 'va_lp_filter_bg', '#141414' ), '#141414' );
+    $lp_filter_border     = va_design_css_color( (string) get_option( 'va_lp_filter_border', 'rgba(255,255,255,.08)' ), 'rgba(255,255,255,.08)' );
+    $lp_filter_radius     = va_design_int_option( 'va_lp_filter_radius', 14, 0, 40 );
+    $lp_filter_padding    = va_design_int_option( 'va_lp_filter_padding', 20, 6, 60 );
+    $lp_filter_title_clr  = va_design_css_color( (string) get_option( 'va_lp_filter_title_color', 'rgba(255,255,255,.55)' ), 'rgba(255,255,255,.55)' );
+    $lp_input_bg          = va_design_css_color( (string) get_option( 'va_lp_input_bg', '#0e0e0e' ), '#0e0e0e' );
+    $lp_input_border      = va_design_css_color( (string) get_option( 'va_lp_input_border', 'rgba(255,255,255,.12)' ), 'rgba(255,255,255,.12)' );
+    $lp_input_color       = va_design_css_color( (string) get_option( 'va_lp_input_color', '#ffffff' ), '#ffffff' );
+    $lp_input_focus_bord  = va_design_css_color( (string) get_option( 'va_lp_input_focus_border', '#ff0000' ), '#ff0000' );
+    $lp_input_radius      = va_design_int_option( 'va_lp_input_radius', 14, 0, 40 );
+    $lp_slider_fill       = va_design_css_color( (string) get_option( 'va_lp_slider_fill_color', '#ff0000' ), '#ff0000' );
+    $lp_slider_thumb      = va_design_css_color( (string) get_option( 'va_lp_slider_thumb_color', '#ff0000' ), '#ff0000' );
+    $lp_slider_track_bg   = va_design_css_color( (string) get_option( 'va_lp_slider_track_bg', 'rgba(255,255,255,.12)' ), 'rgba(255,255,255,.12)' );
+    $lp_slider_display    = va_design_css_color( (string) get_option( 'va_lp_slider_display_color', '#ff4040' ), '#ff4040' );
+    $lp_reset_color       = va_design_css_color( (string) get_option( 'va_lp_reset_btn_color', '#ffffff' ), '#ffffff' );
+    $lp_reset_border      = va_design_css_color( (string) get_option( 'va_lp_reset_btn_border', 'rgba(255,255,255,.08)' ), 'rgba(255,255,255,.08)' );
+    $lp_reset_hover       = va_design_css_color( (string) get_option( 'va_lp_reset_btn_hover_color', '#ff0000' ), '#ff0000' );
+    $lp_count_color       = va_design_css_color( (string) get_option( 'va_lp_results_count_color', 'rgba(255,255,255,.5)' ), 'rgba(255,255,255,.5)' );
+    $lp_view_active_clr   = va_design_css_color( (string) get_option( 'va_lp_view_active_color', '#ff2f2f' ), '#ff2f2f' );
+    $lp_view_glow         = va_design_css_color( (string) get_option( 'va_lp_view_active_glow', 'rgba(255,0,0,.5)' ), 'rgba(255,0,0,.5)' );
+    $lp_view_brd_active   = va_design_css_color( (string) get_option( 'va_lp_view_border_active', 'rgba(255,0,0,.72)' ), 'rgba(255,0,0,.72)' );
+    $lp_loader_color      = va_design_css_color( (string) get_option( 'va_lp_loader_color', 'rgba(255,255,255,.5)' ), 'rgba(255,255,255,.5)' );
+    $lp_card_bg           = va_design_css_color( (string) get_option( 'va_lp_card_bg', '#141414' ), '#141414' );
+    $lp_card_border       = va_design_css_color( (string) get_option( 'va_lp_card_border', 'rgba(255,255,255,.08)' ), 'rgba(255,255,255,.08)' );
+    $lp_card_radius       = va_design_int_option( 'va_lp_card_radius', 14, 0, 40 );
+    $lp_card_title        = va_design_css_color( (string) get_option( 'va_lp_card_title_color', '#ffffff' ), '#ffffff' );
+    $lp_card_title_size   = va_design_int_option( 'va_lp_card_title_size', 15, 10, 28 );
+    $lp_card_title_hover  = va_design_css_color( (string) get_option( 'va_lp_card_title_hover', '#ff0000' ), '#ff0000' );
+    $lp_card_price        = va_design_css_color( (string) get_option( 'va_lp_card_price_color', '#ff0000' ), '#ff0000' );
+    $lp_card_price_size   = va_design_int_option( 'va_lp_card_price_size', 17, 10, 32 );
+    $lp_card_meta         = va_design_css_color( (string) get_option( 'va_lp_card_meta_color', 'rgba(255,255,255,.55)' ), 'rgba(255,255,255,.55)' );
+    $lp_card_meta_size    = va_design_int_option( 'va_lp_card_meta_size', 12, 9, 20 );
+    $lp_card_gap          = va_design_int_option( 'va_lp_card_gap', 20, 4, 60 );
+    $lp_wl_color          = va_design_css_color( (string) get_option( 'va_lp_card_watchlist_color', '#ff2a2a' ), '#ff2a2a' );
+    $lp_wl_border         = va_design_css_color( (string) get_option( 'va_lp_card_watchlist_border', 'rgba(255,0,0,.45)' ), 'rgba(255,0,0,.45)' );
+    $lp_wl_bg             = va_design_css_color( (string) get_option( 'va_lp_card_watchlist_bg', 'rgba(0,0,0,.62)' ), 'rgba(0,0,0,.62)' );
+    $lp_featured_color    = va_design_css_color( (string) get_option( 'va_lp_card_featured_color', '#ffc840' ), '#ffc840' );
+    $lp_featured_border   = va_design_css_color( (string) get_option( 'va_lp_card_featured_border', 'rgba(255,180,0,.5)' ), 'rgba(255,180,0,.5)' );
+    $lp_boost_color       = va_design_css_color( (string) get_option( 'va_lp_card_boost_color', '#ff2a2a' ), '#ff2a2a' );
+    $lp_boost_bg          = va_design_css_color( (string) get_option( 'va_lp_card_boost_bg', 'rgba(255,42,42,.18)' ), 'rgba(255,42,42,.18)' );
+    $lp_pag_bg            = va_design_css_color( (string) get_option( 'va_lp_pag_bg', 'rgb(20,20,20)' ), 'rgb(20,20,20)' );
+    $lp_pag_color         = va_design_css_color( (string) get_option( 'va_lp_pag_color', 'rgba(255,255,255,.55)' ), 'rgba(255,255,255,.55)' );
+    $lp_pag_border        = va_design_css_color( (string) get_option( 'va_lp_pag_border', 'rgba(255,255,255,.08)' ), 'rgba(255,255,255,.08)' );
+    $lp_pag_radius        = va_design_int_option( 'va_lp_pag_radius', 14, 0, 40 );
+    $lp_pag_active_bg     = va_design_css_color( (string) get_option( 'va_lp_pag_active_bg', '#ff0000' ), '#ff0000' );
+    $lp_pag_active_color  = va_design_css_color( (string) get_option( 'va_lp_pag_active_color', '#ffffff' ), '#ffffff' );
+    $lp_pag_size          = va_design_int_option( 'va_lp_pag_size', 13, 9, 22 );
+
+    $css .=
+        '.va-filter-bar{background:' . $lp_filter_bg . ' !important;border-color:' . $lp_filter_border . ' !important;border-radius:' . $lp_filter_radius . 'px !important;padding:' . $lp_filter_padding . 'px !important;}' .
+        '.va-filter-bar__title{color:' . $lp_filter_title_clr . ' !important;}' .
+        '.va-wrap .va-input,.va-wrap .va-select{background:' . $lp_input_bg . ' !important;border-color:' . $lp_input_border . ' !important;color:' . $lp_input_color . ' !important;border-radius:' . $lp_input_radius . 'px !important;}' .
+        '.va-wrap .va-input:focus,.va-wrap .va-select:focus{border-color:' . $lp_input_focus_bord . ' !important;}' .
+        '.va-price-slider-display{color:' . $lp_slider_display . ' !important;}' .
+        '.va-price-slider-track{background:' . $lp_slider_track_bg . ' !important;}' .
+        '.va-range-fill{background:' . $lp_slider_fill . ' !important;}' .
+        '.va-range::-webkit-slider-thumb{background:' . $lp_slider_thumb . ' !important;}' .
+        '.va-range::-moz-range-thumb{background:' . $lp_slider_thumb . ' !important;}' .
+        '#va-results-count{color:' . $lp_count_color . ' !important;}' .
+        '#va-filter-reset.va-btn--outline{color:' . $lp_reset_color . ' !important;border-color:' . $lp_reset_border . ' !important;}' .
+        '#va-filter-reset.va-btn--outline:hover{color:' . $lp_reset_hover . ' !important;border-color:' . $lp_reset_hover . ' !important;}' .
+        '.va-view-btn.active{--va-vbtn-icon:' . $lp_view_active_clr . ';border-color:' . $lp_view_brd_active . ' !important;}' .
+        '.va-view-btn.active .va-view-icon{stroke:' . $lp_view_active_clr . ' !important;filter:drop-shadow(0 0 5px ' . $lp_view_glow . ') !important;}' .
+        '#va-listing-loader{color:' . $lp_loader_color . ' !important;}' .
+        '.va-card{background:' . $lp_card_bg . ' !important;border-color:' . $lp_card_border . ' !important;border-radius:' . $lp_card_radius . 'px !important;}' .
+        '.va-card__title{color:' . $lp_card_title . ' !important;font-size:' . $lp_card_title_size . 'px !important;}' .
+        '.va-card__title a:hover,.va-card__body-link:hover .va-card__title{color:' . $lp_card_title_hover . ' !important;}' .
+        '.va-card__price{color:' . $lp_card_price . ' !important;font-size:' . $lp_card_price_size . 'px !important;}' .
+        '.va-card__meta{color:' . $lp_card_meta . ' !important;font-size:' . $lp_card_meta_size . 'px !important;}' .
+        '.va-grid{gap:' . $lp_card_gap . 'px !important;}' .
+        '.va-card__watchlist{color:' . $lp_wl_color . ' !important;border-color:' . $lp_wl_border . ' !important;background:' . $lp_wl_bg . ' !important;}' .
+        '.va-card__watchlist:hover,.va-card__watchlist.active{border-color:' . $lp_wl_border . ' !important;color:' . $lp_wl_color . ' !important;}' .
+        '.va-card__badge--featured{color:' . $lp_featured_color . ' !important;border-color:' . $lp_featured_border . ' !important;}' .
+        '.va-card__badge--boost{background:' . $lp_boost_bg . ' !important;color:' . $lp_boost_color . ' !important;border-color:' . $lp_boost_color . ' !important;}' .
+        '.va-page-btn{background:' . $lp_pag_bg . ' !important;color:' . $lp_pag_color . ' !important;border-color:' . $lp_pag_border . ' !important;border-radius:' . $lp_pag_radius . 'px !important;font-size:' . $lp_pag_size . 'px !important;}' .
+        '.va-page-btn:hover,.va-page-btn.active{background:' . $lp_pag_active_bg . ' !important;border-color:' . $lp_pag_active_bg . ' !important;color:' . $lp_pag_active_color . ' !important;}';
+
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );
 
