@@ -37,6 +37,20 @@ $lp_reset_btn       = (string) get_option( 'va_lp_reset_btn_text', 'Szűrők tö
 $lp_loader_text     = (string) get_option( 'va_lp_loader_text', 'Betöltés...' );
 $lp_empty_text      = (string) get_option( 'va_lp_empty_text', 'Nincs találat.' );
 
+$vehicle_brand_models = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_brand_models() : [];
+$vehicle_brands       = array_keys( $vehicle_brand_models );
+$vehicle_body_types   = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_body_type_options() : [];
+$vehicle_fuel_types   = [
+    'benzin'   => 'Benzin',
+    'diesel'   => 'Dízel',
+    'hybrid'   => 'Hibrid',
+    'electric' => 'Elektromos',
+    'lpg'      => 'LPG',
+    'cng'      => 'CNG',
+    'egyeb'    => 'Egyéb',
+];
+$vehicle_conditions   = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_vehicle_condition_options() : [];
+
 // ── Felhasználó-kereső mód ────────────────────────────────────
 if ( $url_user_search ) {
     wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
@@ -97,6 +111,7 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     'slider_max'       => $lp_slider_max,
     'slider_step'      => $lp_slider_step,
     'empty_text'       => $lp_empty_text,
+    'vehicle_brand_models' => $vehicle_brand_models,
 ]);
 wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', [], VA_VERSION );
 ?>
