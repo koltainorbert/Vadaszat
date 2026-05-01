@@ -1092,6 +1092,56 @@ add_action( 'wp_enqueue_scripts', function () {
           '.vh__scroll-dot{background:' . $hero_scroll_dot_color . ' !important;box-shadow:0 0 6px ' . $hero_scroll_dot_color . ' !important;}'
         : '.vh__scroll{display:none !important;}' );
 
+    // Kapcsolat oldal dinamikus színek
+    $cc_hero_title   = va_design_css_color( (string) get_option( 'va_contact_color_hero_title',        '#ffffff' ), '#ffffff' );
+    $cc_hero_lead    = va_design_css_color( (string) get_option( 'va_contact_color_hero_lead',         'rgba(255,255,255,.72)' ), 'rgba(255,255,255,.72)' );
+    $cc_hero_bbg     = va_design_css_color( (string) get_option( 'va_contact_color_hero_badge_bg',     'rgba(6,6,6,.34)' ), 'rgba(6,6,6,.34)' );
+    $cc_hero_bbord   = va_design_css_color( (string) get_option( 'va_contact_color_hero_badge_border', 'rgba(255,255,255,.14)' ), 'rgba(255,255,255,.14)' );
+    $cc_hero_btxt    = va_design_css_color( (string) get_option( 'va_contact_color_hero_badge_text',   '#ffffff' ), '#ffffff' );
+    $cc_hero_glow    = va_design_css_color( (string) get_option( 'va_contact_color_hero_glow',         '#ff0000' ), '#ff0000' );
+    $cc_card_bord    = va_design_css_color( (string) get_option( 'va_contact_color_card_border',       'rgba(255,255,255,.08)' ), 'rgba(255,255,255,.08)' );
+    $cc_card_abord   = va_design_css_color( (string) get_option( 'va_contact_color_card_accent_border','rgba(255,0,0,.22)' ), 'rgba(255,0,0,.22)' );
+    $cc_icon         = va_design_css_color( (string) get_option( 'va_contact_color_card_icon',         '#ff4040' ), '#ff4040' );
+    $cc_icon_bg      = va_design_css_color( (string) get_option( 'va_contact_color_card_icon_bg',      'rgba(255,0,0,.08)' ), 'rgba(255,0,0,.08)' );
+    $cc_icon_bord    = va_design_css_color( (string) get_option( 'va_contact_color_card_icon_border',  'rgba(255,0,0,.18)' ), 'rgba(255,0,0,.18)' );
+    $cc_card_title   = va_design_css_color( (string) get_option( 'va_contact_color_card_title',        '#ffffff' ), '#ffffff' );
+    $cc_card_mini    = va_design_css_color( (string) get_option( 'va_contact_color_card_mini',         'rgba(255,255,255,.82)' ), 'rgba(255,255,255,.82)' );
+    $cc_card_text    = va_design_css_color( (string) get_option( 'va_contact_color_card_text',         'rgba(255,255,255,.68)' ), 'rgba(255,255,255,.68)' );
+    $cc_list_text    = va_design_css_color( (string) get_option( 'va_contact_color_list_text',         'rgba(255,255,255,.74)' ), 'rgba(255,255,255,.74)' );
+    $cc_list_dot     = va_design_css_color( (string) get_option( 'va_contact_color_list_dot',          '#ff0000' ), '#ff0000' );
+    $cc_form_title   = va_design_css_color( (string) get_option( 'va_contact_color_form_title',        '#ffffff' ), '#ffffff' );
+    $cc_form_label   = va_design_css_color( (string) get_option( 'va_contact_color_form_label',        'rgba(255,255,255,.7)' ), 'rgba(255,255,255,.7)' );
+    $cc_inp_bg       = va_design_css_color( (string) get_option( 'va_contact_color_input_bg',          'rgba(255,255,255,.04)' ), 'rgba(255,255,255,.04)' );
+    $cc_inp_bord     = va_design_css_color( (string) get_option( 'va_contact_color_input_border',      'rgba(255,255,255,.1)' ), 'rgba(255,255,255,.1)' );
+    $cc_inp_text     = va_design_css_color( (string) get_option( 'va_contact_color_input_text',        '#ffffff' ), '#ffffff' );
+    $cc_inp_focus    = va_design_css_color( (string) get_option( 'va_contact_color_input_focus_border','rgba(255,0,0,.45)' ), 'rgba(255,0,0,.45)' );
+    $cc_btn_bg       = va_design_css_color( (string) get_option( 'va_contact_color_btn_bg',            '#ff0000' ), '#ff0000' );
+    $cc_btn_bg2      = va_design_css_color( (string) get_option( 'va_contact_color_btn_bg2',           '#d90000' ), '#d90000' );
+    $cc_btn_text     = va_design_css_color( (string) get_option( 'va_contact_color_btn_text',          '#ffffff' ), '#ffffff' );
+    $cc_btn_glow     = va_design_css_color( (string) get_option( 'va_contact_color_btn_glow',          'rgba(255,0,0,.26)' ), 'rgba(255,0,0,.26)' );
+    $cc_btn_hglow    = va_design_css_color( (string) get_option( 'va_contact_color_btn_hover_glow',    'rgba(255,0,0,.34)' ), 'rgba(255,0,0,.34)' );
+
+    $css .=
+    '.va-contact-page__title{color:' . $cc_hero_title . ' !important;}' .
+    '.va-contact-page__lead{color:' . $cc_hero_lead . ' !important;}' .
+    '.va-contact-page__eyebrow{background:' . $cc_hero_bbg . ' !important;border-color:' . $cc_hero_bbord . ' !important;color:' . $cc_hero_btxt . ' !important;}' .
+    '.va-contact-page__hero-glow--1,.va-contact-page__hero-glow--2{background:' . $cc_hero_glow . ' !important;}' .
+    '.va-contact-card{border-color:' . $cc_card_bord . ' !important;}' .
+    '.va-contact-formbox{border-color:' . $cc_card_bord . ' !important;}' .
+    '.va-contact-card--accent{border-color:' . $cc_card_abord . ' !important;}' .
+    '.va-contact-card__icon{color:' . $cc_icon . ' !important;background:' . $cc_icon_bg . ' !important;border-color:' . $cc_icon_bord . ' !important;}' .
+    '.va-contact-card__title,.va-contact-formbox__title{color:' . $cc_card_title . ' !important;}' .
+    '.va-contact-card__mini{color:' . $cc_card_mini . ' !important;}' .
+    '.va-contact-card__text{color:' . $cc_card_text . ' !important;}' .
+    '.va-contact-list li{color:' . $cc_list_text . ' !important;}' .
+    '.va-contact-list li::before{background:' . $cc_list_dot . ' !important;box-shadow:0 0 8px ' . $cc_list_dot . ' !important;}' .
+    '.va-contact-formbox__title{color:' . $cc_form_title . ' !important;}' .
+    '.va-contact-field label{color:' . $cc_form_label . ' !important;}' .
+    '.va-contact-field input,.va-contact-field textarea{background:' . $cc_inp_bg . ' !important;border-color:' . $cc_inp_bord . ' !important;color:' . $cc_inp_text . ' !important;}' .
+    '.va-contact-field input:focus,.va-contact-field textarea:focus{border-color:' . $cc_inp_focus . ' !important;box-shadow:0 0 0 3px ' . $cc_inp_focus . ' !important;}' .
+    '.va-contact-form__submit{background:linear-gradient(135deg,' . $cc_btn_bg . ',' . $cc_btn_bg2 . ') !important;color:' . $cc_btn_text . ' !important;box-shadow:0 10px 30px ' . $cc_btn_glow . ' !important;}' .
+    '.va-contact-form__submit:hover{box-shadow:0 14px 34px ' . $cc_btn_hglow . ' !important;}';
+
     wp_add_inline_style( 'va-theme', $css );
 }, 20 );
 
