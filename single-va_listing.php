@@ -1892,107 +1892,17 @@ $related = new WP_Query([
 
 
 if ( $related->have_posts() ):
-
-
 ?>
-
-
 <div style="max-width:<?php echo esc_attr((string)$sl_content_max); ?>px;margin:28px auto 0;padding:0 16px;">
-
-
     <div class="sl__card" style="margin-bottom:0;">
-
-
         <div class="sl__card-title" style="margin-bottom:14px;">Hasonl&#243; hirdet&#233;sek</div>
-
-
-        <div class="sl__related-grid">
-
-
+        <div class="va-grid">
             <?php while ( $related->have_posts() ): $related->the_post();
-
-
-                $rp_id    = get_the_ID();
-
-
-                $rp_price = get_post_meta($rp_id,'va_price',true);
-
-
-                $rp_ptype = get_post_meta($rp_id,'va_price_type',true) ?: 'fixed';
-
-
-                $rp_loc   = get_post_meta($rp_id,'va_location',true);
-
-
-                $rp_km    = get_post_meta($rp_id,'va_mileage',true);
-
-
-                $rp_yr    = get_post_meta($rp_id,'va_year',true);
-
-
-            ?>
-
-
-            <a href="<?php the_permalink(); ?>" class="sl__rel-item">
-
-
-                <?php if ( has_post_thumbnail() ): ?>
-
-
-                    <?php echo get_the_post_thumbnail(null,[400,300],['class'=>'sl__rel-img','loading'=>'lazy']); ?>
-
-
-                <?php else: ?>
-
-
-                    <div class="sl__rel-img--empty">&#128247;</div>
-
-
-                <?php endif; ?>
-
-
-                <div class="sl__rel-info">
-
-
-                    <div class="sl__rel-title"><?php the_title(); ?></div>
-
-
-                    <div class="sl__rel-price"><?php echo esc_html(va_format_price($rp_price,$rp_ptype)); ?></div>
-
-
-                    <div class="sl__rel-meta">
-
-
-                        <?php if ($rp_yr)  echo esc_html($rp_yr); ?>
-
-
-                        <?php if ($rp_km)  echo ' &middot; '.esc_html(number_format((int)$rp_km,0,',',' ')).' km'; ?>
-
-
-                        <?php if ($rp_loc) echo ' &middot; '.esc_html($rp_loc); ?>
-
-
-                    </div>
-
-
-                </div>
-
-
-            </a>
-
-
-            <?php endwhile; wp_reset_postdata(); ?>
-
-
+                va_template( 'listing/card', [ 'post' => get_post() ] );
+            endwhile; wp_reset_postdata(); ?>
         </div>
-
-
     </div>
-
-
 </div>
-
-
 <?php endif; ?>
 
 
