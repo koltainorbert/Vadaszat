@@ -219,6 +219,7 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'eco_class'        => get_post_meta( $maybe_id, 'va_eco_class',        true ),
             'cylinder_layout'  => get_post_meta( $maybe_id, 'va_cylinder_layout',  true ),
             'own_weight'       => get_post_meta( $maybe_id, 'va_own_weight',       true ),
+            'vehicle_type'     => get_post_meta( $maybe_id, 'va_vehicle_type',     true ),
             'tech_inspect'     => get_post_meta( $maybe_id, 'va_tech_inspect',     true ),
             'first_reg'        => get_post_meta( $maybe_id, 'va_first_reg',        true ),
             'owners'           => get_post_meta( $maybe_id, 'va_owners',           true ),
@@ -478,6 +479,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
             $eco_opts       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
             $cyl_opts       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
             $extras_opts    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
+            $vtype_opts     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_type_options() : [];
             $ev_extras      = is_array( $ev['extras'] ?? null ) ? $ev['extras'] : [];
 
             // Helper: select mező
@@ -504,6 +506,14 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         .va-vehicle-specs + button, .va-vehicle-specs ~ button { margin-top:20px; }
         </style>
         <div class="va-vehicle-specs">
+            <h3 class="va-specs-heading">🚗 Járműkategória</h3>
+            <div class="va-specs-grid" style="grid-template-columns:1fr">
+                <div class="va-form-group">
+                    <label>Járműkategória</label>
+                    <?php $render_select( 'vehicle_type', $vtype_opts, (string)( $ev['vehicle_type'] ?? '' ) ); ?>
+                </div>
+            </div>
+
             <h3 class="va-specs-heading">⚙️ Motor / Hajtástechnika</h3>
             <div class="va-specs-grid">
                 <div class="va-form-group">

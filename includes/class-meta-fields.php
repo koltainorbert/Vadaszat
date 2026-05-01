@@ -19,6 +19,8 @@ class VA_Meta_Fields {
         switch ( self::get_site_type() ) {
             case 'jarmu':
                 return [
+                    'va_vehicle_type'    => [ 'label' => 'Járműkategória',           'type' => 'select',
+                        'options' => class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_vehicle_type_options() : [] ],
                     'va_brand'           => [ 'label' => 'Gyártó',                  'type' => 'text' ],
                     'va_model'           => [ 'label' => 'Modell',                   'type' => 'text' ],
                     'va_year'            => [ 'label' => 'Évjárat',                  'type' => 'number', 'min' => 1900, 'max' => 2030 ],

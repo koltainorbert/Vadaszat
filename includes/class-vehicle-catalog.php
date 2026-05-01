@@ -58,6 +58,18 @@ class VA_Vehicle_Catalog {
         ];
     }
 
+    public static function get_vehicle_type_options(): array {
+        return [
+            'szemelyes'   => 'Személyautó',
+            'motor'       => 'Motor',
+            'kisteheruto' => 'Kisteherautó',
+            'teheruto'    => 'Teherautó',
+            'lakoauto'    => 'Lakóautó / Camper',
+            'busz'        => 'Busz / Kisbusz',
+            'egyeb'       => 'Egyéb',
+        ];
+    }
+
     public static function get_drive_options(): array {
         return [
             'elso'                => 'Első kerék meghajtás',

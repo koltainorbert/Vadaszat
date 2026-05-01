@@ -131,7 +131,7 @@ class VA_Ajax {
         $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys', 'va_own_weight',
                              'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
         $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating',
-                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout' ];
+                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout', 'va_vehicle_type' ];
         $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
         foreach ( $type_extra_text as $k ) {
             if ( isset( $_POST[ str_replace( 'va_', '', $k ) ] ) ) {
@@ -304,7 +304,7 @@ class VA_Ajax {
         $type_extra_num  = [ 'va_mileage', 'va_performance_kw', 'va_engine_size', 'va_owners', 'va_keys', 'va_own_weight',
                              'va_area_m2', 'va_rooms', 'va_floor', 'va_total_floors', 'va_lot_size', 'va_building_year' ];
         $type_extra_key  = [ 'va_fuel_type', 'va_transmission', 'va_body_type', 'va_doors', 'va_parking', 'va_furnished', 'va_heating',
-                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout' ];
+                             'va_drive', 'va_vehicle_condition', 'va_doc_type', 'va_doc_validity', 'va_ac_type', 'va_eco_class', 'va_cylinder_layout', 'va_vehicle_type' ];
         $type_extra_bool = [ 'va_previous_damage', 'va_service_book', 'va_balcony' ];
         foreach ( $type_extra_text as $k ) {
             $short = str_replace( 'va_', '', $k );
