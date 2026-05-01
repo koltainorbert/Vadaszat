@@ -98,6 +98,13 @@ add_action( 'init', function () {
     update_option( 'va_pages_created_v2', '1', false );
 }, 1 );
 
+// Factory defaults biztos betöltése futás közben is (új telepítésnél)
+add_action( 'init', function () {
+    if ( ! get_option( 'va_factory_defaults_loaded' ) ) {
+        va_load_factory_defaults();
+    }
+}, 2 );
+
 /* ── Vadász Naptár – virtuális oldal (WP admin nélkül) ──────────────
  * A /vadasz-naptar/ URL betölti a theme page-vadasz-naptar.php-t
  * automatikusan, adatbázis bejegyzés nélkül.
