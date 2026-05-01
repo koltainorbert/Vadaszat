@@ -187,6 +187,79 @@ function va_activate() {
 
     // Alapértelmezett oldalak létrehozása ha nem léteznek
     va_create_default_pages();
+
+    // Factory defaults betöltése ha ez friss telepítés
+    va_load_factory_defaults();
+}
+
+function va_load_factory_defaults(): void {
+    if ( get_option( 'va_factory_defaults_loaded' ) ) {
+        return; // Már be volt töltve korábban
+    }
+
+    $json_file = plugin_dir_path( __FILE__ ) . 'includes/factory-defaults.json';
+    if ( ! file_exists( $json_file ) ) {
+        return;
+    }
+
+    $content = file_get_contents( $json_file );
+    if ( ! $content ) {
+        return;
+    }
+
+    // BOM eltávolítás
+    $content = ltrim( $content, "\xEF\xBB\xBF" );
+    $data    = json_decode( $content, true );
+
+    if ( ! is_array( $data ) || ! isset( $data['options'] ) || ! is_array( $data['options'] ) ) {
+        return;
+    }
+
+    // Csak azokat az opciókat importáljuk amelyek még NINCSENEK beállítva
+    foreach ( $data['options'] as $key => $value ) {
+        if ( ! is_string( $key ) || strpos( $key, 'va_' ) !== 0 ) {
+            continue;
+        }
+        if ( get_option( $key ) === false ) {
+            add_option( $key, $value, '', 'no' );
+        }
+    }
+
+    // Taxonómiák importálása (kategóriák, megyék, állapotok) ha üresek
+    if ( isset( $data['taxonomies'] ) && is_array( $data['taxonomies'] ) ) {
+        $by_tax = [];
+        foreach ( $data['taxonomies'] as $term ) {
+            $by_tax[ $term['taxonomy'] ][] = $term;
+        }
+        foreach ( $by_tax as $tax => $terms ) {
+            $existing = get_terms( [ 'taxonomy' => $tax, 'hide_empty' => false, 'fields' => 'count' ] );
+            if ( ! is_wp_error( $existing ) && (int) $existing === 0 ) {
+                $slug_to_id = [];
+                foreach ( $terms as $term ) {
+                    $parent_id = 0;
+                    if ( ! empty( $term['parent_slug'] ) && isset( $slug_to_id[ $term['parent_slug'] ] ) ) {
+                        $parent_id = $slug_to_id[ $term['parent_slug'] ];
+                    }
+                    $result = wp_insert_term( $term['name'], $tax, [
+                        'slug'        => $term['slug'],
+                        'description' => $term['description'] ?? '',
+                        'parent'      => $parent_id,
+                    ] );
+                    if ( ! is_wp_error( $result ) ) {
+                        $tid = (int) $result['term_id'];
+                        $slug_to_id[ $term['slug'] ] = $tid;
+                        if ( ! empty( $term['meta'] ) && is_array( $term['meta'] ) ) {
+                            foreach ( $term['meta'] as $mkey => $mval ) {
+                                update_term_meta( $tid, $mkey, $mval );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    update_option( 'va_factory_defaults_loaded', '1' );
 }
 
 function va_deactivate() {
