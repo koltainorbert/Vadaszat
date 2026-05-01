@@ -2208,3 +2208,33 @@ emoji kategória ikonokkal – pontosan a referencia (vadasz-apro/public/index.h
 
 ---
 
+## 2026. 05. – Session: Használtautó kategória-migráció
+
+### Mit csináltunk [x]
+- [x] Új központi autós adatforrás: `includes/class-vehicle-catalog.php`
+  - Használtautó alapú fő kategóriák: Kisautó, Városi autó, Családi autó, Terepjáró, Kishaszonjármű
+  - Márkalista bekötve a frontend űrlaphoz
+  - Kivitel lista bekötve a jármű meta mezőkhöz és megjelenítéshez
+- [x] `class-taxonomy.php` átírva: a régi vadász kategóriákat dataset verzióváltáskor törli és autós kategóriákat seedel
+- [x] Migráció során az oldaltípus automatikusan `jarmu` módra vált
+- [x] `admin/class-form-builder.php` frontend alapmezők jármű módra igazítva
+  - Márka select
+  - Modell / Típus szövegmező
+  - Kivitel select
+- [x] `frontend/templates/listing/submit-form.php` frissítve
+  - Márka: használtautós lista
+  - Kivitel: használtautós lista
+  - Szerkesztéskor meglévő értékek visszatöltése
+- [x] `single-va_listing.php` felépítmény címkézés igazítva az új kivitellistához
+- [x] Root + `wp-plugin/vadaszapro-core` másolatok szinkronban tartva
+
+### Hol tartunk
+A következő WordPress betöltéskor a plugin egyszer lefuttatja a kategória-migrációt: a meglévő `va_category` elemek törlődnek, és helyettük a használtautós fő járműkategóriák jönnek létre. A jármű űrlap márkánál és kivitelnél listás választást használ.
+
+### TODO
+- [ ] LocalWP-ben megnyitni és ellenőrizni a kategória-migráció eredményét
+- [ ] Hirdetés feladás teszt: márka + modell / típus + kivitel mentés
+- [ ] Szükség esetén deploy (`Deploy Plugin` vagy `Deploy All`)
+
+---
+
