@@ -202,7 +202,12 @@ class VA_Meta_Fields {
             : self::listing_fields();
 
         foreach ( $fields as $key => $f ) {
-            if ( $f['type'] === 'checkbox' ) {
+            if ( $f['type'] === 'checkboxes' ) {
+                $raw = isset( $_POST[ $key ] ) && is_array( $_POST[ $key ] ) ? (array) $_POST[ $key ] : [];
+                $valid = array_keys( class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [] );
+                $clean = array_values( array_intersect( array_map( 'sanitize_key', $raw ), $valid ) );
+                update_post_meta( $post_id, $key, wp_json_encode( $clean ) );
+            } elseif ( $f['type'] === 'checkbox' ) {
                 update_post_meta( $post_id, $key, isset( $_POST[ $key ] ) ? '1' : '0' );
             } elseif ( isset( $_POST[ $key ] ) && empty( $f['readonly'] ) ) {
                 $val = sanitize_text_field( wp_unslash( $_POST[ $key ] ) );
