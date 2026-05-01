@@ -606,6 +606,10 @@ class VA_Settings_Page {
             'va_hero_scroll_line_color'         => '#ff0000',
             'va_hero_scroll_dot_color'          => '#ff0000',
             'va_hero_scroll_opacity'            => '0.50',
+
+            // Scroll-progress gomb (jobb alsó videós pill)
+            'va_scroll_ring_video_url'          => content_url( 'uploads/2026/04/0_Ride_Street_1920x1080.mp4' ),
+            'va_scroll_ring_border_color'       => '#00e676',
         ];
         foreach ( $hero as $key => $default ) {
             self::$defaults[ $key ] = $default;
@@ -1462,6 +1466,12 @@ class VA_Settings_Page {
                     <?php self::field_color(  'va_hero_scroll_line_color', 'Vonal szín' ); ?>
                     <?php self::field_color(  'va_hero_scroll_dot_color',  'Pont szín' ); ?>
                     <?php self::field_decimal( 'va_hero_scroll_opacity',   'Átlátszóság (0-1)', 0, 1, 0.01 ); ?>
+                </table>
+
+                <h2>🎬 Scroll gomb (videós pill)</h2>
+                <table class="form-table">
+                    <?php self::field_video( 'va_scroll_ring_video_url',    'Háttér videó URL' ); ?>
+                    <?php self::field_color( 'va_scroll_ring_border_color', 'Border szín' ); ?>
                 </table>
 
                 <?php submit_button( 'Hero beállítások mentése' ); ?>

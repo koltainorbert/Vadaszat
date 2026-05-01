@@ -144,12 +144,23 @@
 
 <?php wp_footer(); ?>
 
+<?php
+$va_scroll_ring_video_url = trim( (string) get_option( 'va_scroll_ring_video_url', content_url( 'uploads/2026/04/0_Ride_Street_1920x1080.mp4' ) ) );
+if ( $va_scroll_ring_video_url === '' ) {
+    $va_scroll_ring_video_url = content_url( 'uploads/2026/04/0_Ride_Street_1920x1080.mp4' );
+}
+$va_scroll_ring_border_color = trim( (string) get_option( 'va_scroll_ring_border_color', '#00e676' ) );
+if ( $va_scroll_ring_border_color === '' ) {
+    $va_scroll_ring_border_color = '#00e676';
+}
+?>
+
 <!-- ── Scroll-progress pill videó widget ──────────────────── -->
-<div id="va-scroll-ring" role="button" aria-label="Vissza a tetejére" tabindex="0">    <!-- progress border SVG (pill alak) – pathLength=100 → nincs kerület-hiba -->
+<div id="va-scroll-ring" role="button" aria-label="Vissza a tetejére" tabindex="0" style="--va-scroll-ring-color: <?php echo esc_attr( $va_scroll_ring_border_color ); ?>;">    <!-- progress border SVG (pill alak) – pathLength=100 → nincs kerület-hiba -->
     <svg id="va-ring-svg" viewBox="0 0 178 66" width="178" height="66" aria-hidden="true" style="position:absolute;top:0;left:0;pointer-events:none;z-index:3;">
         <rect x="2" y="2" width="174" height="62" rx="31" fill="none" stroke="rgba(255,255,255,0.13)" stroke-width="1.5" pathLength="100"/>
         <rect id="va-ring-el" x="2" y="2" width="174" height="62" rx="31" fill="none"
-            stroke="#00e676" stroke-width="1.8" stroke-linecap="round"
+            stroke="var(--va-scroll-ring-color)" stroke-width="1.8" stroke-linecap="round"
             pathLength="100" stroke-dasharray="100" stroke-dashoffset="100"
             transform="rotate(180 89 33)"
             style="transition:stroke-dashoffset .12s linear;"/>
@@ -157,7 +168,7 @@
     <!-- videó + bal arrow réteg -->
     <div id="va-ring-inner">
         <video autoplay muted loop playsinline preload="auto" aria-hidden="true">
-            <source src="<?php echo esc_url( content_url('uploads/2026/04/0_Ride_Street_1920x1080.mp4') ); ?>" type="video/mp4">
+            <source src="<?php echo esc_url( $va_scroll_ring_video_url ); ?>" type="video/mp4">
         </video>
         <!-- bal oldali sötét átmenet + nyil -->
         <div id="va-ring-arrow">
@@ -187,7 +198,7 @@
     opacity: 1;
     transform: translateY(0);
 }
-#va-scroll-ring:hover #va-ring-el { stroke: #69f0ae; }
+#va-scroll-ring:hover #va-ring-el { stroke: var(--va-scroll-ring-color); }
 #va-scroll-ring:hover #va-ring-inner { transform: scale(1.03); }
 
 #va-ring-inner {
