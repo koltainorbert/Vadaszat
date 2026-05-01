@@ -780,6 +780,11 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 .sl__spec-row--full { grid-column:1/-1;padding-right:0 !important;border-left:none !important; }
 
+.sl__params-scroll { max-height:min(68vh,720px);overflow:auto;padding-right:6px; }
+.sl__params-scroll::-webkit-scrollbar { width:8px; }
+.sl__params-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,.2);border-radius:8px; }
+.sl__params-scroll::-webkit-scrollbar-track { background:transparent; }
+
 /* Extras pills */
 .sl__extras-section { margin-top:18px; }
 .sl__extras-heading { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.45);margin-bottom:10px; }
@@ -898,6 +903,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
     .sl--layout-split .sl__layout { grid-template-columns: 1fr; }
+
+
+    .sl__params-scroll { max-height:none;overflow:visible;padding-right:0; }
 
 
     .sl__specs-table { grid-template-columns:1fr; }
@@ -1400,6 +1408,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 <div class="sl__card-title">R&#233;szletek</div>
 
 
+                <div class="sl__params-scroll">
+
+
                 <?php if ( ! empty($badges) ): ?>
 
 
@@ -1473,6 +1484,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
+
+
+                </div>
 
             </div>
             <?php endif; ?>

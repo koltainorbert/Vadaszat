@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #139 (Termékoldal Részletek blokk belső scroll)
+
+### Mit csináltunk [x]
+- [x] A termékoldali `Részletek` kártyában a hosszú tartalom (spec + kiegészítők) belső görgethető konténerbe került
+- [x] Új wrapper: `sl__params-scroll` a `single-va_listing.php` sablonban
+- [x] Desktopon max magasság + `overflow:auto`, így nem nyúlik végtelenre az oldal a kiegészítők miatt
+- [x] Mobilon (<= 900px) a belső scroll kikapcsolva, normál tartalomfolyással
+- [x] Theme mirror frissítve és deploy lefuttatva LocalWP-re (`deploy-theme.ps1`)
+
+### Hol tartunk
+- A hosszú kiegészítőlista már a Részletek kártyán belül görgethető, ezért termékoldalon jelentősen kevesebbet kell teljes oldalt görgetni.
+
+---
 ## 2026. 05. 01. – Session #138 (Használtautó teljes márka-modell-kivitel bekötés)
 
 ### Mit csináltunk [x]
