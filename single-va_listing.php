@@ -912,6 +912,12 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__rel-item { border-color: <?php echo esc_attr( $sl_related_border ); ?> !important; }
 .sl__rel-title { color: <?php echo esc_attr( $sl_related_title_color ); ?> !important; }
 .sl__rel-meta { color: <?php echo esc_attr( $sl_related_meta_color ); ?> !important; }
+.sl__more-item { display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);text-decoration:none; }
+.sl__more-item:last-child { border-bottom:none; }
+.sl__more-img { width:54px;height:40px;object-fit:cover;border-radius:4px;flex-shrink:0; }
+.sl__more-img--empty { display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);font-size:20px; }
+.sl__more-title { font-size:13px;font-weight:600;color:#fff;line-height:1.3; }
+.sl__more-price { font-size:13px;font-weight:700;color:#ff0000;margin-top:2px; }
 .sl__phone-icon { font-size: <?php echo esc_attr( (string) $sl_phone_icon_size ); ?>px !important; color: <?php echo esc_attr( $sl_phone_icon_color ); ?> !important; line-height:1; vertical-align:middle; margin-right:5px; }
 .sl__btn--watch { color: <?php echo esc_attr( $sl_watch_btn_color ); ?> !important; border-color: <?php echo esc_attr( $sl_watch_btn_border ); ?> !important; }
 </style>
