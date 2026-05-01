@@ -29,8 +29,8 @@ class VA_Ad_Zones {
 
         $html = get_option( 'va_ad_zone_' . $zone, '' );
 
-        // Ha üres és WP_DEBUG, placeholder mutatása
-        if ( empty( $html ) && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+        // Ha üres és a placeholder megjelenítés be van kapcsolva
+        if ( empty( $html ) && get_option( 'va_ad_show_placeholder', '0' ) === '1' ) {
             $label = self::ZONES[ $zone ];
             $html  = '<div class="va-ad-placeholder" style="background:#111;border:1px dashed #ff0000;padding:10px;color:#ff0000;text-align:center;font-size:12px;">' . esc_html( $label ) . ' – reklámzóna (üres)</div>';
         }
