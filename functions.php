@@ -1292,11 +1292,8 @@ add_action( 'admin_post_nopriv_va_contact_form', 'va_handle_contact_form' );
 add_action( 'admin_post_va_contact_form', 'va_handle_contact_form' );
 
 function va_handle_contact_form(): void {
-    $redirect = wp_get_referer();
-    if ( ! $redirect ) {
-        $contact_page = get_page_by_path( 'kapcsolat' );
-        $redirect = $contact_page ? get_permalink( $contact_page ) : home_url( '/kapcsolat/' );
-    }
+    $contact_page = get_page_by_path( 'kapcsolat' );
+    $redirect = $contact_page ? get_permalink( $contact_page ) : home_url( '/kapcsolat/' );
 
     if ( strtoupper( $_SERVER['REQUEST_METHOD'] ?? '' ) !== 'POST' ) {
         wp_safe_redirect( $redirect );
