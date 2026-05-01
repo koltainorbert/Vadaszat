@@ -637,6 +637,7 @@ class VA_Settings_Page {
         }
 
         /* Reklámzónák */
+        register_setting( 'va_ad_settings', 'va_ad_show_placeholder', [ 'sanitize_callback' => 'absint' ] );
         foreach ( array_keys( VA_Ad_Zones::ZONES ) as $zone ) {
             register_setting( 'va_ad_settings', 'va_ad_zone_' . $zone, [
                 'sanitize_callback' => function( $val ) {
@@ -1181,6 +1182,13 @@ class VA_Settings_Page {
             <?php settings_errors( 'va_ad_settings' ); ?>
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_ad_settings' ); ?>
+                <div class="va-ad-zone-block" style="background:rgba(255,0,0,.06);border-left:3px solid #c00;padding:12px 16px;margin-bottom:16px;">
+                    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600;">
+                        <input type="checkbox" name="va_ad_show_placeholder" value="1" <?php checked( get_option('va_ad_show_placeholder','0'), '1' ); ?>>
+                        Üres reklámzónák kijelölése látható legyen az oldalon (piros keretes placeholder)
+                    </label>
+                    <p class="description" style="margin-top:6px;">Ha ki van pipálva, az üres zónák helyén megjelenik a piros keretes jelző. Kapcsold ki ha az oldalt élesben mutatod.</p>
+                </div>
                 <?php foreach ( VA_Ad_Zones::get_all() as $zone_key => $zone ): ?>
                 <div class="va-ad-zone-block">
                     <h2><?php echo esc_html( $zone['label'] ); ?></h2>
