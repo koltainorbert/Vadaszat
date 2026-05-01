@@ -1,6 +1,18 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #146 (Keresőben minden szöveg fehér)
+
+### Mit csináltunk [x]
+- [x] A kereső szűrő blokkban egységesen fehérre állítva a szövegek
+- [x] Érintett elemek: szekciócím, slider feliratok/érték, checkbox/radio címkék, segédszövegek, találatszám
+- [x] Input placeholder szöveg is világosítva (`rgba(255,255,255,.9)`)
+- [x] Plugin mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A kereső felületen a szövegmegjelenítés most egységesen fehér.
+
+---
 ## 2026. 05. 02. – Session #145 (Használtautó jellegű részletes autós szűrők)
 
 ### Mit csináltunk [x]

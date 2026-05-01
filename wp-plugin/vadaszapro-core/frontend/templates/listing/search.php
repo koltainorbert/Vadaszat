@@ -220,7 +220,7 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
 
             <div class="va-filter-bar__actions">
                 <button type="button" id="va-filter-reset" class="va-btn va-btn--outline va-btn--sm"><?php echo esc_html( $lp_reset_btn ); ?></button>
-                <span id="va-results-count" style="font-size:13px;color:rgba(255,255,255,0.5);align-self:center;"></span>
+                <span id="va-results-count" style="font-size:13px;color:#fff;align-self:center;"></span>
                 <div class="va-view-toggle" style="margin-left:auto;display:flex;gap:10px;">
                     <button type="button" class="va-view-btn va-view-btn--grid" id="va-view-grid" title="Rács nézet" aria-label="Rács nézet">
                         <svg class="va-view-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">

@@ -413,9 +413,20 @@
 
 /* ── Szűrő sáv ────────────────────────────────────── */
 .va-filter-bar { background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); padding: 20px; margin-bottom: 24px; }
-.va-filter-bar__title { font-size: 13px; font-weight: 700; color: var(--va-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
+.va-filter-bar__title { font-size: 13px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
 .va-filter-bar__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
 .va-filter-bar__actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.va-filter-bar,
+.va-filter-bar label,
+.va-filter-bar .va-check-label,
+.va-filter-bar .va-price-slider-labels,
+.va-filter-bar .va-price-slider-labels span,
+.va-filter-bar .va-car-extra-filters,
+.va-filter-bar .va-car-per-page,
+.va-filter-bar #va-results-count {
+  color: #fff;
+}
+.va-filter-bar .va-input::placeholder { color: rgba(255,255,255,.9); }
 @media (max-width: 600px) { .va-filter-bar { padding: 14px; } .va-filter-bar__grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 380px) { .va-filter-bar__grid { grid-template-columns: 1fr; } }
 .va-car-extra-filters {
@@ -447,9 +458,9 @@
 }
 .va-price-slider-labels {
   display: flex; justify-content: space-between; align-items: center;
-  font-size: 12px; color: rgba(255,255,255,.5); margin-bottom: 10px; font-weight: 600;
+  font-size: 12px; color: #fff; margin-bottom: 10px; font-weight: 600;
 }
-.va-price-slider-display { color: #ff4040; font-weight: 700; font-size: 13px; }
+.va-price-slider-display { color: #fff; font-weight: 700; font-size: 13px; }
 .va-price-slider-track {
   position: relative; height: 4px;
   background: rgba(255,255,255,.12); border-radius: 2px;
