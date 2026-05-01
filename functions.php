@@ -1252,16 +1252,6 @@ add_action( 'wp_enqueue_scripts', function () {
         '.va-view-btn.active{--va-vbtn-icon:' . $lp_view_active_clr . ';border-color:' . $lp_view_brd_active . ' !important;}' .
         '.va-view-btn.active .va-view-icon{stroke:' . $lp_view_active_clr . ' !important;filter:drop-shadow(0 0 5px ' . $lp_view_glow . ') !important;}' .
         '#va-listing-loader{color:' . $lp_loader_color . ' !important;}' .
-        '.va-card{background:' . $lp_card_bg . ' !important;border-color:' . $lp_card_border . ' !important;border-radius:' . $lp_card_radius . 'px !important;}' .
-        '.va-card__title{color:' . $lp_card_title . ' !important;font-size:' . $lp_card_title_size . 'px !important;}' .
-        '.va-card__title a:hover,.va-card__body-link:hover .va-card__title{color:' . $lp_card_title_hover . ' !important;}' .
-        '.va-card__price{color:' . $lp_card_price . ' !important;font-size:' . $lp_card_price_size . 'px !important;}' .
-        '.va-card__meta{color:' . $lp_card_meta . ' !important;font-size:' . $lp_card_meta_size . 'px !important;}' .
-        '.va-grid{gap:' . $lp_card_gap . 'px !important;}' .
-        '.va-card__watchlist{color:' . $lp_wl_color . ' !important;border-color:' . $lp_wl_border . ' !important;background:' . $lp_wl_bg . ' !important;}' .
-        '.va-card__watchlist:hover,.va-card__watchlist.active{border-color:' . $lp_wl_border . ' !important;color:' . $lp_wl_color . ' !important;}' .
-        '.va-card__badge--featured{color:' . $lp_featured_color . ' !important;border-color:' . $lp_featured_border . ' !important;}' .
-        '.va-card__badge--boost{background:' . $lp_boost_bg . ' !important;color:' . $lp_boost_color . ' !important;border-color:' . $lp_boost_color . ' !important;}' .
         '.va-page-btn{background:' . $lp_pag_bg . ' !important;color:' . $lp_pag_color . ' !important;border-color:' . $lp_pag_border . ' !important;border-radius:' . $lp_pag_radius . 'px !important;font-size:' . $lp_pag_size . 'px !important;}' .
         '.va-page-btn:hover,.va-page-btn.active{background:' . $lp_pag_active_bg . ' !important;border-color:' . $lp_pag_active_bg . ' !important;color:' . $lp_pag_active_color . ' !important;}';
 
