@@ -200,7 +200,7 @@ $sl_lbl_details         = (string) get_option( 'va_sl_lbl_details',         'R&#
 $sl_lbl_seller          = (string) get_option( 'va_sl_lbl_seller',          'Felad&#243;' );
 $sl_lbl_more_listings   = (string) get_option( 'va_sl_lbl_more_listings',   'Felad&#243; tov&#225;bbi hirdet&#233;sei' );
 $sl_lbl_related         = (string) get_option( 'va_sl_lbl_related',         'Hasonl&#243; hirdet&#233;sek' );
-$sl_lbl_phone_btn       = (string) get_option( 'va_sl_lbl_phone_btn',       '&#128222; Telefonsz&#225;m megjelen&#237;t&#233;se' );
+$sl_lbl_phone_btn       = (string) get_option( 'va_sl_lbl_phone_btn',       '<span class="sl__phone-icon">&#128222;</span><?php echo $sl_lbl_phone_btn_text; ?>' );
 $sl_lbl_email_btn       = (string) get_option( 'va_sl_lbl_email_btn',       '&#9993; E-mail &#252;zenet k&#252;ld&#233;se' );
 $sl_lbl_watch_add       = (string) get_option( 'va_sl_lbl_watch_add',       '&#9734; Ment&#233;s kedvencekbe' );
 $sl_lbl_watch_remove    = (string) get_option( 'va_sl_lbl_watch_remove',    '&#9733; Kedvencekb&#337;l elt&#225;vol&#237;t&#225;s' );
@@ -324,7 +324,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__title { color: <?php echo esc_attr( $sl_title_color ); ?> !important; }
 .sl__meta-row span { color: <?php echo esc_attr( $sl_meta_color ); ?> !important; }
 .sl__views { color: <?php echo esc_attr( $sl_views_color ); ?> !important; }
-.sl__desc-body { color: <?php echo esc_attr( $sl_desc_color ); ?> !important; }
+.sl__desc-body,.sl__desc-body p,.sl__desc-body li,.sl__desc-body h1,.sl__desc-body h2,.sl__desc-body h3,.sl__desc-body h4,.sl__desc-body h5,.sl__desc-body h6,.sl__desc-body span,.sl__desc-body strong,.sl__desc-body em,.sl__desc-body a { color: <?php echo esc_attr( $sl_desc_color ); ?> !important; }
 .sl__spec-label { color: <?php echo esc_attr( $sl_spec_label_color ); ?> !important; }
 .sl__spec-val { color: <?php echo esc_attr( $sl_spec_val_color ); ?> !important; }
 .sl__seller-name { color: <?php echo esc_attr( $sl_seller_name_color ); ?> !important; }
@@ -557,7 +557,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 $show_phone   = $phone ?: $author_phone;
                 if ( $show_phone ): ?>
                     <button class="sl__btn sl__btn--phone" data-phone="<?php echo esc_attr($show_phone); ?>">
-                        &#128222; Telefonsz&#225;m megjelen&#237;t&#233;se
+                        <span class="sl__phone-icon">&#128222;</span><?php echo $sl_lbl_phone_btn_text; ?>
                     </button>
                     <a href="tel:<?php echo esc_attr(preg_replace('/[^+0-9]/','',$show_phone)); ?>"
                        class="sl__phone-reveal" id="sl-phone" style="display:none;">
@@ -702,7 +702,7 @@ $watching_sticky   = is_user_logged_in() ? va_user_watches($post_id) : false;
     <div class="sl__sticky-price"><?php echo esc_html(va_format_price($price,$price_type)); ?></div>
     <?php if ($show_phone_sticky): ?>
     <button class="sl__sticky-btn sl__sticky-btn--phone" id="sl-sticky-phone" data-phone="<?php echo esc_attr($show_phone_sticky); ?>">
-        &#128222; Telefonsz&#225;m
+        <span class="sl__phone-icon">&#128222;</span> Telefon
     </button>
     <?php endif; ?>
     <?php if (is_user_logged_in()): ?>
