@@ -788,8 +788,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 /* Extras pills */
 .sl__extras-section { margin-top:18px; }
 .sl__extras-heading { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:rgba(255,255,255,.45);margin-bottom:10px; }
-.sl__extras-pills { display:flex;flex-wrap:wrap;gap:6px; }
-.sl__extra-pill { font-size:12px;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.85); }
+.sl__extras-pills + .sl__extras-heading { margin-top:16px; }
+.sl__extras-pills { display:flex;flex-wrap:wrap;column-gap:8px;row-gap:10px; }
+.sl__extra-pill { font-size:12px;line-height:1.35;padding:4px 10px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.85); }
 
 /* Highlight badge */
 
