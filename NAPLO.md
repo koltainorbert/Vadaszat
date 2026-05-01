@@ -1,6 +1,18 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 02. – Session #142 (Kereső ár tartomány: 1 Ft – 100M Ft)
+
+### Mit csináltunk [x]
+- [x] A hirdetés kereső ár csúszkája 0 helyett 1 Ft minimumról indul
+- [x] A kereső ár maximum alapértéke legalább 100 000 000 Ft-ra emelve
+- [x] Frissítve a template (`search.php`) és a frontend JS (`frontend.js`) fallback/logika, hogy konzisztensen 1–100M tartományt kezeljen
+- [x] Plugin mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A keresőben most 1 Ft-tól 100 millió Ft-ig tudsz szűrni a csúszkával.
+
+---
 ## 2026. 05. 01. – Session #141 (Feladó további hirdetései: 3 látható + scroll)
 
 ### Mit csináltunk [x]
