@@ -219,6 +219,21 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'eco_class'        => get_post_meta( $maybe_id, 'va_eco_class',        true ),
             'cylinder_layout'  => get_post_meta( $maybe_id, 'va_cylinder_layout',  true ),
             'own_weight'       => get_post_meta( $maybe_id, 'va_own_weight',       true ),
+            'gross_weight'     => get_post_meta( $maybe_id, 'va_gross_weight',     true ),
+            'passengers'       => get_post_meta( $maybe_id, 'va_passengers',       true ),
+            'trunk_liters'     => get_post_meta( $maybe_id, 'va_trunk_liters',     true ),
+            'range_gearbox'    => get_post_meta( $maybe_id, 'va_range_gearbox',    true ),
+            'roof_type'        => get_post_meta( $maybe_id, 'va_roof_type',        true ),
+            'color_metallic'   => get_post_meta( $maybe_id, 'va_color_metallic',   true ),
+            'upholstery_1'     => get_post_meta( $maybe_id, 'va_upholstery_1',     true ),
+            'upholstery_2'     => get_post_meta( $maybe_id, 'va_upholstery_2',     true ),
+            'summer_tire_front'=> get_post_meta( $maybe_id, 'va_summer_tire_front',true ),
+            'summer_tire_rear' => get_post_meta( $maybe_id, 'va_summer_tire_rear', true ),
+            'winter_tire_front'=> get_post_meta( $maybe_id, 'va_winter_tire_front',true ),
+            'winter_tire_rear' => get_post_meta( $maybe_id, 'va_winter_tire_rear', true ),
+            'vin'              => get_post_meta( $maybe_id, 'va_vin',              true ),
+            'internal_id'      => get_post_meta( $maybe_id, 'va_internal_id',      true ),
+            'second_phone'     => get_post_meta( $maybe_id, 'va_second_phone',     true ),
             'vehicle_type'     => get_post_meta( $maybe_id, 'va_vehicle_type',     true ),
             'tech_inspect'     => get_post_meta( $maybe_id, 'va_tech_inspect',     true ),
             'first_reg'        => get_post_meta( $maybe_id, 'va_first_reg',        true ),
@@ -478,8 +493,10 @@ wp_localize_script( 'va-submit', 'VA_Data', [
             $ac_opts        = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_ac_type_options() : [];
             $eco_opts       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_eco_class_options() : [];
             $cyl_opts       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
+            $extras_by_grp  = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_by_group() : [];
             $extras_opts    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
             $vtype_opts     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_type_options() : [];
+            $roof_opts      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_roof_type_options() : [];
             $ev_extras      = is_array( $ev['extras'] ?? null ) ? $ev['extras'] : [];
 
             // Helper: select mező
