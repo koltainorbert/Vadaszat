@@ -4,7 +4,9 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?php wp_head(); ?>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icons/7.2.3/css/flag-icons.min.css">
     <style>
+        .fi { font-size: 18px; line-height: 1; display: inline-block; vertical-align: middle; }
         .va-lang-sw__toggle, .va-lang-sw__toggle *,
         .va-lang-sw__item, .va-lang-sw__item *,
         .va-lang-sw__item span, .va-lang-code {
@@ -251,11 +253,14 @@
                         }
                         if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
                         $curr_lang = $all_langs[ $curr_code ];
+                        // Language code → ISO country code mapping for flag-icons
+                        $va_flag_map = ['hu'=>'hu','en'=>'gb','de'=>'de','ro'=>'ro','sk'=>'sk','cs'=>'cz','pl'=>'pl','fr'=>'fr','it'=>'it','es'=>'es','uk'=>'ua','sr'=>'rs','hr'=>'hr','sl'=>'si'];
                 ?>
                         <div class="va-lang-sw notranslate" id="va-lang-sw" translate="no">
                             <button type="button" class="va-lang-sw__toggle notranslate" id="va-lang-toggle"
                                     aria-haspopup="true" aria-expanded="false" translate="no" style="color:#fff !important;">
-                                <span class="va-lang-flag" style="color: unset !important; filter:none !important; opacity:1 !important;"><?php echo esc_html( $curr_lang['flag'] ); ?></span>
+                                <?php $fc = isset($va_flag_map[$curr_code]) ? $va_flag_map[$curr_code] : $curr_code; ?>
+                                <span class="fi fi-<?php echo esc_attr($fc); ?>" style="border-radius:2px;"></span>
                                 <span class="va-lang-code" style="color:#fff !important;"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
                                 <svg class="va-lang-sw__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                             </button>
@@ -266,7 +271,8 @@
                                 ?>
                                     <button type="button" class="va-lang-sw__item<?php echo ( $code === $curr_code ) ? ' active' : ''; ?>"
                                             onclick="vaSetLang('<?php echo esc_js($code); ?>')" style="color:#fff !important;">
-                                        <span class="va-lang-flag" style="color: unset !important; filter:none !important; opacity:1 !important;"><?php echo esc_html( $lang['flag'] ); ?></span>
+                                        <?php $fc2 = isset($va_flag_map[$code]) ? $va_flag_map[$code] : $code; ?>
+                                        <span class="fi fi-<?php echo esc_attr($fc2); ?>" style="border-radius:2px;"></span>
                                         <span style="color:#fff !important;"><?php echo esc_html( $lang['name'] ); ?></span>
                                     </button>
                                 <?php endforeach; ?>
