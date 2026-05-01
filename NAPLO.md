@@ -1,6 +1,24 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #131 (Kereső AJAX fix – BOM eltávolítás)
+
+### Mit csináltunk [x]
+- [x] Beazonosítva, hogy a `va_filter_listings` AJAX válasz elején UTF-8 BOM karakter jelent meg, ezért a frontend nem tudta JSON-ként feldolgozni a választ
+- [x] Szűkítve a hibaforrás a `admin/class-settings-page.php` fájlra
+- [x] A settings page fájl BOM-ja eltávolítva a root és plugin másolatból
+- [x] A LocalWP-ben deployolt plugin fájl is BOM nélkülire lett normalizálva
+- [x] Élő oldalon ellenőrizve: a keresőoldal újra betölti a kártyákat, eltűnik a loader, frissül a találatszám
+
+### Root cause
+A `class-settings-page.php` UTF-8 BOM-mal volt mentve. Ez a plugin betöltésekor kimenetet generált az AJAX kérés előtt, ezért a `admin-ajax.php` válasz nem tiszta JSON-nal indult, hanem BOM + JSON formában. A böngészőben emiatt a kereső callback nem tudta feldolgozni a választ.
+
+### Hol tartunk
+- A `/va-hirdetes-kereses` oldal keresője újra működik.
+- A keresési eredménykártyák megjelennek, a loader normálisan lefut.
+
+---
+
 ## 2026. 05. 01. – Session #130 (Kereső dropdown piros -> #ff8800)
 
 ### Mit csináltunk [x]

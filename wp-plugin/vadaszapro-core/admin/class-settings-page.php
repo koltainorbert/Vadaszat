@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Settings oldal – minden beállítás egy helyen
  * Lapok: Általános | Reklámzónák | Hirdetések | Aukciók | Felhasználók | Statisztika
