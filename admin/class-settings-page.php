@@ -3751,6 +3751,98 @@ class VA_Settings_Page {
         <?php
     }
 
+    public static function render_search_designer() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🔎 Kereső – legördülő dizájn</h1>
+            <p class="description">A header keresőből nyíló találati panel minden fő eleme állítható: háttér, pill badge, színek, szövegméretek, spacing és hover állapotok.</p>
+            <?php settings_errors( 'va_search_settings' ); ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_search_settings' ); ?>
+
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🧱</span>
+                            <span class="va-settings-card__title">Panel</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_search_dd_bg', 'Háttér szín' ); ?>
+                                <?php self::field_color( 'va_search_dd_border', 'Keret szín' ); ?>
+                                <?php self::field_num( 'va_search_dd_radius', 'Lekerekítés (px)', 0, 30 ); ?>
+                                <?php self::field_text( 'va_search_dd_shadow', 'Árnyék (CSS box-shadow)' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">📏</span>
+                            <span class="va-settings-card__title">Sorok és bélyegkép</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_search_dd_item_border', 'Elem elválasztó szín' ); ?>
+                                <?php self::field_color( 'va_search_dd_item_hover_bg', 'Elem hover háttér' ); ?>
+                                <?php self::field_num( 'va_search_dd_item_pad_y', 'Sor padding Y (px)', 4, 30 ); ?>
+                                <?php self::field_num( 'va_search_dd_item_pad_x', 'Sor padding X (px)', 6, 40 ); ?>
+                                <?php self::field_num( 'va_search_dd_thumb_radius', 'Kép lekerekítés (px)', 0, 20 ); ?>
+                                <?php self::field_color( 'va_search_dd_noimg_bg', 'Nincs-kép háttér' ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🔤</span>
+                            <span class="va-settings-card__title">Szövegek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_color( 'va_search_dd_title_color', 'Találat cím szín' ); ?>
+                                <?php self::field_num( 'va_search_dd_title_size', 'Találat cím méret (px)', 10, 24 ); ?>
+                                <?php self::field_color( 'va_search_dd_price_color', 'Ár szín' ); ?>
+                                <?php self::field_num( 'va_search_dd_price_size', 'Ár méret (px)', 10, 24 ); ?>
+                                <?php self::field_color( 'va_search_dd_all_color', 'Összes találat szín' ); ?>
+                                <?php self::field_num( 'va_search_dd_all_size', 'Összes találat méret (px)', 10, 24 ); ?>
+                                <?php self::field_color( 'va_search_dd_all_hover_bg', 'Összes találat hover háttér' ); ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">🏷️</span>
+                            <span class="va-settings-card__title">Pill badge (típus címke)</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_num( 'va_search_dd_badge_size', 'Badge betűméret (px)', 9, 18 ); ?>
+                                <?php self::field_num( 'va_search_dd_badge_radius', 'Badge lekerekítés (px)', 4, 40 ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_listing_bg', 'Hirdetés badge háttér' ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_listing_text', 'Hirdetés badge szöveg' ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_auction_bg', 'Aukció badge háttér' ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_auction_text', 'Aukció badge szöveg' ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_category_bg', 'Kategória badge háttér' ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_category_text', 'Kategória badge szöveg' ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_user_bg', 'Felhasználó badge háttér' ); ?>
+                                <?php self::field_color( 'va_search_dd_badge_user_text', 'Felhasználó badge szöveg' ); ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <?php submit_button( 'Kereső dizájn mentése' ); ?>
+            </form>
+        </div>
+        <?php
+    }
+
     public static function render_tools() {
         if ( ! current_user_can( 'manage_options' ) ) return;
 

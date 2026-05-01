@@ -35,6 +35,7 @@ class VA_Admin {
             [ 'id' => 'va-ab-dashboard',  'title' => '📊 Irányítópult',    'page' => 'vadaszapro-dashboard' ],
             [ 'id' => 'va-ab-altalanos',  'title' => '⚙️ Általános',        'page' => 'vadaszapro' ],
             [ 'id' => 'va-ab-design',     'title' => '🎨 Design',           'page' => 'vadaszapro-design' ],
+            [ 'id' => 'va-ab-search',     'title' => '🔎 Kereső',           'page' => 'vadaszapro-search' ],
             [ 'id' => 'va-ab-hirdetes',   'title' => '📋 Hirdetések',       'page' => 'vadaszapro-hirdetes' ],
             [ 'id' => 'va-ab-felhasznalo','title' => '👥 Felhasználók',     'page' => 'vadaszapro-users' ],
             [ 'id' => 'va-ab-stats',      'title' => '📈 Statisztika',      'page' => 'vadaszapro-stats' ],
@@ -210,6 +211,7 @@ class VA_Admin {
             "vadaszapro-dashboard"    => "Irányítópult",
             "vadaszapro"              => "Általános beállítások",
             "vadaszapro-design"       => "Design beállítások",
+            "vadaszapro-search"       => "Kereső beállítások",
             "vadaszapro-layout"       => "Layout Állító",
             "vadaszapro-header-footer"=> "Fejléc & Lábléc",
             "vadaszapro-hero"         => "Hero szekció",
@@ -266,6 +268,7 @@ class VA_Admin {
 
                 <?php self::sb_item( "⚙️", "Általános", admin_url( "admin.php?page=vadaszapro" ), $page === "vadaszapro" ); ?>
                 <?php self::sb_item( "🎨", "Design", admin_url( "admin.php?page=vadaszapro-design" ), $page === "vadaszapro-design" ); ?>
+                <?php self::sb_item( "🔎", "Kereső", admin_url( "admin.php?page=vadaszapro-search" ), $page === "vadaszapro-search" ); ?>
                 <?php self::sb_item( "🎬", "Hero szekció", admin_url( "admin.php?page=vadaszapro-hero" ), $page === "vadaszapro-hero" ); ?>
                 <?php self::sb_item( "📐", "Layout Állító", admin_url( "admin.php?page=vadaszapro-layout" ), $page === "vadaszapro-layout" ); ?>
                 <?php self::sb_item( "🗂️", "Fejléc & Lábléc", admin_url( "admin.php?page=vadaszapro-header-footer" ), $page === "vadaszapro-header-footer" ); ?>
@@ -364,6 +367,7 @@ class VA_Admin {
         add_submenu_page( "vadaszapro", "Irányítópult",  "📊 Irányítópult",  "manage_options", "vadaszapro-dashboard",       [ VA_Dashboard::class,     "render"                  ] );
         add_submenu_page( "vadaszapro", "Általános",     "⚙️ Általános",     "manage_options", "vadaszapro",                 [ VA_Settings_Page::class, "render_general"          ] );
         add_submenu_page( "vadaszapro", "Design",        "🎨 Design",        "manage_options", "vadaszapro-design",          [ VA_Settings_Page::class, "render_design"            ] );
+        add_submenu_page( "vadaszapro", "Kereső",        "🔎 Kereső",        "manage_options", "vadaszapro-search",          [ VA_Settings_Page::class, "render_search_designer"   ] );
         add_submenu_page( "vadaszapro", "Hero szekció",  "🖼️ Hero szekció",  "manage_options", "vadaszapro-hero",            [ VA_Settings_Page::class, "render_hero"              ] );
         add_submenu_page( "vadaszapro", "Layout Állító", "📐 Layout Állító", "manage_options", "vadaszapro-layout",          [ VA_Settings_Page::class, "render_layout_builder"   ] );
         add_submenu_page( "vadaszapro", "Fejléc + Lábléc", "📑 Fejléc + Lábléc", "manage_options", "vadaszapro-header-footer",[ VA_Settings_Page::class, "render_header_footer"    ] );
