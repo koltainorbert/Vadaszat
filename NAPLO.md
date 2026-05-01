@@ -1,6 +1,19 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+## 2026. 05. 01. – Session #141 (Feladó további hirdetései: 3 látható + scroll)
+
+### Mit csináltunk [x]
+- [x] A termékoldali `Feladó további hirdetései` blokk belső scroll konténert kapott (`.sl__more-list`)
+- [x] A lista max magassága úgy lett beállítva, hogy egyszerre kb. 3 elem látszódjon
+- [x] A többi elem görgetéssel elérhető ugyanabban a kártyában
+- [x] A lekérdezés `posts_per_page` értéke 3-ról 100-ra emelve (a projekt limit szabályon belül)
+- [x] Theme mirror frissítve és deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+- A feladó többi hirdetése most nem nyújtja meg a kártyát: 3 elem látszik, a többi belső scrollal nézhető.
+
+---
 ## 2026. 05. 01. – Session #140 (Kényelmi felszereltség cím narancs)
 
 ### Mit csináltunk [x]

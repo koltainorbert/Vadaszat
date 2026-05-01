@@ -1809,7 +1809,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     'author'         => $author->ID,
 
 
-                    'posts_per_page' => 3,
+                    'posts_per_page' => 100,
 
 
                     'post__not_in'   => [$post_id],
@@ -1831,6 +1831,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 <div class="sl__card-title">Felad&#243; tov&#225;bbi hirdet&#233;sei</div>
+
+
+                <div class="sl__more-list">
 
 
                 <?php while ( $other->have_posts() ): $other->the_post();
@@ -1882,6 +1885,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 <?php endwhile; wp_reset_postdata(); ?>
+
+
+                </div>
 
 
             </div>

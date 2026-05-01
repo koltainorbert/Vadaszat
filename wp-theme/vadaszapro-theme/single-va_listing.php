@@ -943,6 +943,10 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__more-img--empty { display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);font-size:20px; }
 .sl__more-title { font-size:13px;font-weight:600;color:#fff;line-height:1.3; }
 .sl__more-price { font-size:13px;font-weight:700;color:#ff0000;margin-top:2px; }
+.sl__more-list { max-height:190px;overflow:auto;padding-right:4px; }
+.sl__more-list::-webkit-scrollbar { width:8px; }
+.sl__more-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,.2);border-radius:8px; }
+.sl__more-list::-webkit-scrollbar-track { background:transparent; }
 .sl__phone-icon { font-size: <?php echo esc_attr( (string) $sl_phone_icon_size ); ?>px !important; color: <?php echo esc_attr( $sl_phone_icon_color ); ?> !important; line-height:1; vertical-align:middle; margin-right:5px; }
 .sl__btn--watch { color: <?php echo esc_attr( $sl_watch_btn_color ); ?> !important; border-color: <?php echo esc_attr( $sl_watch_btn_border ); ?> !important; }
 </style>
@@ -1805,7 +1809,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     'author'         => $author->ID,
 
 
-                    'posts_per_page' => 3,
+                    'posts_per_page' => 100,
 
 
                     'post__not_in'   => [$post_id],
@@ -1827,6 +1831,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 <div class="sl__card-title">Felad&#243; tov&#225;bbi hirdet&#233;sei</div>
+
+
+                <div class="sl__more-list">
 
 
                 <?php while ( $other->have_posts() ): $other->the_post();
@@ -1878,6 +1885,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 <?php endwhile; wp_reset_postdata(); ?>
+
+
+                </div>
 
 
             </div>
