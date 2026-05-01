@@ -426,6 +426,11 @@ if ( has_post_thumbnail() ) {
 
 }
 
+$demo_image_rel = (string) get_post_meta( $post_id, 'va_demo_image', true );
+$demo_image_url = $demo_image_rel !== ''
+    ? trailingslashit( get_template_directory_uri() ) . ltrim( $demo_image_rel, '/' )
+    : '';
+
 
 
 
@@ -1048,6 +1053,18 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                         </button>
+
+
+                    <?php elseif ( $demo_image_url !== '' ): ?>
+
+
+                        <img src="<?php echo esc_url( $demo_image_url ); ?>"
+
+
+                             id="sl-main-img" class="sl__main-img"
+
+
+                             alt="<?php the_title_attribute(); ?>">
 
 
                     <?php else: ?>

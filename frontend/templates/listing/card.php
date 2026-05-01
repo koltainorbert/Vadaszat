@@ -116,6 +116,18 @@ if ( has_post_thumbnail( $post_id ) ) {
         ] );
     }
 }
+
+if ( ! $card_image_html ) {
+    $demo_image_rel = (string) get_post_meta( $post_id, 'va_demo_image', true );
+    if ( $demo_image_rel !== '' ) {
+        $demo_image_url  = trailingslashit( get_template_directory_uri() ) . ltrim( $demo_image_rel, '/' );
+        $card_image_html = sprintf(
+            '<img src="%1$s" class="va-card__thumb" alt="%2$s" loading="lazy" decoding="async">',
+            esc_url( $demo_image_url ),
+            esc_attr( get_the_title( $post_id ) )
+        );
+    }
+}
 ?>
 <div class="va-card va-animate" data-post-id="<?php echo esc_attr( $post_id ); ?>">
 

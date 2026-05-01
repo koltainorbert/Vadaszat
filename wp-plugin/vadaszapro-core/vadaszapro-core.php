@@ -105,6 +105,13 @@ add_action( 'init', function () {
     }
 }, 2 );
 
+// Demo minta hirdetesek betoltese uj telepiteskor
+add_action( 'init', function () {
+    if ( ! get_option( 'va_demo_listings_seeded' ) ) {
+        va_seed_demo_listings();
+    }
+}, 30 );
+
 /* ── Vadász Naptár – virtuális oldal (WP admin nélkül) ──────────────
  * A /vadasz-naptar/ URL betölti a theme page-vadasz-naptar.php-t
  * automatikusan, adatbázis bejegyzés nélkül.
@@ -272,6 +279,131 @@ function va_load_factory_defaults(): void {
 
 function va_deactivate() {
     flush_rewrite_rules();
+}
+
+function va_seed_demo_listings(): void {
+    if ( get_option( 'va_demo_listings_seeded' ) ) {
+        return;
+    }
+
+    $has_listings = get_posts( [
+        'post_type'      => 'va_listing',
+        'post_status'    => [ 'publish', 'draft', 'pending', 'private' ],
+        'posts_per_page' => 1,
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    ] );
+
+    if ( ! empty( $has_listings ) ) {
+        update_option( 'va_demo_listings_seeded', 'skipped_existing', false );
+        return;
+    }
+
+    $admins = get_users( [
+        'role'   => 'administrator',
+        'number' => 1,
+        'fields' => 'ID',
+    ] );
+    $author_id = ! empty( $admins ) ? (int) $admins[0] : 1;
+
+    $samples = [
+        [
+            'title'         => 'BMW 320d M Sport - megkimelt allapot',
+            'price'         => 8990000,
+            'location'      => 'Budapest',
+            'brand'         => 'BMW',
+            'model'         => '320d',
+            'year'          => '2020',
+            'fuel'          => 'Dizel',
+            'mileage'       => '128000',
+            'category_slug' => 'csaladi-auto',
+            'county_name'   => 'Budapest',
+            'condition'     => 'Használt – Kiváló',
+            'image'         => 'assets/demo/demo-auto-1.svg',
+            'description'   => 'Rendszeresen szervizelt, azonnal hasznalhato allapotban. Gazdag felszereltseg, igenyes belso ter.',
+        ],
+        [
+            'title'         => 'Suzuki Vitara 1.4 BoosterJet GL+ 4x4',
+            'price'         => 6790000,
+            'location'      => 'Győr',
+            'brand'         => 'SUZUKI',
+            'model'         => 'Vitara',
+            'year'          => '2019',
+            'fuel'          => 'Benzin',
+            'mileage'       => '99000',
+            'category_slug' => 'terepjaro',
+            'county_name'   => 'Győr-Moson-Sopron',
+            'condition'     => 'Használt – Jó',
+            'image'         => 'assets/demo/demo-auto-2.svg',
+            'description'   => 'Magyarorszagi, ellenorizheto eloeletu auto. Osszkerek meghajtas, megbizhato csaladi valasztas.',
+        ],
+        [
+            'title'         => 'Volkswagen Polo 1.0 TSI Comfortline',
+            'price'         => 4290000,
+            'location'      => 'Debrecen',
+            'brand'         => 'VOLKSWAGEN',
+            'model'         => 'Polo',
+            'year'          => '2018',
+            'fuel'          => 'Benzin',
+            'mileage'       => '142000',
+            'category_slug' => 'kisauto',
+            'county_name'   => 'Hajdú-Bihar',
+            'condition'     => 'Használt – Jó',
+            'image'         => 'assets/demo/demo-auto-3.svg',
+            'description'   => 'Varosi es orszaguti hasznalatra is idealis, alacsony fogyasztasu modell, rendezett papirokkal.',
+        ],
+    ];
+
+    $created = 0;
+
+    foreach ( $samples as $sample ) {
+        $post_id = wp_insert_post( [
+            'post_type'    => 'va_listing',
+            'post_status'  => 'publish',
+            'post_title'   => $sample['title'],
+            'post_content' => $sample['description'],
+            'post_author'  => $author_id,
+        ], true );
+
+        if ( is_wp_error( $post_id ) || ! $post_id ) {
+            continue;
+        }
+
+        update_post_meta( $post_id, 'va_price', (string) $sample['price'] );
+        update_post_meta( $post_id, 'va_price_type', 'fixed' );
+        update_post_meta( $post_id, 'va_location', (string) $sample['location'] );
+        update_post_meta( $post_id, 'va_brand', (string) $sample['brand'] );
+        update_post_meta( $post_id, 'va_model', (string) $sample['model'] );
+        update_post_meta( $post_id, 'va_year', (string) $sample['year'] );
+        update_post_meta( $post_id, 'va_fuel', (string) $sample['fuel'] );
+        update_post_meta( $post_id, 'va_mileage', (string) $sample['mileage'] );
+        update_post_meta( $post_id, 'va_demo_image', (string) $sample['image'] );
+
+        $category = get_term_by( 'slug', (string) $sample['category_slug'], 'va_category' );
+        if ( $category && ! is_wp_error( $category ) ) {
+            wp_set_object_terms( $post_id, [ (int) $category->term_id ], 'va_category', false );
+        }
+
+        $county = get_term_by( 'name', (string) $sample['county_name'], 'va_county' );
+        if ( $county && ! is_wp_error( $county ) ) {
+            wp_set_object_terms( $post_id, [ (int) $county->term_id ], 'va_county', false );
+        }
+
+        $condition = get_term_by( 'name', (string) $sample['condition'], 'va_condition' );
+        if ( $condition && ! is_wp_error( $condition ) ) {
+            wp_set_object_terms( $post_id, [ (int) $condition->term_id ], 'va_condition', false );
+        }
+
+        if ( function_exists( 'va_sync_listing_meta' ) ) {
+            va_sync_listing_meta( (int) $post_id );
+        }
+
+        $created++;
+    }
+
+    if ( $created > 0 ) {
+        update_option( 'va_demo_listings_seeded', '1', false );
+    }
 }
 
 function va_create_default_pages() {
