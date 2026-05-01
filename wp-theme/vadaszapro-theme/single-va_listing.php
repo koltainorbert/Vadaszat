@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * single-va_listing.php - Hirdetes reszletes oldal (v2 - modern 2026)
  */
@@ -168,7 +168,54 @@ if ( ! in_array( $sl_gallery_fit, [ 'cover', 'contain' ], true ) ) {
 $sl_viewer_bg = sanitize_text_field( (string) get_option( 'va_single_viewer_bg', 'rgba(4,4,4,.96)' ) );
 $sl_accent    = sanitize_hex_color( (string) get_option( 'va_single_accent', '#ff2a2a' ) ) ?: '#ff2a2a';
 $sl_glass     = sanitize_text_field( (string) get_option( 'va_single_glass', 'rgba(255,255,255,.07)' ) );
-$sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'rgba(255,255,255,.12)' ) );
+$sl_border    = sanitize_text_field( (string) get_option( 'va_single_border', 'rgba(255,255,255,.12)' ) );
+
+// Extra szin opciok
+$sl_card_title_color      = sanitize_text_field( (string) get_option( 'va_sl_card_title_color',      'rgba(255,255,255,.55)' ) );
+$sl_title_color           = sanitize_text_field( (string) get_option( 'va_sl_title_color',           '#ffffff' ) );
+$sl_meta_color            = sanitize_text_field( (string) get_option( 'va_sl_meta_color',            'rgba(255,255,255,.55)' ) );
+$sl_spec_label_color      = sanitize_text_field( (string) get_option( 'va_sl_spec_label_color',      'rgba(255,255,255,.45)' ) );
+$sl_spec_val_color        = sanitize_text_field( (string) get_option( 'va_sl_spec_val_color',        '#ffffff' ) );
+$sl_desc_color            = sanitize_text_field( (string) get_option( 'va_sl_desc_color',            'rgba(255,255,255,.82)' ) );
+$sl_seller_name_color     = sanitize_text_field( (string) get_option( 'va_sl_seller_name_color',     '#ffffff' ) );
+$sl_seller_since_color    = sanitize_text_field( (string) get_option( 'va_sl_seller_since_color',    'rgba(255,255,255,.45)' ) );
+$sl_demand_bg             = sanitize_text_field( (string) get_option( 'va_sl_demand_bg',             'rgba(255,100,0,.12)' ) );
+$sl_demand_border         = sanitize_text_field( (string) get_option( 'va_sl_demand_border',         'rgba(255,100,0,.3)' ) );
+$sl_demand_text           = sanitize_text_field( (string) get_option( 'va_sl_demand_text',           '#ff9550' ) );
+$sl_featured_pill_bg      = sanitize_text_field( (string) get_option( 'va_sl_featured_pill_bg',      'rgba(255,180,0,.15)' ) );
+$sl_featured_pill_border  = sanitize_text_field( (string) get_option( 'va_sl_featured_pill_border',  'rgba(255,180,0,.3)' ) );
+$sl_featured_pill_text    = sanitize_text_field( (string) get_option( 'va_sl_featured_pill_text',    '#ffd060' ) );
+$sl_views_color           = sanitize_text_field( (string) get_option( 'va_sl_views_color',           'rgba(255,255,255,.45)' ) );
+$sl_share_label_color     = sanitize_text_field( (string) get_option( 'va_sl_share_label_color',     'rgba(255,255,255,.45)' ) );
+$sl_expired_color         = sanitize_text_field( (string) get_option( 'va_sl_expired_color',         '#ff6060' ) );
+$sl_sticky_bg             = sanitize_text_field( (string) get_option( 'va_sl_sticky_bg',             'rgba(10,10,10,.95)' ) );
+$sl_sticky_title_color    = sanitize_text_field( (string) get_option( 'va_sl_sticky_title_color',    '#ffffff' ) );
+$sl_related_border        = sanitize_text_field( (string) get_option( 'va_sl_related_border',        'rgba(255,255,255,.1)' ) );
+$sl_related_title_color   = sanitize_text_field( (string) get_option( 'va_sl_related_title_color',   '#ffffff' ) );
+$sl_related_meta_color    = sanitize_text_field( (string) get_option( 'va_sl_related_meta_color',    'rgba(255,255,255,.4)' ) );
+
+// Szoveg label opciok
+$sl_lbl_description     = (string) get_option( 'va_sl_lbl_description',     'Le&#237;r&#225;s' );
+$sl_lbl_details         = (string) get_option( 'va_sl_lbl_details',         'R&#233;szletek' );
+$sl_lbl_seller          = (string) get_option( 'va_sl_lbl_seller',          'Felad&#243;' );
+$sl_lbl_more_listings   = (string) get_option( 'va_sl_lbl_more_listings',   'Felad&#243; tov&#225;bbi hirdet&#233;sei' );
+$sl_lbl_related         = (string) get_option( 'va_sl_lbl_related',         'Hasonl&#243; hirdet&#233;sek' );
+$sl_lbl_phone_btn       = (string) get_option( 'va_sl_lbl_phone_btn',       '&#128222; Telefonsz&#225;m megjelen&#237;t&#233;se' );
+$sl_lbl_email_btn       = (string) get_option( 'va_sl_lbl_email_btn',       '&#9993; E-mail &#252;zenet k&#252;ld&#233;se' );
+$sl_lbl_watch_add       = (string) get_option( 'va_sl_lbl_watch_add',       '&#9734; Ment&#233;s kedvencekbe' );
+$sl_lbl_watch_remove    = (string) get_option( 'va_sl_lbl_watch_remove',    '&#9733; Kedvencekb&#337;l elt&#225;vol&#237;t&#225;s' );
+$sl_lbl_share           = (string) get_option( 'va_sl_lbl_share',           'Megoszt&#225;s:' );
+$sl_lbl_zoom            = (string) get_option( 'va_sl_lbl_zoom',            'Nagy&#237;t&#225;s' );
+$sl_lbl_no_image        = (string) get_option( 'va_sl_lbl_no_image',        'Nincs k&#233;p' );
+$sl_lbl_views_suffix    = (string) get_option( 'va_sl_lbl_views_suffix',    'megtekint&#233;s' );
+$sl_lbl_posted          = (string) get_option( 'va_sl_lbl_posted',          'Feladva:' );
+$sl_lbl_expires         = (string) get_option( 'va_sl_lbl_expires',         'Lej&#225;r:' );
+$sl_lbl_expired_label   = (string) get_option( 'va_sl_lbl_expired_label',   'Lej&#225;rt:' );
+$sl_lbl_member_since_pre= (string) get_option( 'va_sl_lbl_member_since_pre', 'Tag' );
+$sl_lbl_member_since_suf= (string) get_option( 'va_sl_lbl_member_since_suf', '&#243;ta' );
+$sl_lbl_condition_pre   = (string) get_option( 'va_sl_lbl_condition_pre',   '&#193;llapot:' );
+$sl_lbl_demand          = (string) get_option( 'va_sl_lbl_demand',          '&#233;rdekl&#337;d&#337; az elm&#250;lt 24 &#243;r&#225;ban figyel&#337;list&#225;j&#225;ra vette' );
+$sl_lbl_featured_pill   = (string) get_option( 'va_sl_lbl_featured_pill',   '<?php echo $sl_lbl_featured_pill; ?>' );
 
 // Demand indikátor: figyelőlistára adások az elmúlt 24 órában
 $demand_count = 0;
@@ -272,6 +319,25 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
     .sl__specs-table { grid-template-columns:1fr; }
     .sl__spec-row:nth-child(even) { border-left:none;padding-left:0; }
 }
+/* Dinamikus szinek – get_option-bol */
+.sl__card-title { color: <?php echo esc_attr( $sl_card_title_color ); ?> !important; }
+.sl__title { color: <?php echo esc_attr( $sl_title_color ); ?> !important; }
+.sl__meta-row span { color: <?php echo esc_attr( $sl_meta_color ); ?> !important; }
+.sl__views { color: <?php echo esc_attr( $sl_views_color ); ?> !important; }
+.sl__desc-body { color: <?php echo esc_attr( $sl_desc_color ); ?> !important; }
+.sl__spec-label { color: <?php echo esc_attr( $sl_spec_label_color ); ?> !important; }
+.sl__spec-val { color: <?php echo esc_attr( $sl_spec_val_color ); ?> !important; }
+.sl__seller-name { color: <?php echo esc_attr( $sl_seller_name_color ); ?> !important; }
+.sl__seller-since { color: <?php echo esc_attr( $sl_seller_since_color ); ?> !important; }
+.sl__expired { color: <?php echo esc_attr( $sl_expired_color ); ?> !important; }
+.sl__share-label { color: <?php echo esc_attr( $sl_share_label_color ); ?> !important; }
+.sl__demand { background: <?php echo esc_attr( $sl_demand_bg ); ?> !important; border-color: <?php echo esc_attr( $sl_demand_border ); ?> !important; color: <?php echo esc_attr( $sl_demand_text ); ?> !important; }
+.sl__featured-pill { background: <?php echo esc_attr( $sl_featured_pill_bg ); ?> !important; border-color: <?php echo esc_attr( $sl_featured_pill_border ); ?> !important; color: <?php echo esc_attr( $sl_featured_pill_text ); ?> !important; }
+.sl__sticky-bar { background: <?php echo esc_attr( $sl_sticky_bg ); ?> !important; }
+.sl__sticky-title { color: <?php echo esc_attr( $sl_sticky_title_color ); ?> !important; }
+.sl__rel-item { border-color: <?php echo esc_attr( $sl_related_border ); ?> !important; }
+.sl__rel-title { color: <?php echo esc_attr( $sl_related_title_color ); ?> !important; }
+.sl__rel-meta { color: <?php echo esc_attr( $sl_related_meta_color ); ?> !important; }
 </style>
 
 <div class="sl sl--layout-<?php echo esc_attr( $sl_layout_mode ); ?>">
@@ -294,7 +360,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                             <span>Nagyítás</span>
                         </button>
                     <?php else: ?>
-                        <div class="sl__main-img sl__main-empty">Nincs k&eacute;p</div>
+                        <div class="sl__main-img sl__main-empty"><?php echo $sl_lbl_no_image; ?></div>
                     <?php endif; ?>
                 </div>
 
@@ -315,7 +381,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
             <!-- Leiras -->
             <?php if ( get_the_content() ): ?>
             <div class="sl__card sl__desc">
-                <div class="sl__card-title">Le&iacute;r&aacute;s</div>
+                <div class="sl__card-title"><?php echo $sl_lbl_description; ?></div>
                 <div class="sl__desc-body"><?php the_content(); ?></div>
             </div>
             <?php endif; ?>
@@ -333,7 +399,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                             <?php echo esc_html($categories[0]->name); ?>
                         </a>
                     <?php endif; ?>
-                    <?php if ($featured): ?><span class="sl__featured-pill">&#11088; Kiemelt</span><?php endif; ?>
+                    <?php if ($featured): ?><span class="sl__featured-pill"><?php echo $sl_lbl_featured_pill; ?></span><?php endif; ?>
                 </div>
                 <h1 class="sl__title">
                     <?php the_title(); ?>
@@ -355,12 +421,12 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                         <span><?php echo esc_html($location); ?></span>
                     <?php endif; ?>
                     <?php if ( $condition && !is_wp_error($condition) ): ?>
-                        <span>&#193;llapot: <?php echo esc_html($condition[0]->name); ?></span>
+                        <span><?php echo $sl_lbl_condition_pre; ?> <?php echo esc_html($condition[0]->name); ?></span>
                     <?php endif; ?>
                     <span class="sl__views">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="15" height="15" style="vertical-align:-2px;margin-right:4px;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><?php echo esc_html( number_format($views, 0, ',', ' ') ); ?> megtekint&#233;s
                     </span>
-                    <span>Feladva: <?php echo esc_html(get_the_date('Y. m. d.')); ?></span>
+                    <span><?php echo $sl_lbl_posted; ?> <?php echo esc_html(get_the_date('Y. m. d.')); ?></span>
                     <?php if ( $expires && strtotime($expires) > time() ): ?>
                         <span>Lej&#225;r: <?php echo esc_html($expires); ?></span>
                     <?php elseif ( $expires && strtotime($expires) <= time() ): ?>
@@ -459,7 +525,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     <div>
                         <div class="sl__seller-name"><?php echo esc_html($author ? $author->display_name : 'Ismeretlen'); ?></div>
                         <?php if ($author): ?>
-                        <div class="sl__seller-since">Tag <?php echo esc_html(date('Y', strtotime($author->user_registered))); ?> &#243;ta</div>
+                        <div class="sl__seller-since"><?php echo $sl_lbl_member_since_pre; ?> <?php echo esc_html(date('Y', strtotime($author->user_registered))); ?> &#243;ta</div>
                         <?php
                         if ( get_option( 'va_single_show_plan_badge', '1' ) === '1' && class_exists( 'VA_User_Roles' ) ):
                             $author_plan  = VA_User_Roles::get_user_plan( $author->ID );

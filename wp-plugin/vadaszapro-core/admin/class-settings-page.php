@@ -139,6 +139,29 @@ class VA_Settings_Page {
             'va_contact_form_msg_invalid'    => 'Kérlek tölts ki minden kötelező mezőt érvényes adatokkal.',
             'va_contact_form_msg_error'      => 'Az üzenet küldése nem sikerült. Ellenőrizd az SMTP beállítást, majd próbáld újra.',
             'va_contact_form_msg_nonce'      => 'A kérés érvénytelen volt. Kérlek küldd el újra az űrlapot.',
+
+            // Termékoldal (single) felirat opciók
+            'va_sl_lbl_description'     => 'Leírás',
+            'va_sl_lbl_details'         => 'Részletek',
+            'va_sl_lbl_seller'          => 'Feladó',
+            'va_sl_lbl_more_listings'   => 'Feladó további hirdetései',
+            'va_sl_lbl_related'         => 'Hasonló hirdetések',
+            'va_sl_lbl_phone_btn'       => '📞 Telefonszám megjelenítése',
+            'va_sl_lbl_email_btn'       => '✉ E-mail üzenet küldése',
+            'va_sl_lbl_watch_add'       => '☆ Mentés kedvencekbe',
+            'va_sl_lbl_watch_remove'    => '★ Kedvencekből eltávolítás',
+            'va_sl_lbl_share'           => 'Megosztás:',
+            'va_sl_lbl_no_image'        => 'Nincs kép',
+            'va_sl_lbl_zoom'            => 'Nagyítás',
+            'va_sl_lbl_views_suffix'    => 'megtekintés',
+            'va_sl_lbl_posted'          => 'Feladva:',
+            'va_sl_lbl_expires'         => 'Lejár:',
+            'va_sl_lbl_expired_label'   => 'Lejárt:',
+            'va_sl_lbl_member_since_pre'=> 'Tag',
+            'va_sl_lbl_member_since_suf'=> 'óta',
+            'va_sl_lbl_condition_pre'   => 'Állapot:',
+            'va_sl_lbl_demand'          => 'érdeklődő az elmúlt 24 órában figyelőlistájára vette',
+            'va_sl_lbl_featured_pill'   => '⭐ Kiemelt',
         ];
 
         foreach ( $general as $key => $default ) {
@@ -951,6 +974,30 @@ class VA_Settings_Page {
             'va_single_accent'             => '#ff2a2a',
             'va_single_glass'              => 'rgba(255,255,255,.07)',
             'va_single_border'             => 'rgba(255,255,255,.12)',
+            'va_single_show_plan_badge'    => '1',
+            // Termékoldal extra színek
+            'va_sl_card_title_color'       => 'rgba(255,255,255,.55)',
+            'va_sl_title_color'            => '#ffffff',
+            'va_sl_meta_color'             => 'rgba(255,255,255,.55)',
+            'va_sl_spec_label_color'       => 'rgba(255,255,255,.45)',
+            'va_sl_spec_val_color'         => '#ffffff',
+            'va_sl_desc_color'             => 'rgba(255,255,255,.82)',
+            'va_sl_seller_name_color'      => '#ffffff',
+            'va_sl_seller_since_color'     => 'rgba(255,255,255,.45)',
+            'va_sl_demand_bg'              => 'rgba(255,100,0,.12)',
+            'va_sl_demand_border'          => 'rgba(255,100,0,.3)',
+            'va_sl_demand_text'            => '#ff9550',
+            'va_sl_featured_pill_bg'       => 'rgba(255,180,0,.15)',
+            'va_sl_featured_pill_border'   => 'rgba(255,180,0,.3)',
+            'va_sl_featured_pill_text'     => '#ffd060',
+            'va_sl_views_color'            => 'rgba(255,255,255,.45)',
+            'va_sl_share_label_color'      => 'rgba(255,255,255,.45)',
+            'va_sl_expired_color'          => '#ff6060',
+            'va_sl_sticky_bg'              => 'rgba(10,10,10,.95)',
+            'va_sl_sticky_title_color'     => '#ffffff',
+            'va_sl_related_border'         => 'rgba(255,255,255,.1)',
+            'va_sl_related_title_color'    => '#ffffff',
+            'va_sl_related_meta_color'     => 'rgba(255,255,255,.4)',
         ];
         foreach ( $single_designer as $key => $default ) {
             self::$defaults[ $key ] = $default;
@@ -5599,6 +5646,80 @@ class VA_Settings_Page {
                             <div class="va-le-card-hdr">🏅 Feladó panel</div>
                             <table class="form-table">
                                 <?php self::field_toggle( 'va_single_show_plan_badge', 'Feladó rang/csomag badge megjelenjen' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🎨 Szöveg és kártya színek</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_title_color',         'Hirdetés cím színe' ); ?>
+                                <?php self::field_color( 'va_sl_card_title_color',    'Kártya szekciócím (Leírás / Részletek / Feladó...)' ); ?>
+                                <?php self::field_color( 'va_sl_meta_color',          'Meta sor szöveg (helyszín, dátum, megtekintés...)' ); ?>
+                                <?php self::field_color( 'va_sl_views_color',         'Megtekintések szám színe' ); ?>
+                                <?php self::field_color( 'va_sl_desc_color',          'Leírás szöveg színe' ); ?>
+                                <?php self::field_color( 'va_sl_spec_label_color',    'Műszaki adat cimke (pl. Gyártó, Kaliber...)' ); ?>
+                                <?php self::field_color( 'va_sl_spec_val_color',      'Műszaki adat érték színe' ); ?>
+                                <?php self::field_color( 'va_sl_expired_color',       'Lejárt hirdetés dátum szín' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">🏷 Pill, badge és demand</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_featured_pill_bg',     '"Kiemelt" pill háttér' ); ?>
+                                <?php self::field_color( 'va_sl_featured_pill_border',  '"Kiemelt" pill keret' ); ?>
+                                <?php self::field_color( 'va_sl_featured_pill_text',    '"Kiemelt" pill szöveg' ); ?>
+                                <?php self::field_color( 'va_sl_demand_bg',            'Kereslet-indikátor háttér' ); ?>
+                                <?php self::field_color( 'va_sl_demand_border',        'Kereslet-indikátor keret' ); ?>
+                                <?php self::field_color( 'va_sl_demand_text',          'Kereslet-indikátor szöveg' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">👤 Feladó és megosztás</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_seller_name_color',  'Feladó neve szín' ); ?>
+                                <?php self::field_color( 'va_sl_seller_since_color', '"Tag X óta" szín' ); ?>
+                                <?php self::field_color( 'va_sl_share_label_color',  '"Megosztás:" felirat szín' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">📌 Sticky sáv + kapcsolódó hirdetések</div>
+                            <table class="form-table">
+                                <?php self::field_color( 'va_sl_sticky_bg',           'Sticky sáv háttér' ); ?>
+                                <?php self::field_color( 'va_sl_sticky_title_color',  'Sticky sáv cím szín' ); ?>
+                                <?php self::field_color( 'va_sl_related_border',      'Kapcsolódó kártya keret' ); ?>
+                                <?php self::field_color( 'va_sl_related_title_color', 'Kapcsolódó cím szín' ); ?>
+                                <?php self::field_color( 'va_sl_related_meta_color',  'Kapcsolódó meta szín' ); ?>
+                            </table>
+                        </div>
+
+                        <div class="va-le-card" style="margin-top:14px;">
+                            <div class="va-le-card-hdr">✏️ Feliratok és szövegek</div>
+                            <p class="description" style="padding:0 0 10px 10px;">Minden statikus szöveg megváltoztatható – pl. "Leírás" → "Termékleírás".</p>
+                            <table class="form-table">
+                                <?php self::field_text( 'va_sl_lbl_description',     '"Leírás" szekció cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_details',         '"Részletek" szekció cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_seller',          '"Feladó" szekció cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_more_listings',   '"Feladó további hirdetései" cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_related',         '"Hasonló hirdetések" cím' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_phone_btn',       'Telefonszám gomb szövege' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_email_btn',       'E-mail gomb szövege' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_watch_add',       '"Mentés kedvencekbe" gomb' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_watch_remove',    '"Eltávolítás kedvencekből" gomb' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_share',           '"Megosztás:" felirat' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_zoom',            '"Nagyítás" gomb szöveg' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_no_image',        '"Nincs kép" placeholder szöveg' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_views_suffix',    '"megtekintés" utótag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_posted',          '"Feladva:" előtag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_expires',         '"Lejár:" előtag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_expired_label',   '"Lejárt:" előtag' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_member_since_pre','Tag X óta – "Tag" szó' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_member_since_suf','Tag X óta – "óta" szó' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_condition_pre',   '"Állapot:" előtag a meta sorban' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_demand',          'Kereslet szöveg (az "%d érdeklődő..." utáni rész)' ); ?>
+                                <?php self::field_text( 'va_sl_lbl_featured_pill',   '"Kiemelt" pill szövege' ); ?>
                             </table>
                         </div>
 
