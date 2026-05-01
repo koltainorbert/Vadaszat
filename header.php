@@ -254,9 +254,9 @@
                 ?>
                         <div class="va-lang-sw notranslate" id="va-lang-sw" translate="no">
                             <button type="button" class="va-lang-sw__toggle notranslate" id="va-lang-toggle"
-                                    aria-haspopup="true" aria-expanded="false" translate="no">
-                                <span class="va-lang-flag"><?php echo esc_html( $curr_lang['flag'] ); ?></span>
-                                <span class="va-lang-code"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
+                                    aria-haspopup="true" aria-expanded="false" translate="no" style="color:#fff !important;">
+                                <span class="va-lang-flag" style="color: unset !important; filter:none !important; opacity:1 !important;"><?php echo esc_html( $curr_lang['flag'] ); ?></span>
+                                <span class="va-lang-code" style="color:#fff !important;"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
                                 <svg class="va-lang-sw__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                             </button>
                             <div class="va-lang-sw__dropdown notranslate" id="va-lang-dropdown" hidden translate="no">
@@ -265,9 +265,9 @@
                                     $lang = $all_langs[ $code ];
                                 ?>
                                     <button type="button" class="va-lang-sw__item<?php echo ( $code === $curr_code ) ? ' active' : ''; ?>"
-                                            onclick="vaSetLang('<?php echo esc_js($code); ?>')">
-                                        <?php echo esc_html( $lang['flag'] ); ?>
-                                        <span><?php echo esc_html( $lang['name'] ); ?></span>
+                                            onclick="vaSetLang('<?php echo esc_js($code); ?>')" style="color:#fff !important;">
+                                        <span class="va-lang-flag" style="color: unset !important; filter:none !important; opacity:1 !important;"><?php echo esc_html( $lang['flag'] ); ?></span>
+                                        <span style="color:#fff !important;"><?php echo esc_html( $lang['name'] ); ?></span>
                                     </button>
                                 <?php endforeach; ?>
                             </div>
