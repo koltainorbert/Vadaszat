@@ -434,8 +434,10 @@ hr { border-color: var(--border); }
   -webkit-appearance:none; appearance:none; margin:0; vertical-align:middle;
 }
 .va-lang-sw__toggle:hover { background:rgba(255,255,255,.11); border-color:rgba(255,0,0,.35); color:#fff !important; }
-.va-lang-flag { font-size:15px; line-height:1; display:inline-flex; align-items:center; }
+.va-lang-flag { font-size:15px; line-height:1; display:inline-flex; align-items:center; color: unset !important; }
 .va-lang-code { font-size:.76rem; font-weight:600; color:#fff !important; letter-spacing:.04em; line-height:1.5; }
+.va-lang-sw__toggle .va-lang-flag,
+.va-lang-sw__item .va-lang-flag { color: unset !important; }
 .va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:.7; }
 .va-lang-sw[aria-open] .va-lang-sw__arrow,
 .va-lang-sw__toggle[aria-expanded="true"] .va-lang-sw__arrow { transform:rotate(180deg); }
@@ -449,11 +451,11 @@ hr { border-color: var(--border); }
 .va-lang-sw__item {
   display:flex; align-items:center; gap:8px; width:100%;
   background:none; border:none; border-radius:7px;
-  color:#fff; font-size:13px; padding:7px 10px;
+  color:#fff !important; font-size:13px; padding:7px 10px;
   cursor:pointer; text-align:left; transition:background .12s;
 }
 .va-lang-sw__item:hover { background:rgba(255,255,255,.09); }
-.va-lang-sw__item.active { background:rgba(255,200,0,.13); color:#ffd700; font-weight:600; }
+.va-lang-sw__item.active { background:rgba(255,200,0,.13); color:#fff !important; font-weight:600; }
 .va-lang-sw__item span { font-size:13px; }
 /* Google Translate saját UI elrejtése */
 .skiptranslate, .goog-te-banner-frame { display:none !important; }
