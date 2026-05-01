@@ -1,6 +1,32 @@
 ﻿# Fejlesztesi Naplo
 
 ---
+
+## 2026. 05. 01. – Session: Fresh install garancia + repo zárás
+
+### Mit csináltunk [x]
+- [x] Fresh install bootstrap megerősítve `vadaszapro-core.php` fájlban:
+  - új `init` hook (`priority 2`) került be, ami automatikusan lefuttatja a `va_load_factory_defaults()`-t, ha a `va_factory_defaults_loaded` még nincs beállítva
+  - ezzel nem csak aktiváláskor, hanem futás közben is garantált az alapbeállítások betöltése új környezetben
+- [x] Ugyanez a biztonsági logika átvezetve a tükrözött plugin példányba is:
+  - `wp-plugin/vadaszapro-core/vadaszapro-core.php`
+- [x] Ellenőrizve a kategória seed útvonal:
+  - `includes/class-taxonomy.php` továbbra is dataset-verzió alapján szinkronizálja a `va_category` taxonómiát
+  - friss installnál a `VA_Vehicle_Catalog` kategóriák kerülnek be, és `va_site_type` => `jarmu`
+- [x] Repo állapot validálás megtörtént (`git status`, branch ellenőrzés)
+
+### Hol tartunk
+Új telepítésnél most két rétegben biztosított az egységes indulás:
+1) Aktiváláskor betöltődnek a gyári opciók és taxonómia adatok.
+2) Ha bármilyen okból az aktiválási lépés kimaradna, az első futásnál az `init` fallback automatikusan pótolja.
+
+Ez stabilabbá teszi az "új helyre telepítem, ugyanazt kapjam" elvárt működést.
+
+### TODO
+- [ ] LocalWP smoke teszt: teljesen üres WP példányon plugin aktiválás + kategória/design ellenőrzés
+- [ ] Push után címkézett release megfontolása (ha verziózási pont kell)
+
+---
 ## 2026. 05. 02. – Session #150 (Részletek: csak scrollbar animáció)
 
 ### Mit csináltunk [x]
