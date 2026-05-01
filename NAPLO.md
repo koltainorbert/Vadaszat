@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 02. – Session #152 (Szentgrál induló teendőlista)
+
+### Mit csináltunk [x]
+- [x] Létrehozva az induláskori referencia teendőlista: `MI_A_MEG_A_TEENDO.md`
+- [x] A kész elemek piros, áthúzott formátumban kerültek megjelenítésre a fájlban
+- [x] A hátralévő elemek külön, számozott "Még teendő" blokkban szerepelnek
+- [x] Beállítva induláskori workflow: mindig ebből a fájlból történjen a napi állapotellenőrzés
+
+### Hol tartunk
+A projektnek most van egy fix, vizuálisan egyértelmű állapotlistája, ahol azonnal látszik mi kész és mi van még hátra a 100% profi / ThemeForest szinthez.
+
+### TODO
+- [ ] Minden session végén a változásokat visszavezetni a `MI_A_MEG_A_TEENDO.md` fájlba
+- [ ] Kész pontok folyamatos áthúzása pirossal, hogy a haladás azonnal látható legyen
+
+---
+
 ## 2026. 05. 02. – Session #151 (Fresh install garancia + repo zárás)
 
 ### Mit csináltunk [x]
