@@ -166,8 +166,8 @@
 .va-form-group label .required { color: #ff0000; margin-left: 2px; }
 .va-input, .va-select, .va-textarea {
   width: 100%; padding: 10px 14px; border-radius: var(--va-radius, 6px);
-  background: #0e0e0e; border: 1px solid rgba(255,255,255,.12);
-  color: #fff; font-size: 14px;
+  background: #0e0e0e !important; border: 1px solid rgba(255,255,255,.12) !important;
+  color: #fff !important; font-size: 14px;
   transition: border-color .22s ease;
   color-scheme: dark;
 }
@@ -178,6 +178,14 @@
   -webkit-box-shadow: 0 0 0 1000px #0e0e0e inset !important;
   -webkit-text-fill-color: #fff !important;
   caret-color: #fff;
+}
+/* tel, month, date típusú inputok explicit */
+.va-input[type="tel"],
+.va-input[type="month"],
+.va-input[type="date"] {
+  background: #0e0e0e !important;
+  color: #fff !important;
+  color-scheme: dark;
 }
 .va-select { padding-right: 38px; }
 
