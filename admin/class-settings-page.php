@@ -427,6 +427,13 @@ class VA_Settings_Page {
             'va_legal_url_sutik'                   => '',
             'va_legal_url_gdpr'                    => '',
             'va_legal_url_fenntarthato'            => '',
+            'va_legal_content_adatvedelem'       => '',
+            'va_legal_content_aszf'              => '',
+            'va_legal_content_impresszum'        => '',
+            'va_legal_content_etika'             => '',
+            'va_legal_content_sutik'             => '',
+            'va_legal_content_gdpr'              => '',
+            'va_legal_content_fenntarthato'      => '',
         ];
 
         $header_footer_keys = [
@@ -542,6 +549,13 @@ class VA_Settings_Page {
             'va_legal_url_sutik',
             'va_legal_url_gdpr',
             'va_legal_url_fenntarthato',
+            'va_legal_content_adatvedelem',
+            'va_legal_content_aszf',
+            'va_legal_content_impresszum',
+            'va_legal_content_etika',
+            'va_legal_content_sutik',
+            'va_legal_content_gdpr',
+            'va_legal_content_fenntarthato',
         ];
 
         $header_footer = [];
@@ -562,7 +576,9 @@ class VA_Settings_Page {
             self::$defaults[ $key ] = $default;
             $sanitize_cb = strpos( $key, 'va_legal_url_' ) === 0
                 ? [ __CLASS__, 'sanitize_legal_url' ]
-                : 'sanitize_text_field';
+                : ( strpos( $key, 'va_legal_content_' ) === 0
+                    ? [ __CLASS__, 'sanitize_legal_html' ]
+                    : 'sanitize_text_field' );
             register_setting( 'va_header_footer_settings', $key, [ 'sanitize_callback' => $sanitize_cb ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
