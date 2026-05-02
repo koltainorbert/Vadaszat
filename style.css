@@ -280,7 +280,7 @@ hr { border-color: var(--border); }
   max-width: 120px;
 }
 .va-logo__img--header {
-  max-width: 220px;
+  max-width: none;
   height: auto;
 }
 .va-logo__text {
