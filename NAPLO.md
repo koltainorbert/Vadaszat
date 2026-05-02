@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 03. – Session #173 (Admin új hirdetés = frontend feladási form)
+
+### Mit csinaltunk [x]
+- [x] Az admin `Új hirdetés` oldalon (`vadaszapro-listing-edit` új elemnél) a saját admin form helyett ugyanaz a frontend feladási form renderelődik, mint a főoldali CTA által nyitott feladási oldalon
+- [x] Beillesztés shortcode-val: `[va_submit_listing]`
+- [x] Módosítás átvezetve source + plugin mirror fájlokba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+Az admin új hirdetés felület és a frontend hirdetés-feladás ugyanazt a form template-et használja.
+
+---
+
 ## 2026. 05. 03. – Session #172 (Fejléc logó méret: valós gyökérok és javítás)
 
 ### Mit csinaltunk [x]
