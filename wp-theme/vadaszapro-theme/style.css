@@ -547,6 +547,7 @@ body { top:0 !important; }
 .va-content-layout {
   display: flex; gap: 0;
   min-height: calc(100vh - var(--nav) - 48px);
+  background: #060606;
 }
 
 /* Bal oldalsáv – nincs használva, letiltva */
