@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 05. 02. – Session #164 (Email + Cím külön sorba)
+
+### Mit csinaltunk [x]
+- [x] A kapcsolat blokk szövege átállítva külön soros formára:
+  - Email: weingartnertrans@gmail.com
+  - Cím: 8412 Veszprém, Alsó-Újsor utca 31.
+- [x] Módosítás átvezetve a theme mirror oldal sablonba is
+- [x] LocalWP adatbázis opció (`va_contact_card1_text`) frissítve valódi sortöréssel
+- [x] Hibavizsgálat lefuttatva, nincs új hiba az érintett fájlokban
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A kért Email és Cím tartalom külön sorban jelenik meg a kapcsolat oldalon.
+
+### TODO
+- [ ] Frontend gyors ellenőrzés: a sortörés mobil nézetben is szépen törik-e
+
+---
+
 ## 2026. 05. 02. – Session #163 (Hiányzó cím javítás + kapcsolati adatok a láblécben)
 
 ### Mit csinaltunk [x]
