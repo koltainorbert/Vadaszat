@@ -2049,9 +2049,7 @@ body.sl-viewer-open { overflow: hidden; }
   font-size: 1rem;
 }
 .va-contact-page__wrap {
-  max-width: 1320px;
-  margin: 0 auto;
-  padding: 10px 32px 0;
+  padding: 30px 32px 0;
   display: grid;
   grid-template-columns: 420px minmax(0, 1fr);
   gap: 24px;
