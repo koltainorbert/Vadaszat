@@ -54,9 +54,9 @@
                 <?php endif; ?>
                 <p style="font-size:12px;color:#fff;line-height:1.6;"><?php echo esc_html(get_option('va_site_description', 'Magyarország vadászati apróhirdetési oldala')); ?></p>
                 <div class="va-footer__col-title" style="margin-top:12px;">Kapcsolat</div>
-                <a href="mailto:<?php echo esc_attr( $f_contact_email ); ?>" class="va-footer__link"><?php echo esc_html( $f_contact_email ); ?></a>
-                <a href="tel:<?php echo esc_attr( $f_contact_phone_href ); ?>" class="va-footer__link"><?php echo esc_html( $f_contact_phone ); ?></a>
-                <div class="va-footer__link" style="line-height:1.55;"><?php echo esc_html( $f_contact_addr ); ?></div>
+                <div class="va-footer__link" style="line-height:1.55;">Cím: <?php echo esc_html( $f_contact_addr ); ?></div>
+                <a href="tel:<?php echo esc_attr( $f_contact_phone_href ); ?>" class="va-footer__link">Telefon: <?php echo esc_html( $f_contact_phone ); ?></a>
+                <a href="mailto:<?php echo esc_attr( $f_contact_email ); ?>" class="va-footer__link">Email: <?php echo esc_html( $f_contact_email ); ?></a>
             </div>
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_cat_title ); ?></div>
