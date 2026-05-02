@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 02. – Session #160 (2. telefonszám mező eltávolítása)
+
+### Mit csinaltunk [x]
+- [x] A jármű adatlap feladó űrlapból a `2. telefonszám` (`second_phone`) mező eltávolítva
+- [x] Változtatás átvezetve a plugin mirror template fájlba is
+- [x] Hibavizsgálat lefuttatva, nincs új hiba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A középen megjelenő másodlagos telefonszám mező már nem látszik a feladási űrlapon.
+
+### TODO
+- [ ] Frontend gyors ellenőrzés: a rácselrendezés sorvége vizuálisan rendben van-e
+
+---
+
 ## 2026. 05. 02. – Session #159 (Leírás placeholder halvány szürke)
 
 ### Mit csinaltunk [x]
