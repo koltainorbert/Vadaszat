@@ -2,6 +2,27 @@
 
 ---
 
+## 2026. 05. 02. – Session #167 (Elérhetőségeink kártya: pontos 3 soros kontakt)
+
+### Mit csinaltunk [x]
+- [x] Az `Elérhetőségeink` kártya fallback szövege átállítva pontosan erre:
+  - `Cím: 8412 Veszprém, Alsó-Újsor utca 31.`
+  - `Telefon: 06209438636`
+  - `Email: weingartnertrans@gmail.com`
+- [x] A kártya szöveg renderelése javítva: a sortörések most ténylegesen megjelennek (`nl2br`)
+- [x] Módosítás átvezetve a theme mirror fájlba is
+- [x] LocalWP DB opció (`va_contact_card1_text`) frissítve valódi sortörésekkel
+- [x] Hibavizsgálat lefuttatva, nincs új hiba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+Az `Elérhetőségeink` kártyában a három adat külön sorban jelenik meg a kért sorrendben.
+
+### TODO
+- [ ] Frontend gyors vizuális ellenőrzés: kártya tördelés desktop + mobil nézetben
+
+---
+
 ## 2026. 05. 02. – Session #166 (Lábléc kontakt formátum + logó pozíció finomítás)
 
 ### Mit csinaltunk [x]

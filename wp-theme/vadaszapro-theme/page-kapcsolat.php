@@ -16,7 +16,7 @@ if ( ! in_array( $contact_hero_align, [ 'left', 'center', 'right' ], true ) ) {
 
 // Kártyák
 $card1_title  = get_option( 'va_contact_card1_title', 'Elérhetőségeink' );
-$card1_text   = get_option( 'va_contact_card1_text', "Email: weingartnertrans@gmail.com\nCím: 8412 Veszprém, Alsó-Újsor utca 31." );
+$card1_text   = get_option( 'va_contact_card1_text', "Cím: 8412 Veszprém, Alsó-Újsor utca 31.\nTelefon: 06209438636\nEmail: weingartnertrans@gmail.com" );
 $card2_title  = get_option( 'va_contact_card2_title', 'Mit írj meg?' );
 $card2_item1  = get_option( 'va_contact_card2_item1', 'melyik témában keresel minket' );
 $card2_item2  = get_option( 'va_contact_card2_item2', 'mi a kérdésed vagy problémád röviden' );
@@ -71,7 +71,7 @@ $msg_nonce     = get_option( 'va_contact_form_msg_nonce', 'A kérés érvénytel
                     </svg>
                 </div>
                 <h2 class="va-contact-card__title"><?php echo esc_html( $card1_title ); ?></h2>
-                <p class="va-contact-card__text"><?php echo esc_html( $card1_text ); ?></p>
+                <p class="va-contact-card__text"><?php echo wp_kses_post( nl2br( esc_html( $card1_text ) ) ); ?></p>
             </div>
 
             <div class="va-contact-card">
