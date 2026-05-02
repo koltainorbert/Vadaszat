@@ -702,10 +702,6 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                     <label>Belső azonosító</label>
                     <input type="text" name="internal_id" class="va-input" placeholder="Saját belső azonosító" value="<?php echo esc_attr( (string)( $ev['internal_id'] ?? '' ) ); ?>">
                 </div>
-                <div class="va-form-group">
-                    <label>2. telefonszám</label>
-                    <input type="tel" name="second_phone" class="va-input" placeholder="+36..." value="<?php echo esc_attr( (string)( $ev['second_phone'] ?? '' ) ); ?>">
-                </div>
             </div>
 
             <?php foreach ( $extras_by_grp as $grp_key => $grp ): ?>
