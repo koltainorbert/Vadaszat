@@ -414,14 +414,12 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         // Párba rakandó mezők (2-oszlopos sor)
         $pair_groups = $site_type === 'jarmu'
             ? [
-                ['category', 'county'],
                 ['condition','location'],
                 ['brand',    'model'],
                 ['body_type','year'],
                 ['price',    'price_type'],
             ]
             : [
-                ['category', 'county'],
                 ['condition','location'],
                 ['brand',    'model'],
                 ['caliber',  'year'],
@@ -437,6 +435,10 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         foreach ( $fb_fields as $field ):
             $fkey = (string)( $field['key'] ?? '' );
             if ( in_array( $fkey, $rendered_keys, true ) ) continue;
+            if ( $fkey === 'county' ) {
+                $rendered_keys[] = $fkey;
+                continue;
+            }
             if ( $fkey === 'email_show' ) {
                 $rendered_keys[] = $fkey;
                 continue;

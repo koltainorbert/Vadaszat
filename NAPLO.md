@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 02. – Session #157 (Megye mező eltávolítása feladási űrlapról)
+
+### Mit csinaltunk [x]
+- [x] A hirdetésfeladó űrlapon a `Megye` (`county`) mező renderelése kikapcsolva
+- [x] A páros mezőlogikából a `Kategória + Megye` sor eltávolítva
+- [x] Csak a `Város / Helyszín` mező marad meg kapcsolódó lokációs adatként
+- [x] Változtatás átvezetve a plugin mirror template fájlba is
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A feladási oldalon a `Megye` mező már nem jelenik meg, a város mező használható önállóan.
+
+### TODO
+- [ ] Rövid UI ellenőrzés: spacing és sorok rendben vannak-e desktop + mobil nézetben
+
+---
+
 ## 2026. 05. 02. – Session #156 (Email checkbox legalul + Egyéb mindig utolsó)
 
 ### Mit csinaltunk [x]
