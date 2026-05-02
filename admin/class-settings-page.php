@@ -560,7 +560,10 @@ class VA_Settings_Page {
 
         foreach ( $header_footer as $key => $default ) {
             self::$defaults[ $key ] = $default;
-            register_setting( 'va_header_footer_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            $sanitize_cb = strpos( $key, 'va_legal_url_' ) === 0
+                ? [ __CLASS__, 'sanitize_legal_url' ]
+                : 'sanitize_text_field';
+            register_setting( 'va_header_footer_settings', $key, [ 'sanitize_callback' => $sanitize_cb ] );
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
@@ -6022,6 +6025,22 @@ class VA_Settings_Page {
     private static function field_email( string $key, string $label ): void {
         $val = esc_attr( (string) self::get_display_option( $key, '' ) );
         echo "<tr><th><label for=\"{$key}\">{$label}</label></th><td><input type=\"email\" id=\"{$key}\" name=\"{$key}\" value=\"{$val}\" class=\"regular-text\"></td></tr>";
+    }
+
+    public static function sanitize_legal_url( $value ): string {
+        $value = trim( wp_strip_all_tags( (string) $value ) );
+        if ( $value === '' ) {
+            return '';
+        }
+
+        // Absolute URL: only http/https is allowed.
+        if ( preg_match( '#^https?://#i', $value ) ) {
+            return (string) esc_url_raw( $value, [ 'http', 'https' ] );
+        }
+
+        // Relative URL: keep path/query/hash, normalize to leading slash.
+        $value = ltrim( $value, '/' );
+        return '/' . $value;
     }
 
     private static function field_url( string $key, string $label ): void {

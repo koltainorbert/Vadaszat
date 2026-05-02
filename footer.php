@@ -70,7 +70,7 @@
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_cat_title ); ?></div>
                 <?php $cats = get_terms(['taxonomy' => 'va_category', 'parent' => 0, 'hide_empty' => false, 'number' => 6]);
-                foreach ($cats as $cat): ?>
+                if ( ! is_wp_error( $cats ) ) foreach ($cats as $cat): ?>
                     <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="va-footer__link"><?php echo esc_html($cat->name); ?></a>
                 <?php endforeach; ?>
             </div>
@@ -100,11 +100,14 @@
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_legal_title ); ?></div>
                 <?php foreach ( $f_legal_items as $legal_item ):
-                    $legal_url = (string) ( $legal_item['url'] ?? '' );
+                    $legal_url = trim( wp_strip_all_tags( (string) ( $legal_item['url'] ?? '' ) ) );
                     if ( $legal_url === '' ) continue;
-                    if ( ! preg_match( '#^https?://#i', $legal_url ) ) {
+                    if ( preg_match( '#^https?://#i', $legal_url ) ) {
+                        $legal_url = esc_url_raw( $legal_url, [ 'http', 'https' ] );
+                    } else {
                         $legal_url = home_url( '/' . ltrim( $legal_url, '/' ) );
                     }
+                    if ( $legal_url === '' ) continue;
                 ?>
                     <a href="<?php echo esc_url( $legal_url ); ?>" class="va-footer__link"><?php echo esc_html( (string) $legal_item['label'] ); ?></a>
                 <?php endforeach; ?>

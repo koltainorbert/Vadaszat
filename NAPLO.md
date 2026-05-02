@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 02. – Session #169 (Hotfix: jogi link mentés utáni szétesés)
+
+### Mit javitottunk [x]
+- [x] Jogi URL mezőkre külön sanitize callback készült: `sanitize_legal_url`
+- [x] Csak `http/https` abszolút link vagy normalizált relatív útvonal kerül mentésre
+- [x] Lábléc jogi link renderelés megerősítve (`wp_strip_all_tags`, URL ellenőrzés, üres/hibás URL kihagyás)
+- [x] Kategória blokkban `is_wp_error` guard hozzáadva a stabilitásért
+- [x] Javítás átvezetve source + plugin/theme mirror fájlokba
+- [x] Hibavizsgálat lefutott, nincs új hiba
+- [x] Deploy lefutott LocalWP-re (`Deploy All`)
+
+### Hol tartunk
+A jogi link mentés most védettebb, hibás vagy félresikerült URL bemenet nem boríthatja szét a footer kimenetet.
+
+---
+
 ## 2026. 05. 02. – Session #168 (Adatvédelem + ÁSZF admin fül + dinamikus lábléc jogi linkek)
 
 ### Mit csinaltunk [x]
