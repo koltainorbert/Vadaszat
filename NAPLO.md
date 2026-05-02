@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 02. – Session #165 (Logó teljes balra + leíró szöveg fehér)
+
+### Mit csinaltunk [x]
+- [x] A header logó teljesen balra igazítva (desktop + mobil padding bal oldalon lenullázva)
+- [x] A logó alatti/leíró szöveg (`va_site_description`), pl. `Auto-Morotor Kereskedelem`, fehér színre állítva
+- [x] Módosítás átvezetve a theme mirror fájlokba is
+- [x] Hibavizsgálat lefuttatva az érintett fájlokra, nincs új hiba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A logó most teljesen balra került, és a kért leíró szöveg fehéren jelenik meg.
+
+### TODO
+- [ ] Frontend gyors ellenőrzés: header és footer elrendezés validálása desktop + mobil nézetben
+
+---
+
 ## 2026. 05. 02. – Session #164 (Email + Cím külön sorba)
 
 ### Mit csinaltunk [x]
