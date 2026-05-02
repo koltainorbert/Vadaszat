@@ -119,7 +119,7 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 .ql-container.ql-snow{background:#111;border:1px solid rgba(255,255,255,.15)!important;border-radius:0 0 6px 6px;font-size:15px;}
                 .ql-editor{color:#fff!important;min-height:200px;line-height:1.7;font-family:system-ui,sans-serif;}
                 .ql-editor p,.ql-editor span,.ql-editor li,.ql-editor strong,.ql-editor em,.ql-editor u,.ql-editor s{color:#fff!important;}
-                .ql-editor.ql-blank::before{color:rgba(255,255,255,.3);font-style:normal;}
+                .ql-editor.ql-blank::before{color:#9a9a9a!important;font-style:normal;}
                 .ql-snow .ql-stroke{stroke:#aaa!important;}
                 .ql-snow .ql-fill,.ql-snow .ql-stroke.ql-fill{fill:#aaa!important;}
                 .ql-snow .ql-picker{color:#bbb!important;}

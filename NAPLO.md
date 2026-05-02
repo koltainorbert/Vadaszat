@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 02. – Session #158 (Leírás szerkesztő betűszín fehér)
+
+### Mit csinaltunk [x]
+- [x] A Quill leírás szerkesztőben a szövegszín fixen fehérre állítva (`#fff`) `!important` szabállyal
+- [x] Kiterjesztett selectorok hozzáadva a belső elemekre (`p`, `span`, `li`, `strong`, `em`, `u`, `s`), hogy gépelés közben se sötétedjen vissza
+- [x] Változtatás átvezetve a plugin mirror template fájlba is
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A hirdetésfeladó `Leírás` mezőjében a begépelt szöveg most már jól látható fehér.
+
+### TODO
+- [ ] Frontend ellenőrzés: cache ürítés után tesztelni normál + félkövér + lista formázásnál is
+
+---
+
 ## 2026. 05. 02. – Session #157 (Megye mező eltávolítása feladási űrlapról)
 
 ### Mit csinaltunk [x]
