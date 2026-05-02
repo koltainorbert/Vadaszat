@@ -326,6 +326,7 @@ class VA_Settings_Page {
 
             // Fejléc layout/kinézet (külön menühöz)
             'va_hf_header_height'                  => 66,
+            'va_header_logo_height'                => 36,
             'va_hf_header_max_width'               => 1480,
             'va_hf_header_padding_x'               => 32,
             'va_hf_header_padding_top'             => 6,
@@ -458,6 +459,7 @@ class VA_Settings_Page {
             'va_mobile_factor_header',
             'va_mobile_factor_footer',
             'va_hf_header_height',
+            'va_header_logo_height',
             'va_hf_header_max_width',
             'va_hf_header_padding_x',
             'va_hf_header_padding_top',
