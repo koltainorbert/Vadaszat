@@ -2,6 +2,27 @@
 
 ---
 
+## 2026. 05. 02. – Session #163 (Hiányzó cím javítás + kapcsolati adatok a láblécben)
+
+### Mit csinaltunk [x]
+- [x] Javítva a hiányzó cím a kapcsolat szövegben: `8412 Veszprém, Alsó-Újsor utca 31.`
+- [x] A láblécbe bekerült egy külön `Kapcsolat` blokk releváns adatokkal:
+  - e-mail (`va_contact_email`)
+  - telefonszám (`va_billing_phone`)
+  - cím (`va_billing_company_address`)
+- [x] A footer módosítás átvezetve a theme mirror fájlba is
+- [x] LocalWP adatbázis opció frissítve (`va_contact_card1_text`), hogy a teljes cím biztosan megjelenjen
+- [x] Hibavizsgálat lefuttatva, nincs új hiba az érintett fájlokban
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A kapcsolat cím biztosan benne van, és a lábléc mostantól tartalmazza a releváns kapcsolati adatokat is.
+
+### TODO
+- [ ] Frontend ellenőrzés: lábléc kontakt adatok megjelenésének gyors vizuális validációja desktop + mobil nézetben
+
+---
+
 ## 2026. 05. 02. – Session #162 (Kapcsolat oldal: teljes adatfrissítés + szélesség igazítás)
 
 ### Mit csinaltunk [x]
