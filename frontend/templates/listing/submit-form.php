@@ -162,7 +162,7 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 <?php
                 break;
             case 'phone':
-                echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . ' value="' . esc_attr( (string) $val ) . '">';
+                echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . ' style="background:#0e0e0e!important;color:#fff!important;color-scheme:dark;" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'email_show':
                 $checked = (string) $val === '0' ? '' : ' checked';
@@ -665,7 +665,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 </div>
                 <div class="va-form-group">
                     <label>Műszaki vizsga lejár</label>
-                    <input type="month" name="tech_inspect" class="va-input" value="<?php echo esc_attr( (string)( $ev['tech_inspect'] ?? '' ) ); ?>">
+                    <input type="month" name="tech_inspect" class="va-input" style="background:#0e0e0e!important;color:#fff!important;color-scheme:dark;" value="<?php echo esc_attr( (string)( $ev['tech_inspect'] ?? '' ) ); ?>">
                 </div>
                 <div class="va-form-group">
                     <label>Első forgalomba helyezés (év.hó)</label>
