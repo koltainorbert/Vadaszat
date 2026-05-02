@@ -24,6 +24,10 @@
     $f_privacy_bottom = trim( (string) get_option( 'va_hf_footer_privacy_text', 'Adatvédelem' ) );
     $f_logo_url       = trim( (string) get_option( 'va_hf_footer_logo_url', '' ) );
     $f_logo_height    = max( 20, min( 180, absint( get_option( 'va_hf_footer_logo_height', 48 ) ) ) );
+    $f_contact_email  = trim( (string) get_option( 'va_contact_email', 'weingartnertrans@gmail.com' ) );
+    $f_contact_phone  = trim( (string) get_option( 'va_billing_phone', '+36 20 943 8636' ) );
+    $f_contact_addr   = trim( (string) get_option( 'va_billing_company_address', '8412 Veszprém, Alsó-Újsor utca 31.' ) );
+    $f_contact_phone_href = preg_replace( '/[^0-9\+]/', '', $f_contact_phone );
 
     if ( $f_brand_title === '' )    $f_brand_title = 'VadászApró';
     if ( $f_cat_title === '' )      $f_cat_title = 'Kategóriák';
@@ -35,6 +39,9 @@
     if ( $f_link_help === '' )      $f_link_help = 'Súgó';
     if ( $f_copy_text === '' )      $f_copy_text = 'VadászApró – Minden jog fenntartva.';
     if ( $f_privacy_bottom === '' ) $f_privacy_bottom = 'Adatvédelem';
+    if ( $f_contact_email === '' )  $f_contact_email = 'weingartnertrans@gmail.com';
+    if ( $f_contact_phone === '' )  $f_contact_phone = '+36 20 943 8636';
+    if ( $f_contact_addr === '' )   $f_contact_addr = '8412 Veszprém, Alsó-Újsor utca 31.';
     ?>
 
     <!-- ═══ Footer ═══════════════════════════════════════ -->
@@ -46,6 +53,10 @@
                     <img src="<?php echo esc_url( $f_logo_url ); ?>" class="va-footer__brand-logo" style="height:<?php echo esc_attr( $f_logo_height ); ?>px;" alt="<?php echo esc_attr( $f_brand_title ); ?>" loading="lazy" decoding="async">
                 <?php endif; ?>
                 <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;"><?php echo esc_html(get_option('va_site_description', 'Magyarország vadászati apróhirdetési oldala')); ?></p>
+                <div class="va-footer__col-title" style="margin-top:12px;">Kapcsolat</div>
+                <a href="mailto:<?php echo esc_attr( $f_contact_email ); ?>" class="va-footer__link"><?php echo esc_html( $f_contact_email ); ?></a>
+                <a href="tel:<?php echo esc_attr( $f_contact_phone_href ); ?>" class="va-footer__link"><?php echo esc_html( $f_contact_phone ); ?></a>
+                <div class="va-footer__link" style="line-height:1.55;"><?php echo esc_html( $f_contact_addr ); ?></div>
             </div>
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_cat_title ); ?></div>
