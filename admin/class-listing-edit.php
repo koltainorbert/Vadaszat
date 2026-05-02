@@ -405,8 +405,10 @@ class VA_Listing_Edit {
                     </div>
                 </div>
 
-                <div class="va-le-card" style="padding:20px;">
-                    <?php echo do_shortcode('[va_submit_listing]'); ?>
+                <div class="va-le-card">
+                    <div class="va-wrap">
+                        <?php echo do_shortcode('[va_submit_listing]'); ?>
+                    </div>
                 </div>
             </div>
             <?php
