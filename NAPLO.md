@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 02. – Session #156 (Email checkbox legalul + Egyéb mindig utolsó)
+
+### Mit csinaltunk [x]
+- [x] A feladó űrlapon az `E-mail megjelenítése` checkbox kivéve a középső Kapcsolat sorból, és külön blokkban a submit gomb elé helyezve
+- [x] A `va_category` listában az `egyeb` slugú kategória explicit a lista végére rendezve
+- [x] Edit módban az email checkbox állapota most már a mentett `va_email_show` értéket veszi figyelembe
+- [x] Módosítások átvezetve a plugin mirror template fájlba is
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A kapcsolati checkbox most a hirdetésfeladás legalján jelenik meg a küldés gomb előtt, és a járműkategória listában az `Egyéb` opció mindig utolsó.
+
+### TODO
+- [ ] Frontend ellenőrzés: cache ürítés után vizuális validáció mobil + desktop nézetben
+
+---
+
 ## 2026. 05. 02. – Session #155 (Járműkategória összevonás feladó űrlapon)
 
 ### Mit csinaltunk [x]

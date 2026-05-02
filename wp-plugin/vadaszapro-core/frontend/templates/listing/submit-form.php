@@ -163,8 +163,9 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . ' value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'email_show':
+                $checked = (string) $val === '0' ? '' : ' checked';
                 echo '<label class="va-check-label" style="align-self:flex-end;">';
-                echo '<input type="checkbox" name="email_show" value="1" checked>';
+                echo '<input type="checkbox" name="email_show" value="1"' . $checked . '>';
                 echo ' E-mail cím megjelenítése a hirdetésben</label>';
                 break;
         }
@@ -172,6 +173,21 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
 }
 
 $categories = get_terms( [ 'taxonomy' => 'va_category', 'hide_empty' => false ] );
+if ( is_array( $categories ) ) {
+    $other_category = null;
+    $ordered_categories = [];
+    foreach ( $categories as $cat ) {
+        if ( isset( $cat->slug ) && (string) $cat->slug === 'egyeb' ) {
+            $other_category = $cat;
+            continue;
+        }
+        $ordered_categories[] = $cat;
+    }
+    if ( $other_category ) {
+        $ordered_categories[] = $other_category;
+    }
+    $categories = $ordered_categories;
+}
 $counties   = get_terms( [ 'taxonomy' => 'va_county',   'hide_empty' => false ] );
 $conditions = get_terms( [ 'taxonomy' => 'va_condition','hide_empty' => false ] );
 $brands     = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_brands() : [];
@@ -235,6 +251,7 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'internal_id'      => get_post_meta( $maybe_id, 'va_internal_id',      true ),
             'second_phone'     => get_post_meta( $maybe_id, 'va_second_phone',     true ),
             'vehicle_type'     => get_post_meta( $maybe_id, 'va_vehicle_type',     true ),
+            'email_show'       => get_post_meta( $maybe_id, 'va_email_show',        true ),
             'tech_inspect'     => get_post_meta( $maybe_id, 'va_tech_inspect',     true ),
             'first_reg'        => get_post_meta( $maybe_id, 'va_first_reg',        true ),
             'owners'           => get_post_meta( $maybe_id, 'va_owners',           true ),
@@ -402,7 +419,6 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 ['brand',    'model'],
                 ['body_type','year'],
                 ['price',    'price_type'],
-                ['phone',    'email_show'],
             ]
             : [
                 ['category', 'county'],
@@ -410,7 +426,6 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 ['brand',    'model'],
                 ['caliber',  'year'],
                 ['price',    'price_type'],
-                ['phone',    'email_show'],
             ];
         $pair_map = [];
         foreach ( $pair_groups as $pair ) {
@@ -422,6 +437,10 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         foreach ( $fb_fields as $field ):
             $fkey = (string)( $field['key'] ?? '' );
             if ( in_array( $fkey, $rendered_keys, true ) ) continue;
+            if ( $fkey === 'email_show' ) {
+                $rendered_keys[] = $fkey;
+                continue;
+            }
             if ( empty( $field['enabled'] ) ) {
                 $rendered_keys[] = $fkey;
                 continue;
@@ -699,6 +718,20 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 <?php endforeach; ?>
             </div>
             <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php if ( VA_Form_Builder::is_enabled( $fb_form, 'email_show' ) ): ?>
+        <?php
+            $email_show_val = isset( $edit_meta['email_show'] ) ? (string) $edit_meta['email_show'] : '1';
+            $email_show_checked = $email_show_val === '0' ? '' : ' checked';
+        ?>
+        <div class="va-form-group" style="margin-top:18px;">
+            <label style="margin-bottom:8px;">E-mail megjelenítése</label>
+            <label class="va-check-label">
+                <input type="checkbox" name="email_show" value="1"<?php echo $email_show_checked; ?>>
+                E-mail cím megjelenítése a hirdetésben
+            </label>
         </div>
         <?php endif; ?>
 
