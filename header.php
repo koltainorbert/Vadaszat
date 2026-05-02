@@ -45,6 +45,11 @@
     $header_logo = get_option( 'va_header_logo_url', '' );
     $hero_logo   = get_option( 'va_hero_logo_url', '' );
     $header_logo_h = max( 20, min( 120, absint( get_option( 'va_header_logo_height', 36 ) ) ) );
+    $hf_header_h = max( 50, min( 120, absint( get_option( 'va_hf_header_height', 66 ) ) ) );
+    $hf_pad_top = max( 0, min( 30, absint( get_option( 'va_hf_header_padding_top', 6 ) ) ) );
+    $hf_pad_bottom = max( 0, min( 30, absint( get_option( 'va_hf_header_padding_bottom', 10 ) ) ) );
+    $hf_logo_room = max( 20, $hf_header_h - $hf_pad_top - $hf_pad_bottom );
+    $header_logo_h = min( $header_logo_h, $hf_logo_room );
     $hero_logo_h   = max( 30, min( 260, absint( get_option( 'va_hero_logo_height', 72 ) ) ) );
     $hero_logo_pos = sanitize_key( (string) get_option( 'va_hero_logo_position', 'left' ) );
     if ( ! in_array( $hero_logo_pos, [ 'left', 'center', 'right' ], true ) ) {
