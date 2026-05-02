@@ -495,7 +495,6 @@ wp_localize_script( 'va-submit', 'VA_Data', [
             $cyl_opts       = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_cylinder_layout_options() : [];
             $extras_by_grp  = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_by_group() : [];
             $extras_opts    = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_extras_options() : [];
-            $vtype_opts     = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_vehicle_type_options() : [];
             $roof_opts      = class_exists('VA_Vehicle_Catalog') ? VA_Vehicle_Catalog::get_roof_type_options() : [];
             $ev_extras      = is_array( $ev['extras'] ?? null ) ? $ev['extras'] : [];
 
@@ -523,14 +522,6 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         .va-vehicle-specs + button, .va-vehicle-specs ~ button { margin-top:20px; }
         </style>
         <div class="va-vehicle-specs">
-            <h3 class="va-specs-heading">🚗 Járműkategória</h3>
-            <div class="va-specs-grid" style="grid-template-columns:1fr">
-                <div class="va-form-group">
-                    <label>Járműkategória</label>
-                    <?php $render_select( 'vehicle_type', $vtype_opts, (string)( $ev['vehicle_type'] ?? '' ) ); ?>
-                </div>
-            </div>
-
             <h3 class="va-specs-heading">⚙️ Motor / Hajtástechnika</h3>
             <div class="va-specs-grid">
                 <div class="va-form-group">

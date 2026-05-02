@@ -10,17 +10,23 @@ class VA_Vehicle_Catalog {
     private static $brand_models = null;
 
     public static function get_dataset_version(): string {
-        return 'hasznaltauto-2026-05-01';
+        return 'hasznaltauto-2026-05-02';
     }
 
     public static function get_categories(): array {
         return [
+            [ 'name' => 'Személyautó',    'slug' => 'szemelyauto' ],
             [ 'name' => 'Kisautó',        'slug' => 'kisauto' ],
             [ 'name' => 'Városi autó',    'slug' => 'varosi-auto' ],
             [ 'name' => 'Családi autó',   'slug' => 'csaladi-auto' ],
             [ 'name' => 'Terepjáró',      'slug' => 'terepjaro' ],
             [ 'name' => 'Kishaszonjármű', 'slug' => 'kishaszonjarmu' ],
+            [ 'name' => 'Kisteherautó',   'slug' => 'kisteherauto' ],
+            [ 'name' => 'Teherautó',      'slug' => 'teherauto' ],
+            [ 'name' => 'Lakóautó / Camper', 'slug' => 'lakoauto' ],
+            [ 'name' => 'Busz / Kisbusz', 'slug' => 'busz-kisbusz' ],
             [ 'name' => 'Motor',          'slug' => 'motor' ],
+            [ 'name' => 'Egyéb',          'slug' => 'egyeb' ],
         ];
     }
 
