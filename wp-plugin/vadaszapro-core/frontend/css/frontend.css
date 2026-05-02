@@ -169,6 +169,15 @@
   background: #0e0e0e; border: 1px solid rgba(255,255,255,.12);
   color: #fff; font-size: 14px;
   transition: border-color .22s ease;
+  color-scheme: dark;
+}
+/* Autofill és browser override */
+.va-input:-webkit-autofill,
+.va-input:-webkit-autofill:hover,
+.va-input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #0e0e0e inset !important;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #fff;
 }
 .va-select { padding-right: 38px; }
 

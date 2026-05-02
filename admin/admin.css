@@ -106,6 +106,8 @@ body.va-admin-page #wpwrap { background: var(--va-bg); }
     scrollbar-width: thin;
     scrollbar-color: rgba(255,255,255,.08) transparent;
 }
+.admin-bar #va-sidebar { top: 32px; height: calc(100vh - 32px); }
+@media screen and (max-width: 782px) { .admin-bar #va-sidebar { top: 46px; height: calc(100vh - 46px); } }
 #va-sidebar::-webkit-scrollbar { width: 4px; }
 #va-sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,.1); border-radius: 2px; }
 
