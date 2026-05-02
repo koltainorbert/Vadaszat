@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 02. – Session #155 (Járműkategória összevonás feladó űrlapon)
+
+### Mit csinaltunk [x]
+- [x] A felső kategória adatforrása bővítve a korábbi lenti járműkategória elemeivel (Személyautó, Kisteherautó, Teherautó, Lakóautó/Camper, Busz/Kisbusz, Egyéb)
+- [x] A jármű kategória dataset verzió emelve (`hasznaltauto-2026-05-02`), hogy a taxonómia automatikusan újraszinkronizálódjon
+- [x] A hirdetés feladó űrlapon a külön, lenti `Járműkategória` blokk eltávolítva
+- [x] Módosítások szinkronizálva a plugin mirror fájlokba is
+
+### Hol tartunk
+A jármű kategória választás most egységes: a felső kategória mező tartalmazza a szükséges opciókat, az alsó duplikált blokk megszűnt.
+
+### TODO
+- [ ] LocalWP ellenőrzés: feladás űrlapon vizuálisan validálni, hogy csak egy kategória mező maradt és az új opciók láthatók
+
+---
+
 ## 2026. 05. 02. – Session #154 (Teljes mentes: repo + local)
 
 ### Mit csinaltunk [x]
