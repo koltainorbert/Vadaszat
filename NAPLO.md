@@ -2,6 +2,24 @@
 
 ---
 
+## 2026. 05. 02. – Session #162 (Kapcsolat oldal: teljes adatfrissítés + szélesség igazítás)
+
+### Mit csinaltunk [x]
+- [x] A kapcsolat oldalon a hero alatti blokkok távolsága növelve (+20px)
+- [x] A hero alatti teljes blokk szélessége a videó/hero szélességéhez igazítva
+- [x] A kontakt fallback szövegek frissítve valós Weingartner Trans adatokra (cím, e-mail, telefon, nyitvatartás)
+- [x] A factory defaults frissítve mindkét példányban (forrás + plugin mirror)
+- [x] LocalWP adatbázis opciók közvetlenül frissítve (MySQL kliensen keresztül), így azonnal látható az új tartalom
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A kapcsolat oldal most egységes szélességű blokkokkal és a weingartnertrans.hu releváns elérhetőségi adataival fut.
+
+### TODO
+- [ ] Frontend ellenőrzés: kapcsolat oldal teljes vizuális és tartalmi QA desktop + mobil nézetben
+
+---
+
 ## 2026. 05. 02. – Session #161 (Helyszín alapérték beállítása)
 
 ### Mit csinaltunk [x]
