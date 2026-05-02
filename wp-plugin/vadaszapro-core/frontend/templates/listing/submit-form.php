@@ -441,7 +441,7 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 $rendered_keys[] = $fkey;
                 continue;
             }
-            if ( $fkey === 'email_show' ) {
+            if ( $fkey === 'email_show' || $fkey === 'phone' ) {
                 $rendered_keys[] = $fkey;
                 continue;
             }
@@ -718,6 +718,22 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 <?php endforeach; ?>
             </div>
             <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+
+        <?php
+        if ( VA_Form_Builder::is_enabled( $fb_form, 'phone' ) ):
+            $phone_field = VA_Form_Builder::get_field( $fb_form, 'phone' );
+            $phone_req   = ! empty( $phone_field['required'] );
+            $phone_req_html = $phone_req ? ' <span class="required">*</span>' : '';
+            $phone_req_attr = $phone_req ? ' required' : '';
+            $phone_val  = esc_attr( (string)( $edit_meta['phone'] ?? '' ) );
+            $phone_ph   = esc_attr( (string)( $phone_field['placeholder'] ?? '+36 30 000 0000' ) );
+        ?>
+        <h3 style="font-size:12px;font-weight:700;margin:20px 0 14px;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;">Kapcsolat</h3>
+        <div class="va-form-group">
+            <label>Telefonszám<?php echo $phone_req_html; ?></label>
+            <input type="tel" name="phone" class="va-input" placeholder="<?php echo $phone_ph; ?>"<?php echo $phone_req_attr; ?> value="<?php echo $phone_val; ?>">
         </div>
         <?php endif; ?>
 
