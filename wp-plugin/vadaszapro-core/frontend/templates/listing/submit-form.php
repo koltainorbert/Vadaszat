@@ -257,6 +257,7 @@ if ( is_user_logged_in() && isset( $_GET['edit'] ) ) {
             'tech_inspect'     => get_post_meta( $maybe_id, 'va_tech_inspect',     true ),
             'first_reg'        => get_post_meta( $maybe_id, 'va_first_reg',        true ),
             'owners'           => get_post_meta( $maybe_id, 'va_owners',           true ),
+            'keys'             => get_post_meta( $maybe_id, 'va_keys',             true ),
             'previous_damage'  => get_post_meta( $maybe_id, 'va_previous_damage',  true ),
             'service_book'     => get_post_meta( $maybe_id, 'va_service_book',     true ),
             'extras'           => (function( $raw ) {
@@ -634,6 +635,15 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 <div class="va-form-group">
                     <label>Tulajdonosok száma</label>
                     <input type="number" name="owners" class="va-input" min="1" max="20" placeholder="pl. 2" value="<?php echo esc_attr( (string)( $ev['owners'] ?? '' ) ); ?>">
+                </div>
+                <div class="va-form-group">
+                    <label>Kulcsok száma</label>
+                    <select name="keys" class="va-select">
+                        <option value="">– Válasszon –</option>
+                        <?php for ( $ki = 1; $ki <= 10; $ki++ ): ?>
+                        <option value="<?php echo $ki; ?>"<?php selected( (string)( $ev['keys'] ?? '' ), (string) $ki ); ?>><?php echo $ki; ?> db</option>
+                        <?php endfor; ?>
+                    </select>
                 </div>
                 <div class="va-form-group">
                     <label>Kárpit színe (1)</label>

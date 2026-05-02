@@ -1320,7 +1320,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 if ( $owners )         $specs[] = [ 'Tulajdonosok sz.',     $owners,      false ];
 
 
-                if ( $keys_count )     $specs[] = [ 'Kulcsok sz&#225;ma',        $keys_count,  false ];
+                if ( $keys_count )     $specs[] = [ 'Kulcsok',        $keys_count . ' db kulcs jár a gépjárműhöz',  false ];
 
 
                 if ( $tech_inspect )   $specs[] = [ 'M&#369;szaki lej&#225;r',        $tech_inspect,false ];
