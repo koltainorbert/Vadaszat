@@ -2,7 +2,19 @@
 
 ---
 
-<<<<<<< HEAD
+## 2026. 05. 03. – Session #171 (Fejléc logóméret mentés + viselkedés javítás)
+
+### Mit csinaltunk [x]
+- [x] `Fejléc + Lábléc` oldalon a `Logó magasság (px)` mező mentése javítva (`va_header_logo_height` bekerült a megfelelő settings csoportba)
+- [x] A fejléc logó méretkorlát visszavéve, hogy a mező valósan hasson a logóra
+- [x] Javítás átvezetve source + theme mirror fájlokra
+- [x] Deploy lefuttatva LocalWP-re
+
+### Hol tartunk
+A fejléc logó méret most már ténylegesen változik mentés után.
+
+---
+
 ## 2026. 05. 02. – Session #170 (Jogi tartalom-kezelés adminból + automatikus oldal/link szinkron)
 
 ### Mit javitottunk [x]
@@ -62,18 +74,6 @@ A jogi oldalak kezelése külön admin menüből szerkeszthető, és a láblécb
 
 ### TODO
 - [ ] Admin ellenőrzés: a `vadaszapro-legal` oldalon töltsd ki a kívánt URL-eket, majd vizuálisan validáld a lábléc listát frontend oldalon
-=======
-## 2026. 05. 03. – Session #171 (Fejléc logóméret mentés + viselkedés javítás)
-
-### Mit csinaltunk [x]
-- [x] `Fejléc + Lábléc` oldalon a `Logó magasság (px)` mező mentése javítva (`va_header_logo_height` bekerült a megfelelő settings csoportba)
-- [x] A fejléc logó méretkorlát visszavéve, hogy a mező valósan hasson a logóra
-- [x] Javítás átvezetve source + theme mirror fájlokra
-- [x] Deploy lefuttatva LocalWP-re
-
-### Hol tartunk
-A fejléc logó méret most már ténylegesen változik mentés után.
->>>>>>> 328be41 (Auto_2026.05.03_00.17)
 
 ---
 
