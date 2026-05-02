@@ -2,6 +2,31 @@
 
 ---
 
+## 2026. 05. 02. – Session #168 (Adatvédelem + ÁSZF admin fül + dinamikus lábléc jogi linkek)
+
+### Mit csinaltunk [x]
+- [x] Új admin menüpont készült: `Adatvédelem + ÁSZF` (`vadaszapro-legal`)
+- [x] Új szerkeszthető mezők kerültek be a beállításokba (URL alapon):
+  - Adatvédelem
+  - ÁSZF
+  - Impresszum
+  - Etika és Üzleti Magatartási Kódex
+  - Sütik
+  - GDPR Adatkezelési Tájékoztató
+  - Fenntartható Fejlődés Irányelve
+- [x] A lábléc jogi oszlopa dinamikus lett: csak azok a linkek jelennek meg, amelyekhez van kitöltött URL
+- [x] Módosítás átvezetve a plugin és theme mirror fájlokba is
+- [x] Hibavizsgálat lefuttatva, nincs új hiba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A jogi oldalak kezelése külön admin menüből szerkeszthető, és a láblécben automatikusan csak a kitöltött tételek jelennek meg.
+
+### TODO
+- [ ] Admin ellenőrzés: a `vadaszapro-legal` oldalon töltsd ki a kívánt URL-eket, majd vizuálisan validáld a lábléc listát frontend oldalon
+
+---
+
 ## 2026. 05. 02. – Session #167 (Elérhetőségeink kártya: pontos 3 soros kontakt)
 
 ### Mit csinaltunk [x]
