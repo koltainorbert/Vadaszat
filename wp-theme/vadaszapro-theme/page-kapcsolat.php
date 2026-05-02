@@ -16,7 +16,7 @@ if ( ! in_array( $contact_hero_align, [ 'left', 'center', 'right' ], true ) ) {
 
 // Kártyák
 $card1_title  = get_option( 'va_contact_card1_title', 'Elérhetőségeink' );
-$card1_text   = get_option( 'va_contact_card1_text', 'Telefon: +36 20 943 8636 | Email: weingartnertrans@gmail.com | Cím: 8412 Veszprém, Alsó-Újsor utca 31.' );
+$card1_text   = get_option( 'va_contact_card1_text', "Email: weingartnertrans@gmail.com\nCím: 8412 Veszprém, Alsó-Újsor utca 31." );
 $card2_title  = get_option( 'va_contact_card2_title', 'Mit írj meg?' );
 $card2_item1  = get_option( 'va_contact_card2_item1', 'melyik témában keresel minket' );
 $card2_item2  = get_option( 'va_contact_card2_item2', 'mi a kérdésed vagy problémád röviden' );
