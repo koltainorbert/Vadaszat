@@ -1942,6 +1942,7 @@ class VA_Settings_Page {
                         <div class="va-settings-card__body">
                             <table class="form-table">
                                 <?php self::field_num( 'va_hf_header_height',         'Magasság (px)', 50, 120 ); ?>
+                                <?php self::field_num( 'va_header_logo_height',       'Logó magasság (px)', 20, 120 ); ?>
                                 <?php self::field_num( 'va_hf_header_max_width',       'Belső max szélesség (px)', 960, 2200 ); ?>
                                 <?php self::field_num( 'va_hf_header_padding_x',       'Vízszintes padding (px)', 0, 80 ); ?>
                                 <?php self::field_num( 'va_hf_header_padding_top',     'Felső padding (px)', 0, 30 ); ?>
