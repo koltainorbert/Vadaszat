@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 02. – Session #159 (Leírás placeholder halvány szürke)
+
+### Mit csinaltunk [x]
+- [x] A Quill leírás mező placeholder színe halvány szürkére állítva (`#9a9a9a`)
+- [x] A szabály `!important`-tal megerősítve, hogy biztosan érvényesüljön
+- [x] Változtatás átvezetve a plugin mirror template fájlba is
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A leírás mező placeholder szövege most halvány szürke, jobban elkülönül a fehér beírt szövegtől.
+
+### TODO
+- [ ] Frontend gyors ellenőrzés: kontraszt rendben van-e mobilon is
+
+---
+
 ## 2026. 05. 02. – Session #158 (Leírás szerkesztő betűszín fehér)
 
 ### Mit csinaltunk [x]
