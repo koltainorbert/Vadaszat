@@ -361,10 +361,8 @@ wp_localize_script( 'va-submit', 'VA_Data', [
     'vehicle_brand_models' => $site_type === 'jarmu' ? $brand_models : [],
 ]);
 ?>
-<div class="va-wrap">
-    <?php va_display_flash(); ?>
-
-    <div id="va-submit-notice"></div>
+<?php va_display_flash(); ?>
+<div id="va-submit-notice"></div>
 
     <form id="va-submit-form" method="post" action="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>" enctype="multipart/form-data">
         <input type="hidden" name="action" value="<?php echo $edit_mode ? 'va_update_listing' : 'va_submit_listing'; ?>">
@@ -771,7 +769,6 @@ wp_localize_script( 'va-submit', 'VA_Data', [
                 : 'A hirdetés moderátor jóváhagyása után jelenik meg.'; ?>
         </p>
     </form>
-</div>
 
 <link rel="stylesheet" href="https://cdn.quilljs.com/1.3.7/quill.snow.css">
 <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
