@@ -2,6 +2,27 @@
 
 ---
 
+## 2026. 05. 02. – Session #166 (Lábléc kontakt formátum + logó pozíció finomítás)
+
+### Mit csinaltunk [x]
+- [x] A lábléc kontakt blokk átállítva a kért formára és sorrendre:
+  - `Cím: 8412 Veszprém, Alsó-Újsor utca 31.`
+  - `Telefon: 06209438636`
+  - `Email: weingartnertrans@gmail.com`
+- [x] A LocalWP adatbázis opciók frissítve a fenti exact értékekre (`va_billing_company_address`, `va_billing_phone`, `va_contact_email`)
+- [x] A lábléc logó balra húzva, hogy vizuálisan egy vonalba kerüljön a mellette/alatta lévő szövegekkel
+- [x] Módosítások átvezetve a theme mirror fájlokba is
+- [x] Hibavizsgálat lefuttatva az érintett fájlokra, nincs új hiba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+A láblécben a kapcsolati adatok a kért pontos formában és sorrendben jelennek meg, a logó pedig balra igazítottabb pozíciót kapott.
+
+### TODO
+- [ ] Frontend ellenőrzés: a logó balra húzása minden nézetben esztétikus-e (desktop + mobil)
+
+---
+
 ## 2026. 05. 02. – Session #165 (Logó teljes balra + leíró szöveg fehér)
 
 ### Mit csinaltunk [x]
