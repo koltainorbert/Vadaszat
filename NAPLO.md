@@ -2,6 +2,27 @@
 
 ---
 
+## 2026. 05. 02. – Session #170 (Jogi tartalom-kezelés adminból + automatikus oldal/link szinkron)
+
+### Mit javitottunk [x]
+- [x] Az `Adatvédelem + ÁSZF` admin fül URL mezői tartalom-szerkesztő mezőkre váltva (7 jogi blokk)
+- [x] Új opciók bevezetve: `va_legal_content_*` kulcsok
+- [x] Sanitizer bővítve: jogi tartalom mezők `wp_kses_post` tisztítással mentődnek
+- [x] Automatikus jogi oldal szinkron készült mentés után (`sync_legal_pages_from_options`):
+  - kitöltött tartalomnál oldal létrehozás/frissítés
+  - üres tartalomnál a megfelelő jogi URL opció törlése
+- [x] Lábléc viselkedés ezzel teljesíti a kérést: csak azok a jogi tételek jelennek meg, amelyekhez tényleges adat van
+- [x] Módosítás átvezetve source + plugin mirror fájlba
+- [x] Hibavizsgálat lefutott az érintett fájlokra, nincs új hiba
+
+### Hol tartunk
+A jogi oldalak tartalma most közvetlenül az admin felületen szerkeszthető, és a lábléc Jogi oszlop automatikusan csak a kitöltött tételeket mutatja.
+
+### TODO
+- [ ] Admin/frontend gyors ellenőrzés: 1-1 jogi tartalom mentése után validáld az oldalgenerálást és a lábléc linkek megjelenését
+
+---
+
 ## 2026. 05. 02. – Session #169 (Hotfix: jogi link mentés utáni szétesés)
 
 ### Mit javitottunk [x]
