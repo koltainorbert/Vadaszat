@@ -28,6 +28,15 @@
     $f_contact_phone  = trim( (string) get_option( 'va_billing_phone', '+36 20 943 8636' ) );
     $f_contact_addr   = trim( (string) get_option( 'va_billing_company_address', '8412 Veszprém, Alsó-Újsor utca 31.' ) );
     $f_contact_phone_href = preg_replace( '/[^0-9\+]/', '', $f_contact_phone );
+    $f_legal_items = [
+        [ 'label' => 'Adatvédelem',                         'url' => trim( (string) get_option( 'va_legal_url_adatvedelem', '/adatvedelmi-nyilatkozat' ) ) ],
+        [ 'label' => 'ÁSZF',                                'url' => trim( (string) get_option( 'va_legal_url_aszf', '/aszf' ) ) ],
+        [ 'label' => 'Impresszum',                          'url' => trim( (string) get_option( 'va_legal_url_impresszum', '' ) ) ],
+        [ 'label' => 'Etika és Üzleti Magatartási Kódex',   'url' => trim( (string) get_option( 'va_legal_url_etika', '' ) ) ],
+        [ 'label' => 'Sütik',                               'url' => trim( (string) get_option( 'va_legal_url_sutik', '' ) ) ],
+        [ 'label' => 'GDPR Adatkezelési Tájékoztató',       'url' => trim( (string) get_option( 'va_legal_url_gdpr', '' ) ) ],
+        [ 'label' => 'Fenntartható Fejlődés Irányelve',     'url' => trim( (string) get_option( 'va_legal_url_fenntarthato', '' ) ) ],
+    ];
 
     if ( $f_brand_title === '' )    $f_brand_title = 'VadászApró';
     if ( $f_cat_title === '' )      $f_cat_title = 'Kategóriák';
@@ -90,10 +99,15 @@
             </div>
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_legal_title ); ?></div>
-                <a href="<?php echo esc_url(home_url('/aszf')); ?>"          class="va-footer__link"><?php echo esc_html( $f_link_aszf ); ?></a>
-                <a href="<?php echo esc_url(home_url('/adatvedelmi-nyilatkozat')); ?>" class="va-footer__link"><?php echo esc_html( $f_link_privacy ); ?></a>
-                <a href="<?php echo esc_url(home_url('/kapcsolat')); ?>"     class="va-footer__link"><?php echo esc_html( $f_link_contact ); ?></a>
-                <a href="<?php echo esc_url(home_url('/sugo')); ?>"          class="va-footer__link"><?php echo esc_html( $f_link_help ); ?></a>
+                <?php foreach ( $f_legal_items as $legal_item ):
+                    $legal_url = (string) ( $legal_item['url'] ?? '' );
+                    if ( $legal_url === '' ) continue;
+                    if ( ! preg_match( '#^https?://#i', $legal_url ) ) {
+                        $legal_url = home_url( '/' . ltrim( $legal_url, '/' ) );
+                    }
+                ?>
+                    <a href="<?php echo esc_url( $legal_url ); ?>" class="va-footer__link"><?php echo esc_html( (string) $legal_item['label'] ); ?></a>
+                <?php endforeach; ?>
             </div>
         </div>
         <div class="va-footer__bottom">

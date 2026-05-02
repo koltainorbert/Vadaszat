@@ -34,6 +34,7 @@ class VA_Admin {
         $items = [
             [ 'id' => 'va-ab-dashboard',  'title' => '📊 Irányítópult',    'page' => 'vadaszapro-dashboard' ],
             [ 'id' => 'va-ab-altalanos',  'title' => '⚙️ Általános',        'page' => 'vadaszapro' ],
+            [ 'id' => 'va-ab-legal',      'title' => '🛡️ Adatvédelem + ÁSZF','page' => 'vadaszapro-legal' ],
             [ 'id' => 'va-ab-design',     'title' => '🎨 Design',           'page' => 'vadaszapro-design' ],
             [ 'id' => 'va-ab-search',     'title' => '🔎 Kereső',           'page' => 'vadaszapro-search' ],
             [ 'id' => 'va-ab-hirdetes',   'title' => '📋 Hirdetések',       'page' => 'vadaszapro-hirdetes' ],
@@ -210,6 +211,7 @@ class VA_Admin {
         $titles = [
             "vadaszapro-dashboard"    => "Irányítópult",
             "vadaszapro"              => "Általános beállítások",
+            "vadaszapro-legal"        => "Adatvédelem + ÁSZF",
             "vadaszapro-design"       => "Design beállítások",
             "vadaszapro-search"       => "Kereső beállítások",
             "vadaszapro-layout"       => "Layout Állító",
@@ -267,6 +269,7 @@ class VA_Admin {
                 <span class="va-sb-sep">Beállítások</span>
 
                 <?php self::sb_item( "⚙️", "Általános", admin_url( "admin.php?page=vadaszapro" ), $page === "vadaszapro" ); ?>
+                <?php self::sb_item( "🛡️", "Adatvédelem + ÁSZF", admin_url( "admin.php?page=vadaszapro-legal" ), $page === "vadaszapro-legal" ); ?>
                 <?php self::sb_item( "🎨", "Design", admin_url( "admin.php?page=vadaszapro-design" ), $page === "vadaszapro-design" ); ?>
                 <?php self::sb_item( "🔎", "Kereső", admin_url( "admin.php?page=vadaszapro-search" ), $page === "vadaszapro-search" ); ?>
                 <?php self::sb_item( "📋", "Keresési oldal", admin_url( "admin.php?page=vadaszapro-listing-search" ), $page === "vadaszapro-listing-search" ); ?>
@@ -367,6 +370,7 @@ class VA_Admin {
         // Dashboard – első almenü
         add_submenu_page( "vadaszapro", "Irányítópult",  "📊 Irányítópult",  "manage_options", "vadaszapro-dashboard",       [ VA_Dashboard::class,     "render"                  ] );
         add_submenu_page( "vadaszapro", "Általános",     "⚙️ Általános",     "manage_options", "vadaszapro",                 [ VA_Settings_Page::class, "render_general"          ] );
+        add_submenu_page( "vadaszapro", "Adatvédelem + ÁSZF", "🛡️ Adatvédelem + ÁSZF", "manage_options", "vadaszapro-legal", [ VA_Settings_Page::class, "render_legal_pages" ] );
         add_submenu_page( "vadaszapro", "Design",        "🎨 Design",        "manage_options", "vadaszapro-design",          [ VA_Settings_Page::class, "render_design"            ] );
         add_submenu_page( "vadaszapro", "Kereső",        "🔎 Kereső",        "manage_options", "vadaszapro-search",          [ VA_Settings_Page::class, "render_search_designer"   ] );
         add_submenu_page( "vadaszapro", "Keresési oldal", "📋 Keresési oldal", "manage_options", "vadaszapro-listing-search", [ VA_Settings_Page::class, "render_listing_search_designer" ] );

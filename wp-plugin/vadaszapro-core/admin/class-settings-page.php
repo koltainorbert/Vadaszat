@@ -420,6 +420,13 @@ class VA_Settings_Page {
             'va_hf_footer_link_help'               => 'Súgó',
             'va_hf_footer_copy_text'               => 'VadászApró – Minden jog fenntartva.',
             'va_hf_footer_privacy_text'            => 'Adatvédelem',
+            'va_legal_url_adatvedelem'             => '/adatvedelmi-nyilatkozat',
+            'va_legal_url_aszf'                    => '/aszf',
+            'va_legal_url_impresszum'              => '',
+            'va_legal_url_etika'                   => '',
+            'va_legal_url_sutik'                   => '',
+            'va_legal_url_gdpr'                    => '',
+            'va_legal_url_fenntarthato'            => '',
         ];
 
         $header_footer_keys = [
@@ -528,6 +535,13 @@ class VA_Settings_Page {
             'va_hf_footer_link_help',
             'va_hf_footer_copy_text',
             'va_hf_footer_privacy_text',
+            'va_legal_url_adatvedelem',
+            'va_legal_url_aszf',
+            'va_legal_url_impresszum',
+            'va_legal_url_etika',
+            'va_legal_url_sutik',
+            'va_legal_url_gdpr',
+            'va_legal_url_fenntarthato',
         ];
 
         $header_footer = [];
@@ -2281,6 +2295,45 @@ class VA_Settings_Page {
                 </div><!-- end padding div -->
             </div><!-- end va-settings-card -->
         </div><!-- end wrap -->
+        <?php
+    }
+
+    /* ══ Adatvédelem + ÁSZF (lábléc jogi linkek) ═══════════ */
+    public static function render_legal_pages() {
+        if ( ! current_user_can( 'manage_options' ) ) return;
+        ?>
+        <div class="wrap va-admin-wrap">
+            <h1>🛡️ Adatvédelem + ÁSZF</h1>
+            <p class="description">Csak a kitöltött URL-ek jelennek meg a lábléc Jogi információk oszlopában.</p>
+            <?php settings_errors( 'va_header_footer_settings' ); ?>
+
+            <form method="post" action="options.php">
+                <?php settings_fields( 'va_header_footer_settings' ); ?>
+
+                <div class="va-settings-grid">
+                    <div class="va-settings-card">
+                        <div class="va-settings-card__head">
+                            <span class="va-settings-card__icon">⚖️</span>
+                            <span class="va-settings-card__title">Lábléc jogi linkek</span>
+                        </div>
+                        <div class="va-settings-card__body">
+                            <table class="form-table">
+                                <?php self::field_text( 'va_legal_url_adatvedelem',  'Adatvédelem URL' ); ?>
+                                <?php self::field_text( 'va_legal_url_aszf',         'ÁSZF URL' ); ?>
+                                <?php self::field_text( 'va_legal_url_impresszum',   'Impresszum URL' ); ?>
+                                <?php self::field_text( 'va_legal_url_etika',        'Etika és Üzleti Magatartási Kódex URL' ); ?>
+                                <?php self::field_text( 'va_legal_url_sutik',        'Sütik URL' ); ?>
+                                <?php self::field_text( 'va_legal_url_gdpr',         'GDPR Adatkezelési Tájékoztató URL' ); ?>
+                                <?php self::field_text( 'va_legal_url_fenntarthato', 'Fenntartható Fejlődés Irányelve URL' ); ?>
+                            </table>
+                            <p class="description" style="margin-top:8px;">Használhatsz relatív URL-t is, például: <code>/impresszum</code></p>
+                        </div>
+                    </div>
+                </div>
+
+                <?php submit_button( 'Adatvédelem + ÁSZF mentése' ); ?>
+            </form>
+        </div>
         <?php
     }
 
