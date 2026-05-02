@@ -43,7 +43,8 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '</select>';
                 break;
             case 'location':
-                echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( (string) $val ) . '">';
+                $location_val = (string) $val !== '' ? (string) $val : 'Veszprém Gyulafirátót';
+                echo '<input type="text" name="location" class="va-input" placeholder="' . $ph . '" value="' . esc_attr( $location_val ) . '">';
                 break;
             case 'brand':
                 if ( $site_type !== 'jarmu' ) {

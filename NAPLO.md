@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 02. – Session #161 (Helyszín alapérték beállítása)
+
+### Mit csinaltunk [x]
+- [x] A `Helyszín (város)` mező alapértéke beállítva: `Veszprém Gyulafirátót`
+- [x] Logika úgy készült, hogy meglévő mentett értéket nem ír felül (csak üresnél ad defaultot)
+- [x] Változtatás átvezetve a plugin mirror template fájlba is
+- [x] Hibavizsgálat lefuttatva, nincs új hiba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+Új feladásnál a helyszín mező automatikusan kitöltve indul a kért értékkel.
+
+### TODO
+- [ ] Frontend ellenőrzés: új hirdetés + szerkesztés módban is validálni a viselkedést
+
+---
+
 ## 2026. 05. 02. – Session #160 (2. telefonszám mező eltávolítása)
 
 ### Mit csinaltunk [x]
