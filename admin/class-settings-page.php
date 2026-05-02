@@ -2320,10 +2320,15 @@ class VA_Settings_Page {
     /* ══ Adatvédelem + ÁSZF (lábléc jogi linkek) ═══════════ */
     public static function render_legal_pages() {
         if ( ! current_user_can( 'manage_options' ) ) return;
+
+        if ( isset( $_GET['settings-updated'] ) ) {
+            self::sync_legal_pages_from_options();
+            echo '<div class="notice notice-success"><p>Jogi oldalak frissítve. A kitöltött tartalmak automatikusan megjelennek a láblécben.</p></div>';
+        }
         ?>
         <div class="wrap va-admin-wrap">
             <h1>🛡️ Adatvédelem + ÁSZF</h1>
-            <p class="description">Csak a kitöltött URL-ek jelennek meg a lábléc Jogi információk oszlopában.</p>
+            <p class="description">Ide írd a publikus jogi tartalmakat. Amelyik blokkban van tartalom, ahhoz oldal készül/frissül, és megjelenik a lábléc Jogi oszlopában.</p>
             <?php settings_errors( 'va_header_footer_settings' ); ?>
 
             <form method="post" action="options.php">
@@ -2337,15 +2342,15 @@ class VA_Settings_Page {
                         </div>
                         <div class="va-settings-card__body">
                             <table class="form-table">
-                                <?php self::field_text( 'va_legal_url_adatvedelem',  'Adatvédelem URL' ); ?>
-                                <?php self::field_text( 'va_legal_url_aszf',         'ÁSZF URL' ); ?>
-                                <?php self::field_text( 'va_legal_url_impresszum',   'Impresszum URL' ); ?>
-                                <?php self::field_text( 'va_legal_url_etika',        'Etika és Üzleti Magatartási Kódex URL' ); ?>
-                                <?php self::field_text( 'va_legal_url_sutik',        'Sütik URL' ); ?>
-                                <?php self::field_text( 'va_legal_url_gdpr',         'GDPR Adatkezelési Tájékoztató URL' ); ?>
-                                <?php self::field_text( 'va_legal_url_fenntarthato', 'Fenntartható Fejlődés Irányelve URL' ); ?>
+                                <?php self::field_textarea( 'va_legal_content_adatvedelem',  'Adatvédelem tartalom', '', 8 ); ?>
+                                <?php self::field_textarea( 'va_legal_content_aszf',         'ÁSZF tartalom', '', 8 ); ?>
+                                <?php self::field_textarea( 'va_legal_content_impresszum',   'Impresszum tartalom', '', 8 ); ?>
+                                <?php self::field_textarea( 'va_legal_content_etika',        'Etika és Üzleti Magatartási Kódex tartalom', '', 8 ); ?>
+                                <?php self::field_textarea( 'va_legal_content_sutik',        'Sütik tartalom', '', 8 ); ?>
+                                <?php self::field_textarea( 'va_legal_content_gdpr',         'GDPR Adatkezelési Tájékoztató tartalom', '', 8 ); ?>
+                                <?php self::field_textarea( 'va_legal_content_fenntarthato', 'Fenntartható Fejlődés Irányelve tartalom', '', 8 ); ?>
                             </table>
-                            <p class="description" style="margin-top:8px;">Használhatsz relatív URL-t is, például: <code>/impresszum</code></p>
+                            <p class="description" style="margin-top:8px;">Mentés után az oldalak automatikusan frissülnek, a láblécben pedig csak a kitöltött elemek látszanak.</p>
                         </div>
                     </div>
                 </div>
@@ -6057,6 +6062,55 @@ class VA_Settings_Page {
         // Relative URL: keep path/query/hash, normalize to leading slash.
         $value = ltrim( $value, '/' );
         return '/' . $value;
+    }
+
+    public static function sanitize_legal_html( $value ): string {
+        return wp_kses_post( (string) $value );
+    }
+
+    private static function get_legal_page_map(): array {
+        return [
+            [ 'title' => 'Adatvédelem', 'slug' => 'adatvedelmi-nyilatkozat', 'url_opt' => 'va_legal_url_adatvedelem', 'cnt_opt' => 'va_legal_content_adatvedelem' ],
+            [ 'title' => 'ÁSZF', 'slug' => 'aszf', 'url_opt' => 'va_legal_url_aszf', 'cnt_opt' => 'va_legal_content_aszf' ],
+            [ 'title' => 'Impresszum', 'slug' => 'impresszum', 'url_opt' => 'va_legal_url_impresszum', 'cnt_opt' => 'va_legal_content_impresszum' ],
+            [ 'title' => 'Etika és Üzleti Magatartási Kódex', 'slug' => 'etika-es-uzleti-magatartasi-kodex', 'url_opt' => 'va_legal_url_etika', 'cnt_opt' => 'va_legal_content_etika' ],
+            [ 'title' => 'Sütik', 'slug' => 'sutik', 'url_opt' => 'va_legal_url_sutik', 'cnt_opt' => 'va_legal_content_sutik' ],
+            [ 'title' => 'GDPR Adatkezelési Tájékoztató', 'slug' => 'gdpr-adatkezelesi-tajekoztato', 'url_opt' => 'va_legal_url_gdpr', 'cnt_opt' => 'va_legal_content_gdpr' ],
+            [ 'title' => 'Fenntartható Fejlődés Irányelve', 'slug' => 'fenntarthato-fejlodes-iranyelve', 'url_opt' => 'va_legal_url_fenntarthato', 'cnt_opt' => 'va_legal_content_fenntarthato' ],
+        ];
+    }
+
+    private static function sync_legal_pages_from_options(): void {
+        foreach ( self::get_legal_page_map() as $item ) {
+            $title       = (string) $item['title'];
+            $slug        = sanitize_title( (string) $item['slug'] );
+            $url_option  = (string) $item['url_opt'];
+            $content_opt = (string) $item['cnt_opt'];
+            $content     = wp_kses_post( (string) get_option( $content_opt, '' ) );
+
+            if ( trim( wp_strip_all_tags( $content ) ) === '' ) {
+                update_option( $url_option, '' );
+                continue;
+            }
+
+            $existing = get_page_by_path( $slug );
+            $postarr = [
+                'post_type'    => 'page',
+                'post_title'   => $title,
+                'post_name'    => $slug,
+                'post_status'  => 'publish',
+                'post_content' => $content,
+            ];
+
+            if ( $existing ) {
+                $postarr['ID'] = (int) $existing->ID;
+                wp_update_post( $postarr );
+            } else {
+                wp_insert_post( $postarr );
+            }
+
+            update_option( $url_option, '/' . ltrim( $slug, '/' ) );
+        }
     }
 
     private static function field_url( string $key, string $label ): void {
