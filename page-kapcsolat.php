@@ -7,22 +7,22 @@ get_header();
 $status = sanitize_text_field( wp_unslash( $_GET['contact_status'] ?? '' ) );
 $contact_video = get_option( 'va_contact_hero_video_url', content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
 $contact_badge = get_option( 'va_contact_hero_badge_text', 'Kapcsolat' );
-$contact_title = get_option( 'va_contact_hero_title_text', 'Írj nekünk e-mailt' );
-$contact_lead  = get_option( 'va_contact_hero_lead_text', 'A kapcsolatfelvétel kizárólag e-mailben történik. Az itt elküldött üzenetek WordPress oldalon keresztül, a WP Mail SMTP bővítményen át jutnak el hozzánk.' );
+$contact_title = get_option( 'va_contact_hero_title_text', 'Lépj velünk kapcsolatba' );
+$contact_lead  = get_option( 'va_contact_hero_lead_text', 'Minden beérkező megkeresésre 24 órán belül válaszolunk. Hívjon minket telefonon, vagy írjon e-mailt – szívesen segítünk!' );
 $contact_hero_align = sanitize_key( (string) get_option( 'va_contact_hero_align', 'center' ) );
 if ( ! in_array( $contact_hero_align, [ 'left', 'center', 'right' ], true ) ) {
     $contact_hero_align = 'center';
 }
 
 // Kártyák
-$card1_title  = get_option( 'va_contact_card1_title', 'Csak e-mailes megkeresés' );
-$card1_text   = get_option( 'va_contact_card1_text', 'Telefonszámot és nyilvános közvetlen címet nem jelenítünk meg. Minden megkeresést ezen az űrlapon keresztül fogadunk.' );
+$card1_title  = get_option( 'va_contact_card1_title', 'Elérhetőségeink' );
+$card1_text   = get_option( 'va_contact_card1_text', 'Telefon: +36 20 943 8636 | Email: weingartnertrans@gmail.com | Cím: 8412 Veszprém, Alsó-Újsor utca 31.' );
 $card2_title  = get_option( 'va_contact_card2_title', 'Mit írj meg?' );
 $card2_item1  = get_option( 'va_contact_card2_item1', 'melyik témában keresel minket' );
 $card2_item2  = get_option( 'va_contact_card2_item2', 'mi a kérdésed vagy problémád röviden' );
 $card2_item3  = get_option( 'va_contact_card2_item3', 'milyen e-mail címre válaszoljunk' );
-$card3_title  = get_option( 'va_contact_card3_title', 'Technikai háttér' );
-$card3_text   = get_option( 'va_contact_card3_text', 'Az üzenetküldés a WordPress wp_mail() rendszerén keresztül történik, így a küldést a WP Mail SMTP plugin kezeli.' );
+$card3_title  = get_option( 'va_contact_card3_title', 'Nyitvatartás' );
+$card3_text   = get_option( 'va_contact_card3_text', 'H-P 08h00–17h00-ig. SZ 08h00–12h00-ig. V-Zárva. Ünnepnapokon: előre egyeztetett időpontban.' );
 
 // Form
 $form_title    = get_option( 'va_contact_form_title', 'Üzenet küldése' );
@@ -33,8 +33,8 @@ $label_phone   = get_option( 'va_contact_form_label_phone', 'Telefonszám' );
 $label_subject = get_option( 'va_contact_form_label_subject', 'Tárgy' );
 $label_message = get_option( 'va_contact_form_label_message', 'Üzenet' );
 $ph_name       = get_option( 'va_contact_form_ph_name', 'Teljes neved' );
-$ph_email      = get_option( 'va_contact_form_ph_email', 'pelda@email.hu' );
-$ph_phone      = get_option( 'va_contact_form_ph_phone', '+36 30 123 4567' );
+$ph_email      = get_option( 'va_contact_form_ph_email', 'weingartnertrans@gmail.com' );
+$ph_phone      = get_option( 'va_contact_form_ph_phone', '+36 20 943 8636' );
 $ph_subject    = get_option( 'va_contact_form_ph_subject', 'Miben tudunk segíteni?' );
 $ph_message    = get_option( 'va_contact_form_ph_message', 'Írd le röviden a kérdésedet vagy megkeresésed részleteit...' );
 $msg_success   = get_option( 'va_contact_form_msg_success', 'Az üzenetedet elküldtük. Hamarosan e-mailben válaszolunk.' );
