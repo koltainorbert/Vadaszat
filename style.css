@@ -2049,7 +2049,7 @@ body.sl-viewer-open { overflow: hidden; }
   font-size: 1rem;
 }
 .va-contact-page__wrap {
-  padding: 30px 32px 0;
+  padding: 30px 0 0;
   display: grid;
   grid-template-columns: 420px minmax(0, 1fr);
   gap: 24px;
@@ -2226,8 +2226,7 @@ body.sl-viewer-open { overflow: hidden; }
   }
 }
 @media (max-width: 640px) {
-  .va-contact-page__hero,
-  .va-contact-page__wrap {
+  .va-contact-page__hero {
     padding-left: 16px;
     padding-right: 16px;
   }
