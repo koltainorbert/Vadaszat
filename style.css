@@ -97,7 +97,7 @@ hr { border-color: var(--border); }
   display: flex;
   align-items: center;
   gap: 0;
-  padding: 6px 32px 10px;
+  padding: 6px 32px 10px 0;
   height: 100%;
   box-sizing: border-box;
   max-width: 1480px;
@@ -471,7 +471,7 @@ body { top:0 !important; }
 
 /* ── Mobil nav ── */
 @media (max-width: 960px) {
-  .va-header__inner { grid-template-columns: auto 1fr auto; padding: 0 20px; }
+  .va-header__inner { grid-template-columns: auto 1fr auto; padding: 0 20px 0 0; }
   .va-nav {
     display: none;
     position: fixed;
@@ -498,7 +498,7 @@ body { top:0 !important; }
   .va-header__submit-btn { display: none; }
 }
 @media (max-width: 500px) {
-  .va-header__inner { padding: 0 14px; }
+  .va-header__inner { padding: 0 14px 0 0; }
   .va-logo { padding-right: 0; gap: 9px; }
   .va-logo__text { font-size: .88rem; }
 }

@@ -52,7 +52,7 @@
                 <?php if ( $f_logo_url !== '' ): ?>
                     <img src="<?php echo esc_url( $f_logo_url ); ?>" class="va-footer__brand-logo" style="height:<?php echo esc_attr( $f_logo_height ); ?>px;" alt="<?php echo esc_attr( $f_brand_title ); ?>" loading="lazy" decoding="async">
                 <?php endif; ?>
-                <p style="font-size:12px;color:rgba(255,255,255,0.4);line-height:1.6;"><?php echo esc_html(get_option('va_site_description', 'Magyarország vadászati apróhirdetési oldala')); ?></p>
+                <p style="font-size:12px;color:#fff;line-height:1.6;"><?php echo esc_html(get_option('va_site_description', 'Magyarország vadászati apróhirdetési oldala')); ?></p>
                 <div class="va-footer__col-title" style="margin-top:12px;">Kapcsolat</div>
                 <a href="mailto:<?php echo esc_attr( $f_contact_email ); ?>" class="va-footer__link"><?php echo esc_html( $f_contact_email ); ?></a>
                 <a href="tel:<?php echo esc_attr( $f_contact_phone_href ); ?>" class="va-footer__link"><?php echo esc_html( $f_contact_phone ); ?></a>
