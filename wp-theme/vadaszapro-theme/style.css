@@ -277,7 +277,8 @@ hr { border-color: var(--border); }
   flex-shrink: 0;
 }
 .va-logo__img--icon {
-  max-width: 120px;
+  max-width: none;
+  height: auto;
 }
 .va-logo__img--header {
   max-width: none;

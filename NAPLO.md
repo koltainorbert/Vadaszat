@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 03. – Session #172 (Fejléc logó méret: valós gyökérok és javítás)
+
+### Mit csinaltunk [x]
+- [x] Ellenőrizve élő DOM-ban a fejléc logó számított mérete (Playwright): az inline `height:100px` beállítás tényleg érvényesült
+- [x] Azonosítva a gyökérok: a frontendben ténylegesen használt elem classa `va-logo__img--icon`, nem `va-logo__img--header`
+- [x] Javítva a rossz classra célzott méretkorlát: `.va-logo__img--icon` most `max-width: none; height: auto;`
+- [x] Módosítás átvezetve mindkét példányba (`style.css` + theme mirror)
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+- [x] Visszaellenőrzés élő oldalon: számított szélesség már nem 120px, hanem ~320px (100px magasságnál)
+
+### Hol tartunk
+A fejléc logó méretezése most már láthatóan reagál a `Logó magasság (px)` beállításra.
+
+---
+
 ## 2026. 05. 03. – Session #171 (Fejléc logóméret mentés + viselkedés javítás)
 
 ### Mit csinaltunk [x]
