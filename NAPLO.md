@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 05. 03. – Session #178 (ÉLES SZERVER – SITE ÉL!)
+
+### Mit csinaltunk [x]
+- [x] All-in-One WP Migration Pro segítségével exportálva a LocalWP site
+- [x] Import sikeresen lefutott az éles szerverre
+- [x] **https://www.weingartnerauto.hu/ — ÉL, nyilvánosan elérhető!**
+
+### Hol tartunk
+A site éles, nyilvános. Minden funkció (hirdetésfeladás, aukció, admin panel) telepítve.
+
+---
+
 ## 2026. 05. 03. – Session #177 (Teljes git szinkron + hordozhato allapot megerositese)
 
 ### Mit csinaltunk [x]
