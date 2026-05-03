@@ -2,15 +2,27 @@
 
 ---
 
-## 2026. 05. 03. – Session #178 (ÉLES SZERVER – SITE ÉL!)
+## 2026. 05. 03. – Session #178 (ÉLES SZERVER – SITE ÉL + HOLNAPI TERV)
 
 ### Mit csinaltunk [x]
 - [x] All-in-One WP Migration Pro segítségével exportálva a LocalWP site
 - [x] Import sikeresen lefutott az éles szerverre
 - [x] **https://www.weingartnerauto.hu/ — ÉL, nyilvánosan elérhető!**
+- [x] Minden változás pusholva gitbe
 
 ### Hol tartunk
 A site éles, nyilvános. Minden funkció (hirdetésfeladás, aukció, admin panel) telepítve.
+
+### ⚡ HOLNAP ELŐSZÖR EZT CSINÁLJUK (FONTOS!)
+**GitHub Actions FTP auto-deploy beállítása:**
+1. Létrehozzuk a `.github/workflows/deploy.yml` fájlt
+2. GitHubon Settings → Secrets → Actions-be felvisszük: FTP_SERVER, FTP_USERNAME, FTP_PASSWORD, és az elérési utakat
+3. Ezután: minden `git push` → automatikusan frissül az élő szerver
+4. **Többé nem kell All-in-One Migration** — csak push és kész!
+
+### Munkamód váltás
+- **LocalWP KUKA** — mostantól csak az élő szerveren dolgozunk
+- Workflow: szerkesztés VS Code-ban → deploy script → élő szerverre megy azonnal
 
 ---
 
