@@ -401,7 +401,27 @@ class VA_Listing_Edit {
             return;
         }
 
-        // Új hirdetésnél is az admin edit formot mutatjuk.
+        // Adminban új hirdetésnél a frontend feladási formot mutatjuk.
+        if ( $is_new ) {
+            ?>
+            <div class="va-le-wrap">
+                <div class="va-le-edit-header">
+                    <div class="va-le-edit-back">
+                        <a href="<?php echo esc_url(admin_url('admin.php?page=vadaszapro-listings')); ?>" class="va-le-back-btn">← Hirdetések</a>
+                        <h2>Új hirdetés</h2>
+                    </div>
+                </div>
+
+                <div class="va-le-card">
+                    <div class="va-wrap">
+                        <?php echo do_shortcode('[va_submit_listing]'); ?>
+                    </div>
+                </div>
+            </div>
+            <?php
+            return;
+        }
+
         $get_meta = static fn($k) => $post ? (string)get_post_meta( $post_id, $k, true ) : '';
 
         // Galéria + borítókép
