@@ -674,8 +674,8 @@ class VA_Listing_Edit {
                         $type_extra_all   = class_exists('VA_Meta_Fields') ? VA_Meta_Fields::get_type_extra_fields() : [];
                         $already_hardcoded = ['va_brand','va_model','va_caliber','va_year','va_license_req'];
                         $type_extra_show  = array_filter( $type_extra_all, fn($k) => ! in_array($k, $already_hardcoded, true), ARRAY_FILTER_USE_KEY );
-                        $type_extra_checkboxes = array_filter( $type_extra_show, fn($f) => ($f['type']??'') === 'checkboxes', ARRAY_FILTER_USE_VALUE );
-                        $type_extra_regular    = array_filter( $type_extra_show, fn($f) => ($f['type']??'') !== 'checkboxes', ARRAY_FILTER_USE_VALUE );
+                        $type_extra_checkboxes = array_filter( $type_extra_show, fn($f) => ($f['type']??'') === 'checkboxes' );
+                        $type_extra_regular    = array_filter( $type_extra_show, fn($f) => ($f['type']??'') !== 'checkboxes' );
                         if ( $type_extra_regular ):
                         ?>
                         <div class="va-le-card">
