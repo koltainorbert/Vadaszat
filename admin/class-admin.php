@@ -275,6 +275,7 @@ class VA_Admin {
                 <?php self::sb_item( "📋", "Keresési oldal", admin_url( "admin.php?page=vadaszapro-listing-search" ), $page === "vadaszapro-listing-search" ); ?>
                 <?php self::sb_item( "🎬", "Hero szekció", admin_url( "admin.php?page=vadaszapro-hero" ), $page === "vadaszapro-hero" ); ?>
                 <?php self::sb_item( "📐", "Layout Állító", admin_url( "admin.php?page=vadaszapro-layout" ), $page === "vadaszapro-layout" ); ?>
+                <?php self::sb_item( "🧭", "Főoldali rács", admin_url( "admin.php?page=vadaszapro-hirdetes" ), $page === "vadaszapro-hirdetes" ); ?>
                 <?php self::sb_item( "🗂️", "Fejléc & Lábléc", admin_url( "admin.php?page=vadaszapro-header-footer" ), $page === "vadaszapro-header-footer" ); ?>
                 <?php self::sb_item( "🧩", "Form szerkesztő", admin_url( "admin.php?page=va-form-builder" ), $page === "va-form-builder" ); ?>
                 <?php self::sb_item( "🖥️", "Admin Panel", admin_url( "admin.php?page=vadaszapro-adminpanel" ), $page === "vadaszapro-adminpanel" ); ?>
