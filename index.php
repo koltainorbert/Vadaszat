@@ -10,6 +10,7 @@ $va_show_season_widget = get_option( 'va_show_hunting_season_widget', '1' ) === 
 $va_show_moon_widget   = get_option( 'va_show_moon_widget', '1' ) === '1';
 $va_show_weather_widget = get_option( 'va_show_weather_widget', '1' ) === '1';
 $va_show_home_hunting_calendar = get_option( 'va_show_home_hunting_calendar', '1' ) === '1';
+$va_home_cards_per_row = max( 2, min( 10, (int) get_option( 'va_layout_grid_cols_desktop', 4 ) ) );
 ?>
 <div class="va-home-layout">
 
@@ -1258,7 +1259,7 @@ updateHnOverflowState();
 </div>
 
 <!-- Kiemelt hirdetések -->
-<?php $featured = new WP_Query(['post_type' => 'va_listing', 'post_status' => 'publish', 'posts_per_page' => 4, 'meta_key' => 'va_featured', 'meta_value' => '1']);
+<?php $featured = new WP_Query(['post_type' => 'va_listing', 'post_status' => 'publish', 'posts_per_page' => $va_home_cards_per_row, 'meta_key' => 'va_featured', 'meta_value' => '1']);
 if ($featured->have_posts()): ?>
 <div style="margin-bottom:24px;">
     <h2 style="font-size:18px;font-weight:800;margin-bottom:16px;">⭐ Kiemelt hirdetések</h2>
@@ -1272,7 +1273,7 @@ if ($featured->have_posts()): ?>
 
 <!-- Futó aukciók -->
 <?php if ( function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true ): ?>
-<?php $auctions = new WP_Query(['post_type' => 'va_auction', 'post_status' => 'publish', 'posts_per_page' => 4, 'orderby' => 'date', 'order' => 'DESC']);
+<?php $auctions = new WP_Query(['post_type' => 'va_auction', 'post_status' => 'publish', 'posts_per_page' => $va_home_cards_per_row, 'orderby' => 'date', 'order' => 'DESC']);
 if ($auctions->have_posts()): ?>
 <div style="margin-bottom:24px;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
