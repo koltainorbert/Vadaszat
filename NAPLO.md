@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 03. – Session #174 (Hirdetés állítás név + 2–10 desktop rács + fix 4 oszlop feloldás)
+
+### Mit csinaltunk [x]
+- [x] A bal oldali admin menüben átnevezve a gyorspont: `Főoldali rács` -> `Hirdetés állítás`
+- [x] A `vadaszapro-hirdetes` menüpont címkéi egységesítve `Hirdetés állítás` névre
+- [x] Desktop oszlopszám tartomány emelve `2..10`-re (Layout Állító + Hirdetések oldali mezők)
+- [x] A theme dinamikus CSS kiterjesztve `.vcp-grid`-re is (`.va-grid,.vcp-grid`), így ugyanaz a beállítás vezérli mindkét rácsot
+- [x] A fixen 4 oszlopos `.vcp-grid` szabály eltávolítva, ami felülírta a beállításokat
+- [x] Módosítások átvezetve source + mirror fájlokba és deployolva LocalWP-re
+
+### Hol tartunk
+A desktop kártyaszám már nem fix 4: a beállított `2..10` érték érvényesül a fő rácsoknál is.
+
+---
+
 ## 2026. 05. 03. – Session #173 (Admin új hirdetés = frontend feladási form)
 
 ### Mit csinaltunk [x]
