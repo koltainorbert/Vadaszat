@@ -170,6 +170,14 @@ class VA_Listing_Edit {
             }
         }
 
+        // Kényszerített üzleti szabályok: email mindig látszódjon, helység ne maradjon üres.
+        update_post_meta( $post_id, 'va_email_show', '1' );
+        $forced_location = sanitize_text_field( wp_unslash( $_POST['va_location'] ?? '' ) );
+        if ( $forced_location === '' ) {
+            $forced_location = 'Veszprém Gyulafirátót';
+        }
+        update_post_meta( $post_id, 'va_location', $forced_location );
+
         // Galéria képek
         $raw_gids = sanitize_text_field( wp_unslash( $_POST['va_gallery_ids'] ?? '' ) );
         $gids = array_values( array_unique( array_filter( array_map( 'intval', $raw_gids !== '' ? explode( ',', $raw_gids ) : [] ) ) ) );

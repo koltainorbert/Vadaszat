@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 05. 03. – Session #176 (Email mindig ON + helység mindig kitöltve)
+
+### Mit csinaltunk [x]
+- [x] Frontend AJAX `submit` és `update` mentésnél kényszerítve: `va_email_show = '1'`
+- [x] Frontend AJAX `submit` és `update` mentésnél üres helység esetén default: `Veszprém Gyulafirátót`
+- [x] Admin mentésnél (`handle_save`) kényszerítve: `va_email_show = '1'`
+- [x] Admin mentésnél üres `va_location` esetén default: `Veszprém Gyulafirátót`
+- [x] Admin UI-ban az email checkbox fixen bepipált (nem kapcsolható ki)
+- [x] Admin UI-ban a helység mező alapértéke megjelenik, ha üres volt
+- [x] Frontend submit/edit UI-ban az email checkbox fixen bepipált (nem kapcsolható ki)
+- [x] Változtatások tükrözve source + mirror fájlokba
+- [x] Hibavizsgálat lefuttatva (nincs új hiba)
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+Az e-mail megjelenítés mostantól minden mentésnél kötelezően bekapcsolt, és a helység sem maradhat üres: automatikusan `Veszprém Gyulafirátót` lesz.
+
+---
+
 ## 2026. 05. 03. – Session #175 (Admin szerkesztő: frontend-forma igazítás, duplikált blokkok törlése)
 
 ### Mit csinaltunk [x]

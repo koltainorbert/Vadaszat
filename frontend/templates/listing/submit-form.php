@@ -165,9 +165,8 @@ if ( ! function_exists( 'self_render_listing_field' ) ) {
                 echo '<input type="tel" name="phone" class="va-input" placeholder="' . $ph . '"' . $req_attr . ' style="background:#0e0e0e!important;color:#fff!important;color-scheme:dark;" value="' . esc_attr( (string) $val ) . '">';
                 break;
             case 'email_show':
-                $checked = (string) $val === '0' ? '' : ' checked';
                 echo '<label class="va-check-label" style="align-self:flex-end;">';
-                echo '<input type="checkbox" name="email_show" value="1"' . $checked . '>';
+                echo '<input type="checkbox" name="email_show" value="1" checked onclick="return false;">';
                 echo ' E-mail cím megjelenítése a hirdetésben</label>';
                 break;
         }
@@ -746,14 +745,10 @@ wp_localize_script( 'va-submit', 'VA_Data', [
         <?php endif; ?>
 
         <?php if ( VA_Form_Builder::is_enabled( $fb_form, 'email_show' ) ): ?>
-        <?php
-            $email_show_val = isset( $edit_meta['email_show'] ) ? (string) $edit_meta['email_show'] : '1';
-            $email_show_checked = $email_show_val === '0' ? '' : ' checked';
-        ?>
         <div class="va-form-group" style="margin-top:18px;">
             <label style="margin-bottom:8px;">E-mail megjelenítése</label>
             <label class="va-check-label">
-                <input type="checkbox" name="email_show" value="1"<?php echo $email_show_checked; ?>>
+                <input type="checkbox" name="email_show" value="1" checked onclick="return false;">
                 E-mail cím megjelenítése a hirdetésben
             </label>
         </div>

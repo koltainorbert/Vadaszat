@@ -170,6 +170,14 @@ class VA_Listing_Edit {
             }
         }
 
+        // Kényszerített üzleti szabályok: email mindig látszódjon, helység ne maradjon üres.
+        update_post_meta( $post_id, 'va_email_show', '1' );
+        $forced_location = sanitize_text_field( wp_unslash( $_POST['va_location'] ?? '' ) );
+        if ( $forced_location === '' ) {
+            $forced_location = 'Veszprém Gyulafirátót';
+        }
+        update_post_meta( $post_id, 'va_location', $forced_location );
+
         // Galéria képek
         $raw_gids = sanitize_text_field( wp_unslash( $_POST['va_gallery_ids'] ?? '' ) );
         $gids = array_values( array_unique( array_filter( array_map( 'intval', $raw_gids !== '' ? explode( ',', $raw_gids ) : [] ) ) ) );
@@ -523,6 +531,10 @@ class VA_Listing_Edit {
         $cur_brand_val    = $get_meta('va_brand');
         $cur_model_val    = $get_meta('va_model');
         $models_for_brand = $brand_models_list[$cur_brand_val] ?? [];
+        $cur_location_val = $get_meta('va_location');
+        if ( $cur_location_val === '' ) {
+            $cur_location_val = 'Veszprém Gyulafirátót';
+        }
         ?>
         <div class="va-le-wrap">
 
@@ -587,7 +599,7 @@ class VA_Listing_Edit {
                                 </div>
                                 <div class="va-le-field">
                                     <label class="va-le-lbl"><?php echo $fb_lbl('va_location', 'Helyszín (város)'); ?></label>
-                                    <input type="text" name="va_location" value="<?php echo esc_attr($get_meta('va_location')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_location','pl. Veszprém Gyulafirátót'); ?>">
+                                    <input type="text" name="va_location" value="<?php echo esc_attr($cur_location_val); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_location','pl. Veszprém Gyulafirátót'); ?>">
                                 </div>
                             </div>
                         </div>
@@ -741,8 +753,7 @@ class VA_Listing_Edit {
                             </div>
                             <?php if ( $fb_on('va_email_show') ): ?>
                             <label class="va-le-check-lbl">
-                                <?php $email_show_raw = $get_meta('va_email_show'); $email_show_checked = ($email_show_raw === '0') ? '' : ' checked'; ?>
-                                <input type="checkbox" name="va_email_show" value="1"<?php echo $email_show_checked; ?>>
+                                <input type="checkbox" name="va_email_show" value="1" checked onclick="return false;">
                                 <span><?php echo $fb_lbl('va_email_show', 'Email cím megjelenítése a hirdetésen'); ?></span>
                             </label>
                             <?php endif; ?>
