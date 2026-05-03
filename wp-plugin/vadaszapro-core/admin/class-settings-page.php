@@ -792,6 +792,30 @@ class VA_Settings_Page {
             if ( get_option( $key ) === false ) update_option( $key, $default );
         }
 
+        // Főoldali kártyarács gyorsbeállítások (Hirdetés beállítások oldalon is)
+        $listing_layout_int = [
+            'va_layout_grid_cols_desktop'  => 4,
+            'va_layout_grid_cols_tablet'   => 2,
+            'va_layout_grid_cols_mobile'   => 1,
+        ];
+        foreach ( $listing_layout_int as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => 'absint' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
+        $listing_layout_select = [
+            'va_layout_home_sidebar_side'   => 'left',
+            'va_layout_grid_justify'        => 'start',
+            'va_layout_grid_justify_tablet' => 'start',
+            'va_layout_grid_justify_mobile' => 'start',
+        ];
+        foreach ( $listing_layout_select as $key => $default ) {
+            self::$defaults[ $key ] = $default;
+            register_setting( 'va_listing_settings', $key, [ 'sanitize_callback' => 'sanitize_text_field' ] );
+            if ( get_option( $key ) === false ) update_option( $key, $default );
+        }
+
         self::$defaults['va_listing_payment_url'] = '';
         register_setting( 'va_listing_settings', 'va_listing_payment_url', [ 'sanitize_callback' => 'esc_url_raw' ] );
         if ( get_option( 'va_listing_payment_url' ) === false ) {
@@ -2814,6 +2838,21 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_free_listings_limit', 'Ingyenes hirdetések száma felhasználónként (0=korlátlan)', 0, 999 ); ?>
                     <?php self::field_num( 'va_listing_price_after_free', 'További hirdetés ára (Ft)', 0, 999999 ); ?>
                     <?php self::field_url( 'va_listing_payment_url', 'Bankkártyás fizetési URL (Stripe/Barion/OTP Simple checkout link)' ); ?>
+                </table>
+
+                <h2>Főoldali termék rács (reszponzív)</h2>
+                <table class="form-table">
+                    <?php self::field_select( 'va_layout_home_sidebar_side', 'Főoldal sidebar pozíció', [
+                        'left'  => 'Bal oldali sidebar (termékek jobbra)',
+                        'right' => 'Jobb oldali sidebar (termékek balra)',
+                        'none'  => 'Sidebar kikapcsolva (teljes szélesség)',
+                    ] ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop: oszlop/sor', 1, 6 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_tablet', 'Tablet: oszlop/sor', 1, 4 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_mobile', 'Mobil: oszlop/sor', 1, 2 ); ?>
+                    <?php self::field_select( 'va_layout_grid_justify', 'Desktop igazítás', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>
+                    <?php self::field_select( 'va_layout_grid_justify_tablet', 'Tablet igazítás', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>
+                    <?php self::field_select( 'va_layout_grid_justify_mobile', 'Mobil igazítás', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>
                 </table>
 
                 <h2>Fizetési beállítások (szolgáltatóhoz)</h2>
