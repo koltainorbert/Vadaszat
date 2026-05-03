@@ -460,8 +460,6 @@ class VA_Settings_Page {
             'va_size_footer_bottom',
             'va_weight_footer_title',
             'va_weight_footer_link',
-            'va_weight_home_hero_sub',
-            'va_weight_kat_hero_sub',
             'va_mobile_factor_header',
             'va_mobile_factor_footer',
             'va_hf_header_height',
