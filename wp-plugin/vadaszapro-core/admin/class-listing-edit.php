@@ -38,6 +38,19 @@ class VA_Listing_Edit {
         .va-admin-extra-check { display:flex;align-items:center;gap:6px;font-size:13px;color:#fff;cursor:pointer;padding:6px 8px;border:1px solid rgba(255,255,255,.1);border-radius:6px;transition:border-color .15s,background .15s; }
         .va-admin-extra-check:has(input:checked) { border-color:rgba(255,60,60,.5);background:rgba(255,60,60,.07); }
         .va-admin-extra-check input { accent-color:#ff3030;flex-shrink:0; }
+        /* Frontend-like admin form look */
+        .va-le-edit-header{margin-bottom:14px!important}
+        .va-le-edit-layout{display:block!important}
+        .va-le-edit-sidebar{margin-top:16px!important}
+        .va-le-edit-main .va-le-card{background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;margin-bottom:16px!important}
+        .va-le-edit-main .va-le-card-hdr{font-size:12px!important;font-weight:700!important;margin:20px 0 14px!important;color:rgba(255,255,255,.6)!important;text-transform:uppercase!important;letter-spacing:1px!important;padding:0 0 6px!important;border-bottom:1px solid rgba(255,255,255,.08)!important}
+        .va-le-field-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:16px!important}
+        @media(max-width:900px){.va-le-field-grid{grid-template-columns:1fr!important}}
+        .va-le-lbl{display:block!important;margin-bottom:6px!important;font-size:13px!important;color:rgba(255,255,255,.65)!important;font-weight:500!important}
+        .va-le-input,.va-le-select{width:100%!important;padding:10px 14px!important;border-radius:14px!important;background:#0e0e0e!important;border:1px solid rgba(255,255,255,.12)!important;color:#fff!important;font-size:14px!important;color-scheme:dark}
+        .va-le-input:focus,.va-le-select:focus{outline:none!important;border-color:#ff0000!important;box-shadow:none!important}
+        .va-le-check-lbl{display:flex!important;align-items:center!important;gap:8px!important}
+        .va-le-check-lbl input[type="checkbox"]{width:16px!important;height:16px!important;accent-color:#ff0000!important}
         #va-admin-quill-editor .ql-editor { color:#e8e8e8; min-height:220px; font-size:15px; line-height:1.7; font-family:system-ui,sans-serif; }
         #va-admin-quill-editor .ql-editor.ql-blank::before { color:rgba(255,255,255,.3); font-style:normal; }
         #va-admin-quill-editor a { color:#ff4444; }
@@ -550,6 +563,35 @@ class VA_Listing_Edit {
                                    placeholder="Hirdetés címe…" class="va-le-title-input" required>
                         </div>
 
+                        <!-- Alap adatok (frontend sorrend) -->
+                        <div class="va-le-card">
+                            <div class="va-le-card-hdr">Alap adatok</div>
+                            <div class="va-le-field-grid">
+                                <div class="va-le-field">
+                                    <label class="va-le-lbl">Járműkategória</label>
+                                    <select name="va_category" class="va-le-select">
+                                        <option value="">— Válasszon —</option>
+                                        <?php foreach ($categories as $cat): ?>
+                                        <option value="<?php echo (int)$cat->term_id; ?>" <?php selected($cur_cat, $cat->term_id); ?>><?php echo esc_html($cat->name); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="va-le-field">
+                                    <label class="va-le-lbl">Állapot</label>
+                                    <select name="va_condition" class="va-le-select">
+                                        <option value="">— Válasszon —</option>
+                                        <?php foreach ($conditions as $cond): ?>
+                                        <option value="<?php echo (int)$cond->term_id; ?>" <?php selected($cur_cond, $cond->term_id); ?>><?php echo esc_html($cond->name); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="va-le-field">
+                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_location', 'Helyszín (város)'); ?></label>
+                                    <input type="text" name="va_location" value="<?php echo esc_attr($get_meta('va_location')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_location','pl. Veszprém Gyulafirátót'); ?>">
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Leírás -->
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">📝 Leírás</div>
@@ -686,7 +728,7 @@ class VA_Listing_Edit {
                         <?php endif; ?>
 
                         <!-- Kapcsolat -->
-                        <?php if ( $fb_on('va_phone') || $fb_on('va_location') || $fb_on('va_email_show') ): ?>
+                        <?php if ( $fb_on('va_phone') || $fb_on('va_email_show') ): ?>
                         <div class="va-le-card">
                             <div class="va-le-card-hdr">📞 Kapcsolat</div>
                             <div class="va-le-field-grid">
@@ -694,12 +736,6 @@ class VA_Listing_Edit {
                                 <div class="va-le-field">
                                     <label class="va-le-lbl"><?php echo $fb_lbl('va_phone', 'Telefonszám'); ?></label>
                                     <input type="tel" name="va_phone" value="<?php echo esc_attr($get_meta('va_phone')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_phone','+36 20 …'); ?>">
-                                </div>
-                                <?php endif; ?>
-                                <?php if ( $fb_on('va_location') ): ?>
-                                <div class="va-le-field">
-                                    <label class="va-le-lbl"><?php echo $fb_lbl('va_location', 'Helység'); ?></label>
-                                    <input type="text" name="va_location" value="<?php echo esc_attr($get_meta('va_location')); ?>" class="va-le-input" placeholder="<?php echo $fb_ph('va_location','pl. Budapest'); ?>">
                                 </div>
                                 <?php endif; ?>
                             </div>
@@ -741,76 +777,6 @@ class VA_Listing_Edit {
                             </div>
                         </div>
                         <?php endif; ?>
-
-                        <!-- Típusfüggő mezők (minden site type) -->
-                        <?php
-                        $type_extra_all   = class_exists('VA_Meta_Fields') ? VA_Meta_Fields::get_type_extra_fields() : [];
-                        $already_hardcoded = ['va_brand','va_model','va_caliber','va_year','va_license_req'];
-                        $type_extra_show  = array_filter( $type_extra_all, fn($k) => ! in_array($k, $already_hardcoded, true), ARRAY_FILTER_USE_KEY );
-                        $type_extra_checkboxes = array_filter( $type_extra_show, fn($f) => ($f['type']??'') === 'checkboxes' );
-                        $type_extra_regular    = array_filter( $type_extra_show, fn($f) => ($f['type']??'') !== 'checkboxes' );
-                        if ( $type_extra_regular ):
-                        ?>
-                        <div class="va-le-card">
-                            <div class="va-le-card-hdr">🔧 Típusfüggő adatok</div>
-                            <div class="va-le-field-grid">
-                            <?php foreach ( $type_extra_regular as $fk => $ff ):
-                                $ftype  = $ff['type'] ?? 'text';
-                                $flabel = esc_html( $ff['label'] ?? $fk );
-                                $fval   = $get_meta( $fk );
-                                $fname  = esc_attr( $fk );
-                                $fmin   = isset($ff['min']) ? ' min="'.esc_attr((string)$ff['min']).'"' : '';
-                                $fmax   = isset($ff['max']) ? ' max="'.esc_attr((string)$ff['max']).'"' : '';
-                            ?>
-                            <div class="va-le-field">
-                                <?php if ( $ftype !== 'checkbox' ): ?>
-                                <label class="va-le-lbl"><?php echo $flabel; ?></label>
-                                <?php endif; ?>
-                                <?php if ( $ftype === 'select' ): ?>
-                                    <select name="<?php echo $fname; ?>" class="va-le-select">
-                                        <option value="">— Nincs megadva —</option>
-                                        <?php foreach ( ($ff['options'] ?? []) as $ov => $ol ): ?>
-                                        <option value="<?php echo esc_attr((string)$ov); ?>" <?php selected($fval,(string)$ov); ?>><?php echo esc_html((string)$ol); ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                <?php elseif ( $ftype === 'checkbox' ): ?>
-                                    <label class="va-le-check-lbl">
-                                        <input type="checkbox" name="<?php echo $fname; ?>" value="1" <?php checked($fval,'1'); ?>>
-                                        <span><?php echo $flabel; ?></span>
-                                    </label>
-                                <?php elseif ( $ftype === 'date' ): ?>
-                                    <input type="date" name="<?php echo $fname; ?>" value="<?php echo esc_attr($fval); ?>" class="va-le-input">
-                                <?php elseif ( $ftype === 'number' ): ?>
-                                    <input type="number" name="<?php echo $fname; ?>" value="<?php echo esc_attr($fval); ?>" class="va-le-input"<?php echo $fmin.$fmax; ?>>
-                                <?php else: ?>
-                                    <input type="text" name="<?php echo $fname; ?>" value="<?php echo esc_attr($fval); ?>" class="va-le-input">
-                                <?php endif; ?>
-                            </div>
-                            <?php endforeach; ?>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-
-                        <!-- Extra felszereltség (checkboxes) -->
-                        <?php foreach ( $type_extra_checkboxes as $fk => $ff ):
-                            if ( ! class_exists('VA_Vehicle_Catalog') ) continue;
-                            $extras_opts = VA_Vehicle_Catalog::get_extras_options();
-                            $extras_raw  = $get_meta( $fk );
-                            $extras_val  = json_decode( $extras_raw, true );
-                            if ( ! is_array($extras_val) ) $extras_val = [];
-                        ?>
-                        <div class="va-le-card">
-                            <div class="va-le-card-hdr">✔️ <?php echo esc_html($ff['label'] ?? 'Extra felszereltség'); ?></div>
-                            <div class="va-le-field-grid">
-                            <?php foreach ( $extras_opts as $ek => $el ): ?>
-                            <label class="va-le-check-lbl" style="font-size:12px;">
-                                <input type="checkbox" name="<?php echo esc_attr($fk); ?>[]" value="<?php echo esc_attr((string)$ek); ?>" <?php checked( in_array((string)$ek, $extras_val, true) ); ?>>
-                                <span><?php echo esc_html((string)$el); ?></span>
-                            </label>
-                            <?php endforeach; ?>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
 
                     </div><!-- .va-le-edit-main -->
                         <?php if ( $site_type === 'jarmu' && class_exists('VA_Vehicle_Catalog') ):
@@ -918,7 +884,12 @@ class VA_Listing_Edit {
                             // Nem jarmu: generikus típus mezők
                             $type_extra_all = class_exists('VA_Meta_Fields') ? VA_Meta_Fields::get_type_extra_fields() : [];
                             $skip_in_generic = ['va_brand','va_model','va_caliber','va_year','va_license_req','va_body_type'];
-                            $type_extra_show  = array_filter($type_extra_all, fn($k) => !in_array($k,$skip_in_generic,true), ARRAY_FILTER_USE_KEY);
+                            $type_extra_show  = [];
+                            foreach ( $type_extra_all as $k => $f ) {
+                                if ( ! in_array( $k, $skip_in_generic, true ) ) {
+                                    $type_extra_show[ $k ] = $f;
+                                }
+                            }
                             $type_extra_checkboxes = array_filter($type_extra_show, fn($f) => ($f['type']??'')==='checkboxes');
                             $type_extra_regular    = array_filter($type_extra_show, fn($f) => ($f['type']??'')!=='checkboxes');
                             if ($type_extra_regular):
