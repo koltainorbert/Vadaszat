@@ -611,6 +611,10 @@ class VA_Settings_Page {
             'va_layout_bp_desktop_tablet'     => '1200',
             'va_layout_bp_tablet_mobile'      => '560',
             'va_layout_bp_sidebar_hide'       => '1100',
+            'va_layout_home_sidebar_side'     => 'left',  // left|right|none
+            'va_layout_grid_justify'          => 'start', // start|center|end
+            'va_layout_grid_justify_tablet'   => 'start',
+            'va_layout_grid_justify_mobile'   => 'start',
 
             // Card appearance
             'va_layout_card_radius'           => '6',
@@ -2444,9 +2448,17 @@ class VA_Settings_Page {
 
                 <h2>Hirdetés Rács</h2>
                 <table class="form-table">
-                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop oszlopok száma', 1, 6 ); ?>
-                    <?php self::field_num( 'va_layout_grid_cols_tablet', 'Tablet oszlopok száma', 1, 4 ); ?>
-                    <?php self::field_num( 'va_layout_grid_cols_mobile', 'Mobil oszlopok száma', 1, 2 ); ?>
+                    <?php self::field_select( 'va_layout_home_sidebar_side', 'Főoldal sidebar pozíció', [
+                        'left'  => '◀ Bal oldal (termékek jobbra)',
+                        'right' => '▶ Jobb oldal (termékek balra)',
+                        'none'  => '✕ Rejtve (termékek teljes szélességben)',
+                    ] ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop oszlopok száma (sor/kártya)', 1, 6 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_tablet', 'Tablet oszlopok száma (sor/kártya)', 1, 4 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_mobile', 'Mobil oszlopok száma (sor/kártya)', 1, 2 ); ?>
+                    <?php self::field_select( 'va_layout_grid_justify', 'Rács igazítás — Desktop', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>
+                    <?php self::field_select( 'va_layout_grid_justify_tablet', 'Rács igazítás — Tablet', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>
+                    <?php self::field_select( 'va_layout_grid_justify_mobile', 'Rács igazítás — Mobil', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>
                     <?php self::field_num( 'va_layout_grid_gap', 'Kártyák közti gap (px)', 4, 40 ); ?>
                     <?php self::field_num( 'va_layout_bp_desktop_tablet', 'Töréspont: desktop → tablet (px)', 680, 2000 ); ?>
                     <?php self::field_num( 'va_layout_bp_tablet_mobile', 'Töréspont: tablet → mobil (px)', 320, 1200 ); ?>
