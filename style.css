@@ -2235,16 +2235,13 @@ body.sl-viewer-open { overflow: hidden; }
   }
 }
 
-/* ── Grid — 4 egyforma oszlop ───────────────────────────────────── */
+/* ── Grid (vcp) — oszlopszámot a dinamikus layout CSS adja ─────── */
 .vcp-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
   padding-top: 30px;
 }
-@media (max-width: 1200px) { .vcp-grid { grid-template-columns: repeat(3, 1fr); } }
-@media (max-width: 820px)  { .vcp-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
-@media (max-width: 460px)  { .vcp-grid { grid-template-columns: 1fr; } }
+@media (max-width: 820px)  { .vcp-grid { gap: 12px; } }
 
 /* ── Főoldal sidebar layout ─────────────────────────────────────── */
 .va-home-layout {
