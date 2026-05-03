@@ -804,6 +804,12 @@ add_action( 'wp_enqueue_scripts', function () {
     $layout_bp_tablet_mobile     = va_design_int_option( 'va_layout_bp_tablet_mobile', 560, 320, 1200 );
     $layout_bp_sidebar_hide      = va_design_int_option( 'va_layout_bp_sidebar_hide', 1100, 480, 1800 );
 
+    $allowed_justify             = [ 'start', 'center', 'end' ];
+    $layout_home_sidebar_side    = sanitize_key( get_option( 'va_layout_home_sidebar_side', 'left' ) );
+    $layout_grid_justify         = in_array( get_option( 'va_layout_grid_justify', 'start' ), $allowed_justify, true ) ? get_option( 'va_layout_grid_justify' ) : 'start';
+    $layout_grid_justify_tablet  = in_array( get_option( 'va_layout_grid_justify_tablet', 'start' ), $allowed_justify, true ) ? get_option( 'va_layout_grid_justify_tablet' ) : 'start';
+    $layout_grid_justify_mobile  = in_array( get_option( 'va_layout_grid_justify_mobile', 'start' ), $allowed_justify, true ) ? get_option( 'va_layout_grid_justify_mobile' ) : 'start';
+
     $layout_card_radius          = va_design_int_option( 'va_layout_card_radius', 6, 0, 28 );
     $layout_card_border_alpha    = va_design_float_option( 'va_layout_card_border_alpha', 0.08, 0, 1 );
     $layout_card_pad_y           = va_design_int_option( 'va_layout_card_padding_y', 14, 6, 40 );
@@ -945,9 +951,10 @@ add_action( 'wp_enqueue_scripts', function () {
     '.va-main-content{padding:' . $layout_main_pad_y . 'px ' . $layout_main_pad_x . 'px;}' .
     '.home-template .va-main-content,.home .va-main-content,.front-page .va-main-content{padding:' . $layout_main_pad_y . 'px ' . $layout_home_pad_x . 'px;}' .
     '.va-sidebar.va-sidebar--right{width:' . $layout_sidebar_width . 'px;top:calc(var(--nav) + ' . $layout_sidebar_top . 'px);height:calc(100vh - var(--nav) - ' . $layout_sidebar_top . 'px);display:' . ( $layout_show_sidebar ? 'block' : 'none' ) . ';}' .
-    '.va-grid{grid-template-columns:repeat(' . $layout_cols_desktop . ',minmax(0,1fr));gap:' . $layout_grid_gap . 'px;}' .
-    '@media (max-width:' . $layout_bp_desktop_tablet . 'px){.va-grid{grid-template-columns:repeat(' . $layout_cols_tablet . ',minmax(0,1fr));}}' .
-    '@media (max-width:' . $layout_bp_tablet_mobile . 'px){.va-grid{grid-template-columns:repeat(' . $layout_cols_mobile . ',minmax(0,1fr));}}' .
+    '.va-grid{grid-template-columns:repeat(' . $layout_cols_desktop . ',minmax(0,1fr));gap:' . $layout_grid_gap . 'px;justify-content:' . $layout_grid_justify . ';}' .
+    '@media (max-width:' . $layout_bp_desktop_tablet . 'px){.va-grid{grid-template-columns:repeat(' . $layout_cols_tablet . ',minmax(0,1fr));justify-content:' . $layout_grid_justify_tablet . ';}}' .
+    '@media (max-width:' . $layout_bp_tablet_mobile . 'px){.va-grid{grid-template-columns:repeat(' . $layout_cols_mobile . ',minmax(0,1fr));justify-content:' . $layout_grid_justify_mobile . ';}}' .
+    ( $layout_home_sidebar_side === 'right' ? '.va-home-layout{grid-template-columns:1fr 240px;}.va-home-sidebar{order:2;}.va-home-main{order:1;}@media(max-width:900px){.va-home-layout{grid-template-columns:1fr;}.va-home-sidebar,.va-home-main{order:unset;}}' : ( $layout_home_sidebar_side === 'none' ? '.va-home-sidebar{display:none!important;}.va-home-layout{grid-template-columns:1fr!important;}' : '' ) ) .
     '@media (max-width:' . $layout_bp_sidebar_hide . 'px){.va-sidebar.va-sidebar--right{display:none !important;}.va-main-content{padding:' . $layout_main_pad_y . 'px ' . max( 10, min( 20, $layout_main_pad_x ) ) . 'px;}}' .
     '.va-card{border-radius:' . $layout_card_radius . 'px;border-color:rgba(255,255,255,' . $layout_card_border_alpha . ');}' .
     '.va-card:hover{transform:translateY(-' . $layout_card_hover_lift . 'px);box-shadow:0 8px 30px rgba(0,0,0,' . ( $layout_card_shadow_strength / 100 ) . '),0 0 20px rgba(255,0,0,' . ( $layout_card_shadow_red / 100 ) . ');}' .
