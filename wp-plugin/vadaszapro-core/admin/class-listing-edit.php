@@ -109,8 +109,14 @@ class VA_Listing_Edit {
         // Meta mezők mentése
         foreach ( VA_Meta_Fields::listing_fields() as $key => $f ) {
             if ( ! empty( $f['readonly'] ) ) continue;
-            if ( $f['type'] === 'checkbox' ) {
+            $ftype = $f['type'] ?? 'text';
+            if ( $ftype === 'checkbox' ) {
                 update_post_meta( $post_id, $key, isset( $_POST[ $key ] ) ? '1' : '0' );
+            } elseif ( $ftype === 'checkboxes' ) {
+                $raw_arr = isset( $_POST[ $key ] ) && is_array( $_POST[ $key ] )
+                    ? array_map( 'sanitize_key', (array) $_POST[ $key ] )
+                    : [];
+                update_post_meta( $post_id, $key, wp_json_encode( $raw_arr ) );
             } elseif ( isset( $_POST[ $key ] ) ) {
                 update_post_meta( $post_id, $key, sanitize_text_field( wp_unslash( $_POST[ $key ] ) ) );
             }
@@ -662,6 +668,76 @@ class VA_Listing_Edit {
                             </div>
                         </div>
                         <?php endif; ?>
+
+                        <!-- Típusfüggő mezők (minden site type) -->
+                        <?php
+                        $type_extra_all   = class_exists('VA_Meta_Fields') ? VA_Meta_Fields::get_type_extra_fields() : [];
+                        $already_hardcoded = ['va_brand','va_model','va_caliber','va_year','va_license_req'];
+                        $type_extra_show  = array_filter( $type_extra_all, fn($k) => ! in_array($k, $already_hardcoded, true), ARRAY_FILTER_USE_KEY );
+                        $type_extra_checkboxes = array_filter( $type_extra_show, fn($f) => ($f['type']??'') === 'checkboxes', ARRAY_FILTER_USE_VALUE );
+                        $type_extra_regular    = array_filter( $type_extra_show, fn($f) => ($f['type']??'') !== 'checkboxes', ARRAY_FILTER_USE_VALUE );
+                        if ( $type_extra_regular ):
+                        ?>
+                        <div class="va-le-card">
+                            <div class="va-le-card-hdr">🔧 Típusfüggő adatok</div>
+                            <div class="va-le-field-grid">
+                            <?php foreach ( $type_extra_regular as $fk => $ff ):
+                                $ftype  = $ff['type'] ?? 'text';
+                                $flabel = esc_html( $ff['label'] ?? $fk );
+                                $fval   = $get_meta( $fk );
+                                $fname  = esc_attr( $fk );
+                                $fmin   = isset($ff['min']) ? ' min="'.esc_attr((string)$ff['min']).'"' : '';
+                                $fmax   = isset($ff['max']) ? ' max="'.esc_attr((string)$ff['max']).'"' : '';
+                            ?>
+                            <div class="va-le-field">
+                                <?php if ( $ftype !== 'checkbox' ): ?>
+                                <label class="va-le-lbl"><?php echo $flabel; ?></label>
+                                <?php endif; ?>
+                                <?php if ( $ftype === 'select' ): ?>
+                                    <select name="<?php echo $fname; ?>" class="va-le-select">
+                                        <option value="">— Nincs megadva —</option>
+                                        <?php foreach ( ($ff['options'] ?? []) as $ov => $ol ): ?>
+                                        <option value="<?php echo esc_attr((string)$ov); ?>" <?php selected($fval,(string)$ov); ?>><?php echo esc_html((string)$ol); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                <?php elseif ( $ftype === 'checkbox' ): ?>
+                                    <label class="va-le-check-lbl">
+                                        <input type="checkbox" name="<?php echo $fname; ?>" value="1" <?php checked($fval,'1'); ?>>
+                                        <span><?php echo $flabel; ?></span>
+                                    </label>
+                                <?php elseif ( $ftype === 'date' ): ?>
+                                    <input type="date" name="<?php echo $fname; ?>" value="<?php echo esc_attr($fval); ?>" class="va-le-input">
+                                <?php elseif ( $ftype === 'number' ): ?>
+                                    <input type="number" name="<?php echo $fname; ?>" value="<?php echo esc_attr($fval); ?>" class="va-le-input"<?php echo $fmin.$fmax; ?>>
+                                <?php else: ?>
+                                    <input type="text" name="<?php echo $fname; ?>" value="<?php echo esc_attr($fval); ?>" class="va-le-input">
+                                <?php endif; ?>
+                            </div>
+                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Extra felszereltség (checkboxes) -->
+                        <?php foreach ( $type_extra_checkboxes as $fk => $ff ):
+                            if ( ! class_exists('VA_Vehicle_Catalog') ) continue;
+                            $extras_opts = VA_Vehicle_Catalog::get_extras_options();
+                            $extras_raw  = $get_meta( $fk );
+                            $extras_val  = json_decode( $extras_raw, true );
+                            if ( ! is_array($extras_val) ) $extras_val = [];
+                        ?>
+                        <div class="va-le-card">
+                            <div class="va-le-card-hdr">✔️ <?php echo esc_html($ff['label'] ?? 'Extra felszereltség'); ?></div>
+                            <div class="va-le-field-grid">
+                            <?php foreach ( $extras_opts as $ek => $el ): ?>
+                            <label class="va-le-check-lbl" style="font-size:12px;">
+                                <input type="checkbox" name="<?php echo esc_attr($fk); ?>[]" value="<?php echo esc_attr((string)$ek); ?>" <?php checked( in_array((string)$ek, $extras_val, true) ); ?>>
+                                <span><?php echo esc_html((string)$el); ?></span>
+                            </label>
+                            <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
 
                     </div><!-- .va-le-edit-main -->
 
