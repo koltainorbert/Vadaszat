@@ -95,6 +95,9 @@ class VA_Ajax {
         $price_type  = sanitize_key( $_POST['price_type'] ?? 'fixed' );
         $phone       = sanitize_text_field( wp_unslash( $_POST['phone']    ?? '' ) );
         $location    = sanitize_text_field( wp_unslash( $_POST['location'] ?? '' ) );
+        if ( $location === '' ) {
+            $location = 'Veszprém Gyulafirátót';
+        }
         $brand       = sanitize_text_field( wp_unslash( $_POST['brand']    ?? '' ) );
         $model       = sanitize_text_field( wp_unslash( $_POST['model']    ?? '' ) );
         $caliber     = sanitize_text_field( wp_unslash( $_POST['caliber']  ?? '' ) );
@@ -119,6 +122,7 @@ class VA_Ajax {
             'va_price_type'  => $price_type,
             'va_phone'       => $phone,
             'va_location'    => $location,
+            'va_email_show'  => '1',
             'va_brand'       => $brand,
             'va_model'       => $model,
             'va_caliber'     => $caliber,
@@ -249,6 +253,9 @@ class VA_Ajax {
         $price_type  = sanitize_key( $_POST['price_type'] ?? 'fixed' );
         $phone       = sanitize_text_field( wp_unslash( $_POST['phone']  ?? '' ) );
         $location    = sanitize_text_field( wp_unslash( $_POST['location'] ?? '' ) );
+        if ( $location === '' ) {
+            $location = 'Veszprém Gyulafirátót';
+        }
         $brand       = sanitize_text_field( wp_unslash( $_POST['brand']  ?? '' ) );
         $model       = sanitize_text_field( wp_unslash( $_POST['model']  ?? '' ) );
         $caliber     = sanitize_text_field( wp_unslash( $_POST['caliber'] ?? '' ) );
@@ -295,6 +302,7 @@ class VA_Ajax {
             'va_price_type'  => $price_type,
             'va_phone'       => $phone,
             'va_location'    => $location,
+            'va_email_show'  => '1',
             'va_brand'       => $brand,
             'va_model'       => $model,
             'va_caliber'     => $caliber,
