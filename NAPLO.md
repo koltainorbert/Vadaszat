@@ -2,6 +2,26 @@
 
 ---
 
+## 2026. 05. 03. – Session #175 (Admin szerkesztő: frontend-forma igazítás, duplikált blokkok törlése)
+
+### Mit csinaltunk [x]
+- [x] Az admin szerkesztőben frontend-szerű vizuális felülírások bekerültek (mezők, címkék, 2 oszlopos rács, piros fókusz, checkbox stílus)
+- [x] Új `Alap adatok` blokk felülre: `Járműkategória`, `Állapot`, `Helyszín (város)`
+- [x] A `Kapcsolat` blokkból a `Helység` duplikáció kivezetve (helyette felül az `Alap adatok` részben)
+- [x] A bent maradt régi, duplikált `Típusfüggő` + régi `Extra felszereltség` blokk teljesen eltávolítva
+- [x] A nem-jármű generikus ágban az `array_filter(..., ARRAY_FILTER_USE_KEY)` kiváltva kompatibilis foreach megoldásra
+- [x] Módosítás átvezetve source + root mirror fájlokra
+- [x] Hibavizsgálat lefuttatva az érintett két fájlra, nincs új hiba
+- [x] Deploy lefuttatva (`Deploy All`) LocalWP-re
+
+### Hol tartunk
+Az admin meglévő hirdetés szerkesztő oldal közelebb került a képeken mutatott frontend feladási formához, és a korábbi duplikált/széteső blokkok megszűntek.
+
+### TODO
+- [ ] Frontend/admin vizuális ellenőrzés: a szerkesztő oldalon az elrendezés és a szekció-sorrend pixelpontos finomhangolása a képekhez
+
+---
+
 ## 2026. 05. 03. – Session #174 (Hirdetés állítás név + 2–10 desktop rács + fix 4 oszlop feloldás)
 
 ### Mit csinaltunk [x]
