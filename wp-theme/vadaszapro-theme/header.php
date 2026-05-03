@@ -437,11 +437,13 @@
                 <?php echo esc_html( $home_sub ); ?>
             </p>
             <div class="vh__actions">
-                <?php if ( $submit_page ): ?>
-                <a href="<?php echo esc_url( get_permalink($submit_page) ); ?>" class="vh__btn vh__btn--primary">
+                <?php
+                $contact_page = get_page_by_path( 'kapcsolat' );
+                $contact_url  = $contact_page ? get_permalink( $contact_page ) : home_url( '/kapcsolat' );
+                ?>
+                <a href="<?php echo esc_url( $contact_url ); ?>" class="vh__btn vh__btn--primary">
                     <?php echo esc_html( $home_cta_1 ); ?>
                 </a>
-                <?php endif; ?>
                 <a href="<?php echo esc_url( $search_page ? get_permalink($search_page) : home_url('/hirdetes') ); ?>" class="vh__btn vh__btn--ghost">
                     <?php echo esc_html( $home_cta_2 ); ?>
                 </a>
