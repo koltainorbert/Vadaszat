@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 03. – Session #177 (Teljes git szinkron + hordozhato allapot megerositese)
+
+### Mit csinaltunk [x]
+- [x] Teljes branch szinkron rendezve: rebase a tavoli `main`-re
+- [x] Rebase konfliktus feloldva a `NAPLO.md` fajlban
+- [x] Minden lokalis commit pusholva a tavoli tarhelyre
+- [x] Vegallapot ellenorizve: lokalis `main` = `origin/main` (nincs elteres)
+
+### Hol tartunk
+A teljes aktualis allapot fent van gitben, es uj WordPress telepitesnel a plugin/theme kod ugyanebben a formaban telepitheto. A plugin gyari beallitasokat is betolt (`factory-defaults`) uj telepitesnel.
+
+---
+
 ## 2026. 05. 03. – Session #176 (Email mindig ON + helység mindig kitöltve)
 
 ### Mit csinaltunk [x]
