@@ -245,6 +245,10 @@ class VA_Settings_Page {
             'va_lh_home_hero_sub'          => '1.60',
             'va_lh_kat_hero_title'         => '1.06',
             'va_lh_kat_hero_sub'           => '1.70',
+
+            // Hero alcím vastagság
+            'va_weight_home_hero_sub'      => '400',
+            'va_weight_kat_hero_sub'       => '400',
             'va_lh_tax_hero_title'         => '1.05',
             'va_lh_tax_hero_lead'          => '1.75',
             'va_lh_contact_hero_title'     => '1.02',
@@ -456,6 +460,8 @@ class VA_Settings_Page {
             'va_size_footer_bottom',
             'va_weight_footer_title',
             'va_weight_footer_link',
+            'va_weight_home_hero_sub',
+            'va_weight_kat_hero_sub',
             'va_mobile_factor_header',
             'va_mobile_factor_footer',
             'va_hf_header_height',
@@ -1688,11 +1694,13 @@ class VA_Settings_Page {
                     <?php self::field_num( 'va_size_home_hero_badge',    'Főoldal hero badge méret (px)', 8, 32 ); ?>
                     <?php self::field_num( 'va_size_home_hero_title',    'Főoldal hero cím méret (px)', 24, 120 ); ?>
                     <?php self::field_num( 'va_size_home_hero_sub',      'Főoldal hero alcím méret (px)', 10, 42 ); ?>
+                    <?php self::field_select( 'va_weight_home_hero_sub',  'Főoldal hero alcím vastagság', $weights ); ?>
                     <?php self::field_num( 'va_size_home_hero_btn',      'Főoldal hero gomb szövegméret (px)', 10, 28 ); ?>
 
                     <?php self::field_num( 'va_size_kat_hero_badge',     'Kategória hero badge méret (px)', 8, 32 ); ?>
                     <?php self::field_num( 'va_size_kat_hero_title',     'Kategória hero cím méret (px)', 20, 110 ); ?>
                     <?php self::field_num( 'va_size_kat_hero_sub',       'Kategória hero alcím méret (px)', 10, 40 ); ?>
+                    <?php self::field_select( 'va_weight_kat_hero_sub',   'Kategória hero alcím vastagság', $weights ); ?>
                     <?php self::field_num( 'va_size_kat_hero_stat_num',  'Kategória hero stat szám méret (px)', 10, 44 ); ?>
                     <?php self::field_num( 'va_size_kat_hero_stat_label','Kategória hero stat felirat méret (px)', 8, 24 ); ?>
 

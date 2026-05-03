@@ -669,6 +669,9 @@ add_action( 'wp_enqueue_scripts', function () {
     $lh_home_hero_sub      = va_design_float_option( 'va_lh_home_hero_sub', 1.60, 0.8, 2.8 );
     $lh_kat_hero_title     = va_design_float_option( 'va_lh_kat_hero_title', 1.06, 0.8, 2.4 );
     $lh_kat_hero_sub       = va_design_float_option( 'va_lh_kat_hero_sub', 1.70, 0.8, 2.8 );
+
+    $home_hero_sub_weight  = va_design_weight_option( 'va_weight_home_hero_sub', '400' );
+    $kat_hero_sub_weight   = va_design_weight_option( 'va_weight_kat_hero_sub', '400' );
     $lh_tax_hero_title     = va_design_float_option( 'va_lh_tax_hero_title', 1.05, 0.8, 2.4 );
     $lh_tax_hero_lead      = va_design_float_option( 'va_lh_tax_hero_lead', 1.75, 0.8, 2.8 );
     $lh_contact_hero_title = va_design_float_option( 'va_lh_contact_hero_title', 1.02, 0.8, 2.4 );
@@ -1027,7 +1030,7 @@ add_action( 'wp_enqueue_scripts', function () {
     // Hero méretek – összes oldal
     $css .= '.vh__badge{font-size:' . $home_hero_badge_css . ' !important;background:' . $hero_badge_bg . ' !important;border-color:' . $hero_badge_border . ' !important;color:' . $hero_badge_text . ' !important;}' .
     '.vh__title{font-size:' . $home_hero_title_css . ' !important;line-height:' . $lh_home_hero_title . ' !important;color:' . $hero_title_color . ' !important;}' .
-    '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;color:' . $hero_sub_color . ' !important;}' .
+    '.vh__sub{font-size:' . $home_hero_sub_css . ' !important;line-height:' . $lh_home_hero_sub . ' !important;font-weight:' . $home_hero_sub_weight . ' !important;color:' . $hero_sub_color . ' !important;}' .
     '.vh__btn{font-size:' . $home_hero_btn_css . ' !important;}' .
     '.vh__btn--primary{background:' . $hero_btn_primary_bg . ' !important;color:' . $hero_btn_primary_text . ' !important;box-shadow:0 0 28px ' . $hero_btn_primary_glow . ' !important;}' .
     '.vh__btn--primary:hover{background:' . $hero_btn_primary_hover . ' !important;}' .
@@ -1064,7 +1067,7 @@ add_action( 'wp_enqueue_scripts', function () {
 
     '.vcp-hero__badge{font-size:' . $kat_hero_badge_css . ' !important;}' .
     '.vcp-hero__title{font-size:' . $kat_hero_title_css . ' !important;line-height:' . $lh_kat_hero_title . ' !important;}' .
-    '.vcp-hero__sub{font-size:' . $kat_hero_sub_css . ' !important;line-height:' . $lh_kat_hero_sub . ' !important;}' .
+    '.vcp-hero__sub{font-size:' . $kat_hero_sub_css . ' !important;line-height:' . $lh_kat_hero_sub . ' !important;font-weight:' . $kat_hero_sub_weight . ' !important;}' .
     '.vcp-hero__stat-n{font-size:' . $kat_hero_stat_num_css . ' !important;}' .
     '.vcp-hero__stat-l{font-size:' . $kat_hero_stat_lbl_css . ' !important;}' .
 
