@@ -2477,7 +2477,7 @@ class VA_Settings_Page {
                         'right' => '▶ Jobb oldal (termékek balra)',
                         'none'  => '✕ Rejtve (termékek teljes szélességben)',
                     ] ); ?>
-                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop oszlopok száma (sor/kártya)', 1, 6 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop oszlopok száma (sor/kártya)', 2, 10 ); ?>
                     <?php self::field_num( 'va_layout_grid_cols_tablet', 'Tablet oszlopok száma (sor/kártya)', 1, 4 ); ?>
                     <?php self::field_num( 'va_layout_grid_cols_mobile', 'Mobil oszlopok száma (sor/kártya)', 1, 2 ); ?>
                     <?php self::field_select( 'va_layout_grid_justify', 'Rács igazítás — Desktop', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>
@@ -2847,7 +2847,7 @@ class VA_Settings_Page {
                         'right' => 'Jobb oldali sidebar (termékek balra)',
                         'none'  => 'Sidebar kikapcsolva (teljes szélesség)',
                     ] ); ?>
-                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop: oszlop/sor', 1, 6 ); ?>
+                    <?php self::field_num( 'va_layout_grid_cols_desktop', 'Desktop: oszlop/sor', 2, 10 ); ?>
                     <?php self::field_num( 'va_layout_grid_cols_tablet', 'Tablet: oszlop/sor', 1, 4 ); ?>
                     <?php self::field_num( 'va_layout_grid_cols_mobile', 'Mobil: oszlop/sor', 1, 2 ); ?>
                     <?php self::field_select( 'va_layout_grid_justify', 'Desktop igazítás', [ 'start' => 'Balra', 'center' => 'Középre', 'end' => 'Jobbra' ] ); ?>

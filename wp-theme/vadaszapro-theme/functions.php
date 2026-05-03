@@ -796,7 +796,7 @@ add_action( 'wp_enqueue_scripts', function () {
     $layout_sidebar_top          = va_design_int_option( 'va_layout_right_sidebar_sticky_top', 48, 0, 180 );
     $layout_show_sidebar         = get_option( 'va_layout_show_right_sidebar', '1' ) === '1';
 
-    $layout_cols_desktop         = va_design_int_option( 'va_layout_grid_cols_desktop', 4, 1, 6 );
+    $layout_cols_desktop         = va_design_int_option( 'va_layout_grid_cols_desktop', 4, 2, 10 );
     $layout_cols_tablet          = va_design_int_option( 'va_layout_grid_cols_tablet', 2, 1, 4 );
     $layout_cols_mobile          = va_design_int_option( 'va_layout_grid_cols_mobile', 1, 1, 2 );
     $layout_grid_gap             = va_design_int_option( 'va_layout_grid_gap', 14, 4, 40 );
