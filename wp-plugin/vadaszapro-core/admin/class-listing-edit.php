@@ -130,10 +130,12 @@ class VA_Listing_Edit {
         }
 
         // Taxonómiák
-        $cat_id    = (int)( $_POST['va_category'] ?? 0 );
-        $county_id = (int)( $_POST['va_county']   ?? 0 );
-        wp_set_object_terms( $post_id, $cat_id    ? [ $cat_id ]    : [], 'va_category' );
-        wp_set_object_terms( $post_id, $county_id ? [ $county_id ] : [], 'va_county'   );
+        $cat_id       = (int)( $_POST['va_category']  ?? 0 );
+        $county_id    = (int)( $_POST['va_county']    ?? 0 );
+        $condition_id = (int)( $_POST['va_condition'] ?? 0 );
+        wp_set_object_terms( $post_id, $cat_id       ? [ $cat_id ]       : [], 'va_category'  );
+        wp_set_object_terms( $post_id, $county_id    ? [ $county_id ]    : [], 'va_county'    );
+        wp_set_object_terms( $post_id, $condition_id ? [ $condition_id ] : [], 'va_condition' );
 
         // Listing meta szinkron
         if ( function_exists( 'va_sync_listing_meta' ) ) {
@@ -431,13 +433,17 @@ class VA_Listing_Edit {
         // Taxonómiák
         $categories   = get_terms([ 'taxonomy' => 'va_category', 'hide_empty' => false, 'number' => 200 ]);
         $counties     = get_terms([ 'taxonomy' => 'va_county',   'hide_empty' => false, 'number' => 100 ]);
+        $conditions   = get_terms([ 'taxonomy' => 'va_condition','hide_empty' => false, 'number' => 100 ]);
         if ( is_wp_error($categories) ) $categories = [];
         if ( is_wp_error($counties) )   $counties   = [];
+        if ( is_wp_error($conditions) ) $conditions = [];
 
-        $cur_cats   = $post ? wp_get_object_terms( $post_id, 'va_category', ['fields'=>'ids'] ) : [];
-        $cur_county = $post ? wp_get_object_terms( $post_id, 'va_county',   ['fields'=>'ids'] ) : [];
-        $cur_cat    = ( ! is_wp_error($cur_cats)   && $cur_cats   ) ? (int)$cur_cats[0]   : 0;
-        $cur_cty    = ( ! is_wp_error($cur_county) && $cur_county ) ? (int)$cur_county[0] : 0;
+        $cur_cats      = $post ? wp_get_object_terms( $post_id, 'va_category', ['fields'=>'ids'] ) : [];
+        $cur_county    = $post ? wp_get_object_terms( $post_id, 'va_county',   ['fields'=>'ids'] ) : [];
+        $cur_condition = $post ? wp_get_object_terms( $post_id, 'va_condition',['fields'=>'ids'] ) : [];
+        $cur_cat       = ( ! is_wp_error($cur_cats)      && $cur_cats      ) ? (int)$cur_cats[0]      : 0;
+        $cur_cty       = ( ! is_wp_error($cur_county)    && $cur_county    ) ? (int)$cur_county[0]    : 0;
+        $cur_cond      = ( ! is_wp_error($cur_condition) && $cur_condition ) ? (int)$cur_condition[0] : 0;
 
         // Felhasználók (max 200)
         $users       = get_users([ 'number' => 200, 'orderby' => 'display_name', 'order' => 'ASC' ]);
@@ -708,6 +714,19 @@ class VA_Listing_Edit {
                                 <?php endforeach; ?>
                             </select>
                         </div>
+
+                        <!-- Állapot -->
+                        <?php if ( $conditions ): ?>
+                        <div class="va-le-card">
+                            <div class="va-le-card-hdr">🔘 Állapot</div>
+                            <select name="va_condition" class="va-le-select">
+                                <option value="">— Nincs megadva —</option>
+                                <?php foreach ($conditions as $cond): ?>
+                                <option value="<?php echo (int)$cond->term_id; ?>" <?php selected($cur_cond, $cond->term_id); ?>><?php echo esc_html($cond->name); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <?php endif; ?>
 
                         <!-- Jelölések és beállítások -->
                         <?php if ( $fb_on('va_featured') || $fb_on('va_verified') || $fb_on('va_license_req') || $fb_on('va_expires') ): ?>
