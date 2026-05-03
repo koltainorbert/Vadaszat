@@ -53,6 +53,10 @@ class VA_User_System {
 
     /* ── URL átirányítások ─────────────────────────────── */
     public static function custom_login_url( $url, $redirect, $force_reauth ) {
+        // Admin redirect esetén mindig az eredeti wp-login.php maradjon
+        if ( $force_reauth || strpos( $redirect, admin_url(), 0 ) === 0 || strpos( $redirect, '/wp-admin', 0 ) !== false ) {
+            return $url;
+        }
         if ( ! self::is_login_enabled() ) {
             return home_url();
         }
