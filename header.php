@@ -444,12 +444,6 @@
             </div>
         </div>
 
-        <!-- Scroll jel -->
-        <div class="vh__scroll" aria-hidden="true" style="display:none">
-            <div class="vh__scroll-line"></div>
-            <div class="vh__scroll-dot"></div>
-        </div>
-        <script>if(window.innerWidth>=1025){document.querySelector('.vh__scroll').style.display='flex';}</script>
     </div>
     <?php endif; ?>
 
