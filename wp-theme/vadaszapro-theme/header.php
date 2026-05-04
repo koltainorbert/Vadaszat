@@ -103,13 +103,6 @@
                     }
                     return $result ?: $default;
                 })());
-                if ( $auctions_enabled ) {
-                    array_splice( $nav_items, 1, 0, [[
-                        'url'   => home_url('/aukcio'),
-                        'label' => '🔨 Aukciók',
-                        'class' => 'va-nav__item--accent',
-                    ]] );
-                }
                 foreach ( $nav_items as $item ):
                     $cls = 'va-nav__item' . ( $item['class'] ? ' ' . $item['class'] : '' );
                 ?>
