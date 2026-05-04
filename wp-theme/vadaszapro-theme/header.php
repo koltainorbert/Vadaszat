@@ -324,12 +324,36 @@
                         <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" defer></script>
                     <?php endif;
                 endif; ?>
-                <button class="va-hamburger" id="va-hamburger" aria-label="Men&uuml;">
-                    <span></span><span></span><span></span>
-                </button>
             </div>
+            <button class="va-hamburger" id="va-hamburger" aria-label="Men&uuml;" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
         </div>
     </header>
+    <script>
+    (function(){
+        var btn = document.getElementById('va-hamburger');
+        var nav = document.getElementById('va-main-nav');
+        if (!btn || !nav) return;
+        function close() {
+            nav.classList.remove('open');
+            btn.classList.remove('open');
+            btn.setAttribute('aria-expanded','false');
+            document.body.style.overflow = '';
+        }
+        btn.addEventListener('click', function(e){
+            e.stopPropagation();
+            var open = nav.classList.toggle('open');
+            btn.classList.toggle('open', open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            document.body.style.overflow = open ? 'hidden' : '';
+        });
+        document.addEventListener('click', function(e){
+            if (nav.classList.contains('open') && !nav.contains(e.target) && e.target !== btn) close();
+        });
+        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
+    })();
+    </script>
 
     <!-- ═══ HERO (csak főoldalon) ════════════════════ -->
     <?php if ( is_front_page() ):
