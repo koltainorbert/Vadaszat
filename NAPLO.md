@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 04. – Session #184 (Vegleges branding + feher szoveg + 14px + Sugo URL fix)
+
+### Mit csinaltunk [x]
+- [x] Brand kovetelmeny szerint globalis szovegcsere-szuro hozzaadva: `Vadaszapro`/`VadászApró`/`Weingartner Auto` -> `weingartnerauto.hu`
+- [x] Header brand default atallitva domain alakura (`weingartnerauto.hu`) legacy ertekek automatikus felulirassal
+- [x] Lablec `Sugo` link fixen a `/sugo/` URL-re allitva (mindket footer fajlban)
+- [x] Frontend globális tipografia es szin override: minden szoveg feher + 14px, visszafogottabb vastagsag
+- [x] Sugo oldal cimben a maradek `Vadaszapro` csere `weingartnerauto.hu` ertekre
+- [x] Modositasok atvezetve source + mirror fajlokba
+
+### Hol tartunk
+A lathato feluleten a branding domain alapu (`weingartnerauto.hu`), a Sugo link fix URL-re mutat, a szovegek globálisan feherek es 14px alapra kenyszeritettek.
+
+---
+
 ## 2026. 05. 04. – Session #183 (Weingartner rebrand + olvashatosagi tuning)
 
 ### Mit csinaltunk [x]
