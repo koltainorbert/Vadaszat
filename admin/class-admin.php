@@ -194,7 +194,7 @@ class VA_Admin {
         $current_user   = wp_get_current_user();
         $avatar         = get_avatar( $current_user->ID, 32 );
         $logout_url     = wp_logout_url( admin_url() );
-        $ap_panel_name  = (string) ( get_option( 'va_ap_panel_name', 'VadászApró' ) ?: 'VadászApró' );
+        $ap_panel_name  = (string) ( get_option( 'va_ap_panel_name', 'Weingartner Auto' ) ?: 'Weingartner Auto' );
         $ap_panel_icon  = (string) ( get_option( 'va_ap_panel_icon', '🎯' ) ?: '🎯' );
         $ap_logo_url    = (string) get_option( 'va_ap_logo_url', '' );
         $ap_logo_height = (int) ( get_option( 'va_ap_logo_height', 32 ) ?: 32 );
@@ -241,7 +241,7 @@ class VA_Admin {
         } elseif ( $pt === "va_auction" ) {
             $topbar_title = "Aukciók";
         } else {
-            $topbar_title = $titles[ $page ] ?? "VadászApró Admin";
+            $topbar_title = $titles[ $page ] ?? "Weingartner Auto Admin";
         }
 
         ?>
@@ -329,7 +329,7 @@ class VA_Admin {
         <div id="va-topbar">
             <div class="va-topbar__title">
                 <?php echo esc_html( $topbar_title ); ?>
-                <small>VadászApró</small>
+                <small>Weingartner Auto</small>
             </div>
             <div class="va-topbar__actions">
                 <a href="<?php echo esc_url( admin_url( "admin.php?page=vadaszapro-listing-edit" ) ); ?>" class="va-topbar__btn va-topbar__btn--primary">
