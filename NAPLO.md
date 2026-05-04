@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 04. – Session #182 (/sugo 404 fix: garantalt route)
+
+### Mit csinaltunk [x]
+- [x] Okazonositas: a `/sugo` URL 404 volt, mert nem mindenhol letezik kulon WordPress oldal ehhez a slughoz
+- [x] Javitas: tema szintu route kezelo hozzaadva (`template_redirect`), ami `/sugo` kereskor direkt a `page-sugo.php` template-et rendereli
+- [x] Modositas atvezetve source + theme mirror `functions.php` fajlba
+- [x] Hibavizsgalat lefuttatva (nincs uj hiba)
+
+### Hol tartunk
+A `/sugo` URL most mar oldal letrehozas nelkul is mukodik, es a teljes Sugo tartalom jelenik meg 404 helyett.
+
+---
+
 ## 2026. 05. 04. – Session #181 (Sugo link: tenyleges oldal URL automatikus feloldasa)
 
 ### Mit csinaltunk [x]
