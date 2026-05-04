@@ -27,6 +27,12 @@
     $f_contact_email  = trim( (string) get_option( 'va_contact_email', 'weingartnertrans@gmail.com' ) );
     $f_contact_phone  = trim( (string) get_option( 'va_billing_phone', '+36 20 943 8636' ) );
     $f_contact_addr   = trim( (string) get_option( 'va_billing_company_address', '8412 Veszprém, Alsó-Újsor utca 31.' ) );
+    if ( in_array( $f_brand_title, [ 'VadászApró', 'Vadaszapro' ], true ) ) {
+        $f_brand_title = 'Weingartner Auto';
+    }
+    if ( in_array( $f_copy_text, [ 'VadászApró – Minden jog fenntartva.', 'Vadaszapro - Minden jog fenntartva.' ], true ) ) {
+        $f_copy_text = 'Weingartner Auto - Minden jog fenntartva.';
+    }
     $f_contact_phone_href = preg_replace( '/[^0-9\+]/', '', $f_contact_phone );
     $f_legal_items = [
         [ 'label' => 'Adatvédelem',                         'url' => trim( (string) get_option( 'va_legal_url_adatvedelem', '/adatvedelmi-nyilatkozat' ) ) ],

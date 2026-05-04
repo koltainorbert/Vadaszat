@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 04. – Session #183 (Weingartner rebrand + olvashatosagi tuning)
+
+### Mit csinaltunk [x]
+- [x] Admin felulet lathato branding csere: `Vadaszapro` -> `Weingartner Auto` (topbar/panel cimek/default feliratok)
+- [x] Beallitas oldalak (`class-settings-page`) default branding atallitasa Weingartner nevre
+- [x] Footer branding default csere Weingartnerre + legacy ertek automatikus atiranyitas render idoben
+- [x] Frontend vizualis reset: narancs-kek hangsuly, kontrasztosabb header, 14px alap betumeret, visszafogottabb font-weight a fejlec/nav elemeken
+- [x] Modositasok atvezetve source + deployolt mirror fajlokba (theme + plugin)
+- [x] Hibavizsgalat lefuttatva az erintett PHP fajlokra (nincs uj hiba)
+
+### Hol tartunk
+A lathato feluletek arculata Weingartner iranyba fordult: olvashatobb fejléc, kisebb es nyugodtabb tipografia, narancs-kek hangsulyokkal.
+
+---
+
 ## 2026. 05. 04. – Session #182 (/sugo 404 fix: garantalt route)
 
 ### Mit csinaltunk [x]

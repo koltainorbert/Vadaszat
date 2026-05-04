@@ -195,6 +195,9 @@ class VA_Admin {
         $avatar         = get_avatar( $current_user->ID, 32 );
         $logout_url     = wp_logout_url( admin_url() );
         $ap_panel_name  = (string) ( get_option( 'va_ap_panel_name', 'Weingartner Auto' ) ?: 'Weingartner Auto' );
+        if ( in_array( trim( $ap_panel_name ), [ 'VadászApró', 'Vadaszapro' ], true ) ) {
+            $ap_panel_name = 'Weingartner Auto';
+        }
         $ap_panel_icon  = (string) ( get_option( 'va_ap_panel_icon', '🎯' ) ?: '🎯' );
         $ap_logo_url    = (string) get_option( 'va_ap_logo_url', '' );
         $ap_logo_height = (int) ( get_option( 'va_ap_logo_height', 32 ) ?: 32 );
