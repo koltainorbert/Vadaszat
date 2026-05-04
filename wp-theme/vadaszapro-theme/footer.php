@@ -120,7 +120,7 @@
                 echo va_social_bar( $ftr_style, $ftr_size );
             endif; ?>
             &copy; <?php echo date('Y'); ?> <?php echo esc_html( $f_copy_text ); ?> |
-            <a href="<?php echo esc_url(home_url('/adatvedelmi-nyilatkozat')); ?>"><?php echo esc_html( $f_privacy_bottom ); ?></a>
+            <a href="<?php echo esc_url(home_url('/adatkezeles/')); ?>"><?php echo esc_html( $f_privacy_bottom ); ?></a>
         </div>
     </footer>
 
