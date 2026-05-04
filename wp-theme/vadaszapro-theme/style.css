@@ -473,7 +473,7 @@ body { top:0 !important; }
 /* ── Mobil nav ── */
 @media (max-width: 960px) {
   .va-header__inner { grid-template-columns: auto 1fr auto; padding: 0 20px 0 0; }
-  .vh__content { padding: calc(var(--nav, 64px) + 10px) 22px 0; }
+  .va-nav {
     display: none;
     position: fixed;
     top: var(--nav); left: 0; right: 0;
