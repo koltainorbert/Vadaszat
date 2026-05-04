@@ -568,6 +568,7 @@ body { top:0 !important; }
 
 @media (max-width: 1100px) { .va-sidebar.va-sidebar--right { display: none; } }
 @media (max-width: 768px)  { .va-main-content { padding: 16px; } }
+@media (max-width: 1023px) { .va-main-content { padding-top: 10px; } }
 
 /* .va-grid oszlopszámot a Layout/Hirdetés beállítások dinamikus CSS-e adja */
 
