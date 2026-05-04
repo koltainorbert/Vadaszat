@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 05. 04. – Session #186 (Fejlec + kartya szinek visszaallitasa, admin szinallitas helyreallitva)
+
+### Mit csinaltunk [x]
+- [x] Eltavolitva a fejlécet es tipografiat `!important`-tel kenyszerito CSS blokk a theme style fajlbol
+- [x] Eltavolitva a globalis, admin beallitasokat feluliro vizualis reset (minden elem feher/14px kenyszer)
+- [x] Ellenorizve: maradtak csak normal tematikus szabalyok, amelyek mellett az admin szinbeallitasok ujra ervenyesulhetnek
+
+### Hol tartunk
+A fejléc es termekkartya szinek visszaalltak a normal tematikus mukodesre, az adminbol torteno szinallitas ujra mukodokepes.
+
+---
+
 ## 2026. 05. 04. – Session #185 (Branding fix validalas + allapot rogzites)
 
 ### Mit csinaltunk [x]

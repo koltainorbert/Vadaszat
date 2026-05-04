@@ -1347,43 +1347,6 @@ body.sl-viewer-open { overflow: hidden; }
 .sl__more-price { font-size: .78rem; color: var(--a); font-weight: 700; }
 
 
-.va-logo__text {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  letter-spacing: .04em !important;
-}
-
-.va-logo__text span {
-  color: #f28c28 !important;
-}
-
-.va-nav li > a,
-.va-nav__item {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  color: #fff !important;
-  letter-spacing: .03em !important;
-}
-
-.va-nav li > a::after,
-.va-nav__item::after {
-  background: #f28c28 !important;
-}
-
-.va-header__search {
-  border-color: rgba(242, 140, 40, .6) !important;
-  background: rgba(255,255,255,.08) !important;
-}
-
-.va-header__search-input {
-  font-size: 14px !important;
-  color: #fff !important;
-}
-
-.va-header__search-btn {
-  background: #f28c28 !important;
-}
-
 ::-webkit-scrollbar-thumb {
   background: rgba(242,140,40,.58);
 }
