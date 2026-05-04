@@ -585,7 +585,6 @@ body { top:0 !important; }
   .front-page .va-main-content,
   .va-main-content { padding-top: 5px !important; }
 }
-
 /* ──────────────────────────────────────────────────────────
    SIDEBAR WIDGET
 ────────────────────────────────────────────────────────── */
@@ -1809,11 +1808,12 @@ body.sl-viewer-open { overflow: hidden; }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .vh__content { padding: 0 22px; }
+  .vh { align-items: flex-start; height: 55vh; min-height: 320px; }
+  .vh__content { padding: calc(var(--nav, 66px) + 12px) 22px 0; }
   .vh__logo { max-width: min(340px, 82vw); margin-bottom: 12px; }
-  .vh__stats    { left: 22px; right: 22px; gap: 24px; bottom: 30px; }
+  .vh__stats    { left: 22px; right: 22px; gap: 24px; bottom: 20px; }
   .vh__scroll   { display: none; }
-  .vh__btn      { padding: 13px 22px; font-size: .88rem; }
+  .vh__btn      { padding: 11px 18px; font-size: .83rem; }
 }
 
 
