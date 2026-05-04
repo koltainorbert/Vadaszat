@@ -8,6 +8,7 @@
 - [x] Ellenoriztuk a legfrissebb commitot: a domain-branding javitasok benne vannak (`admin/class-admin.php`, `admin/class-settings-page.php`, `footer.php`, plugin mirror + theme mirror)
 - [x] Hibavizsgalat lefuttatva az erintett core/theme/admin fajlokra (nincs uj hiba)
 - [x] Gyors szovegellenorzes lefuttatva a lathato fejléc/lablec branding fallback pontokra
+- [x] Maradek lathato admin felirat csere: `VadászApró – Form szerkesztő` -> `weingartnerauto.hu – Form szerkesztő` (source + plugin mirror)
 
 ### Hol tartunk
 A szigoru branding korhoz tartozo valtoztatasok commitolva es fenn vannak a tavoli agban, a kod allapot stabil (nincs uj PHP hiba).
