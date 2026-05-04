@@ -83,21 +83,10 @@
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_account_title ); ?></div>
                 <?php
-                $login_enabled = get_option( 'va_enable_login', '1' ) === '1';
-                $register_enabled = get_option( 'va_enable_register', '1' ) === '1';
                 $fp = [
-                    'va-bejelentkezes' => 'Bejelentkezés',
-                    'va-regisztracio'  => 'Regisztráció',
-                    'va-fiok'          => 'Fiókom',
-                    'va-hirdetes-feladas' => 'Hirdetés feladása',
+                    'va-hirdetes-kereses' => 'Hirdetések böngészése',
                 ];
                 foreach ($fp as $slug => $label) {
-                    if ( $slug === 'va-bejelentkezes' && ! $login_enabled ) {
-                        continue;
-                    }
-                    if ( $slug === 'va-regisztracio' && ! $register_enabled ) {
-                        continue;
-                    }
                     $p = get_page_by_path($slug);
                     if ($p) echo '<a href="' . esc_url(get_permalink($p)) . '" class="va-footer__link">' . esc_html($label) . '</a>';
                 }
@@ -118,6 +107,7 @@
                     <a href="<?php echo esc_url( $legal_url ); ?>" class="va-footer__link"><?php echo esc_html( (string) $legal_item['label'] ); ?></a>
                 <?php endforeach; ?>
                 <?php $help_url = home_url( '/sugo/' ); ?>
+                <a href="<?php echo esc_url( home_url( '/adatkezeles/' ) ); ?>" class="va-footer__link">Adatkezelési tájékoztató</a>
                 <a href="<?php echo esc_url( $help_url ); ?>" class="va-footer__link"><?php echo esc_html( $f_link_help ); ?></a>
             </div>
         </div>
