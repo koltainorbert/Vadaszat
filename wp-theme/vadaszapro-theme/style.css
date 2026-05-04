@@ -1827,7 +1827,7 @@ body.sl-viewer-open { overflow: hidden; }
 
 /* Responsive */
 @media (max-width: 640px) {
-  .vh__content { padding: 0 22px; }
+  .vh__content { padding: calc(var(--nav, 64px) + 10px) 22px 0; }
   .vh__logo { max-width: min(340px, 82vw); margin-bottom: 12px; }
   .vh__stats    { left: 22px; right: 22px; gap: 24px; bottom: 30px; }
   .vh__scroll   { display: none; }
