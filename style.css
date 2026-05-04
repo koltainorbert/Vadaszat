@@ -578,6 +578,12 @@ body { top:0 !important; }
 .home-template .va-main-content,
 .home .va-main-content,
 .front-page .va-main-content { padding: 20px 28px; }
+@media (max-width: 1023px) {
+  .home-template .va-main-content,
+  .home .va-main-content,
+  .front-page .va-main-content,
+  .va-main-content { padding-top: 5px !important; }
+}
 
 /* ──────────────────────────────────────────────────────────
    SIDEBAR WIDGET
