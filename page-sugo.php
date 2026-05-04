@@ -189,111 +189,89 @@ get_header();
 
     <div class="va-help-shell">
         <header class="va-help-hero">
-            <div class="va-help-kicker">Felhasznaloi utmutato</div>
-            <h1 id="va-help-title">Teljes hasznalati utasitas a weingartnerauto.hu oldalahoz</h1>
+            <div class="va-help-kicker">Felhasználói útmutató</div>
+            <h1 id="va-help-title">Teljes használati útasítás a weingartnerauto.hu oldalához</h1>
             <p class="va-help-lead">
-                Ezen az oldalon osszegyujtottuk a latogatok szamara lathato funkciokat: hogyan keress, hogyan
-                hirdess, hogyan licitalj, es hogyan kezeld a fiokodat. Csak olyan informacio szerepel itt,
-                amit a felhasznalok is lathatnak az oldalon.
+                Ezen az oldalon összegyűjtöttük a látogatók számára látható funkciókat: hogyan keress, hogyan
+                böngéssz, és hogyan kérj kapcsolatfelvételt. Csak olyan információ szerepel itt,
+                amit a felhasználók is láthatnak az oldalon.
             </p>
             <div class="va-help-quick">
-                <a href="<?php echo esc_url( home_url( '/va-hirdetes-kereses' ) ); ?>">Hirdetes kereses</a>
-                <a href="<?php echo esc_url( home_url( '/va-hirdetes-feladas' ) ); ?>">Hirdetes feladas</a>
-                <a href="<?php echo esc_url( home_url( '/va-fiok' ) ); ?>">Fiokom</a>
+                <a href="<?php echo esc_url( home_url( '/va-hirdetes-kereses' ) ); ?>">Hirdetés keresése</a>
                 <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Kapcsolat</a>
             </div>
         </header>
 
         <div class="va-help-grid">
             <article class="va-help-section">
-                <h2>1. Elso lepesek uj latogatoknak</h2>
+                <h2>1. Első lépések új látogatóknak</h2>
                 <ol>
-                    <li>Nyisd meg a Hirdetes kereses oldalt, ahol az osszes talalatot listaban vagy racs nezetben latod.</li>
-                    <li>Ha hirdetest szeretnel feladni vagy kedvenceket menteni, regisztralj, majd jelentkezz be.</li>
-                    <li>A Fiokom oldalon utana egy helyen kezeled a sajat hirdeteseidet, licitjeidet es profilodat.</li>
+                    <li>Nyisd meg a Hirdetés keresése oldalt, ahol az összes találatot listában vagy rács nézetben látod.</li>
+                    <li>Ez egy magán oldal: fiók- és feltöltési funkciók nem érhetőek el látogatóknak.</li>
+                    <li>Ha kérdésed van, a Kapcsolat oldalon tudsz írni.</li>
                 </ol>
                 <div class="va-help-link-row">
-                    <a href="<?php echo esc_url( home_url( '/va-regisztracio' ) ); ?>">Regisztracio</a>
-                    <a href="<?php echo esc_url( home_url( '/va-bejelentkezes' ) ); ?>">Bejelentkezes</a>
+                    <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Kapcsolatfelvétel</a>
                 </div>
             </article>
 
             <article class="va-help-section">
-                <h2>2. Kereses es szures lepesrol lepesre</h2>
+                <h2>2. Keresés és szűrés lépésről lépésre</h2>
                 <ul>
-                    <li>Kulcsszora, kategoriara, megyere es allapotra tudsz szurni.</li>
-                    <li>Arszurovel minimum-maximum tartomanyt allithatsz.</li>
-                    <li>Rendezes: legujabb, ar novekvo, ar csokkeno, legtobb megtekintes.</li>
-                    <li>Atvalthatsz racs es lista nezet kozott, a neked kenyelmesebb bongeszeshez.</li>
-                    <li>A Reszletes kereso panelben tobb jarmu-specifikus szuro is elerheto (pl. marka, modell, evjarat, uzemanyag).</li>
+                    <li>Kulcsszóra, kategóriára, megyére és állapotra tudsz szűrni.</li>
+                    <li>Árszűrővel minimum–maximum tartományt állíthatsz.</li>
+                    <li>Rendezés: legújabb, ár növekvő, ár csökkenő, legtöbb megtekintés.</li>
+                    <li>Átválthatsz rács és lista nézet között, a neked kényelmesebb böngészéshez.</li>
+                    <li>A Részletes kereső panelben több jármű-specifikus szűrő is elérhető (pl. márka, modell, évjárat, üzemanyag).</li>
                 </ul>
             </article>
 
             <article class="va-help-section">
-                <h2>3. Mit latsz egy hirdetes adatlapjan?</h2>
+                <h2>3. Mit látsz egy hirdetés adatlapján?</h2>
                 <ul>
-                    <li>Kepek, cim, ar, helyszin, kategoria es egyeb adatok.</li>
-                    <li>Leiras blokk, ahol a hirdeto reszletes informaciot adhatott meg.</li>
-                    <li>Megtekintes szam es a hirdetes allapotara vonatkozo jelzesek.</li>
-                    <li>Bejelentkezett felhasznaloknal Kedvencek gomb (sziv ikon) a gyors menteshez.</li>
+                    <li>Képek, cím, ár, helyszín, kategória és egyéb adatok.</li>
+                    <li>Leírás blokk, ahol a hirdető részletes információt adhatott meg.</li>
+                    <li>Megtekintés szám és a hirdetés állapotára vonatkozó jelzések.</li>
+                    <li>A tartalom publikus olvasásra van optimalizálva.</li>
                 </ul>
             </article>
 
             <article class="va-help-section">
-                <h2>4. Aukciok hasznalata</h2>
+                <h2>4. Fiók funkciók</h2>
                 <ul>
-                    <li>Az Aukcio oldalon ugyanugy tudsz keresni es rendezni, mint a hirdeteseknel.</li>
-                    <li>Egy aukcio adatlapjan latszik a kikiatasi ar, az aktualis licit, a licitek szama es a visszaszamlalas.</li>
-                    <li>Licit csak bejelentkezve adhato le.</li>
-                    <li>Aukciot kedvencekhez is hozzaadhatsz, ha be vagy jelentkezve.</li>
+                    <li>A nyilvános látogatók számára a fiókba lépés ki van kapcsolva.</li>
+                    <li>Új fiók létrehozása és fiókkezelés jelenleg nem érhető el.</li>
+                    <li>Az oldal tartalma fiók használata nélkül böngészhető.</li>
+                </ul>
+            </article>
+
+            <article class="va-help-section">
+                <h2>5. Tartalom feltöltés</h2>
+                <ul>
+                    <li>Ez a funkció látogatóknak nem érhető el.</li>
+                    <li>A weboldal jelenleg olvasási módban üzemel.</li>
+                    <li>A publikus felületen csak a már feltöltött hirdetések böngészése történik.</li>
+                </ul>
+            </article>
+
+            <article class="va-help-section">
+                <h2>6. Fiókom: mit lehet kezelni?</h2>
+                <ul>
+                    <li>A fiókfunkciók a publikus nézetben ki vannak kapcsolva.</li>
+                    <li>A látogatók csak olvashatják és böngészhetik a hirdetéseket.</li>
+                    <li>További információért használd a Kapcsolat oldalt.</li>
+                </ul>
+            </article>
+
+            <article class="va-help-section">
+                <h2>7. Biztonságos használat röviden</h2>
+                <ul>
+                    <li>Csak valós, ellenőrizhető adatot adj meg hirdetésben és kapcsolatfelvételkor.</li>
+                    <li>Személyes találkozót lehetőség szerint nyilvános helyen szervezz.</li>
+                    <li>Gyanús ajánlatnál vagy átverés-gyanú esetén használd a Kapcsolat oldalt.</li>
                 </ul>
                 <div class="va-help-link-row">
-                    <a href="<?php echo esc_url( home_url( '/aukcio' ) ); ?>">Aukciok</a>
-                </div>
-            </article>
-
-            <article class="va-help-section">
-                <h2>5. Fiok, bejelentkezes, jelszo</h2>
-                <ul>
-                    <li>Regisztracional a kotelezo mezok csillaggal jeloltek.</li>
-                    <li>Bejelentkezesnel kerheted az Emlkezz ram opciot.</li>
-                    <li>Elfelejtett jelszo linken keresztul jelszo-visszaallito e-mail kerheto.</li>
-                    <li>A Fiokom oldalon modosithato a profilnev, telefonszam, profilkep es jelszo.</li>
-                </ul>
-            </article>
-
-            <article class="va-help-section">
-                <h2>6. Hirdetes feladasa es szerkesztese</h2>
-                <ul>
-                    <li>A feladasi urlapon megadhato: cim, kategoria, megye, allapot, helyszin, ar, ar-tipus, leiras, telefonszam.</li>
-                    <li>Jarmu hirdetesnel tovabbi mezok jelenhetnek meg (pl. marka, modell, kivitel, evjarat, kilometer).</li>
-                    <li>Tobb kep toltheto fel, a boritokep kijelolheto, a kepsorrend athuzassal rendezheto.</li>
-                    <li>A mar feladott hirdetes a Fiokom oldalon barmikor szerkesztheto vagy torolheto.</li>
-                </ul>
-                <div class="va-help-link-row">
-                    <a href="<?php echo esc_url( home_url( '/va-hirdetes-feladas' ) ); ?>">Hirdetes feladas</a>
-                </div>
-            </article>
-
-            <article class="va-help-section">
-                <h2>7. Fiokom: mit lehet kezelni?</h2>
-                <ul>
-                    <li>Hirdeteseim: sajat listad, statuszokkal, szerkesztes/torles lehetoseggel.</li>
-                    <li>Licitjeim: aukcios ajanlataid listaja (ha aukcio aktiv az oldalon).</li>
-                    <li>Kedvenceim: mentett hirdetesek es figyelt aukciok egy helyen.</li>
-                    <li>Profilom: szemelyes adatok, jelszocsere, profilkep.</li>
-                </ul>
-            </article>
-
-            <article class="va-help-section">
-                <h2>8. Biztonsagos hasznalat roviden</h2>
-                <ul>
-                    <li>Csak valos, ellenorizheto adatot adj meg hirdetesben es kapcsolatfelvetelkor.</li>
-                    <li>Szemelyes talalkozot lehetoseg szerint nyilvanos helyen szervezz.</li>
-                    <li>Gyanus ajanlatnal vagy atveres-gyanu eseten hasznald a Kapcsolat oldalt.</li>
-                </ul>
-                <div class="va-help-link-row">
-                    <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Kapcsolatfelvetel</a>
+                    <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Kapcsolatfelvétel</a>
                 </div>
             </article>
         </div>
@@ -302,26 +280,26 @@ get_header();
 
         <div class="va-help-mini">
             <div class="va-help-mini-box">
-                <strong>Ha nem talalsz menupontot</strong>
-                Bizonyos funkciok idoszakosan vagy beallitas szerint ki lehetnek kapcsolva.
+                <strong>Ha nem találsz menüpontot</strong>
+                Bizonyos funkciók időszakosan vagy beállítás szerint ki lehetnek kapcsolva.
             </div>
             <div class="va-help-mini-box">
-                <strong>Hibabejelentes</strong>
-                A pontos oldal URL-jevel es rovid leirassal gyorsabban tudunk segiteni.
+                <strong>Hibabejelentés</strong>
+                A pontos oldal URL-jével és rövid leírással gyorsabban tudunk segíteni.
             </div>
             <div class="va-help-mini-box">
                 <strong>Jogi oldalak</strong>
-                Hasznalat elott erdemes elolvasni az ASZF es az adatvedelmi tajekoztatot.
+                Használat előtt érdemes elolvasni az ÁSZF-et és az adatvédelmi tájékoztatót.
             </div>
         </div>
 
         <div class="va-help-callout">
-            Nem talalod, amit keresel? Irj a Kapcsolat oldalon. Minel pontosabban irod le,
-            hogy melyik oldalon es milyen lepes utan akadtal el, annal gyorsabban tudunk segiteni.
+            Nem találod, amit keresel? Írj a Kapcsolat oldalon. Minél pontosabban írod le,
+            hogy melyik oldalon és milyen lépés után akadtál el, annál gyorsabban tudunk segíteni.
             <div class="va-help-link-row">
-                <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Uzenet kuldese</a>
-                <a href="<?php echo esc_url( home_url( '/aszf' ) ); ?>">ASZF</a>
-                <a href="<?php echo esc_url( home_url( '/adatvedelmi-nyilatkozat' ) ); ?>">Adatvedelmi tajekoztato</a>
+                <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Üzenet küldése</a>
+                <a href="<?php echo esc_url( home_url( '/aszf' ) ); ?>">ÁSZF</a>
+                <a href="<?php echo esc_url( home_url( '/adatvedelmi-nyilatkozat' ) ); ?>">Adatvédelmi tájékoztató</a>
             </div>
         </div>
     </div>
