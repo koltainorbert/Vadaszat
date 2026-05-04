@@ -2292,15 +2292,9 @@ body.sl-viewer-open { overflow: hidden; }
 .va-home-sidebar::-webkit-scrollbar-thumb { background: transparent; }
 .va-home-main { min-width: 0; }
 @media (max-width: 900px) {
-  .va-home-layout { grid-template-columns: 1fr; padding: 0; gap: 0; }
+  .va-home-layout { grid-template-columns: 1fr; padding: 0 2px; gap: 0; }
   .va-home-sidebar { display: none; }
   .va-grid { grid-template-columns: repeat(2, 1fr); gap: 4px; }
-  .va-grid .va-listing-card:nth-child(odd),
-  .va-grid .listing-card:nth-child(odd),
-  .va-grid .va-card:nth-child(odd) { border-radius: 0 var(--r) var(--r) 0; }
-  .va-grid .va-listing-card:nth-child(even),
-  .va-grid .listing-card:nth-child(even),
-  .va-grid .va-card:nth-child(even) { border-radius: var(--r) 0 0 var(--r); }
 }
 
 /* ── Holdnaptár ──────────────────────────────────────────────────── */
