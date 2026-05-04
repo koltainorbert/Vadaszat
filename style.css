@@ -850,6 +850,11 @@ textarea { min-height: 110px; resize: vertical; }
   text-decoration: none; padding: 4px 0; transition: color .12s;
 }
 .va-footer__link:hover { color: #fff; }
+.va-footer__lang-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: inherit; text-align: left; width: 100%;
+  padding: 4px 0;
+}
 .va-footer__bottom {
   max-width: 1400px; margin: 0 auto;
   padding-top: 20px; border-top: 1px solid var(--border);

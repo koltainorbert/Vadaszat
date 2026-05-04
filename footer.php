@@ -75,10 +75,28 @@
             </div>
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_cat_title ); ?></div>
-                <?php $cats = get_terms(['taxonomy' => 'va_category', 'parent' => 0, 'hide_empty' => false, 'number' => 6]);
-                if ( ! is_wp_error( $cats ) ) foreach ($cats as $cat): ?>
-                    <a href="<?php echo esc_url(get_term_link($cat)); ?>" class="va-footer__link"><?php echo esc_html($cat->name); ?></a>
-                <?php endforeach; ?>
+                <?php
+                if ( class_exists('VA_Settings_Page') ) :
+                    $all_langs    = VA_Settings_Page::get_languages();
+                    $active_langs = (array) json_decode( (string) get_option('va_active_langs','["hu"]'), true );
+                    $curr_code    = 'hu';
+                    if ( isset( $_COOKIE['googtrans'] ) && preg_match('#^/hu/([a-z]{2})$#', sanitize_text_field( wp_unslash( $_COOKIE['googtrans'] ) ), $cm ) ) {
+                        $curr_code = $cm[1];
+                    }
+                    if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
+                    $va_flag_map_f = ['hu'=>'hu','en'=>'gb','de'=>'de','ro'=>'ro','sk'=>'sk','cs'=>'cz','pl'=>'pl','fr'=>'fr','it'=>'it','es'=>'es','uk'=>'ua','sr'=>'rs','hr'=>'hr','sl'=>'si'];
+                    foreach ( $active_langs as $lcode ) :
+                        if ( ! isset( $all_langs[ $lcode ] ) ) continue;
+                        $lname = $all_langs[ $lcode ]['name'];
+                        $fc    = isset($va_flag_map_f[$lcode]) ? $va_flag_map_f[$lcode] : $lcode;
+                        $active_cls = ( $lcode === $curr_code ) ? ' style="color:#ff0000;"' : '';
+                ?>
+                        <button type="button" class="va-footer__link va-footer__lang-btn notranslate" onclick="vaSetLang('<?php echo esc_js($lcode); ?>')" translate="no"<?php echo $active_cls; ?>>
+                            <img src="https://flagcdn.com/<?php echo esc_attr($fc); ?>.svg" width="20" height="15" alt="<?php echo esc_attr(strtoupper($lcode)); ?>" style="border-radius:2px;vertical-align:middle;margin-right:6px;display:inline-block;">
+                            <?php echo esc_html( $lname ); ?>
+                        </button>
+                <?php endforeach;
+                endif; ?>
             </div>
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_account_title ); ?></div>
