@@ -278,6 +278,7 @@ if ( $va_scroll_ring_border_color === '' ) {
 }
 #va-scroll-ring:hover #va-ring-el { stroke: var(--va-scroll-ring-color); }
 #va-scroll-ring:hover #va-ring-inner { transform: scale(1.03); }
+@media (max-width: 767px) { #va-scroll-ring { display: none !important; } }
 
 #va-ring-inner {
     position: absolute;
