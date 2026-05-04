@@ -69,8 +69,7 @@ hr { border-color: var(--border); }
 .va-site-wrap { min-height: 100vh; display: flex; flex-direction: column; }
 .va-site-wrap--inner { padding-top: var(--nav); background: #060606; }
 .va-container  { max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%; }
-@media (max-width: 1024px) { .va-container { padding: 0 2px; } }
-@media (max-width: 400px) { .va-container { padding: 0 2px; } }
+@media (max-width: 1024px) { .va-container { padding: 0 8px; } }
 
 /* ══════════════════════════════════════════════════════════
    HEADER / NAVBAR — 2026 modern
@@ -2293,8 +2292,9 @@ body.sl-viewer-open { overflow: hidden; }
 .va-home-sidebar::-webkit-scrollbar-thumb { background: transparent; }
 .va-home-main { min-width: 0; }
 @media (max-width: 900px) {
-  .va-home-layout { grid-template-columns: 1fr; }
+  .va-home-layout { grid-template-columns: 1fr; padding: 0 8px; gap: 0; }
   .va-home-sidebar { display: none; }
+  .va-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
 }
 
 /* ── Holdnaptár ──────────────────────────────────────────────────── */
