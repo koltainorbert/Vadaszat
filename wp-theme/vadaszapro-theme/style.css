@@ -1775,17 +1775,20 @@ body.sl-viewer-open { overflow: hidden; }
 
 /* Scroll jel */
 .vh__scroll {
+  display: none;
   position: absolute;
   bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
   animation: vh-bob 1.6s ease-in-out infinite;
   z-index: 5;
   cursor: pointer;
+}
+@media (min-width: 1025px) {
+  .vh__scroll { display: flex; }
 }
 
 .vh__scroll-line {
@@ -1808,9 +1811,6 @@ body.sl-viewer-open { overflow: hidden; }
 }
 
 /* Responsive */
-@media (max-width: 1024px) {
-  .vh__scroll { display: none !important; }
-}
 @media (max-width: 640px) {
   .vh { align-items: flex-start; height: 55vh; min-height: 320px; }
   .vh__content { padding: calc(var(--nav, 66px) + 12px) 22px 0; }
