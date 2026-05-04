@@ -2290,7 +2290,7 @@ body.sl-viewer-open { overflow: hidden; }
 .va-home-main { min-width: 0; }
 @media (max-width: 900px) {
   .va-home-layout { grid-template-columns: 1fr; }
-  .va-home-sidebar { position: static; max-height: none; overflow-y: visible; }
+  .va-home-sidebar { display: none; }
 }
 
 /* ── Holdnaptár ──────────────────────────────────────────────────── */
