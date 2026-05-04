@@ -107,6 +107,7 @@
                     <a href="<?php echo esc_url( $legal_url ); ?>" class="va-footer__link"><?php echo esc_html( (string) $legal_item['label'] ); ?></a>
                 <?php endforeach; ?>
                 <?php $help_url = home_url( '/sugo/' ); ?>
+                <a href="<?php echo esc_url( home_url( '/impresszum/' ) ); ?>" class="va-footer__link">Impresszum</a>
                 <a href="<?php echo esc_url( home_url( '/adatkezeles/' ) ); ?>" class="va-footer__link">Adatkezelési tájékoztató</a>
                 <a href="<?php echo esc_url( $help_url ); ?>" class="va-footer__link"><?php echo esc_html( $f_link_help ); ?></a>
             </div>

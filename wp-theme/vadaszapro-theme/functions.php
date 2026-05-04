@@ -55,6 +55,29 @@ add_action( 'template_redirect', function () {
     exit;
 }, 0 );
 
+// Garantalt publikus Impresszum URL: /impresszum
+add_action( 'template_redirect', function () {
+    if ( is_admin() || wp_doing_ajax() ) {
+        return;
+    }
+
+    $request_uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
+    $path = trim( (string) parse_url( $request_uri, PHP_URL_PATH ), '/' );
+    if ( $path !== 'impresszum' ) {
+        return;
+    }
+
+    $template = locate_template( 'page-impresszum.php' );
+    if ( ! $template || ! file_exists( $template ) ) {
+        return;
+    }
+
+    status_header( 200 );
+    nocache_headers();
+    include $template;
+    exit;
+}, 0 );
+
 // Garantalt publikus Adatkezeles URL: /adatkezeles
 add_action( 'template_redirect', function () {
     if ( is_admin() || wp_doing_ajax() ) {
