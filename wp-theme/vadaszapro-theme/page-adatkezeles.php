@@ -56,6 +56,7 @@ get_header();
             line-height: 1.12;
             letter-spacing: .01em;
             text-wrap: balance;
+            color: #fff;
         }
         .va-help-lead {
             margin-top: 12px;
