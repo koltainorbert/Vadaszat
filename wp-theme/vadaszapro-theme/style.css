@@ -1359,12 +1359,21 @@ body {
   font-size: 14px !important;
 }
 
-body {
-  color: #e7edf8;
+body,
+body * {
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #fff !important;
+  opacity: .85;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+  font-weight: 500 !important;
 }
 
 .va-header {
@@ -1379,7 +1388,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .va-logo__text {
   font-size: 14px !important;
-  font-weight: 700 !important;
+  font-weight: 500 !important;
   letter-spacing: .04em !important;
 }
 
@@ -1391,7 +1400,7 @@ h1, h2, h3, h4, h5, h6 {
 .va-nav__item {
   font-size: 14px !important;
   font-weight: 500 !important;
-  color: rgba(239, 244, 255, .92) !important;
+  color: #fff !important;
   letter-spacing: .03em !important;
 }
 

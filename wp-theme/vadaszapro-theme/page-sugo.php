@@ -190,7 +190,7 @@ get_header();
     <div class="va-help-shell">
         <header class="va-help-hero">
             <div class="va-help-kicker">Felhasznaloi utmutato</div>
-            <h1 id="va-help-title">Teljes hasznalati utasitas a Vadaszapro oldalahoz</h1>
+            <h1 id="va-help-title">Teljes hasznalati utasitas a weingartnerauto.hu oldalahoz</h1>
             <p class="va-help-lead">
                 Ezen az oldalon osszegyujtottuk a latogatok szamara lathato funkciokat: hogyan keress, hogyan
                 hirdess, hogyan licitalj, es hogyan kezeld a fiokodat. Csak olyan informacio szerepel itt,

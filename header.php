@@ -37,9 +37,9 @@
 <div class="va-site-wrap<?php echo ! is_front_page() ? ' va-site-wrap--inner' : ''; ?>">
     <?php $auctions_enabled = function_exists( 'va_auctions_enabled' ) ? va_auctions_enabled() : true; ?>
     <?php
-    $brand_name = trim( (string) get_option( 'va_site_name', 'VadászApró' ) );
-    if ( $brand_name === '' ) {
-        $brand_name = 'VadászApró';
+    $brand_name = trim( (string) get_option( 'va_site_name', 'weingartnerauto.hu' ) );
+    if ( in_array( $brand_name, [ '', 'VadászApró', 'Vadaszapro', 'Weingartner Auto', 'WEINGARTNER AUTÓ', 'WEINGARTNER AUTO' ], true ) ) {
+        $brand_name = 'weingartnerauto.hu';
     }
     $brand_icon  = get_option( 'va_brand_icon_url', '' );
     $header_logo = get_option( 'va_header_logo_url', '' );
