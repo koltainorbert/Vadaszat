@@ -85,17 +85,47 @@
                     }
                     if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
                     $va_flag_map_f = ['hu'=>'hu','en'=>'gb','de'=>'de','ro'=>'ro','sk'=>'sk','cs'=>'cz','pl'=>'pl','fr'=>'fr','it'=>'it','es'=>'es','uk'=>'ua','sr'=>'rs','hr'=>'hr','sl'=>'si'];
-                    foreach ( $active_langs as $lcode ) :
-                        if ( ! isset( $all_langs[ $lcode ] ) ) continue;
-                        $lname = $all_langs[ $lcode ]['name'];
-                        $fc    = isset($va_flag_map_f[$lcode]) ? $va_flag_map_f[$lcode] : $lcode;
-                        $active_cls = ( $lcode === $curr_code ) ? ' style="color:#ff0000;"' : '';
+                    if ( count($active_langs) > 1 ) :
+                        $fc_curr = isset($va_flag_map_f[$curr_code]) ? $va_flag_map_f[$curr_code] : $curr_code;
                 ?>
-                        <button type="button" class="va-footer__link va-footer__lang-btn notranslate" onclick="vaSetLang('<?php echo esc_js($lcode); ?>')" translate="no"<?php echo $active_cls; ?>>
-                            <img src="https://flagcdn.com/<?php echo esc_attr($fc); ?>.svg" width="20" height="15" alt="<?php echo esc_attr(strtoupper($lcode)); ?>" style="border-radius:2px;vertical-align:middle;margin-right:6px;display:inline-block;">
-                            <?php echo esc_html( $lname ); ?>
+                    <div class="va-lang-sw va-lang-sw--footer notranslate" translate="no">
+                        <button type="button" class="va-lang-sw__toggle notranslate" id="va-lang-toggle-footer" aria-haspopup="true" aria-expanded="false" translate="no">
+                            <img src="https://flagcdn.com/<?php echo esc_attr($fc_curr); ?>.svg" width="22" height="16" alt="<?php echo esc_attr(strtoupper($curr_code)); ?>" style="border-radius:2px;vertical-align:middle;display:inline-block;">
+                            <span class="va-lang-code"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
+                            <svg class="va-lang-sw__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                         </button>
-                <?php endforeach;
+                        <div class="va-lang-sw__dropdown va-lang-sw__dropdown--up notranslate" id="va-lang-dropdown-footer" hidden translate="no">
+                            <?php foreach ( $active_langs as $lcode ) :
+                                if ( ! isset( $all_langs[ $lcode ] ) ) continue;
+                                $lname = $all_langs[ $lcode ]['name'];
+                                $fc2   = isset($va_flag_map_f[$lcode]) ? $va_flag_map_f[$lcode] : $lcode;
+                            ?>
+                                <button type="button" class="va-lang-sw__item<?php echo ( $lcode === $curr_code ) ? ' active' : ''; ?> notranslate"
+                                        onclick="vaSetLang('<?php echo esc_js($lcode); ?>')" translate="no">
+                                    <img src="https://flagcdn.com/<?php echo esc_attr($fc2); ?>.svg" width="22" height="16" alt="<?php echo esc_attr(strtoupper($lcode)); ?>" style="border-radius:2px;vertical-align:middle;display:inline-block;">
+                                    <span><?php echo esc_html( $lname ); ?></span>
+                                </button>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <script>
+                    (function(){
+                        var t = document.getElementById('va-lang-toggle-footer');
+                        var d = document.getElementById('va-lang-dropdown-footer');
+                        if (!t || !d) return;
+                        t.addEventListener('click', function(e){
+                            e.stopPropagation();
+                            var open = !d.hidden;
+                            d.hidden = open;
+                            t.setAttribute('aria-expanded', String(!open));
+                        });
+                        document.addEventListener('click', function(){
+                            d.hidden = true;
+                            t.setAttribute('aria-expanded','false');
+                        });
+                    })();
+                    </script>
+                <?php endif;
                 endif; ?>
             </div>
             <div>
