@@ -12,7 +12,7 @@
     <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('footer_top'); ?>
 
     <?php
-    $f_brand_title    = trim( (string) get_option( 'va_hf_footer_brand_title', 'VadászApró' ) );
+    $f_brand_title    = trim( (string) get_option( 'va_hf_footer_brand_title', 'Weingartner Auto' ) );
     $f_cat_title      = trim( (string) get_option( 'va_hf_footer_col_categories_title', 'Kategóriák' ) );
     $f_account_title  = trim( (string) get_option( 'va_hf_footer_col_account_title', 'Fiók' ) );
     $f_legal_title    = trim( (string) get_option( 'va_hf_footer_col_legal_title', 'Jogi információk' ) );
@@ -20,7 +20,7 @@
     $f_link_privacy   = trim( (string) get_option( 'va_hf_footer_link_privacy', 'Adatvédelmi nyilatkozat' ) );
     $f_link_contact   = trim( (string) get_option( 'va_hf_footer_link_contact', 'Kapcsolat' ) );
     $f_link_help      = trim( (string) get_option( 'va_hf_footer_link_help', 'Súgó' ) );
-    $f_copy_text      = trim( (string) get_option( 'va_hf_footer_copy_text', 'VadászApró – Minden jog fenntartva.' ) );
+    $f_copy_text      = trim( (string) get_option( 'va_hf_footer_copy_text', 'Weingartner Auto - Minden jog fenntartva.' ) );
     $f_privacy_bottom = trim( (string) get_option( 'va_hf_footer_privacy_text', 'Adatvédelem' ) );
     $f_logo_url       = trim( (string) get_option( 'va_hf_footer_logo_url', '' ) );
     $f_logo_height    = max( 20, min( 180, absint( get_option( 'va_hf_footer_logo_height', 48 ) ) ) );
@@ -38,7 +38,7 @@
         [ 'label' => 'Fenntartható Fejlődés Irányelve',     'url' => trim( (string) get_option( 'va_legal_url_fenntarthato', '' ) ) ],
     ];
 
-    if ( $f_brand_title === '' )    $f_brand_title = 'VadászApró';
+    if ( $f_brand_title === '' )    $f_brand_title = 'Weingartner Auto';
     if ( $f_cat_title === '' )      $f_cat_title = 'Kategóriák';
     if ( $f_account_title === '' )  $f_account_title = 'Fiók';
     if ( $f_legal_title === '' )    $f_legal_title = 'Jogi információk';
@@ -46,7 +46,7 @@
     if ( $f_link_privacy === '' )   $f_link_privacy = 'Adatvédelmi nyilatkozat';
     if ( $f_link_contact === '' )   $f_link_contact = 'Kapcsolat';
     if ( $f_link_help === '' )      $f_link_help = 'Súgó';
-    if ( $f_copy_text === '' )      $f_copy_text = 'VadászApró – Minden jog fenntartva.';
+    if ( $f_copy_text === '' )      $f_copy_text = 'Weingartner Auto - Minden jog fenntartva.';
     if ( $f_privacy_bottom === '' ) $f_privacy_bottom = 'Adatvédelem';
     if ( $f_contact_email === '' )  $f_contact_email = 'weingartnertrans@gmail.com';
     if ( $f_contact_phone === '' )  $f_contact_phone = '+36 20 943 8636';

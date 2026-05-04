@@ -38,7 +38,7 @@ class VA_Settings_Page {
 
         /* Általános */
         $general = [
-            'va_site_name'           => 'VadászApró',
+            'va_site_name'           => 'Weingartner Auto',
             'va_site_description'    => 'Magyarország vadászati apróhirdetési oldala',
             'va_contact_email'       => get_option('admin_email'),
             'va_site_type'           => 'vadaszat',  // oldaltípus: vadaszat | jarmu | ingatlan | altalanos
@@ -415,7 +415,7 @@ class VA_Settings_Page {
             'va_hf_footer_logo_height'             => 48,
 
             // Lábléc szövegek
-            'va_hf_footer_brand_title'             => 'VadászApró',
+            'va_hf_footer_brand_title'             => 'Weingartner Auto',
             'va_hf_footer_col_categories_title'    => 'Kategóriák',
             'va_hf_footer_col_account_title'       => 'Fiók',
             'va_hf_footer_col_legal_title'         => 'Jogi információk',
@@ -423,7 +423,7 @@ class VA_Settings_Page {
             'va_hf_footer_link_privacy'            => 'Adatvédelmi nyilatkozat',
             'va_hf_footer_link_contact'            => 'Kapcsolat',
             'va_hf_footer_link_help'               => 'Súgó',
-            'va_hf_footer_copy_text'               => 'VadászApró – Minden jog fenntartva.',
+            'va_hf_footer_copy_text'               => 'Weingartner Auto - Minden jog fenntartva.',
             'va_hf_footer_privacy_text'            => 'Adatvédelem',
             'va_legal_url_adatvedelem'             => '/adatvedelmi-nyilatkozat',
             'va_legal_url_aszf'                    => '/aszf',
@@ -847,7 +847,7 @@ class VA_Settings_Page {
         }
 
         $billing = [
-            'va_billing_company_name'    => 'Vadaszapro Kft.',
+            'va_billing_company_name'    => 'Weingartner Auto',
             'va_billing_company_address' => 'Magyarorszag',
             'va_billing_tax_number'      => '',
             'va_billing_email'           => (string) get_option( 'admin_email', '' ),
@@ -995,7 +995,7 @@ class VA_Settings_Page {
 
         /* Admin Panel megjelenés (va_ap_*) */
         $adminpanel = [
-            'va_ap_panel_name'    => 'VadászApró',
+            'va_ap_panel_name'    => 'Weingartner Auto',
             'va_ap_panel_icon'    => '🎯',
             'va_ap_logo_url'      => '',
             'va_ap_logo_height'   => 32,
@@ -1276,7 +1276,7 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) return;
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>⚙️ VadászApró – Általános beállítások</h1>
+            <h1>⚙️ Weingartner Auto - Altalanos beallitasok</h1>
             <?php settings_errors( 'va_general_settings' ); ?>
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_general_settings' ); ?>
@@ -1523,7 +1523,7 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) return;
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>📢 VadászApró – Reklámzónák</h1>
+            <h1>📢 Weingartner Auto - Reklamzonak</h1>
             <p class="description">Minden zónába beilleszthetsz bármilyen HTML-t: Google AdSense kódot, saját banner-t, iframe-et stb.</p>
             <?php settings_errors( 'va_ad_settings' ); ?>
             <form method="post" action="options.php">
@@ -1638,7 +1638,7 @@ class VA_Settings_Page {
         ];
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>🎨 VadászApró – Design (globális + fejtől lábig)</h1>
+            <h1>🎨 Weingartner Auto - Design (globalis + fejtol labig)</h1>
             <p class="description">Külön oldalon kezelhető a teljes tipográfia és színvilág: globális, fejléc, tartalom és lábléc szinten.</p>
             <?php settings_errors( 'va_design_settings' ); ?>
 
@@ -1779,7 +1779,7 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) return;
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>🎬 VadászApró – Hero szekció (teljes vezérlés)</h1>
+            <h1>🎬 Weingartner Auto - Hero szekcio (teljes vezerles)</h1>
             <p class="description">A főoldali video hero összes eleme: szövegek, színek, overlay, bal csík, badge pont, gombok, scroll jelző.</p>
             <?php settings_errors( 'va_hero_settings' ); ?>
             <form method="post" action="options.php">
@@ -1893,7 +1893,7 @@ class VA_Settings_Page {
         $presets = self::get_header_footer_presets();
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>🧩 VadászApró – Fejléc + Lábléc (100% kontroll)</h1>
+            <h1>🧩 Weingartner Auto - Fejlec + Lablec (100% kontroll)</h1>
             <p class="description">Külön menüből finomhangolhatod a fejléc és a lábléc layoutját, szövegeit, méreteit, mobil viselkedését és vizuális részleteit.</p>
             <?php if ( $preset_msg === 'ok' ): ?>
                 <div class="notice notice-success"><p>Preset alkalmazva. Mentés nélkül is azonnal él.</p></div>
@@ -2403,7 +2403,7 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) return;
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>🧩 VadászApró – Layout Állító (Divi / Porto mintára)</h1>
+            <h1>🧩 Weingartner Auto - Layout Allito (Divi / Porto mintara)</h1>
             <p class="description">Nagy léptékű layout finomhangolás: konténer, rácsok, oldalsáv, kártyák, árnyékok, tördelés, mobil viselkedés.</p>
             <?php settings_errors( 'va_layout_settings' ); ?>
 
@@ -2833,7 +2833,7 @@ class VA_Settings_Page {
         );
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>📋 VadászApró – Hirdetés beállítások</h1>
+            <h1>📋 Weingartner Auto - Hirdetes beallitasok</h1>
             <?php settings_errors( 'va_listing_settings' ); ?>
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_listing_settings' ); ?>
@@ -2911,7 +2911,7 @@ class VA_Settings_Page {
         $vars_seller  = '{seller_name}, {title}, {amount}, {winner_name}, {winner_email}';
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>🔨 VadászApró – Aukció beállítások</h1>
+            <h1>🔨 Weingartner Auto - Aukcio beallitasok</h1>
             <?php settings_errors( 'va_auction_settings' ); ?>
             <form method="post" action="options.php">
                 <?php settings_fields( 'va_auction_settings' ); ?>
@@ -2965,7 +2965,7 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) return;
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>📧 VadászApró – Email sablonok</h1>
+            <h1>📧 Weingartner Auto - Email sablonok</h1>
             <?php settings_errors( 'va_email_settings' ); ?>
             <p style="color:#aaa;margin-bottom:4px;">
                 HTML használható a törzsben. A <code>{változók}</code> automatikusan behelyettesítésre kerülnek.
@@ -3088,7 +3088,7 @@ class VA_Settings_Page {
         $admin_nonce = wp_create_nonce( 'va_admin_user_plan' );
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>👥 VadászApró – Felhasználók &amp; Csomagok</h1>
+            <h1>👥 Weingartner Auto - Felhasznalok &amp; Csomagok</h1>
 
             <!-- ── Plan összefoglaló kártyák ── -->
             <?php if ( $plans ): ?>
@@ -4372,7 +4372,7 @@ class VA_Settings_Page {
         }
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>📦 VadászApró – Export / Import / Reset</h1>
+            <h1>📦 Weingartner Auto - Export / Import / Reset</h1>
             <p class="description" style="color:rgba(255,255,255,.5)">A teljes <code>va_*</code> beállításkészlet exportálható és importálható (általános, design, fejléc/lábléc, reklámzónák, hirdetés/aukció opciók).</p>
             <style>
             .va-ei-card { background:var(--va-bg2,#161616); border:1px solid var(--va-border,rgba(255,255,255,.1)); border-radius:10px; padding:20px 24px; margin-top:16px; max-width:960px; }
@@ -6261,7 +6261,7 @@ class VA_Settings_Page {
         $preset_msg = sanitize_key( (string) ( $_GET['va_single_preset'] ?? '' ) );
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>🧱 VadászApró – Termékoldal Designer</h1>
+            <h1>🧱 Weingartner Auto - Termekoldal Designer</h1>
             <p class="description">A hirdetés részletes oldal teljes wireframe-je állítható: layout, tipográfia, galéria, kártyák, akciógombok és viewer.</p>
 
             <?php if ( $preset_msg === 'ok' ): ?>
@@ -6558,7 +6558,7 @@ class VA_Settings_Page {
         ];
         ?>
         <div class="wrap va-admin-wrap">
-            <h1>🌐 VadászApró – Social Media</h1>
+            <h1>🌐 Weingartner Auto - Social Media</h1>
             <p class="description">Add meg a közösségi média profilok URL-jeit. Az ikonok automatikusan megjelennek a fejlécben és a láblécben.</p>
 
             <form method="post" action="options.php">
