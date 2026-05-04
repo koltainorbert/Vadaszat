@@ -1809,7 +1809,7 @@ body.sl-viewer-open { overflow: hidden; }
 
 /* Responsive */
 @media (max-width: 1024px) {
-  .vh__scroll { display: none; }
+  .vh__scroll { display: none !important; }
 }
 @media (max-width: 640px) {
   .vh { align-items: flex-start; height: 55vh; min-height: 320px; }
