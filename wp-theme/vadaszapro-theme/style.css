@@ -473,7 +473,7 @@ body { top:0 !important; }
 /* ── Mobil nav ── */
 @media (max-width: 960px) {
   .va-header__inner { grid-template-columns: auto 1fr auto; padding: 0 20px 0 0; }
-  .va-nav {
+  .vh__content { padding: calc(var(--nav, 64px) + 10px) 22px 0; }
     display: none;
     position: fixed;
     top: var(--nav); left: 0; right: 0;
@@ -582,10 +582,28 @@ body { top:0 !important; }
 @media (max-width: 1023px) {
   .home-template .va-main-content,
   .home .va-main-content,
+  .va-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 72px;
+    z-index: 450;
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    padding: 12px 16px calc(18px + env(safe-area-inset-bottom));
+    background: rgba(8,6,6,.97); backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    max-height: calc(100dvh - 72px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
   .front-page .va-main-content,
   .va-main-content { padding-top: 5px !important; }
 }
-
+  .vh__content { padding: calc(var(--nav, 64px) + 10px) 22px 0; }
 /* ──────────────────────────────────────────────────────────
    SIDEBAR WIDGET
 ────────────────────────────────────────────────────────── */
