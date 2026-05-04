@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 04. – Session #181 (Sugo link: tenyleges oldal URL automatikus feloldasa)
+
+### Mit csinaltunk [x]
+- [x] Okazonositas: a footer Sugo link fix `/sugo` fallbackre mutatott, ami nem minden telepitesen letezo slug
+- [x] Javitas: a footer mar eloszor slug alapjan, utana template (`page-sugo.php`) alapjan keresi meg a valos publikus oldalt
+- [x] Csak akkor fallbackel gyoker URL-re, ha semmilyen Sugo oldal nem talalhato
+- [x] Modositas atvezetve source + theme mirror footer fajlba
+- [x] Hibavizsgalat lefuttatva (nincs uj hiba)
+
+### Hol tartunk
+A lablec Sugo link most a tenylegesen letezo Sugo oldalra mutat, igy nem ures/hibas URL nyilik meg slug-elteres eseten sem.
+
+---
+
 ## 2026. 05. 04. – Session #180 (Footer Sugo link visszaallitas)
 
 ### Mit csinaltunk [x]

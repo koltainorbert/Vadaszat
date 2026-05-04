@@ -113,7 +113,20 @@
                 <?php endforeach; ?>
                 <?php
                 $help_page = get_page_by_path( 'sugo' );
-                $help_url  = $help_page ? get_permalink( $help_page ) : home_url( '/sugo' );
+                if ( ! $help_page ) {
+                    $help_pages = get_posts( [
+                        'post_type'      => 'page',
+                        'post_status'    => 'publish',
+                        'posts_per_page' => 1,
+                        'meta_key'       => '_wp_page_template',
+                        'meta_value'     => 'page-sugo.php',
+                        'no_found_rows'  => true,
+                    ] );
+                    if ( ! empty( $help_pages ) ) {
+                        $help_page = $help_pages[0];
+                    }
+                }
+                $help_url = $help_page ? get_permalink( $help_page ) : home_url( '/' );
                 ?>
                 <a href="<?php echo esc_url( $help_url ); ?>" class="va-footer__link"><?php echo esc_html( $f_link_help ); ?></a>
             </div>
