@@ -111,6 +111,11 @@
                 ?>
                     <a href="<?php echo esc_url( $legal_url ); ?>" class="va-footer__link"><?php echo esc_html( (string) $legal_item['label'] ); ?></a>
                 <?php endforeach; ?>
+                <?php
+                $help_page = get_page_by_path( 'sugo' );
+                $help_url  = $help_page ? get_permalink( $help_page ) : home_url( '/sugo' );
+                ?>
+                <a href="<?php echo esc_url( $help_url ); ?>" class="va-footer__link"><?php echo esc_html( $f_link_help ); ?></a>
             </div>
         </div>
         <div class="va-footer__bottom">

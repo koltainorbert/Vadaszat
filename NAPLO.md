@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 04. – Session #180 (Footer Sugo link visszaallitas)
+
+### Mit csinaltunk [x]
+- [x] Azonositas: a `Sugo` label be volt olvasva footer optionbol, de a jogi oszlopban nem volt kirenderelve
+- [x] Javitas: kulon `Sugo` link visszaadasa a footer jogi oszlopaban
+- [x] Modositas atvezetve source + theme mirror fajlba
+- [x] Hibavizsgalat lefuttatva (nincs uj hiba)
+
+### Hol tartunk
+A `Sugo` menupont ujra megjelenik a lablecben, es a `/sugo` oldalra mutat (ha a `sugo` page megtalalhato, annak permalinkjet hasznalja).
+
+---
+
 ## 2026. 05. 04. – Session #179 (Sugo oldal: teljes ugyfel-utmutato + design frissites)
 
 ### Mit csinaltunk [x]
