@@ -2715,7 +2715,19 @@ body.sl-viewer-open { overflow: hidden; }
 
 .va-site-wrap input::placeholder,
 .va-site-wrap textarea::placeholder {
-  color: rgba(255,255,255,.82) !important;
+  color: rgba(255,255,255,.52) !important;
+  opacity: 1 !important;
+}
+
+.va-site-wrap .va-header__search-input::placeholder {
+  color: rgba(255,255,255,.52) !important;
+  opacity: 1 !important;
+}
+
+/* Logo szoveg szin */
+.va-site-wrap .va-logo__text,
+.va-logo__text {
+  color: #1e3156 !important;
 }
 
 /* ═════════════════════════════════════ EOF ═════════════════════════════════════ */
