@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 04. – Session #179 (Sugo oldal: teljes ugyfel-utmutato + design frissites)
+
+### Mit csinaltunk [x]
+- [x] A footerbol elerheto `Sugo` oldal teljes tartalmanak ujrairasa ugyfel-szempontu hasznalati utasitasra
+- [x] A leiras kibovitese minden publikus, latogatok altal lathato funkcioval (kereses, szures, hirdetes adatlap, aukcio, fiok, hirdetes-feladas, kedvencek)
+- [x] Vizuális frissites: ero­sebb hero blokk, reszletes tematikus kartyak, gyorslinkek, callout szekcio
+- [x] Modositas atvezetve source + theme mirror fajlba (`page-sugo.php` mindket helyen)
+- [x] Hibavizsgalat lefuttatva az erintett ket fajlra (nincs uj hiba)
+
+### Hol tartunk
+A Sugo oldal most teljes, atfogo es ugyfelbarat hasznalati utmutato, amely csak olyan funkciokat es adatokat ir le, amiket a felhasznalo a feluleten is lat.
+
+---
+
 ## 2026. 05. 03. – Session #178 (ÉLES SZERVER – SITE ÉL + HOLNAPI TERV)
 
 ### Mit csinaltunk [x]
