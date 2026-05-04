@@ -58,21 +58,7 @@
     if ( $header_search_placeholder === '' ) {
         $header_search_placeholder = 'keresés…';
     }
-    $header_submit_text = trim( (string) get_option( 'va_hf_header_submit_text', '+ Hirdetés feladása' ) );
-    if ( $header_submit_text === '' ) {
-        $header_submit_text = '+ Hirdetés feladása';
-    }
-    $header_register_text = trim( (string) get_option( 'va_hf_header_register_text', 'Regisztráció' ) );
-    if ( $header_register_text === '' ) {
-        $header_register_text = 'Regisztráció';
-    }
-    $header_login_text = trim( (string) get_option( 'va_hf_header_login_text', 'Bejelentkezés' ) );
-    if ( $header_login_text === '' ) {
-        $header_login_text = 'Bejelentkezés';
-    }
     $header_show_buy_button = get_option( 'va_hf_header_show_buy_button', '1' ) === '1';
-    $login_enabled = get_option( 'va_enable_login', '1' ) === '1';
-    $register_enabled = get_option( 'va_enable_register', '1' ) === '1';
     if ( $hero_logo === '' ) {
         $hero_logo = $header_logo;
     }

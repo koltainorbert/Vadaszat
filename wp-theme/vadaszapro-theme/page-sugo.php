@@ -207,7 +207,7 @@ get_header();
                 <h2>1. Elso lepesek uj latogatoknak</h2>
                 <ol>
                     <li>Nyisd meg a Hirdetes kereses oldalt, ahol az osszes talalatot listaban vagy racs nezetben latod.</li>
-                    <li>Ez egy magan oldal: bejelentkezes, regisztracio es hirdetesfeladas nem erheto el latogatoknak.</li>
+                    <li>Ez egy magan oldal: fiok- es feltoltesi funkciok nem erhetoek el latogatoknak.</li>
                     <li>Ha kerdesed van, a Kapcsolat oldalon tudsz irni.</li>
                 </ol>
                 <div class="va-help-link-row">
@@ -249,16 +249,16 @@ get_header();
             </article>
 
             <article class="va-help-section">
-                <h2>5. Bejelentkezes es regisztracio</h2>
+                <h2>5. Fiok funkciok</h2>
                 <ul>
-                    <li>A nyilvanos latogatok szamara a bejelentkezes ki van kapcsolva.</li>
-                    <li>Regisztracio es fiokkezeles jelenleg nem erheto el.</li>
-                    <li>Az oldal tartalma bejelentkezes nelkul bongeszheto.</li>
+                    <li>A nyilvanos latogatok szamara a fiokba lepes ki van kapcsolva.</li>
+                    <li>Uj fiok letrehozasa es fiokkezeles jelenleg nem erheto el.</li>
+                    <li>Az oldal tartalma fiok hasznalata nelkul bongeszheto.</li>
                 </ul>
             </article>
 
             <article class="va-help-section">
-                <h2>6. Hirdetes feladasa es szerkesztese</h2>
+                <h2>6. Tartalom feltoltes</h2>
                 <ul>
                     <li>Ez a funkcio latogatoknak nem erheto el.</li>
                     <li>A weboldal jelenleg olvasasi modban uzemel.</li>

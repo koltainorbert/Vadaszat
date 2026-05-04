@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 04. – Session #187 (Publikus olvaso mod: feher szoveg + fiok/feladas linkek kivezetese)
+
+### Mit csinaltunk [x]
+- [x] Fejlecbol eltavolitva a bejelentkezes / regisztracio / hirdetesfeladas gombok
+- [x] Lablec fiok oszlop egyszerusitve olvaso modra (csak bongeszes link maradt)
+- [x] Sugo oldal atirva publikus olvaso uzemre (fiok/feltoltes funkciok nem elerhetoek)
+- [x] Frontend CSS-ben bekapcsolva: minden lathato szoveg feher
+- [x] Hibavizsgalat lefuttatva az erintett fajlokra (PHP oldalon nincs uj hiba)
+
+### Hol tartunk
+A publikus feluleten a latogato mar csak olvas es bongeszik: a fiokhoz/feltolteshez tartozo elemek kivezetve, a szovegek feherre kenyszeritve.
+
+---
+
 ## 2026. 05. 04. – Session #186 (Fejlec + kartya szinek visszaallitasa, admin szinallitas helyreallitva)
 
 ### Mit csinaltunk [x]
