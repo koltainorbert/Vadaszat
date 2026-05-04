@@ -193,13 +193,11 @@ get_header();
             <h1 id="va-help-title">Teljes hasznalati utasitas a weingartnerauto.hu oldalahoz</h1>
             <p class="va-help-lead">
                 Ezen az oldalon osszegyujtottuk a latogatok szamara lathato funkciokat: hogyan keress, hogyan
-                hirdess, hogyan licitalj, es hogyan kezeld a fiokodat. Csak olyan informacio szerepel itt,
+                bongessz, es hogyan kerj kapcsolatfelvetelt. Csak olyan informacio szerepel itt,
                 amit a felhasznalok is lathatnak az oldalon.
             </p>
             <div class="va-help-quick">
                 <a href="<?php echo esc_url( home_url( '/va-hirdetes-kereses' ) ); ?>">Hirdetes kereses</a>
-                <a href="<?php echo esc_url( home_url( '/va-hirdetes-feladas' ) ); ?>">Hirdetes feladas</a>
-                <a href="<?php echo esc_url( home_url( '/va-fiok' ) ); ?>">Fiokom</a>
                 <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Kapcsolat</a>
             </div>
         </header>
@@ -209,12 +207,11 @@ get_header();
                 <h2>1. Elso lepesek uj latogatoknak</h2>
                 <ol>
                     <li>Nyisd meg a Hirdetes kereses oldalt, ahol az osszes talalatot listaban vagy racs nezetben latod.</li>
-                    <li>Ha hirdetest szeretnel feladni vagy kedvenceket menteni, regisztralj, majd jelentkezz be.</li>
-                    <li>A Fiokom oldalon utana egy helyen kezeled a sajat hirdeteseidet, licitjeidet es profilodat.</li>
+                    <li>Ez egy magan oldal: bejelentkezes, regisztracio es hirdetesfeladas nem erheto el latogatoknak.</li>
+                    <li>Ha kerdesed van, a Kapcsolat oldalon tudsz irni.</li>
                 </ol>
                 <div class="va-help-link-row">
-                    <a href="<?php echo esc_url( home_url( '/va-regisztracio' ) ); ?>">Regisztracio</a>
-                    <a href="<?php echo esc_url( home_url( '/va-bejelentkezes' ) ); ?>">Bejelentkezes</a>
+                    <a href="<?php echo esc_url( home_url( '/kapcsolat' ) ); ?>">Kapcsolatfelvetel</a>
                 </div>
             </article>
 
@@ -235,7 +232,7 @@ get_header();
                     <li>Kepek, cim, ar, helyszin, kategoria es egyeb adatok.</li>
                     <li>Leiras blokk, ahol a hirdeto reszletes informaciot adhatott meg.</li>
                     <li>Megtekintes szam es a hirdetes allapotara vonatkozo jelzesek.</li>
-                    <li>Bejelentkezett felhasznaloknal Kedvencek gomb (sziv ikon) a gyors menteshez.</li>
+                    <li>A tartalom publikus olvasasra van optimalizalva.</li>
                 </ul>
             </article>
 
@@ -244,8 +241,7 @@ get_header();
                 <ul>
                     <li>Az Aukcio oldalon ugyanugy tudsz keresni es rendezni, mint a hirdeteseknel.</li>
                     <li>Egy aukcio adatlapjan latszik a kikiatasi ar, az aktualis licit, a licitek szama es a visszaszamlalas.</li>
-                    <li>Licit csak bejelentkezve adhato le.</li>
-                    <li>Aukciot kedvencekhez is hozzaadhatsz, ha be vagy jelentkezve.</li>
+                    <li>A licitalasi es fiok-alapu funkciok ezen a nyilvanos nezeten nem erhetoek el.</li>
                 </ul>
                 <div class="va-help-link-row">
                     <a href="<?php echo esc_url( home_url( '/aukcio' ) ); ?>">Aukciok</a>
@@ -253,35 +249,29 @@ get_header();
             </article>
 
             <article class="va-help-section">
-                <h2>5. Fiok, bejelentkezes, jelszo</h2>
+                <h2>5. Bejelentkezes es regisztracio</h2>
                 <ul>
-                    <li>Regisztracional a kotelezo mezok csillaggal jeloltek.</li>
-                    <li>Bejelentkezesnel kerheted az Emlkezz ram opciot.</li>
-                    <li>Elfelejtett jelszo linken keresztul jelszo-visszaallito e-mail kerheto.</li>
-                    <li>A Fiokom oldalon modosithato a profilnev, telefonszam, profilkep es jelszo.</li>
+                    <li>A nyilvanos latogatok szamara a bejelentkezes ki van kapcsolva.</li>
+                    <li>Regisztracio es fiokkezeles jelenleg nem erheto el.</li>
+                    <li>Az oldal tartalma bejelentkezes nelkul bongeszheto.</li>
                 </ul>
             </article>
 
             <article class="va-help-section">
                 <h2>6. Hirdetes feladasa es szerkesztese</h2>
                 <ul>
-                    <li>A feladasi urlapon megadhato: cim, kategoria, megye, allapot, helyszin, ar, ar-tipus, leiras, telefonszam.</li>
-                    <li>Jarmu hirdetesnel tovabbi mezok jelenhetnek meg (pl. marka, modell, kivitel, evjarat, kilometer).</li>
-                    <li>Tobb kep toltheto fel, a boritokep kijelolheto, a kepsorrend athuzassal rendezheto.</li>
-                    <li>A mar feladott hirdetes a Fiokom oldalon barmikor szerkesztheto vagy torolheto.</li>
+                    <li>Ez a funkcio latogatoknak nem erheto el.</li>
+                    <li>A weboldal jelenleg olvasasi modban uzemel.</li>
+                    <li>A publikus feluleten csak a mar feltoltott hirdetesek bongeszese tortenik.</li>
                 </ul>
-                <div class="va-help-link-row">
-                    <a href="<?php echo esc_url( home_url( '/va-hirdetes-feladas' ) ); ?>">Hirdetes feladas</a>
-                </div>
             </article>
 
             <article class="va-help-section">
                 <h2>7. Fiokom: mit lehet kezelni?</h2>
                 <ul>
-                    <li>Hirdeteseim: sajat listad, statuszokkal, szerkesztes/torles lehetoseggel.</li>
-                    <li>Licitjeim: aukcios ajanlataid listaja (ha aukcio aktiv az oldalon).</li>
-                    <li>Kedvenceim: mentett hirdetesek es figyelt aukciok egy helyen.</li>
-                    <li>Profilom: szemelyes adatok, jelszocsere, profilkep.</li>
+                    <li>A fiokfunkciok a publikus nezetben ki vannak kapcsolva.</li>
+                    <li>A latogatok csak olvashatjak es bongeszhetik a hirdeteseket.</li>
+                    <li>Tovabbi informacioert hasznald a Kapcsolat oldalt.</li>
                 </ul>
             </article>
 

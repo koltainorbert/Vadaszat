@@ -2706,4 +2706,16 @@ body.sl-viewer-open { overflow: hidden; }
   .vcp-hero { padding: 50px 16px 44px; }
   .vcc { grid-template-rows: 130px 1fr 44px; }
 }
+
+/* Publikus nezet: minden lathato szoveg feher */
+.va-site-wrap,
+.va-site-wrap * {
+  color: #fff !important;
+}
+
+.va-site-wrap input::placeholder,
+.va-site-wrap textarea::placeholder {
+  color: rgba(255,255,255,.82) !important;
+}
+
 /* ═════════════════════════════════════ EOF ═════════════════════════════════════ */

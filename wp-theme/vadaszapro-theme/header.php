@@ -201,13 +201,9 @@
                 <?php if ( is_user_logged_in() ):
                     $user        = wp_get_current_user();
                     $dashboard   = get_page_by_path('va-fiok');
-                    $submit_page = get_page_by_path('va-hirdetes-feladas');
                     $buy_page    = get_page_by_path('va-kredit-vasarlas');
                     $buy_url     = $buy_page ? get_permalink( $buy_page ) : home_url('/va-kredit-vasarlas/');
                 ?>
-                    <?php if ( $submit_page ): ?>
-                        <a href="<?php echo esc_url( get_permalink($submit_page) ); ?>" class="va-header__submit-btn"><?php echo esc_html( $header_submit_text ); ?></a>
-                    <?php endif; ?>
                     <?php if ( $header_show_buy_button ): ?>
                         <a href="<?php echo esc_url( $buy_url ); ?>" class="va-header__user-login">Vásárlás</a>
                     <?php endif; ?>
@@ -216,19 +212,11 @@
                         <?php echo esc_html( $user->display_name ); ?>
                     </a>
                 <?php else:
-                    $login_page    = get_page_by_path('va-bejelentkezes');
-                    $register_page = get_page_by_path('va-regisztracio');
                     $buy_page      = get_page_by_path('va-kredit-vasarlas');
                     $buy_url       = $buy_page ? get_permalink( $buy_page ) : home_url('/va-kredit-vasarlas/');
                 ?>
                     <?php if ( $header_show_buy_button ): ?>
                         <a href="<?php echo esc_url( wp_login_url( $buy_url ) ); ?>" class="va-header__user-login">Vásárlás</a>
-                    <?php endif; ?>
-                    <?php if ( $login_enabled && $login_page ): ?>
-                        <a href="<?php echo esc_url( get_permalink($login_page) ); ?>" class="va-header__user-login"><?php echo esc_html( $header_login_text ); ?></a>
-                    <?php endif; ?>
-                    <?php if ( $register_enabled && $register_page ): ?>
-                        <a href="<?php echo esc_url( get_permalink($register_page) ); ?>" class="va-header__submit-btn"><?php echo esc_html( $header_register_text ); ?></a>
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php if ( get_option('va_social_header_show','1') === '1' && function_exists('va_social_bar') ):
@@ -383,7 +371,10 @@
         $home_title1 = get_option( 'va_home_hero_title_top', 'VadászBazár' );
         $home_title2 = get_option( 'va_home_hero_title_bottom', 'és Apróhirdetés' );
         $home_sub    = get_option( 'va_home_hero_sub_text', 'Magyarország első vadászati hirdetőoldala' );
-        $home_cta_1  = get_option( 'va_home_hero_primary_cta_text', '+ Hirdetés feladása' );
+        $home_cta_1  = get_option( 'va_home_hero_primary_cta_text', 'Kapcsolatfelvetel' );
+        if ( preg_match( '/hirdet[eé]s\s*felad/i', (string) $home_cta_1 ) ) {
+            $home_cta_1 = 'Kapcsolatfelvetel';
+        }
         $home_cta_2  = get_option( 'va_home_hero_secondary_cta_text', 'Hirdetések böngészése →' );
     ?>
     <div class="vh<?php echo $hero_bg_type === 'carousel' ? ' vh--carousel' : ''; ?>"
