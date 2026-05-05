@@ -1823,10 +1823,7 @@ add_action( 'login_footer', function () {
         background-image: linear-gradient(135deg, #e60000, #aa0000) !important;
         box-shadow: 0 10px 32px rgba(255,0,0,.5) !important;
     }
-    .login #nav a, .login #backtoblog a {
-        color: rgba(255,255,255,.45) !important;
-        font-size: 12px !important;
-    }
 add_filter( 'login_headerurl', function() { return home_url(); } );
 add_filter( 'login_headertext', function() { return get_bloginfo( 'name' ); } );
+
 
