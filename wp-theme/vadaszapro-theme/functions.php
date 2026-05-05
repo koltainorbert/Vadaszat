@@ -1587,26 +1587,28 @@ function va_category_icon( int $term_id ): string {
  * WP LOGIN PAGE – Google Translate plugin letiltása
  * ══════════════════════════════════════════════════════ */
 add_action( 'login_init', function () {
-    // GTranslate és hasonló fordító pluginek scriptjeinek eltávolítása login oldalon
+    // GT script letiltása
+    add_filter( 'script_loader_src', function( $src ) {
+        if ( $src && ( strpos( $src, 'translate.google' ) !== false || strpos( $src, 'gtranslate' ) !== false ) ) {
+            return false;
+        }
+        return $src;
+    }, 999 );
+    // GT widget HTML output letiltása
     add_action( 'wp_print_scripts', function () {
         global $wp_scripts;
         if ( ! $wp_scripts ) return;
-        foreach ( $wp_scripts->registered as $handle => $script ) {
-            if ( strpos( $handle, 'gtranslate' ) !== false
-              || strpos( $handle, 'translate' ) !== false
-              || ( isset( $script->src ) && strpos( $script->src, 'translate.google' ) !== false )
-            ) {
+        foreach ( array_keys( (array) $wp_scripts->registered ) as $handle ) {
+            if ( strpos( $handle, 'gtranslate' ) !== false || strpos( $handle, 'translate' ) !== false ) {
                 wp_dequeue_script( $handle );
                 wp_deregister_script( $handle );
             }
         }
     }, 999 );
-    add_filter( 'script_loader_src', function( $src ) {
-        if ( strpos( $src, 'translate.google' ) !== false || strpos( $src, 'gtranslate' ) !== false ) {
-            return false;
-        }
-        return $src;
-    }, 999 );
+    // googleTranslateElementInit felülírása – ne inicializáljon
+    add_action( 'login_footer', function() {
+        echo '<script>window.googleTranslateElementInit=function(){};</script>';
+    }, 1 );
 } );
 
 
