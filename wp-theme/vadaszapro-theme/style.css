@@ -100,8 +100,7 @@ hr { border-color: var(--border); }
   padding: 6px 32px 10px 5px;
   height: 100%;
   box-sizing: border-box;
-  max-width: 1480px;
-  margin: 0 auto;
+  width: 100%;
 }
 .va-header__inner .va-nav { flex: 0 0 auto; }
 .va-header__inner .va-header__search { flex: 0 0 300px; width: 300px; max-width: 300px; margin-left: 24px; }
