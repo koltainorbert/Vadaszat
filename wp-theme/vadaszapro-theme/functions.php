@@ -1738,8 +1738,10 @@ add_action( 'login_enqueue_scripts', function () {
     }
     /* Google Translate elrejtése login oldalon */
     .goog-te-banner-frame, #goog-gt-tt, .skiptranslate,
-    body > .skiptranslate, #google_translate_element { display:none !important; }
-    body.login { top:0 !important; }
+    body > .skiptranslate, #google_translate_element,
+    iframe.goog-te-banner-frame, iframe.skiptranslate,
+    body > iframe { display:none !important; visibility:hidden !important; }
+    body.login { top:0 !important; overflow:hidden !important; }
     </style>
     <?php
 } );
