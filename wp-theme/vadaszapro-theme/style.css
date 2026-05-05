@@ -479,9 +479,27 @@ body { top:0 !important; }
 
 /* ── Mobil nav ── */
 @media (max-width: 1024px) {
-  .va-header__inner { padding-left: 0 !important; padding-right: 8px !important; }
-  .va-logo { margin-left: 0 !important; padding-left: 0 !important; }
+  .va-header__inner {
+    padding-left: 0 !important;
+    padding-right: 8px !important;
+    justify-content: space-between;
+  }
+  .va-logo { margin-left: 0 !important; padding-left: 0 !important; flex: 0 0 auto; }
   .va-logo__text { display: none; }
+  /* Keresőmező és nav elrejtve */
+  .va-header__search { display: none !important; }
+  /* Right div: középre, csak a lang switcher látható */
+  .va-header__right {
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin-left: 0 !important;
+  }
+  .va-header__user,
+  .va-header__user-login,
+  .va-header__submit-btn,
+  .va-social-bar { display: none !important; }
   .va-nav {
     display: none;
     position: absolute;
@@ -512,12 +530,10 @@ body { top:0 !important; }
   }
   .va-nav__item:hover { background: rgba(255,136,0,.12); }
   .va-nav__item::after { display: none; }
-  .va-hamburger { display: flex; }
-  .va-header__submit-btn { display: none; }
+  .va-hamburger { display: flex; flex: 0 0 auto; }
   .va-header { position: relative; }
 }
 @media (max-width: 500px) {
-  .va-header__inner { padding: 0 14px 0 0; }
   .va-logo { padding-right: 0; gap: 9px; }
 }
 
