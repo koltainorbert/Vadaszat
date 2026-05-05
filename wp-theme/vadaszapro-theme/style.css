@@ -432,6 +432,9 @@ button.va-lang-sw__toggle:hover { background:rgba(226,112,25,0.44) !important; b
   box-shadow:0 8px 28px rgba(0,0,0,.55) !important;
   z-index:9999;
 }
+@media (max-width: 1024px) {
+  .va-lang-sw__dropdown { right: 0; left: auto; }
+}
 .va-lang-sw__item {
   display:flex; align-items:center; gap:8px; width:100%;
   background:none; border:none; border-radius:7px;
