@@ -479,7 +479,7 @@ body { top:0 !important; }
 
 /* ── Mobil nav ── */
 @media (max-width: 1024px) {
-  .va-header__inner { padding-left: 1px !important; }
+  .va-header__inner { padding-left: 0 !important; padding-right: 8px !important; }
   .va-logo { margin-left: 0 !important; padding-left: 0 !important; }
   .va-logo__text { display: none; }
   .va-nav {
