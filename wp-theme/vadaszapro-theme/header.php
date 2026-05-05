@@ -270,7 +270,7 @@
                         }
 
                         function vaSetLang(code) {
-                            // Mindig töröljük a googtrans cookie-t minden domain/path kombinációban
+                            // Töröljük a googtrans cookie-t minden domain/path kombinációban
                             var domains = [location.hostname, '.' + location.hostname, ''];
                             var paths   = ['/', ''];
                             domains.forEach(function(d){ paths.forEach(function(p){
@@ -278,11 +278,18 @@
                                 document.cookie = d ? base + ';domain=' + d : base;
                             }); });
                             if (code !== 'hu') {
-                                // Idegen nyelv: beállítjuk a fordítást
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/';
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
+                            } else {
+                                // Magyar: localStorage-ból is töröljük
+                                try { localStorage.removeItem('googtrans'); } catch(e) {}
+                                try { sessionStorage.removeItem('googtrans'); } catch(e) {}
+                                // Google Translate widget visszaállítása ha betöltött
+                                try {
+                                    var gt = google && google.translate && google.translate.TranslateElement.getInstance();
+                                    if (gt) gt.restore();
+                                } catch(e) {}
                             }
-                            // Magyar esetén nem állítunk be googtrans cookie-t – a GT eredeti szöveget mutat
                             document.cookie = 'va_geo_done=1;path=/;max-age=86400';
                             location.reload();
                         }
