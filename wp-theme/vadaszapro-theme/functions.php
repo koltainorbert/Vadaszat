@@ -1587,17 +1587,16 @@ function va_category_icon( int $term_id ): string {
  * WP LOGIN PAGE – egyedi design (videó háttér)
  * ══════════════════════════════════════════════════════ */
 add_action( 'login_enqueue_scripts', function () {
-    $logo_url = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
     ?>
     <style id="va-login-style">
     html, body.login { background:#060606 !important; margin:0; padding:0; min-height:100vh; overflow-x:hidden; }
     #va-login-video {
         position:fixed; inset:0; z-index:0;
-        width:100%; height:100%; object-fit:cover; opacity:.42; pointer-events:none;
+        width:100%; height:100%; object-fit:cover; opacity:.55; pointer-events:none;
     }
     body.login::after {
         content:''; position:fixed; inset:0; z-index:1;
-        background:rgba(6,6,6,.58); pointer-events:none;
+        background:rgba(6,6,6,.50); pointer-events:none;
     }
     #login {
         position:relative; z-index:2;
@@ -1608,19 +1607,11 @@ add_action( 'login_enqueue_scripts', function () {
         box-shadow:0 0 60px rgba(255,0,0,.14),0 20px 60px rgba(0,0,0,.85) !important;
         margin-top:56px !important;
     }
-    /* Logo a panel felett */
-    #login h1 { margin:0 0 10px !important; padding:0 !important; text-align:center; }
-    #login h1 a {
-        display:block !important;
-        background:none !important;
-        width:auto !important; height:auto !important;
-        padding:0 !important;
-        font-size:0 !important; /* szöveg elrejtése – img mutatja */
-    }
-    #va-login-logo {
-        display:block; margin:0 auto 4px; width:72px; height:72px;
-        object-fit:contain; border-radius:10px;
-    }
+    /* WP logó teljes elrejtése – saját logót PHP injektálja */
+    #login h1 { display:none !important; }
+    /* Saját logó */
+    .va-login-logo-wrap { text-align:center; margin-bottom:18px; }
+    #va-login-logo { width:80px; height:80px; object-fit:contain; border-radius:12px; display:block; margin:0 auto; }
     /* mezők */
     .login label { color:rgba(255,255,255,.70) !important; font-size:12px !important; }
     .login form, .login #loginform, .login #lostpasswordform, .login #registerform {
