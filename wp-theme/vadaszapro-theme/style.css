@@ -414,7 +414,7 @@ hr { border-color: var(--border); }
   font-family:inherit; letter-spacing:inherit;
   -webkit-appearance:none; appearance:none; margin:0; vertical-align:middle;
 }
-.va-lang-sw__toggle:hover { background:#e07700 !important; background-color:#e07700 !important; border-color:rgba(255,136,0,.90); color:#fff !important; }
+.va-lang-sw__toggle:hover { background:rgba(226,112,25,0.44) !important; background-color:rgba(226,112,25,0.44) !important; border-color:rgba(226,112,25,.70); color:#fff !important; }
 .va-lang-flag { font-size:15px; line-height:1; display:inline-flex; align-items:center; color: unset !important; }
 .va-lang-code { font-size:.76rem; font-weight:600; color:#fff !important; letter-spacing:.04em; line-height:1.5; }
 .va-lang-sw__toggle, .va-lang-sw__toggle * { color:#fff !important; }
