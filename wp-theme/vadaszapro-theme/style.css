@@ -535,7 +535,8 @@ body { top:0 !important; }
   .va-nav__item:hover { background: rgba(255,136,0,.12); }
   .va-nav__item::after { display: none; }
   .va-hamburger { display: flex; flex: 0 0 auto; margin-right: 5px; }
-  .va-header { position: relative; }
+  .va-header { position: fixed; }
+  .va-site-wrap--inner { padding-top: var(--nav); }
 }
 @media (max-width: 500px) {
   .va-logo { padding-right: 0; gap: 9px; }
