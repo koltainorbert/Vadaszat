@@ -404,7 +404,7 @@ hr { border-color: var(--border); }
 .va-lang-sw { position:relative; display:flex; align-items:center; margin-left:8px; }
 .va-lang-sw__toggle {
   display:inline-flex; align-items:center; gap:8px;
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12);
+  background:#ff8800; border:1px solid rgba(255,136,0,.70);
   border-radius:999px; padding:0 18px;
   height:36px; box-sizing:border-box;
   color:#fff !important; font-size:.76rem; font-weight:600; cursor:pointer;
@@ -413,10 +413,10 @@ hr { border-color: var(--border); }
   font-family:inherit; letter-spacing:inherit;
   -webkit-appearance:none; appearance:none; margin:0; vertical-align:middle;
 }
-.va-lang-sw__toggle:hover { background:rgba(255,255,255,.11); border-color:rgba(255,0,0,.35); color:#fff !important; }
+.va-lang-sw__toggle:hover { background:#e07700; border-color:rgba(255,136,0,.90); color:#fff !important; }
 .va-lang-flag { font-size:15px; line-height:1; display:inline-flex; align-items:center; color: unset !important; }
 .va-lang-code { font-size:.76rem; font-weight:600; color:#fff !important; letter-spacing:.04em; line-height:1.5; }
-.va-lang-sw__toggle, .va-lang-sw__toggle * { color:#fff !important; background:rgba(255,255,255,.06) !important; border-color:rgba(255,255,255,.12) !important; }
+.va-lang-sw__toggle, .va-lang-sw__toggle * { color:#fff !important; background:#ff8800 !important; border-color:rgba(255,136,0,.70) !important; }
 .va-lang-sw__toggle .va-lang-flag,
 .va-lang-sw__item .va-lang-flag { color: unset !important; }
 .va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:.7; }
