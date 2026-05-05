@@ -1762,17 +1762,19 @@ add_action( 'login_footer', function () {
         document.addEventListener('animationstart', function(e){
             if(e.animationName==='onAutoFillStart') fixInputs();
         });
-        // Google Translate widget elrejtése
+        // Google Translate widget elrejtése – MutationObserver
         function hideGT(){
-            var sel = ['.skiptranslate','#goog-gt-tt','.goog-te-banner-frame','#google_translate_element','#goog-gt-','body > iframe'];
+            var sel = ['.skiptranslate','#goog-gt-tt','.goog-te-banner-frame','#google_translate_element','body > iframe[src*="translate"]'];
             sel.forEach(function(s){
                 document.querySelectorAll(s).forEach(function(el){ el.style.setProperty('display','none','important'); });
             });
             document.body.style.setProperty('top','0','important');
+            document.documentElement.style.setProperty('top','0','important');
         }
         hideGT();
-        setTimeout(hideGT, 500);
-        setTimeout(hideGT, 1500);
+        var gtObs = new MutationObserver(hideGT);
+        gtObs.observe(document.documentElement, {childList:true, subtree:true});
+        setTimeout(function(){ gtObs.disconnect(); }, 8000);
     })();
     </script>
     <?php
