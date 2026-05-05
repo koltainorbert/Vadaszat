@@ -419,6 +419,8 @@ hr { border-color: var(--border); }
 .va-lang-code { font-size:.76rem; font-weight:600; color:#fff !important; letter-spacing:.04em; line-height:1.5; }
 .va-lang-sw__toggle, .va-lang-sw__toggle * { color:#fff !important; }
 .va-lang-sw__toggle img, .va-lang-sw__toggle span, .va-lang-sw__toggle svg { background:transparent !important; background-color:transparent !important; }
+button.va-lang-sw__toggle { background:#ff8800 !important; background-color:#ff8800 !important; color:#fff !important; }
+button.va-lang-sw__toggle:hover { background:rgba(226,112,25,0.44) !important; background-color:rgba(226,112,25,0.44) !important; }
 .va-lang-sw__toggle .va-lang-flag,
 .va-lang-sw__item .va-lang-flag { color: unset !important; }
 .va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:.7; }
