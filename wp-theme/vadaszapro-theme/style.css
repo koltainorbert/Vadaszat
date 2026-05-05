@@ -492,9 +492,10 @@ body { top:0 !important; }
   .va-header__right {
     flex: 1 !important;
     display: flex !important;
-    justify-content: flex-start !important;
+    justify-content: flex-end !important;
     align-items: center !important;
-    margin-left: 16px !important;
+    margin-right: 20px !important;
+    margin-left: 0 !important;
   }
   .va-header__user,
   .va-header__user-login,
