@@ -270,19 +270,22 @@
                         }
 
                         function vaSetLang(code) {
-                            // Töröljük a googtrans cookie-t minden domain/path kombinációban
                             var domains = [location.hostname, '.' + location.hostname, ''];
                             var paths   = ['/', ''];
-                            domains.forEach(function(d){ paths.forEach(function(p){
-                                var base = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=' + (p||'/');
-                                document.cookie = d ? base + ';domain=' + d : base;
-                            }); });
+                            // Töröljük a googtrans ÉS va_geo_done cookie-t minden kombinációban
+                            ['googtrans', 'va_geo_done'].forEach(function(name) {
+                                domains.forEach(function(d){ paths.forEach(function(p){
+                                    var base = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=' + (p||'/');
+                                    document.cookie = d ? base + ';domain=' + d : base;
+                                }); });
+                            });
                             if (code !== 'hu') {
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/';
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
                             }
                             document.cookie = 'va_geo_done=1;path=/;max-age=86400';
-                            location.reload();
+                            // window.location.href = friss GET kérés (nem cache-ből tölt), location.reload() cache-t használ
+                            window.location.href = window.location.pathname + window.location.search;
                         }
 
                         // IP geolokáció – csak ha még nem volt meghatározva
