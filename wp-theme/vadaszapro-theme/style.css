@@ -402,10 +402,10 @@ hr { border-color: var(--border); }
 /* ── Nyelvváltó ── */
 .va-lang-sw { position:relative; display:flex; align-items:center; margin-left:8px; }
 .va-lang-sw__toggle {
-  display:inline-flex; align-items:center; gap:8px;
+  display:inline-flex; align-items:center; gap:6px;
   background:#ff8800 !important; background-color:#ff8800 !important; background-image:none !important;
   border:1px solid rgba(255,136,0,.70);
-  border-radius:999px; padding:0 18px;
+  border-radius:999px; padding:0 14px 0 14px;
   height:36px; box-sizing:border-box;
   color:#fff !important; font-size:.76rem; font-weight:600; cursor:pointer;
   text-decoration:none; white-space:nowrap; line-height:1;
@@ -422,7 +422,7 @@ button.va-lang-sw__toggle { background:#ff8800 !important; background-color:#ff8
 button.va-lang-sw__toggle:hover { background:rgba(226,112,25,0.44) !important; background-color:rgba(226,112,25,0.44) !important; }
 .va-lang-sw__toggle .va-lang-flag,
 .va-lang-sw__item .va-lang-flag { color: unset !important; }
-.va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:.7; }
+.va-lang-sw__arrow { transition:transform .2s; flex-shrink:0; opacity:1; margin-left: 2px; }
 .va-lang-sw[aria-open] .va-lang-sw__arrow,
 .va-lang-sw__toggle[aria-expanded="true"] .va-lang-sw__arrow { transform:rotate(180deg); }
 .va-lang-sw__dropdown {
