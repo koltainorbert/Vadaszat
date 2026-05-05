@@ -1014,6 +1014,7 @@ textarea { min-height: 110px; resize: vertical; }
 @media(max-width:900px){ .sl__layout { grid-template-columns: 1fr; } }
 @media(max-width:900px){ .sl { margin-left: -15px !important; margin-right: -15px !important; padding-left: 4px !important; padding-right: 6px !important; } }
 @media(max-width:900px){ .sl__related-wrap { padding-left: 0 !important; padding-right: 0 !important; margin-left: -15px !important; margin-right: -15px !important; } }
+@media(max-width:900px){ .va-contact-page { margin-left: -15px !important; margin-right: -15px !important; padding-left: 4px !important; padding-right: 6px !important; } }
 
 /* Card alap */
 .sl__card {
