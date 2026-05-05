@@ -2302,6 +2302,7 @@ body.sl-viewer-open { overflow: hidden; }
   .va-wrap { margin-left: -15px !important; margin-right: -15px !important; padding-left: 0 !important; padding-right: 0 !important; }
   .va-grid > * { border-radius: var(--r) !important; }
   body { overflow-x: hidden; }
+  .va-container { overflow-x: clip; }
   .wp-site-blocks, .entry-content, .wp-block-group { padding-left: 0 !important; padding-right: 0 !important; }
 }
 
