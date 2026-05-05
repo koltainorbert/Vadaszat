@@ -437,7 +437,8 @@
 .va-user-card__name { font-size: 14px; font-weight: 600; text-align: center; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .va-user-card__meta { font-size: 12px; color: rgba(255,255,255,.45); }
 
-/* ── Szűrő sáv ────────────────────────────────────── */
+/* ── Keresőoldal kártyarács – kis oldalbehúzás mobilon ── */
+@media (max-width: 900px) { #va-listing-results.va-grid { padding-left: 6px !important; padding-right: 6px !important; } }
 .va-filter-bar { background: #141414; border: 1px solid rgba(255,255,255,.08); border-radius: var(--va-radius); padding: 20px; margin-bottom: 24px; }
 .va-filter-bar__title { font-size: 13px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px; }
 .va-filter-bar__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
