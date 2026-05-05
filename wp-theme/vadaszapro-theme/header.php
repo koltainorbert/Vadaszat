@@ -223,10 +223,10 @@
                 ?>
                         <div class="va-lang-sw notranslate" id="va-lang-sw" translate="no">
                             <button type="button" class="va-lang-sw__toggle notranslate" id="va-lang-toggle"
-                                    aria-haspopup="true" aria-expanded="false" translate="no" style="color:#1e3154 !important;">
+                                    aria-haspopup="true" aria-expanded="false" translate="no">
                                 <?php $fc = isset($va_flag_map[$curr_code]) ? $va_flag_map[$curr_code] : $curr_code; ?>
                                 <img src="https://flagcdn.com/<?php echo esc_attr($fc); ?>.svg" width="24" height="18" alt="<?php echo esc_attr(strtoupper($curr_code)); ?>" style="border-radius:2px;vertical-align:middle;display:inline-block;">
-                                <span class="va-lang-code" style="color:#1e3154 !important;"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
+                                <span class="va-lang-code"><?php echo esc_html( strtoupper($curr_code) ); ?></span>
                                 <svg class="va-lang-sw__arrow" width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                             </button>
                             <div class="va-lang-sw__dropdown notranslate" id="va-lang-dropdown" hidden translate="no">
