@@ -1589,7 +1589,7 @@ function va_category_icon( int $term_id ): string {
 add_action( 'login_enqueue_scripts', function () {
     ?>
     <style id="va-login-style">
-    html { margin:0; padding:0; height:100%; }
+    html, body.login { margin:0; padding:0; height:100%; }
     body.login {
         background-color:#060606 !important;
         background-image:url('https://www.weingartnerauto.hu/wp-content/uploads/2026/05/car-headlight-couple-making-deal-with-car-dealer-scaled.jpg') !important;
@@ -1597,44 +1597,48 @@ add_action( 'login_enqueue_scripts', function () {
         background-position:center !important;
         background-repeat:no-repeat !important;
         background-attachment:fixed !important;
-        margin:0 !important; padding:0 !important;
-        min-height:100vh !important; height:100% !important;
+        min-height:100vh !important;
         overflow-x:hidden !important;
         display:flex !important;
         flex-direction:column !important;
         align-items:center !important;
         justify-content:center !important;
+        padding:20px !important;
+        box-sizing:border-box !important;
     }
     body.login::after {
         content:''; position:fixed; inset:0; z-index:-1;
         background:rgba(6,6,6,.50); pointer-events:none;
     }
-    #login {
-        position:relative; z-index:2;
-        background:rgba(8,8,8,.92) !important;
-        border:1px solid rgba(255,0,0,.30) !important;
-        border-radius:16px !important;
-        padding:32px 32px 24px !important;
-        box-shadow:0 0 60px rgba(255,0,0,.14),0 20px 60px rgba(0,0,0,.85) !important;
-        margin:8px auto 0 !important;
-    }
-    /* WP logó teljes elrejtése – saját logót PHP injektálja */
-    #login h1 { display:none !important; }
-    /* Saját logó – panel FELETT, kívül */
+    /* Logo + form együtt középen */
     .va-login-logo-wrap {
         text-align:center;
         margin-bottom:4px;
-        position:relative;
+        width:100%;
+        max-width:360px;
     }
     #va-login-logo {
-        width:300px; height:auto;
+        width:min(300px, 80vw); height:auto;
         object-fit:contain;
-        border-radius:0;
         display:block; margin:0 auto;
         opacity:1;
         image-rendering:-webkit-optimize-contrast;
         image-rendering:crisp-edges;
     }
+    #login {
+        position:relative; z-index:2;
+        width:100% !important;
+        max-width:360px !important;
+        background:rgba(8,8,8,.92) !important;
+        border:1px solid rgba(255,0,0,.30) !important;
+        border-radius:16px !important;
+        padding:28px 24px 20px !important;
+        box-sizing:border-box !important;
+        box-shadow:0 0 60px rgba(255,0,0,.14),0 20px 60px rgba(0,0,0,.85) !important;
+        margin:0 !important;
+    }
+    /* WP logó elrejtése */
+    #login h1 { display:none !important; }
     /* mezők */
     .login label { color:rgba(255,255,255,.70) !important; font-size:12px !important; }
     .login form, .login #loginform, .login #lostpasswordform, .login #registerform {
