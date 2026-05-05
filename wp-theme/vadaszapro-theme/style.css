@@ -97,7 +97,7 @@ hr { border-color: var(--border); }
   display: flex;
   align-items: center;
   gap: 0;
-  padding: 6px 32px 10px 0;
+  padding: 6px 32px 10px 5px;
   height: 100%;
   box-sizing: border-box;
   max-width: 1480px;
