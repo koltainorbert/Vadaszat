@@ -1600,7 +1600,7 @@ add_action( 'login_enqueue_scripts', function () {
         margin:0 !important; padding:0 !important; min-height:100vh !important; overflow-x:hidden !important;
     }
     body.login::after {
-        content:''; position:fixed; inset:0; z-index:1;
+        content:''; position:fixed; inset:0; z-index:-1;
         background:rgba(6,6,6,.50); pointer-events:none;
     }
     #login {
@@ -1617,16 +1617,15 @@ add_action( 'login_enqueue_scripts', function () {
     /* Saját logó – panel FELETT, kívül */
     .va-login-logo-wrap {
         text-align:center;
-        margin-bottom:8px;
-        position:relative; z-index:3;
-        opacity:1 !important;
+        margin-bottom:4px;
+        position:relative;
     }
     #va-login-logo {
         width:300px; height:auto;
         object-fit:contain;
         border-radius:0;
         display:block; margin:0 auto;
-        opacity:1 !important;
+        opacity:1;
         image-rendering:-webkit-optimize-contrast;
         image-rendering:crisp-edges;
     }
