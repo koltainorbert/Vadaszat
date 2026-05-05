@@ -1583,6 +1583,9 @@ function va_category_icon( int $term_id ): string {
     return $svg[ $term->slug ] ?? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="1"/><circle cx="6" cy="12" r="1"/><circle cx="18" cy="12" r="1"/></svg>';
 }
 
+/* WP login beépített nyelvválasztó letiltása */
+add_filter( 'login_display_language_dropdown', '__return_false' );
+
 /* ══════════════════════════════════════════════════════
  * WP LOGIN PAGE – Google Translate plugin letiltása
  * ══════════════════════════════════════════════════════ */
@@ -1738,7 +1741,9 @@ add_action( 'login_enqueue_scripts', function () {
         background:rgba(226,112,25,.10) !important;
         color:#ffd0a0 !important;
     }
-    /* Google Translate elrejtése login oldalon */
+    /* WP beépített login nyelvválasztó elrejtése */
+    .language-switcher, #login-lang-select,
+    .login .language-switcher { display:none !important; }
     .goog-te-banner-frame, #goog-gt-tt, .skiptranslate,
     body > .skiptranslate, #google_translate_element,
     iframe.goog-te-banner-frame, iframe.skiptranslate,
