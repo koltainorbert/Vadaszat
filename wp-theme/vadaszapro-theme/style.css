@@ -984,10 +984,16 @@ textarea { min-height: 110px; resize: vertical; }
   .va-header { isolation: isolate; }
   .va-header__inner,
   .va-header__right,
-  .va-nav,
   .va-header__search {
     position: relative;
     z-index: 2;
+  }
+  .va-nav {
+    position: relative;
+    z-index: 2;
+  }
+  @media (max-width: 1024px) {
+    .va-nav { position: absolute !important; z-index: 399 !important; }
   }
   .va-header__submit-btn,
   .va-header__user,
