@@ -2297,7 +2297,7 @@ body.sl-viewer-open { overflow: hidden; }
   .va-home-sidebar { display: none; }
   .va-home-main { padding: 0 !important; margin: 0 !important; }
   .va-grid { grid-template-columns: repeat(2, 1fr); gap: 4px; margin-left: 0 !important; margin-right: 0 !important; }
-  .va-wrap { margin-left: -8px !important; margin-right: -8px !important; padding-left: 0 !important; padding-right: 0 !important; }
+  .va-wrap { margin-left: -5px !important; margin-right: -5px !important; padding-left: 0 !important; padding-right: 0 !important; }
   .va-grid > * { border-radius: var(--r) !important; }
   body { overflow-x: hidden; }
   .wp-site-blocks, .entry-content, .wp-block-group { padding-left: 0 !important; padding-right: 0 !important; }
