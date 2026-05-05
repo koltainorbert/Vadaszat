@@ -68,6 +68,39 @@
     <!-- ═══ Header ══════════════════════════════════════ -->
     <header class="va-header">
         <div class="va-header__inner">
+            <!-- Hamburger (csak mobil/tablet) -->
+            <button class="va-hamburger" id="va-hamburger" aria-label="Menü" aria-expanded="false" aria-controls="va-mobile-menu" type="button">
+                <span></span><span></span><span></span>
+            </button>
+
+            <!-- Mobil menü dropdown -->
+            <div class="va-mobile-menu" id="va-mobile-menu" hidden>
+                <?php
+                $mob_nav = apply_filters('va_nav_items', (function() {
+                    $default = [
+                        ['url' => home_url('/va-hirdetes-kereses'), 'label' => 'Hirdetések'],
+                        ['url' => home_url('/kategoria'),           'label' => 'Kategóriák'],
+                        ['url' => home_url('/kapcsolat'),           'label' => 'Kapcsolat'],
+                    ];
+                    $json = get_option('va_nav_items_json', '');
+                    if (!$json) return $default;
+                    $saved = json_decode($json, true);
+                    if (!is_array($saved) || empty($saved)) return $default;
+                    $result = [];
+                    foreach ($saved as $item) {
+                        if (empty($item['enabled'])) continue;
+                        $url = $item['url'] ?? '';
+                        if ($url !== '' && !preg_match('#^https?://#', $url)) { $url = home_url($url); }
+                        $result[] = ['url' => $url, 'label' => $item['label']];
+                    }
+                    return $result ?: $default;
+                })());
+                foreach ($mob_nav as $mob_item):
+                ?>
+                    <a href="<?php echo esc_url($mob_item['url']); ?>" class="va-mobile-menu__item"><?php echo esc_html($mob_item['label']); ?></a>
+                <?php endforeach; ?>
+            </div>
+
             <!-- Logo -->
             <a href="<?php echo esc_url( home_url('/') ); ?>" class="va-logo">
                 <?php if ( ! empty( $header_logo ) ): ?>
