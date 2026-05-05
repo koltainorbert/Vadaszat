@@ -1586,6 +1586,15 @@ function va_category_icon( int $term_id ): string {
 /* WP login beépített nyelvválasztó letiltása */
 add_filter( 'login_display_language_dropdown', '__return_false' );
 
+/* Admin belépés után → téma admin oldal */
+add_filter( 'login_redirect', function( $redirect_to, $request, $user ) {
+    if ( is_wp_error( $user ) || ! $user ) return $redirect_to;
+    if ( user_can( $user, 'manage_options' ) ) {
+        return admin_url( 'admin.php?page=vadaszapro' );
+    }
+    return $redirect_to;
+}, 10, 3 );
+
 /* ══════════════════════════════════════════════════════
  * WP LOGIN PAGE – Google Translate plugin letiltása
  * ══════════════════════════════════════════════════════ */
