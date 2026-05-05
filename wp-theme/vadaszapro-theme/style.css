@@ -1410,7 +1410,7 @@ body.sl-viewer-open { overflow: hidden; }
   display: flex; align-items: center; justify-content: center; font-size: 22px;
 }
 .sl__more-title { font-size: .8rem; color: var(--t2); margin-bottom: 3px; }
-.sl__more-price { font-size: .78rem; color: var(--a); font-weight: 700; }
+.sl__more-price { font-size: .78rem; color: #e27019; font-weight: 700; }
 
 
 ::-webkit-scrollbar-thumb {
