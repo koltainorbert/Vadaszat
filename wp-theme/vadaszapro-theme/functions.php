@@ -1630,11 +1630,11 @@ add_action( 'login_enqueue_scripts', function () {
         width:100% !important;
         max-width:360px !important;
         background:rgba(8,8,8,.92) !important;
-        border:1px solid rgba(255,0,0,.30) !important;
+        border:1px solid rgba(226,112,25,.40) !important;
         border-radius:16px !important;
         padding:28px 24px 20px !important;
         box-sizing:border-box !important;
-        box-shadow:0 0 60px rgba(255,0,0,.14),0 20px 60px rgba(0,0,0,.85) !important;
+        box-shadow:0 0 60px rgba(226,112,25,.18),0 20px 60px rgba(0,0,0,.85) !important;
         margin:0 !important;
     }
     /* WP logó elrejtése */
@@ -1685,33 +1685,37 @@ add_action( 'login_enqueue_scripts', function () {
     .login input[type="text"]:focus,
     .login input[type="password"]:focus,
     #user_login:focus, #user_pass:focus {
-        border-color:rgba(255,0,0,.55) !important;
-        box-shadow:0 0 0 3px rgba(255,0,0,.14) !important;
+        border-color:rgba(226,112,25,.70) !important;
+        box-shadow:0 0 0 3px rgba(226,112,25,.18) !important;
         outline:none !important;
     }
-    .login input[type="checkbox"] { accent-color:#ff0000 !important; }
+    .login input[type="checkbox"] { accent-color:#E27019 !important; }
     .login .forgetmenot label { color:rgba(255,255,255,.45) !important; font-size:12px !important; text-transform:none !important; }
     .login .user-pass-wrap .wp-pwd, .login .wp-pwd button { background:transparent !important; border:none !important; }
     #wp-submit, .login .button-primary {
-        background:#e00 !important;
+        background:#E27019 !important;
         border:none !important; border-radius:10px !important;
         color:#fff !important; font-weight:700 !important;
         font-size:14px !important; padding:11px 20px !important;
         width:100% !important;
-        box-shadow:0 6px 24px rgba(255,0,0,.38) !important;
+        box-shadow:0 6px 24px rgba(226,112,25,.45) !important;
         text-shadow:none !important; cursor:pointer !important;
     }
     #wp-submit:hover, .login .button-primary:hover {
-        background:#c00 !important;
-        box-shadow:0 10px 32px rgba(255,0,0,.54) !important;
+        background:#c5601a !important;
+        box-shadow:0 10px 32px rgba(226,112,25,.60) !important;
     }
     .login #nav a, .login #backtoblog a { color:rgba(255,255,255,.42) !important; font-size:12px !important; }
-    .login #nav a:hover, .login #backtoblog a:hover { color:#ff4444 !important; }
+    .login #nav a:hover, .login #backtoblog a:hover { color:#E27019 !important; }
     .login .notice-error, .login .error, #login_error {
-        border-left:4px solid #f00 !important;
-        background:rgba(255,0,0,.08) !important;
-        color:#ffb0b0 !important;
+        border-left:4px solid #E27019 !important;
+        background:rgba(226,112,25,.10) !important;
+        color:#ffd0a0 !important;
     }
+    /* Google Translate elrejtése login oldalon */
+    .goog-te-banner-frame, #goog-gt-tt, .skiptranslate,
+    body > .skiptranslate, #google_translate_element { display:none !important; }
+    body.login { top:0 !important; }
     </style>
     <?php
 } );
