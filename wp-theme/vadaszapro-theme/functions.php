@@ -1610,7 +1610,7 @@ add_action( 'login_enqueue_scripts', function () {
         border-radius:16px !important;
         padding:32px 32px 24px !important;
         box-shadow:0 0 60px rgba(255,0,0,.14),0 20px 60px rgba(0,0,0,.85) !important;
-        margin-top:8px !important;
+        margin:8px auto 0 !important;
     }
     /* WP logó teljes elrejtése – saját logót PHP injektálja */
     #login h1 { display:none !important; }
