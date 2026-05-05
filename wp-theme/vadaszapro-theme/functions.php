@@ -1610,13 +1610,26 @@ add_action( 'login_enqueue_scripts', function () {
         border-radius:16px !important;
         padding:32px 32px 24px !important;
         box-shadow:0 0 60px rgba(255,0,0,.14),0 20px 60px rgba(0,0,0,.85) !important;
-        margin-top:56px !important;
+        margin-top:8px !important;
     }
     /* WP logó teljes elrejtése – saját logót PHP injektálja */
     #login h1 { display:none !important; }
-    /* Saját logó */
-    .va-login-logo-wrap { text-align:center; margin-bottom:6px; }
-    #va-login-logo { width:300px; height:300px; object-fit:contain; border-radius:20px; display:block; margin:0 auto; image-rendering:-webkit-optimize-contrast; image-rendering:crisp-edges; }
+    /* Saját logó – panel FELETT, kívül */
+    .va-login-logo-wrap {
+        text-align:center;
+        margin-bottom:8px;
+        position:relative; z-index:3;
+        opacity:1 !important;
+    }
+    #va-login-logo {
+        width:300px; height:auto;
+        object-fit:contain;
+        border-radius:0;
+        display:block; margin:0 auto;
+        opacity:1 !important;
+        image-rendering:-webkit-optimize-contrast;
+        image-rendering:crisp-edges;
+    }
     /* mezők */
     .login label { color:rgba(255,255,255,.70) !important; font-size:12px !important; }
     .login form, .login #loginform, .login #lostpasswordform, .login #registerform {
