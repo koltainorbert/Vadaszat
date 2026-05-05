@@ -1615,7 +1615,7 @@ add_action( 'login_enqueue_scripts', function () {
     /* WP logó teljes elrejtése – saját logót PHP injektálja */
     #login h1 { display:none !important; }
     /* Saját logó */
-    .va-login-logo-wrap { text-align:center; margin-bottom:28px; }
+    .va-login-logo-wrap { text-align:center; margin-bottom:6px; }
     #va-login-logo { width:300px; height:300px; object-fit:contain; border-radius:20px; display:block; margin:0 auto; image-rendering:-webkit-optimize-contrast; image-rendering:crisp-edges; }
     /* mezők */
     .login label { color:rgba(255,255,255,.70) !important; font-size:12px !important; }
@@ -1713,7 +1713,16 @@ add_action( 'login_footer', function () {
             var inputs = document.querySelectorAll('#loginform input, #lostpasswordform input, #registerform input');
             inputs.forEach(function(el){
                 if(el.type==='checkbox'||el.type==='submit'||el.type==='hidden') return;
-                el.style.cssText = 'background:#111 !important;background-color:#111 !important;color:#fff !important;-webkit-text-fill-color:#fff !important;caret-color:#fff !important;border:1px solid rgba(255,255,255,.25) !important;border-radius:10px !important;padding:10px 14px !important;font-size:14px !important;box-shadow:none !important;';
+                el.style.setProperty('background-color','#111','important');
+                el.style.setProperty('color','#fff','important');
+                el.style.setProperty('-webkit-text-fill-color','#fff','important');
+                el.style.setProperty('caret-color','#fff','important');
+                el.style.setProperty('-webkit-box-shadow','0 0 0 200px #111 inset','important');
+                el.style.setProperty('box-shadow','0 0 0 200px #111 inset','important');
+                el.style.setProperty('border','1px solid rgba(255,255,255,.25)','important');
+                el.style.setProperty('border-radius','10px','important');
+                el.style.setProperty('padding','10px 14px','important');
+                el.style.setProperty('font-size','14px','important');
             });
         }
         document.addEventListener('DOMContentLoaded', fixInputs);
