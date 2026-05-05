@@ -1587,8 +1587,112 @@ function va_category_icon( int $term_id ): string {
  * WP LOGIN PAGE – egyedi design (videó háttér)
  * ══════════════════════════════════════════════════════ */
 add_action( 'login_enqueue_scripts', function () {
-    $logo_url  = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
+    $logo_url = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
     ?>
+    <style id="va-login-style">
+    html, body.login { background:#060606 !important; margin:0; padding:0; min-height:100vh; overflow-x:hidden; }
+    #va-login-video {
+        position:fixed; inset:0; z-index:0;
+        width:100%; height:100%; object-fit:cover; opacity:.42; pointer-events:none;
+    }
+    body.login::after {
+        content:''; position:fixed; inset:0; z-index:1;
+        background:rgba(6,6,6,.58); pointer-events:none;
+    }
+    #login {
+        position:relative; z-index:2;
+        background:rgba(8,8,8,.92) !important;
+        border:1px solid rgba(255,0,0,.30) !important;
+        border-radius:16px !important;
+        padding:32px 32px 24px !important;
+        box-shadow:0 0 60px rgba(255,0,0,.14),0 20px 60px rgba(0,0,0,.85) !important;
+        margin-top:56px !important;
+    }
+    /* Logo a panel felett */
+    #login h1 { margin:0 0 10px !important; padding:0 !important; text-align:center; }
+    #login h1 a {
+        display:block !important;
+        background:none !important;
+        width:auto !important; height:auto !important;
+        padding:0 !important;
+        font-size:0 !important; /* szöveg elrejtése – img mutatja */
+    }
+    #va-login-logo {
+        display:block; margin:0 auto 4px; width:72px; height:72px;
+        object-fit:contain; border-radius:10px;
+    }
+    /* mezők */
+    .login label { color:rgba(255,255,255,.70) !important; font-size:12px !important; }
+    .login form, .login #loginform, .login #lostpasswordform, .login #registerform {
+        padding:0 !important; background:transparent !important; border:none !important; box-shadow:none !important;
+    }
+    .login input[type="text"],
+    .login input[type="password"],
+    .login input[type="email"],
+    #user_login, #user_pass, #user_email {
+        background:#111 !important;
+        border:1px solid rgba(255,255,255,.18) !important;
+        border-radius:10px !important;
+        color:#fff !important;
+        -webkit-text-fill-color:#fff !important;
+        box-shadow:none !important;
+        padding:10px 14px !important;
+        font-size:14px !important;
+    }
+    .login input[type="text"]:focus,
+    .login input[type="password"]:focus,
+    #user_login:focus, #user_pass:focus {
+        border-color:rgba(255,0,0,.55) !important;
+        box-shadow:0 0 0 3px rgba(255,0,0,.14) !important;
+        outline:none !important;
+    }
+    .login input:-webkit-autofill,
+    .login input:-webkit-autofill:focus {
+        -webkit-box-shadow:0 0 0 100px #1a0000 inset !important;
+        -webkit-text-fill-color:#fff !important;
+    }
+    .login input[type="checkbox"] { accent-color:#ff0000 !important; }
+    .login .forgetmenot label { color:rgba(255,255,255,.45) !important; font-size:12px !important; text-transform:none !important; }
+    .login .user-pass-wrap .wp-pwd, .login .wp-pwd button { background:transparent !important; border:none !important; }
+    #wp-submit, .login .button-primary {
+        background:#e00 !important;
+        border:none !important; border-radius:10px !important;
+        color:#fff !important; font-weight:700 !important;
+        font-size:14px !important; padding:11px 20px !important;
+        width:100% !important;
+        box-shadow:0 6px 24px rgba(255,0,0,.38) !important;
+        text-shadow:none !important; cursor:pointer !important;
+    }
+    #wp-submit:hover, .login .button-primary:hover {
+        background:#c00 !important;
+        box-shadow:0 10px 32px rgba(255,0,0,.54) !important;
+    }
+    .login #nav a, .login #backtoblog a { color:rgba(255,255,255,.42) !important; font-size:12px !important; }
+    .login #nav a:hover, .login #backtoblog a:hover { color:#ff4444 !important; }
+    .login .notice-error, .login .error, #login_error {
+        border-left:4px solid #f00 !important;
+        background:rgba(255,0,0,.08) !important;
+        color:#ffb0b0 !important;
+    }
+    </style>
+    <?php
+} );
+
+add_action( 'login_footer', function () {
+    $video_url = esc_url( content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
+    $logo_url  = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
+    $site_name = esc_attr( get_bloginfo( 'name' ) );
+    // Videó háttér
+    echo '<video id="va-login-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">'
+       . '<source src="' . $video_url . '" type="video/mp4">'
+       . '</video>';
+    // Logo csere: eltávolítjuk a WP szöveget és img-et injektálunk
+    if ( $logo_url ) {
+        echo '<script>(function(){var a=document.querySelector("#login h1 a");if(!a)return;'
+           . 'a.innerHTML=\'<img id="va-login-logo" src="' . $logo_url . '" alt="' . $site_name . '">\';'
+           . '})();</script>';
+    }
+} );
     <style id="va-login-style">
     html, body.login {
         background: #060606 !important;
