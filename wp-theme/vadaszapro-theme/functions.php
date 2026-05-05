@@ -1590,9 +1590,12 @@ add_action( 'login_enqueue_scripts', function () {
     ?>
     <style id="va-login-style">
     html, body.login { background:#060606 !important; margin:0; padding:0; min-height:100vh; overflow-x:hidden; }
-    #va-login-video {
-        position:fixed; inset:0; z-index:0;
-        width:100%; height:100%; object-fit:cover; opacity:.55; pointer-events:none;
+    body.login {
+        background-image:url('https://www.weingartnerauto.hu/wp-content/uploads/2026/05/car-headlight-couple-making-deal-with-car-dealer-scaled.jpg') !important;
+        background-size:cover !important;
+        background-position:center !important;
+        background-repeat:no-repeat !important;
+        background-attachment:fixed !important;
     }
     body.login::after {
         content:''; position:fixed; inset:0; z-index:1;
@@ -1678,12 +1681,7 @@ add_action( 'login_enqueue_scripts', function () {
     <?php
 } );
 
-add_action( 'login_footer', function () {
-    $video_url = esc_url( content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
-    echo '<video id="va-login-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">'
-       . '<source src="' . $video_url . '" type="video/mp4">'
-       . '</video>';
-} );
+
 
 add_action( 'login_header', function () {
     $logo_url  = (string) get_option( 'va_brand_icon_url', '' );
