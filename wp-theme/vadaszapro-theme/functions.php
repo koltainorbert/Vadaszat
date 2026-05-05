@@ -1589,7 +1589,7 @@ function va_category_icon( int $term_id ): string {
 add_action( 'login_enqueue_scripts', function () {
     ?>
     <style id="va-login-style">
-    html { margin:0; padding:0; }
+    html { margin:0; padding:0; height:100%; }
     body.login {
         background-color:#060606 !important;
         background-image:url('https://www.weingartnerauto.hu/wp-content/uploads/2026/05/car-headlight-couple-making-deal-with-car-dealer-scaled.jpg') !important;
@@ -1597,7 +1597,13 @@ add_action( 'login_enqueue_scripts', function () {
         background-position:center !important;
         background-repeat:no-repeat !important;
         background-attachment:fixed !important;
-        margin:0 !important; padding:0 !important; min-height:100vh !important; overflow-x:hidden !important;
+        margin:0 !important; padding:0 !important;
+        min-height:100vh !important; height:100% !important;
+        overflow-x:hidden !important;
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:center !important;
+        justify-content:center !important;
     }
     body.login::after {
         content:''; position:fixed; inset:0; z-index:-1;
