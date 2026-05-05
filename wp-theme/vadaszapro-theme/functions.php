@@ -1762,6 +1762,17 @@ add_action( 'login_footer', function () {
         document.addEventListener('animationstart', function(e){
             if(e.animationName==='onAutoFillStart') fixInputs();
         });
+        // Google Translate widget elrejtése
+        function hideGT(){
+            var sel = ['.skiptranslate','#goog-gt-tt','.goog-te-banner-frame','#google_translate_element','#goog-gt-','body > iframe'];
+            sel.forEach(function(s){
+                document.querySelectorAll(s).forEach(function(el){ el.style.setProperty('display','none','important'); });
+            });
+            document.body.style.setProperty('top','0','important');
+        }
+        hideGT();
+        setTimeout(hideGT, 500);
+        setTimeout(hideGT, 1500);
     })();
     </script>
     <?php
