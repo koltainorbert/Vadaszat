@@ -1587,10 +1587,161 @@ function va_category_icon( int $term_id ): string {
  * WP LOGIN PAGE – egyedi design (videó háttér)
  * ══════════════════════════════════════════════════════ */
 add_action( 'login_enqueue_scripts', function () {
-    $video_url = esc_url( content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
     $logo_url  = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
-    $site_name = esc_attr( get_bloginfo( 'name' ) );
     ?>
+    <style id="va-login-style">
+    html, body.login {
+        background: #060606 !important;
+        color: #fff !important;
+        font-family: 'Segoe UI', sans-serif !important;
+        min-height: 100vh;
+        margin: 0; padding: 0;
+        overflow-x: hidden;
+    }
+    #va-login-video {
+        position: fixed; inset: 0; z-index: -1;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        opacity: .40;
+        pointer-events: none;
+    }
+    body.login::after {
+        content: '';
+        position: fixed; inset: 0; z-index: 0;
+        background: rgba(6,6,6,.55);
+        pointer-events: none;
+    }
+    #login {
+        position: relative; z-index: 1;
+        background: rgba(10,10,10,.90) !important;
+        border: 1px solid rgba(255,0,0,.28) !important;
+        border-radius: 16px !important;
+        padding: 36px 36px 28px !important;
+        box-shadow: 0 0 60px rgba(255,0,0,.14), 0 20px 60px rgba(0,0,0,.8) !important;
+        margin-top: 60px !important;
+    }
+    #login h1 a {
+        background-image: none !important;
+        width: auto !important; height: auto !important;
+        font-size: 20px !important;
+        color: #fff !important;
+        text-decoration: none !important;
+        text-shadow: none !important;
+        font-weight: 800 !important;
+        display: block; text-align: center;
+        padding: 0 !important; margin-bottom: 6px !important;
+    }
+    <?php if ( $logo_url ) : ?>
+    #login h1 a {
+        background-image: url('<?php echo $logo_url; ?>') !important;
+        background-repeat: no-repeat !important;
+        background-position: center top !important;
+        background-size: 64px 64px !important;
+        width: 64px !important; height: 64px !important;
+        font-size: 0 !important;
+        display: block; margin: 0 auto 10px !important;
+    }
+    <?php endif; ?>
+    /* FORM MEZŐK – minden WP override-ot legyőzzük */
+    .login form,
+    .login #loginform,
+    .login #lostpasswordform,
+    .login #registerform {
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    .login label,
+    .login .login-username label,
+    .login .login-password label {
+        color: rgba(255,255,255,.75) !important;
+        font-size: 12px !important;
+        text-transform: uppercase !important;
+        letter-spacing: .5px !important;
+        display: block !important;
+        margin-bottom: 4px !important;
+    }
+    .login input[type="text"],
+    .login input[type="password"],
+    .login input[type="email"],
+    #user_login, #user_pass, #user_email {
+        background: rgba(255,255,255,.07) !important;
+        background-color: rgba(255,255,255,.07) !important;
+        border: 1px solid rgba(255,255,255,.18) !important;
+        border-radius: 10px !important;
+        color: #ffffff !important;
+        box-shadow: none !important;
+        padding: 10px 14px !important;
+        font-size: 14px !important;
+        transition: border-color .2s !important;
+        -webkit-text-fill-color: #ffffff !important;
+    }
+    .login input[type="text"]:focus,
+    .login input[type="password"]:focus,
+    .login input[type="email"]:focus,
+    #user_login:focus, #user_pass:focus, #user_email:focus {
+        border-color: rgba(255,0,0,.55) !important;
+        box-shadow: 0 0 0 3px rgba(255,0,0,.14) !important;
+        outline: none !important;
+        background: rgba(255,255,255,.10) !important;
+    }
+    /* autofill fix */
+    .login input:-webkit-autofill,
+    .login input:-webkit-autofill:hover,
+    .login input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 100px #1a0000 inset !important;
+        -webkit-text-fill-color: #ffffff !important;
+        caret-color: #ffffff !important;
+    }
+    .login input[type="checkbox"] { accent-color: #ff0000 !important; }
+    .login .forgetmenot label { color: rgba(255,255,255,.5) !important; text-transform: none !important; font-size: 13px !important; }
+    .login .user-pass-wrap .wp-pwd button,
+    .login .wp-pwd { background: transparent !important; border: none !important; }
+    .login .wp-pwd button svg { fill: rgba(255,255,255,.5) !important; }
+    #wp-submit, .login .button-primary {
+        background: linear-gradient(135deg, #ff0000, #cc0000) !important;
+        background-image: linear-gradient(135deg, #ff0000, #cc0000) !important;
+        border: none !important;
+        border-radius: 10px !important;
+        color: #fff !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        padding: 11px 20px !important;
+        width: 100% !important;
+        box-shadow: 0 6px 24px rgba(255,0,0,.35) !important;
+        cursor: pointer !important;
+        text-shadow: none !important;
+        transition: box-shadow .2s !important;
+    }
+    #wp-submit:hover, .login .button-primary:hover {
+        background: linear-gradient(135deg, #e60000, #aa0000) !important;
+        background-image: linear-gradient(135deg, #e60000, #aa0000) !important;
+        box-shadow: 0 10px 32px rgba(255,0,0,.5) !important;
+    }
+    .login #nav a, .login #backtoblog a {
+        color: rgba(255,255,255,.45) !important;
+        font-size: 12px !important;
+    }
+    .login #nav a:hover, .login #backtoblog a:hover { color: #ff4444 !important; }
+    .login .message, .login .success { border-color: rgba(255,0,0,.3) !important; background: rgba(255,0,0,.06) !important; color: #ffa0a0 !important; }
+    .login .notice-error, .login .error, #login_error { border-left: 4px solid #ff0000 !important; background: rgba(255,0,0,.08) !important; color: #ffb0b0 !important; }
+    /* Google Translate sáv a login alján */
+    .login .goog-te-banner-frame, #goog-gt-tt { display: none !important; }
+    </style>
+    <?php
+} );
+
+/* Videó injektálás közvetlenül a body-ba – login_footer = legmegbízhatóbb hook */
+add_action( 'login_footer', function () {
+    $video_url = esc_url( content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
+    echo '<video id="va-login-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">';
+    echo '<source src="' . $video_url . '" type="video/mp4">';
+    echo '</video>';
+} );
+
+add_filter( 'login_headerurl', function() { return home_url(); } );
+add_filter( 'login_headertext', function() { return get_bloginfo( 'name' ); } );
     <style id="va-login-style">
     html, body.login {
         background: #060606 !important;
