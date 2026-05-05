@@ -127,6 +127,12 @@
                     </script>
                 <?php endif;
                 endif; ?>
+                <div class="va-footer__mobile-nav">
+                    <?php $p = get_page_by_path('va-hirdetes-kereses'); if ($p): ?>
+                        <a href="<?php echo esc_url(get_permalink($p)); ?>" class="va-footer__link">Hirdetések böngészése</a>
+                    <?php endif; ?>
+                    <a href="<?php echo esc_url(home_url('/kapcsolat/')); ?>" class="va-footer__link">Kapcsolat</a>
+                </div>
             </div>
             <div>
                 <div class="va-footer__col-title"><?php echo esc_html( $f_account_title ); ?></div>

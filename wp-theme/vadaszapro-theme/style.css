@@ -865,6 +865,8 @@ textarea { min-height: 110px; resize: vertical; }
   font-family: inherit; text-align: left; width: 100%;
   padding: 4px 0;
 }
+.va-footer__mobile-nav { display: none; margin-top: 12px; }
+@media (max-width: 1024px) { .va-footer__mobile-nav { display: block; } }
 .va-lang-sw--footer { position: relative; display: inline-block; margin-top: 4px; }
 .va-lang-sw--footer .va-lang-sw__toggle { color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); border-radius: 999px; padding: 6px 12px; }
 .va-lang-sw--footer .va-lang-sw__toggle:hover { background: rgba(255,255,255,.14); }
