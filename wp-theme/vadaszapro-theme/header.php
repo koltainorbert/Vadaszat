@@ -280,15 +280,6 @@
                             if (code !== 'hu') {
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/';
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
-                            } else {
-                                // Magyar: localStorage-ból is töröljük
-                                try { localStorage.removeItem('googtrans'); } catch(e) {}
-                                try { sessionStorage.removeItem('googtrans'); } catch(e) {}
-                                // Google Translate widget visszaállítása ha betöltött
-                                try {
-                                    var gt = google && google.translate && google.translate.TranslateElement.getInstance();
-                                    if (gt) gt.restore();
-                                } catch(e) {}
                             }
                             document.cookie = 'va_geo_done=1;path=/;max-age=86400';
                             location.reload();
