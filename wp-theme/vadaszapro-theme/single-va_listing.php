@@ -1981,7 +1981,7 @@ $related = new WP_Query([
 
 if ( $related->have_posts() ):
 ?>
-<div style="max-width:<?php echo esc_attr((string)$sl_content_max); ?>px;margin:28px auto 0;padding:0 16px;">
+<div class="sl__related-wrap" style="max-width:<?php echo esc_attr((string)$sl_content_max); ?>px;margin:28px auto 0;padding:0 16px;">
     <div class="sl__card" style="margin-bottom:0;">
         <div class="sl__card-title" style="margin-bottom:14px;">Hasonl&#243; hirdet&#233;sek</div>
         <div class="va-grid">

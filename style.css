@@ -1013,6 +1013,7 @@ textarea { min-height: 110px; resize: vertical; }
 }
 @media(max-width:900px){ .sl__layout { grid-template-columns: 1fr; } }
 @media(max-width:900px){ .sl { margin-left: -10px !important; margin-right: -10px !important; } }
+@media(max-width:900px){ .sl__related-wrap { padding-left: 0 !important; padding-right: 0 !important; margin-left: -10px !important; margin-right: -10px !important; } }
 
 /* Card alap */
 .sl__card {
