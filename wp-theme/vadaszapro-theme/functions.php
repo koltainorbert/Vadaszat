@@ -1615,8 +1615,8 @@ add_action( 'login_enqueue_scripts', function () {
     /* WP logó teljes elrejtése – saját logót PHP injektálja */
     #login h1 { display:none !important; }
     /* Saját logó */
-    .va-login-logo-wrap { text-align:center; margin-bottom:18px; }
-    #va-login-logo { width:80px; height:80px; object-fit:contain; border-radius:12px; display:block; margin:0 auto; }
+    .va-login-logo-wrap { text-align:center; margin-bottom:24px; }
+    #va-login-logo { width:200px; height:200px; object-fit:contain; border-radius:16px; display:block; margin:0 auto; image-rendering:crisp-edges; }
     /* mezők */
     .login label { color:rgba(255,255,255,.70) !important; font-size:12px !important; }
     .login form, .login #loginform, .login #lostpasswordform, .login #registerform {
@@ -1636,6 +1636,15 @@ add_action( 'login_enqueue_scripts', function () {
         padding:10px 14px !important;
         font-size:14px !important;
         caret-color:#fff !important;
+        -webkit-appearance:none !important;
+        appearance:none !important;
+        filter:none !important;
+    }
+    .login input[type="text"]::placeholder,
+    .login input[type="password"]::placeholder,
+    .login input[type="email"]::placeholder {
+        color:rgba(255,255,255,.35) !important;
+        -webkit-text-fill-color:rgba(255,255,255,.35) !important;
     }
     .login input:-webkit-autofill,
     .login input:-webkit-autofill:hover,
@@ -1647,6 +1656,7 @@ add_action( 'login_enqueue_scripts', function () {
         color:#fff !important;
         caret-color:#fff !important;
         background-color:#111 !important;
+        filter:none !important;
     }
     .login input[type="text"]:focus,
     .login input[type="password"]:focus,
