@@ -213,8 +213,8 @@
                     if ( count($active_langs) > 1 ) :
                         // Jelenlegi nyelv a googtrans cookie-ból vagy hu alapértelmezett
                         $curr_code = 'hu';
-                        if ( isset( $_COOKIE['googtrans'] ) && preg_match('#^/hu/([a-z]{2})$#', sanitize_text_field( wp_unslash( $_COOKIE['googtrans'] ) ), $m ) ) {
-                            $curr_code = ( $m[1] === 'hu' ) ? 'hu' : $m[1];
+                        if ( isset( $_COOKIE['googtrans'] ) && preg_match('#^/hu/([a-z]{2})$#', sanitize_text_field( wp_unslash( $_COOKIE['googtrans'] ) ), $m ) && $m[1] !== 'hu' ) {
+                            $curr_code = $m[1];
                         }
                         if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
                         $curr_lang = $all_langs[ $curr_code ];
@@ -270,21 +270,19 @@
                         }
 
                         function vaSetLang(code) {
-                            if (code === 'hu') {
-                                // Töröljük minden domain kombinációban
-                                var domains = [location.hostname, '.' + location.hostname, ''];
-                                var paths   = ['/', ''];
-                                domains.forEach(function(d){ paths.forEach(function(p){
-                                    var base = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=' + (p||'/');
-                                    document.cookie = d ? base + ';domain=' + d : base;
-                                }); });
-                                // Google Translate "ne fordíts" jelzés
-                                document.cookie = 'googtrans=/hu/hu;path=/';
-                                document.cookie = 'googtrans=/hu/hu;path=/;domain=.' + location.hostname;
-                            } else {
+                            // Mindig töröljük a googtrans cookie-t minden domain/path kombinációban
+                            var domains = [location.hostname, '.' + location.hostname, ''];
+                            var paths   = ['/', ''];
+                            domains.forEach(function(d){ paths.forEach(function(p){
+                                var base = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=' + (p||'/');
+                                document.cookie = d ? base + ';domain=' + d : base;
+                            }); });
+                            if (code !== 'hu') {
+                                // Idegen nyelv: beállítjuk a fordítást
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/';
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
                             }
+                            // Magyar esetén nem állítunk be googtrans cookie-t – a GT eredeti szöveget mutat
                             document.cookie = 'va_geo_done=1;path=/;max-age=86400';
                             location.reload();
                         }
