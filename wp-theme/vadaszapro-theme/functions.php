@@ -1827,23 +1827,6 @@ add_action( 'login_footer', function () {
         color: rgba(255,255,255,.45) !important;
         font-size: 12px !important;
     }
-    .login #nav a:hover, .login #backtoblog a:hover { color: #ff4444 !important; }
-    .login .message, .login .success { border-color: rgba(255,0,0,.3) !important; background: rgba(255,0,0,.06) !important; color: #ffa0a0 !important; }
-    .login .notice-error, .login .error, #login_error { border-left: 4px solid #ff0000 !important; background: rgba(255,0,0,.08) !important; color: #ffb0b0 !important; }
-    /* Google Translate sáv a login alján */
-    .login .goog-te-banner-frame, #goog-gt-tt { display: none !important; }
-    </style>
-    <?php
-} );
-
-/* Videó injektálás közvetlenül a body-ba – login_footer = legmegbízhatóbb hook */
-add_action( 'login_footer', function () {
-    $video_url = esc_url( content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
-    echo '<video id="va-login-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">';
-    echo '<source src="' . $video_url . '" type="video/mp4">';
-    echo '</video>';
-} );
-
 add_filter( 'login_headerurl', function() { return home_url(); } );
 add_filter( 'login_headertext', function() { return get_bloginfo( 'name' ); } );
 
