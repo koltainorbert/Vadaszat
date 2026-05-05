@@ -851,7 +851,7 @@ textarea { min-height: 110px; resize: vertical; }
   display: block;
   width: auto;
   max-width: 260px;
-  margin: 0 0 10px 0;
+  margin: 0 0 10px 0 !important;
   object-fit: contain;
 }
 .va-footer__col-title {
