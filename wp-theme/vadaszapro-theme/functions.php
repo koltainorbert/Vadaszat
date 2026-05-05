@@ -1676,11 +1676,15 @@ add_action( 'login_footer', function () {
        . '</video>';
 } );
 
-add_filter( 'login_message', function ( $message ) {
-    $logo_url  = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
+add_action( 'login_header', function () {
+    $logo_url  = (string) get_option( 'va_brand_icon_url', '' );
+    if ( ! $logo_url ) {
+        $logo_url = get_site_icon_url( 80 );
+    }
+    if ( ! $logo_url ) return;
+    $logo_url  = esc_url( $logo_url );
     $site_name = esc_attr( get_bloginfo( 'name' ) );
-    if ( ! $logo_url ) return $message;
-    return '<div class="va-login-logo-wrap"><img id="va-login-logo" src="' . $logo_url . '" alt="' . $site_name . '"></div>' . $message;
+    echo '<div class="va-login-logo-wrap"><img id="va-login-logo" src="' . $logo_url . '" alt="' . $site_name . '"></div>';
 } );
 
 add_filter( 'login_headerurl', function() { return home_url(); } );
