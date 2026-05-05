@@ -1639,6 +1639,8 @@ add_action( 'login_enqueue_scripts', function () {
         -webkit-appearance:none !important;
         appearance:none !important;
         filter:none !important;
+        /* autofill háttér animáció trükk */
+        transition:background-color 99999s ease-in-out 0s, color 99999s ease-in-out 0s !important;
     }
     .login input[type="text"]::placeholder,
     .login input[type="password"]::placeholder,
@@ -1650,8 +1652,8 @@ add_action( 'login_enqueue_scripts', function () {
     .login input:-webkit-autofill:hover,
     .login input:-webkit-autofill:focus,
     .login input:-webkit-autofill:active {
-        -webkit-box-shadow:0 0 0 200px #111 inset !important;
-        box-shadow:0 0 0 200px #111 inset !important;
+        -webkit-box-shadow:0 0 0 9999px #111 inset !important;
+        box-shadow:0 0 0 9999px #111 inset !important;
         -webkit-text-fill-color:#fff !important;
         color:#fff !important;
         caret-color:#fff !important;
