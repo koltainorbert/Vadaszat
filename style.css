@@ -668,7 +668,7 @@ body { top:0 !important; }
 .va-grid {
   display: grid;
   gap: 14px; margin-bottom: 28px;
-  margin-left: -30px !important; margin-right: -30px !important;
+  margin-left: -40px !important; margin-right: -40px !important;
 }
 
 /* ──────────────────────────────────────────────────────────
