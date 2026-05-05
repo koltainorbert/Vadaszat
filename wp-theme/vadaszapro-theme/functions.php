@@ -1589,13 +1589,15 @@ function va_category_icon( int $term_id ): string {
 add_action( 'login_enqueue_scripts', function () {
     ?>
     <style id="va-login-style">
-    html, body.login { background:#060606 !important; margin:0; padding:0; min-height:100vh; overflow-x:hidden; }
+    html { margin:0; padding:0; }
     body.login {
+        background-color:#060606 !important;
         background-image:url('https://www.weingartnerauto.hu/wp-content/uploads/2026/05/car-headlight-couple-making-deal-with-car-dealer-scaled.jpg') !important;
         background-size:cover !important;
         background-position:center !important;
         background-repeat:no-repeat !important;
         background-attachment:fixed !important;
+        margin:0 !important; padding:0 !important; min-height:100vh !important; overflow-x:hidden !important;
     }
     body.login::after {
         content:''; position:fixed; inset:0; z-index:1;
