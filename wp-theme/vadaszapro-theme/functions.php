@@ -1615,8 +1615,8 @@ add_action( 'login_enqueue_scripts', function () {
     /* WP logó teljes elrejtése – saját logót PHP injektálja */
     #login h1 { display:none !important; }
     /* Saját logó */
-    .va-login-logo-wrap { text-align:center; margin-bottom:24px; }
-    #va-login-logo { width:200px; height:200px; object-fit:contain; border-radius:16px; display:block; margin:0 auto; image-rendering:crisp-edges; }
+    .va-login-logo-wrap { text-align:center; margin-bottom:28px; }
+    #va-login-logo { width:300px; height:300px; object-fit:contain; border-radius:20px; display:block; margin:0 auto; image-rendering:-webkit-optimize-contrast; image-rendering:crisp-edges; }
     /* mezők */
     .login label { color:rgba(255,255,255,.70) !important; font-size:12px !important; }
     .login form, .login #loginform, .login #lostpasswordform, .login #registerform {
@@ -1703,6 +1703,31 @@ add_action( 'login_header', function () {
     $logo_url  = esc_url( $logo_url );
     $site_name = esc_attr( get_bloginfo( 'name' ) );
     echo '<div class="va-login-logo-wrap"><img id="va-login-logo" src="' . $logo_url . '" alt="' . $site_name . '"></div>';
+} );
+
+add_action( 'login_footer', function () {
+    ?>
+    <script>
+    (function(){
+        function fixInputs(){
+            var inputs = document.querySelectorAll('#loginform input, #lostpasswordform input, #registerform input');
+            inputs.forEach(function(el){
+                if(el.type==='checkbox'||el.type==='submit'||el.type==='hidden') return;
+                el.style.cssText = 'background:#111 !important;background-color:#111 !important;color:#fff !important;-webkit-text-fill-color:#fff !important;caret-color:#fff !important;border:1px solid rgba(255,255,255,.25) !important;border-radius:10px !important;padding:10px 14px !important;font-size:14px !important;box-shadow:none !important;';
+            });
+        }
+        document.addEventListener('DOMContentLoaded', fixInputs);
+        // Autofill után is lefut
+        setTimeout(fixInputs, 300);
+        setTimeout(fixInputs, 800);
+        setTimeout(fixInputs, 1500);
+        // Input eseményre is
+        document.addEventListener('animationstart', function(e){
+            if(e.animationName==='onAutoFillStart') fixInputs();
+        });
+    })();
+    </script>
+    <?php
 } );
 
 add_filter( 'login_headerurl', function() { return home_url(); } );
