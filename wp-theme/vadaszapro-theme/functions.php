@@ -1671,18 +1671,16 @@ add_action( 'login_enqueue_scripts', function () {
 
 add_action( 'login_footer', function () {
     $video_url = esc_url( content_url( 'uploads/2026/04/0_Offroad_4x4_1920x1080.mp4' ) );
-    $logo_url  = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
-    $site_name = esc_attr( get_bloginfo( 'name' ) );
-    // Videó háttér
     echo '<video id="va-login-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">'
        . '<source src="' . $video_url . '" type="video/mp4">'
        . '</video>';
-    // Logo csere: eltávolítjuk a WP szöveget és img-et injektálunk
-    if ( $logo_url ) {
-        echo '<script>(function(){var a=document.querySelector("#login h1 a");if(!a)return;'
-           . 'a.innerHTML=\'<img id="va-login-logo" src="' . $logo_url . '" alt="' . $site_name . '">\';'
-           . '})();</script>';
-    }
+} );
+
+add_filter( 'login_message', function ( $message ) {
+    $logo_url  = esc_url( (string) get_option( 'va_brand_icon_url', '' ) );
+    $site_name = esc_attr( get_bloginfo( 'name' ) );
+    if ( ! $logo_url ) return $message;
+    return '<div class="va-login-logo-wrap"><img id="va-login-logo" src="' . $logo_url . '" alt="' . $site_name . '"></div>' . $message;
 } );
 
 add_filter( 'login_headerurl', function() { return home_url(); } );
