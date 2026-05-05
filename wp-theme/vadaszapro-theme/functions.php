@@ -1638,9 +1638,18 @@ add_action( 'login_enqueue_scripts', function () {
         outline:none !important;
     }
     .login input:-webkit-autofill,
-    .login input:-webkit-autofill:focus {
-        -webkit-box-shadow:0 0 0 100px #1a0000 inset !important;
+    .login input:-webkit-autofill:hover,
+    .login input:-webkit-autofill:focus,
+    .login input:-webkit-autofill:active {
+        -webkit-box-shadow:0 0 0 100px #111 inset !important;
+        box-shadow:0 0 0 100px #111 inset !important;
         -webkit-text-fill-color:#fff !important;
+        caret-color:#fff !important;
+    }
+    .login input[type="text"],
+    .login input[type="password"],
+    .login input[type="email"] {
+        caret-color:#fff !important;
     }
     .login input[type="checkbox"] { accent-color:#ff0000 !important; }
     .login .forgetmenot label { color:rgba(255,255,255,.45) !important; font-size:12px !important; text-transform:none !important; }
