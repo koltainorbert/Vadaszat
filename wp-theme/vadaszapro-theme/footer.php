@@ -81,7 +81,7 @@
                     $active_langs = (array) json_decode( (string) get_option('va_active_langs','["hu"]'), true );
                     $curr_code    = 'hu';
                     if ( isset( $_COOKIE['googtrans'] ) && preg_match('#^/hu/([a-z]{2})$#', sanitize_text_field( wp_unslash( $_COOKIE['googtrans'] ) ), $cm ) ) {
-                        $curr_code = $cm[1];
+                        $curr_code = ( $cm[1] === 'hu' ) ? 'hu' : $cm[1];
                     }
                     if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
                     $va_flag_map_f = ['hu'=>'hu','en'=>'gb','de'=>'de','ro'=>'ro','sk'=>'sk','cs'=>'cz','pl'=>'pl','fr'=>'fr','it'=>'it','es'=>'es','uk'=>'ua','sr'=>'rs','hr'=>'hr','sl'=>'si'];

@@ -213,8 +213,8 @@
                     if ( count($active_langs) > 1 ) :
                         // Jelenlegi nyelv a googtrans cookie-ból vagy hu alapértelmezett
                         $curr_code = 'hu';
-                        if ( isset( $_COOKIE['googtrans'] ) && preg_match('#^/hu/([a-z]{2})$#', $_COOKIE['googtrans'], $m ) ) {
-                            $curr_code = $m[1];
+                        if ( isset( $_COOKIE['googtrans'] ) && preg_match('#^/hu/([a-z]{2})$#', sanitize_text_field( wp_unslash( $_COOKIE['googtrans'] ) ), $m ) ) {
+                            $curr_code = ( $m[1] === 'hu' ) ? 'hu' : $m[1];
                         }
                         if ( ! isset( $all_langs[ $curr_code ] ) ) $curr_code = 'hu';
                         $curr_lang = $all_langs[ $curr_code ];
@@ -271,8 +271,16 @@
 
                         function vaSetLang(code) {
                             if (code === 'hu') {
-                                document.cookie = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/';
-                                document.cookie = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;domain=.' + location.hostname;
+                                // Töröljük minden domain kombinációban
+                                var domains = [location.hostname, '.' + location.hostname, ''];
+                                var paths   = ['/', ''];
+                                domains.forEach(function(d){ paths.forEach(function(p){
+                                    var base = 'googtrans=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=' + (p||'/');
+                                    document.cookie = d ? base + ';domain=' + d : base;
+                                }); });
+                                // Google Translate "ne fordíts" jelzés
+                                document.cookie = 'googtrans=/hu/hu;path=/';
+                                document.cookie = 'googtrans=/hu/hu;path=/;domain=.' + location.hostname;
                             } else {
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/';
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
