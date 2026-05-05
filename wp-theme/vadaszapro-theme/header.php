@@ -270,9 +270,11 @@
                         }
 
                         function vaSetLang(code) {
-                            var domains = [location.hostname, '.' + location.hostname, ''];
+                            var hostname   = location.hostname;
+                            var rootDomain = hostname.replace(/^www\./, '');
+                            // Minden lehetséges domain ahol a GT a cookie-t beállíthatta
+                            var domains = [hostname, '.' + hostname, rootDomain, '.' + rootDomain, ''];
                             var paths   = ['/', ''];
-                            // Töröljük a googtrans ÉS va_geo_done cookie-t minden kombinációban
                             ['googtrans', 'va_geo_done'].forEach(function(name) {
                                 domains.forEach(function(d){ paths.forEach(function(p){
                                     var base = name + '=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=' + (p||'/');
@@ -281,10 +283,9 @@
                             });
                             if (code !== 'hu') {
                                 document.cookie = 'googtrans=/hu/' + code + ';path=/';
-                                document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + location.hostname;
+                                document.cookie = 'googtrans=/hu/' + code + ';path=/;domain=.' + rootDomain;
                             }
                             document.cookie = 'va_geo_done=1;path=/;max-age=86400';
-                            // window.location.href = friss GET kérés (nem cache-ből tölt), location.reload() cache-t használ
                             window.location.href = window.location.pathname + window.location.search;
                         }
 
