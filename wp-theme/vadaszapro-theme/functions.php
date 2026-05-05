@@ -1627,6 +1627,7 @@ add_action( 'login_enqueue_scripts', function () {
     .login input[type="email"],
     #user_login, #user_pass, #user_email {
         background:#111 !important;
+        background-color:#111 !important;
         border:1px solid rgba(255,255,255,.18) !important;
         border-radius:10px !important;
         color:#fff !important;
@@ -1634,6 +1635,18 @@ add_action( 'login_enqueue_scripts', function () {
         box-shadow:none !important;
         padding:10px 14px !important;
         font-size:14px !important;
+        caret-color:#fff !important;
+    }
+    .login input:-webkit-autofill,
+    .login input:-webkit-autofill:hover,
+    .login input:-webkit-autofill:focus,
+    .login input:-webkit-autofill:active {
+        -webkit-box-shadow:0 0 0 200px #111 inset !important;
+        box-shadow:0 0 0 200px #111 inset !important;
+        -webkit-text-fill-color:#fff !important;
+        color:#fff !important;
+        caret-color:#fff !important;
+        background-color:#111 !important;
     }
     .login input[type="text"]:focus,
     .login input[type="password"]:focus,
@@ -1641,20 +1654,6 @@ add_action( 'login_enqueue_scripts', function () {
         border-color:rgba(255,0,0,.55) !important;
         box-shadow:0 0 0 3px rgba(255,0,0,.14) !important;
         outline:none !important;
-    }
-    .login input:-webkit-autofill,
-    .login input:-webkit-autofill:hover,
-    .login input:-webkit-autofill:focus,
-    .login input:-webkit-autofill:active {
-        -webkit-box-shadow:0 0 0 100px #111 inset !important;
-        box-shadow:0 0 0 100px #111 inset !important;
-        -webkit-text-fill-color:#fff !important;
-        caret-color:#fff !important;
-    }
-    .login input[type="text"],
-    .login input[type="password"],
-    .login input[type="email"] {
-        caret-color:#fff !important;
     }
     .login input[type="checkbox"] { accent-color:#ff0000 !important; }
     .login .forgetmenot label { color:rgba(255,255,255,.45) !important; font-size:12px !important; text-transform:none !important; }
