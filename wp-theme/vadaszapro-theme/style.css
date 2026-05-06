@@ -593,12 +593,12 @@ body { top:0 !important; }
   .va-header { position: fixed; }
   .va-site-wrap--inner { padding-top: var(--nav); }
 }
-body.nav-open .va-site-wrap {
+body.nav-open .va-site-wrap > *:not(.va-header):not(.va-nav) {
   filter: blur(3px);
   pointer-events: none;
   transition: filter .25s;
 }
-body:not(.nav-open) .va-site-wrap {
+body:not(.nav-open) .va-site-wrap > *:not(.va-header):not(.va-nav) {
   filter: none;
   transition: filter .25s;
 }
