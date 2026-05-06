@@ -14,7 +14,7 @@ class VA_Page_Renderer {
 
     /* ── CSS alap ──────────────────────────────────────────── */
     public static function maybe_inject_css(): void {
-        if ( ! is_singular( 'page' ) ) return;
+        if ( ! is_singular( 'page' ) && ! is_front_page() && ! is_home() ) return;
         $post_id = (int) get_the_ID();
         if ( ! get_post_meta( $post_id, 'va_page_blocks', true ) ) return;
         echo '<style id="va-pb-base">
