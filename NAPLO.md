@@ -14,6 +14,7 @@
 - [x] Mobil hero fuggoleges gap csokkentve (min-height, padding, marginok)
 - [x] Mobilon a badge alatti gap a cim-es-alcim gaphez igazitva
 - [x] Badge alatti mobil gap vizualisan tovabb szukitve (10px -> 6px)
+- [x] Badge alatti mobil gap visszanovelve +5px-re (6px -> 11px)
 
 ### Hol tartunk
 A hero szoveg most minden nezetben a kert tartalommal jelenik meg, a cim 3 sorra torheto, az alcim `Veszprém`.

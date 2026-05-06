@@ -1902,7 +1902,7 @@ body.sl-viewer-open { overflow: hidden; }
   .vh { align-items: center; height: auto; min-height: 420px; }
   .vh__content { padding: calc(var(--nav, 66px) + 4px) 8px 6px; }
   .vh__logo { max-width: min(340px, 82vw); margin-bottom: 12px; }
-  .vh__badge { margin-bottom: 6px; }
+  .vh__badge { margin-bottom: 11px; }
   .vh__title { margin-bottom: 10px; }
   .vh__sub { margin-bottom: 8px; }
   .vh__stats    { left: 22px; right: 22px; gap: 24px; bottom: 20px; }
