@@ -31,8 +31,15 @@ class VA_Page_Renderer {
         @media(max-width:768px){
             .va-pb-imgtext-grid{grid-template-columns:1fr!important;}
             .va-pb-cards-grid{grid-template-columns:repeat(2,1fr)!important;}
+            .va-pb-hero{min-height:0!important;padding-top:40px!important;padding-bottom:40px!important;align-items:flex-start!important;}
+            .va-pb-hero__btns{flex-direction:row!important;flex-wrap:wrap!important;justify-content:flex-start!important;}
         }
-        @media(max-width:480px){.va-pb-cards-grid{grid-template-columns:1fr!important;}}
+        @media(max-width:480px){
+            .va-pb-cards-grid{grid-template-columns:1fr!important;}
+            .va-pb-hero{padding-top:28px!important;padding-bottom:28px!important;}
+            .va-pb-btn{padding:11px 20px!important;font-size:14px!important;}
+            .va-pb-hero__btns{gap:8px!important;}
+        }
         </style>' . "\n";
     }
 
@@ -142,13 +149,13 @@ class VA_Page_Renderer {
             $b2s  = self::btn_style( $s['btn2_style'] ?? 'outline' );
             $btns .= "<a href=\"{$b2u}\" class=\"va-pb-btn va-pb-btn--{$b2s}\" style=\"color:{$tc};\">{$b2t}</a>";
         }
-        $btn_html = $btns ? "<div style=\"display:flex;gap:12px;flex-wrap:wrap;" . ( $ta === 'center' ? 'justify-content:center;' : '' ) . "\">{$btns}</div>" : '';
+        $btn_html = $btns ? "<div class=\"va-pb-hero__btns\" style=\"display:flex;gap:12px;flex-wrap:wrap;" . ( $ta === 'center' ? 'justify-content:center;' : '' ) . "\">{$btns}</div>" : '';
 
-        return "<section class=\"va-pb\" style=\"{$bg}color:{$tc};min-height:{$mh}px;padding:{$py}px 0;display:flex;align-items:center;\">
+        return "<section class=\"va-pb va-pb-hero\" style=\"{$bg}color:{$tc};min-height:{$mh}px;padding:{$py}px 0;display:flex;align-items:center;\">
   <div class=\"va-pb-cnt\" style=\"width:100%;text-align:{$ta};\">
     <div style=\"max-width:{$mw};margin:{$mx};\">
       {$ey_html}
-      <h1 style=\"color:{$tc};font-size:clamp(34px,5.5vw,68px);font-weight:800;line-height:1.08;margin:0 0 20px;letter-spacing:-.02em;\">{$title}</h1>
+      <h1 style=\"color:{$tc};font-size:clamp(28px,5.5vw,68px);font-weight:800;line-height:1.08;margin:0 0 20px;letter-spacing:-.02em;\">{$title}</h1>
       {$sub_html}
       {$btn_html}
     </div>
