@@ -526,6 +526,8 @@ body { top:0 !important; }
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
   }
   /* Mobil nav kereső – pontosan mint a desktop */
+.va-nav__search { display: none; }
+
   .va-nav__search {
     display: flex;
     align-items: center;
@@ -581,7 +583,7 @@ body { top:0 !important; }
   .va-nav__item {
     width: 100%;
     padding: 10px 20px;
-    font-size: 25px !important;
+    font-size: 16px !important;
     line-height: 1.4;
     border-radius: 8px;
     border-bottom: none;
