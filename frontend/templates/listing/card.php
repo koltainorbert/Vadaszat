@@ -13,6 +13,7 @@ $location  = get_post_meta( $post_id, 'va_location', true );
 $views      = va_display_views( $post_id );
 $featured  = get_post_meta( $post_id, 'va_featured', true ) === '1';
 $is_boosted        = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_boosted( $post_id ) : false;
+$is_new_pill       = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_new_pill( $post_id ) : false;
 $show_boost_badge  = get_option( 'va_card_show_boost_badge', '1' ) === '1';
 $boost_badge_text  = 'Kiemelt!';
 $is_auction= $post->post_type === 'va_auction';
@@ -136,6 +137,9 @@ if ( ! $card_image_html ) {
     <?php endif; ?>
     <?php if ( $is_boosted && $show_boost_badge ): ?>
         <span class="va-card__badge va-card__badge--boost"><?php echo esc_html( $boost_badge_text ); ?></span>
+    <?php endif; ?>
+    <?php if ( $is_new_pill ): ?>
+        <span class="va-card__badge va-card__badge--new">Új</span>
     <?php endif; ?>
 
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
