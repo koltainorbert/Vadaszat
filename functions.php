@@ -1219,7 +1219,7 @@ add_action( 'wp_enqueue_scripts', function () {
         '.vh{height:auto !important;min-height:500px !important;align-items:center !important;}' .
         '.vh__content{max-width:100% !important;padding:calc(var(--nav,66px) + 12px) 12px 14px !important;text-align:center !important;}' .
         '.vh__sub{max-width:100% !important;margin-bottom:22px !important;margin-left:auto !important;margin-right:auto !important;}' .
-        '.vh__actions{gap:10px !important;row-gap:10px !important;justify-content:center !important;}' .
+        '.vh__actions{display:none !important;gap:10px !important;row-gap:10px !important;justify-content:center !important;}' .
         '.vh__btn{padding:11px 20px !important;font-size:14px !important;}' .
     '}' .
     '@media (max-width:420px){' .

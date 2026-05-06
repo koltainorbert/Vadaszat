@@ -10,6 +10,7 @@
 - [x] A masodik cimsor tobb soros megjelenitesre allitva (`nl2br`)
 - [x] Mobilos masodik sor elrejtes visszavonva, hogy a teljes szoveg latszodjon
 - [x] Hero cim, kiemelt span es alcim szine fix feherre allitva
+- [x] Hero ket CTA gomb elrejtve mobilon
 
 ### Hol tartunk
 A hero szoveg most minden nezetben a kert tartalommal jelenik meg, a cim 3 sorra torheto, az alcim `Veszprém`.
