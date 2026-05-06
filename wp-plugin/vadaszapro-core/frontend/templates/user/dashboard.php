@@ -201,6 +201,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                             <?php
                             // Boost gomb
                             if ( class_exists( 'VA_User_Roles' ) ) :
+                                echo '<div class="va-pill-toggles">';
                                 $boost_info = VA_User_Roles::can_boost( $user->ID, $l->ID );
                                 $is_boosted_now = VA_User_Roles::is_boosted( $l->ID );
                                 $is_new_pill_now = VA_User_Roles::is_new_pill( $l->ID );
@@ -241,8 +242,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                     data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
                                     data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
                                     data-mode="off"
-                                    aria-pressed="true"
-                                    style="margin-top:6px;">
+                                    aria-pressed="true">
                                 <span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: BE
                             </button>
                             <?php else: ?>
@@ -251,11 +251,11 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                     data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
                                     data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
                                     data-mode="on"
-                                    aria-pressed="false"
-                                    style="margin-top:6px;">
+                                    aria-pressed="false">
                                 <span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: KI
                             </button>
                             <?php endif;
+                                echo '</div>';
                             endif;
                             ?>
                         </td>
@@ -610,17 +610,23 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
 .va-profile-avatar-editor__remove { font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:7px; }
 
 /* ── Boost toggle ── */
+.va-pill-toggles {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:nowrap;
+}
 .va-boost-btn {
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
-    min-width:132px;
-    height:34px;
-    padding:0 14px;
+    gap:6px;
+    min-width:106px;
+    height:30px;
+    padding:0 10px;
     border-radius:999px;
     border:1px solid transparent;
-    font-size:12px;
+    font-size:11px;
     font-weight:700;
     line-height:1;
     letter-spacing:.02em;
@@ -629,8 +635,8 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
     transition:all .2s ease;
 }
 .va-boost-btn__dot {
-    width:8px;
-    height:8px;
+    width:7px;
+    height:7px;
     border-radius:50%;
     background:currentColor;
     box-shadow:0 0 8px currentColor;
@@ -652,13 +658,13 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:8px;
-    min-width:132px;
-    height:34px;
-    padding:0 14px;
+    gap:6px;
+    min-width:106px;
+    height:30px;
+    padding:0 10px;
     border-radius:999px;
     border:1px solid transparent;
-    font-size:12px;
+    font-size:11px;
     font-weight:700;
     line-height:1;
     letter-spacing:.02em;
@@ -667,8 +673,8 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
     transition:all .2s ease;
 }
 .va-newpill-btn__dot {
-    width:8px;
-    height:8px;
+    width:7px;
+    height:7px;
     border-radius:50%;
     background:currentColor;
     box-shadow:0 0 8px currentColor;
