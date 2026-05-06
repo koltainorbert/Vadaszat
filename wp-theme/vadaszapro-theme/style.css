@@ -1106,7 +1106,7 @@ textarea { min-height: 110px; resize: vertical; }
   }
   .va-header__right {
     min-width: 0;
-    margin: 0 !important;
+    margin: 0 0 0 -20px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: flex-end !important;
@@ -1114,7 +1114,6 @@ textarea { min-height: 110px; resize: vertical; }
     overflow: visible;
   }
   .va-lang-sw {
-    margin-left: -20px !important;
     min-width: 0;
   }
   .va-lang-sw__toggle {
