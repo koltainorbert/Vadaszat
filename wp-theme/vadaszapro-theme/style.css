@@ -536,24 +536,29 @@ body { top:0 !important; }
   /* Mobil nav kereső – csak nyitott nav-ban */
   .va-nav.open .va-nav__search {
     display: flex !important;
+    flex-wrap: wrap;
     align-items: center;
     border: 1px solid #ff8800;
     border-radius: 999px;
-    padding: 0 10px 0 18px;
-    height: 44px;
+    padding: 8px 10px 8px 18px;
+    min-height: 44px;
+    height: auto;
     box-sizing: border-box;
     background: rgba(255,255,255,.02);
     position: relative;
     margin-top: 8px;
+    row-gap: 6px;
   }
   .va-nav-search-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0; right: 0;
-    z-index: 10000;
+    position: static;
+    flex: 0 0 100%;
+    width: 100%;
+    max-height: calc(5 * 72px);
+    overflow-y: auto;
   }
   .va-nav__search-input {
     flex: 1;
+    min-width: 0;
     background: transparent !important;
     border: none !important;
     outline: none !important;
