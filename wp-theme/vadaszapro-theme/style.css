@@ -458,6 +458,8 @@ body { top:0 !important; }
 .va-header__user-login font { color:inherit !important; }
 .va-lang-sw__toggle font, .va-lang-sw__item font { color:#fff !important; }
 
+.va-nav__search { display: none !important; }
+
 /* ── Hamburger ── */
 .va-hamburger {
   display: none;
@@ -530,9 +532,8 @@ body { top:0 !important; }
   }
   .va-nav.open { display: flex; }
   /* Mobil nav kereső – csak nyitott nav-ban */
-  .va-nav__search { display: none; }
   .va-nav.open .va-nav__search {
-    display: flex;
+    display: flex !important;
     align-items: center;
     border: 1px solid #ff8800;
     border-radius: 999px;
