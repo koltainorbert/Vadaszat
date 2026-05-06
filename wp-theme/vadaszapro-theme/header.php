@@ -103,7 +103,10 @@
                         }
                         $result[] = ['url' => $url, 'label' => $item['label'], 'class' => ''];
                     }
-                    return $result ?: $default;
+                    $result = $result ?: $default;
+                    // Fix menüpont mindig a végén
+                    $result[] = ['url' => 'https://www.weingartnertrans.hu', 'label' => 'Weingartner Trans', 'class' => ''];
+                    return $result;
                 })());
                 foreach ( $nav_items as $item ):
                     $cls = 'va-nav__item' . ( $item['class'] ? ' ' . $item['class'] : '' );
