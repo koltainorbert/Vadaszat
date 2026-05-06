@@ -15,6 +15,7 @@
  *  wp_usermeta  va_plan_note                  → admin megjegyzés (platinum)
  *  wp_postmeta  va_boost_time                 → utolsó boost Unix timestamp
  *  wp_postmeta  va_boost_user_{ID}_last       → per-user per-post utolsó boost
+ *  wp_postmeta  va_new_pill_time              → "Új" pill kezdő Unix timestamp
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
@@ -78,6 +79,11 @@ class VA_User_Roles {
 
         // Frontend AJAX: felhasználó boostol egy hirdetést
         add_action( 'wp_ajax_va_boost_listing', [ __CLASS__, 'ajax_boost_listing' ] );
+        // Frontend AJAX: felhasználó "Új" pillt kapcsol egy hirdetésen
+        add_action( 'wp_ajax_va_toggle_new_pill', [ __CLASS__, 'ajax_toggle_new_pill' ] );
+
+        // Új hirdetésnél automatikusan induljon az "Új" pill 7 napos ablaka
+        add_action( 'save_post_va_listing', [ __CLASS__, 'ensure_new_pill_on_create' ], 10, 3 );
 
         // Boost sorrendezés a va_listing archívum/taxonómia oldalain
         add_filter( 'posts_clauses', [ __CLASS__, 'filter_posts_clauses' ], 10, 2 );
@@ -326,6 +332,29 @@ class VA_User_Roles {
         }
 
         return true;
+    }
+
+    /**
+     * Új hirdetésnél automatikusan beállítja az "Új" pill induló idejét.
+     */
+    public static function ensure_new_pill_on_create( int $post_id, \\WP_Post $post, bool $update ): void {
+        if ( wp_is_post_revision( $post_id ) ) return;
+        if ( $post->post_type !== 'va_listing' ) return;
+        if ( $update ) return;
+
+        $existing = (int) get_post_meta( $post_id, 'va_new_pill_time', true );
+        if ( $existing <= 0 ) {
+            update_post_meta( $post_id, 'va_new_pill_time', time() );
+        }
+    }
+
+    /**
+     * "Új" pill aktív-e (fixen 7 napos ablak).
+     */
+    public static function is_new_pill( int $post_id, int $window_days = 7 ): bool {
+        $ts = (int) get_post_meta( $post_id, 'va_new_pill_time', true );
+        if ( $ts <= 0 ) return false;
+        return ( time() - $ts ) < ( max( 1, $window_days ) * DAY_IN_SECONDS );
     }
 
     /**
@@ -628,6 +657,48 @@ class VA_User_Roles {
         wp_send_json_success( [
             'message' => '✅ Hirdetés kiemelve! Az adott kategóriában az élre kerültél.',
             'removed' => false,
+        ] );
+    }
+
+    /* ══ AJAX: Felhasználó "Új" pillt kapcsol ═════════════════ */
+
+    public static function ajax_toggle_new_pill(): void {
+        check_ajax_referer( 'va_user_nonce', 'nonce' );
+
+        if ( ! is_user_logged_in() ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+
+        $user_id = get_current_user_id();
+        $post_id = absint( $_POST['post_id'] ?? 0 );
+        if ( ! $post_id ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés azonosító.' ] );
+        }
+
+        $post = get_post( $post_id );
+        if ( ! $post || $post->post_type !== 'va_listing' ) {
+            wp_send_json_error( [ 'message' => 'Hirdetés nem található.' ] );
+        }
+
+        if ( (int) $post->post_author !== $user_id ) {
+            wp_send_json_error( [ 'message' => 'Csak saját hirdetésen kapcsolhatsz "Új" pillt.' ] );
+        }
+
+        $mode   = sanitize_key( (string) ( $_POST['mode'] ?? 'toggle' ) );
+        $active = self::is_new_pill( $post_id );
+
+        if ( $mode === 'off' || ( $mode === 'toggle' && $active ) ) {
+            delete_post_meta( $post_id, 'va_new_pill_time' );
+            wp_send_json_success( [
+                'message' => '"Új" pill kikapcsolva.',
+                'active'  => false,
+            ] );
+        }
+
+        update_post_meta( $post_id, 'va_new_pill_time', time() );
+        wp_send_json_success( [
+            'message' => '"Új" pill bekapcsolva (7 nap).',
+            'active'  => true,
         ] );
     }
 }
