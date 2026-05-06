@@ -1100,9 +1100,9 @@ textarea { min-height: 110px; resize: vertical; }
   }
   .va-logo__text { display: none !important; }
   .va-logo__img {
-    max-height: 38px !important;
+    max-height: 46px !important;
     width: auto !important;
-    max-width: min(54vw, 230px);
+    max-width: min(60vw, 260px);
   }
   .va-header__right {
     min-width: 0;
@@ -1114,7 +1114,7 @@ textarea { min-height: 110px; resize: vertical; }
     overflow: visible;
   }
   .va-lang-sw {
-    margin-left: 0 !important;
+    margin-left: -20px !important;
     min-width: 0;
   }
   .va-lang-sw__toggle {
