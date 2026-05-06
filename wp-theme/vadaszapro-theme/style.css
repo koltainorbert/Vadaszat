@@ -2489,7 +2489,7 @@ body.sl-viewer-open { overflow: hidden; }
   .va-home-main { padding: 0 !important; margin: 0 !important; }
   .va-grid { grid-template-columns: repeat(2, 1fr); gap: 4px; margin-left: 0 !important; margin-right: 0 !important; }
   .va-wrap { margin-left: -15px !important; margin-right: -15px !important; padding-left: 0 !important; padding-right: 0 !important; }
-  .va-wrap:has(.va-pb-wrap) { margin-left: 0 !important; margin-right: 0 !important; }
+  .va-wrap--pb { margin-left: 0 !important; margin-right: 0 !important; }
   .va-pb-wrap { margin-left: 0 !important; margin-right: 0 !important; }
   .va-grid > * { border-radius: var(--r) !important; }
   body { overflow-x: hidden; }

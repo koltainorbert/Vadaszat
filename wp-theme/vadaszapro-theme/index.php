@@ -1305,7 +1305,11 @@ if ($auctions->have_posts()): ?>
       <?php echo do_shortcode( '[va_listing_search]' ); ?>
     </div>
   <?php elseif ( have_posts() ): while ( have_posts() ): the_post(); ?>
-    <div class="va-wrap">
+    <?php
+    $has_pb_blocks = ! empty( get_post_meta( get_the_ID(), 'va_page_blocks', true ) );
+    $wrap_class    = 'va-wrap' . ( $has_pb_blocks ? ' va-wrap--pb' : '' );
+    ?>
+    <div class="<?php echo esc_attr( $wrap_class ); ?>">
       <?php the_content(); ?>
     </div>
   <?php endwhile; endif; ?>
