@@ -1215,6 +1215,7 @@ add_action( 'wp_enqueue_scripts', function () {
     '}' .
     '@media (max-width:1024px){' .
         '.va-nav__item{font-size:16px !important;}' .
+        '.va-header__search-input,.va-nav__search-input{font-size:16px !important;}' .
     '}' ;
 
     // Hero dekoratív elemek: bal csík, badge-dot, scroll jelző, overlay, span szín – saját opciókból
