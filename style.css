@@ -976,6 +976,73 @@ textarea { min-height: 110px; resize: vertical; }
     pointer-events: auto;
   }
 
+/* Mobil header stabilitas: ne vagja le a nyelv nyilat/menu gombot keskeny kijelzon sem */
+@media (max-width: 1024px) {
+  .va-header__inner {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+    align-items: center;
+    column-gap: 8px;
+    padding: 6px max(10px, env(safe-area-inset-right)) 8px max(10px, env(safe-area-inset-left)) !important;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
+  }
+  .va-logo {
+    min-width: 0;
+    overflow: hidden;
+    padding-right: 0 !important;
+  }
+  .va-logo__text { display: none !important; }
+  .va-logo__img {
+    max-height: 38px !important;
+    width: auto !important;
+    max-width: min(54vw, 230px);
+  }
+  .va-header__right {
+    min-width: 0;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px;
+    overflow: visible;
+  }
+  .va-lang-sw {
+    margin-left: 0 !important;
+    min-width: 0;
+  }
+  .va-lang-sw__toggle {
+    max-width: 92px;
+    height: 34px;
+    padding: 0 10px !important;
+    gap: 5px;
+    overflow: hidden;
+  }
+  .va-lang-code {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .va-lang-sw__arrow {
+    flex: 0 0 auto;
+    opacity: 1;
+  }
+  .va-hamburger {
+    margin-right: 0 !important;
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    padding: 8px;
+  }
+}
+@media (max-width: 380px) {
+  .va-lang-sw__toggle {
+    max-width: 64px;
+    padding: 0 8px !important;
+  }
+  .va-lang-code { display: none; }
+}
 
 /* ──────────────────────────────────────────────────────────
    ARCHÍVUM FEJLÉC
