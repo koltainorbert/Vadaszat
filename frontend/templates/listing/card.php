@@ -14,9 +14,7 @@ $views      = va_display_views( $post_id );
 $featured  = get_post_meta( $post_id, 'va_featured', true ) === '1';
 $is_boosted        = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_boosted( $post_id ) : false;
 $show_boost_badge  = get_option( 'va_card_show_boost_badge', '1' ) === '1';
-$boost_badge_text  = ( class_exists( 'VA_User_Roles' ) && $is_boosted )
-    ? ( VA_User_Roles::get_all_plan_configs()['_global']['boost_badge_text'] ?? '⚡ Előre téve' )
-    : '⚡ Előre téve';
+$boost_badge_text  = 'Kiemelt!';
 $is_auction= $post->post_type === 'va_auction';
 $categories= get_the_terms( $post_id, 'va_category' );
 $county    = get_the_terms( $post_id, 'va_county' );
