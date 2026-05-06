@@ -211,6 +211,11 @@
             hbtn.setAttribute('aria-expanded', open ? 'true' : 'false');
             document.body.style.overflow = open ? 'hidden' : '';
             document.body.classList.toggle('nav-open', open);
+            if (!open) {
+                nav.style.paddingBottom = '';
+                var dd = document.getElementById('va-nav-search-dropdown');
+                if (dd) dd.hidden = true;
+            }
         });
         // Kattintás nav-on kívül zárja
         document.addEventListener('click', function(e){
@@ -220,6 +225,9 @@
                 hbtn.setAttribute('aria-expanded','false');
                 document.body.style.overflow = '';
                 document.body.classList.remove('nav-open');
+                nav.style.paddingBottom = '';
+                var dd = document.getElementById('va-nav-search-dropdown');
+                if (dd) dd.hidden = true;
             }
         });
         window.addEventListener('resize', function(){ if(nav.classList.contains('open')) setNavTop(); });
