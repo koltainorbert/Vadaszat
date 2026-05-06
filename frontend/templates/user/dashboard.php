@@ -202,14 +202,26 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                             // Boost gomb
                             if ( class_exists( 'VA_User_Roles' ) ) :
                                 $boost_info = VA_User_Roles::can_boost( $user->ID, $l->ID );
-                                if ( $boost_info['can'] ):
+                                $is_boosted_now = VA_User_Roles::is_boosted( $l->ID );
+                                if ( $is_boosted_now ):
                             ?>
                             <button class="va-boost-btn va-btn va-btn--accent va-btn--sm"
                                     data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
                                     data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
                                     data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    data-mode="remove"
+                                    style="background:rgba(0,200,80,.12);border:1px solid #00c850;color:#00c850;">
+                                ✅ Kiemelt! Levétel
+                            </button>
+                            <?php elseif ( $boost_info['can'] ):
+                            ?>
+                            <button class="va-boost-btn va-btn va-btn--accent va-btn--sm"
+                                    data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                    data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                    data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    data-mode="boost"
                                     style="background:rgba(255,200,0,.15);border:1px solid #ffcc00;color:#ffcc00;">
-                                &#9889; El&#337;re
+                                &#9889; Kiemelés
                             </button>
                             <?php else:
                                 $hrs = (int) ceil( $boost_info['seconds_remaining'] / 3600 );
@@ -612,15 +624,18 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
             var postId   = this.dataset.postId;
             var nonce    = this.dataset.nonce;
             var ajaxUrl  = this.dataset.ajaxUrl;
+            var mode     = this.dataset.mode || 'toggle';
             var self     = this;
+            var originalText = self.textContent;
 
             self.disabled = true;
-            self.textContent = '⏳ Kiemelés...';
+            self.textContent = '⏳ Mentés...';
 
             var data = new URLSearchParams({
                 action  : 'va_boost_listing',
                 nonce   : nonce,
-                post_id : postId
+                post_id : postId,
+                mode    : mode
             });
 
             fetch(ajaxUrl, {
@@ -631,19 +646,29 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
             .then(function(r){ return r.json(); })
             .then(function(res){
                 if(res.success){
-                    self.textContent = '✅ Kiemelt!';
-                    self.style.borderColor   = '#00c850';
-                    self.style.color         = '#00c850';
-                    self.style.background    = 'rgba(0,200,80,.12)';
+                    self.disabled = false;
+                    if (res.data && res.data.removed) {
+                        self.dataset.mode = 'boost';
+                        self.textContent = '⚡ Kiemelés';
+                        self.style.borderColor   = '#ffcc00';
+                        self.style.color         = '#ffcc00';
+                        self.style.background    = 'rgba(255,200,0,.15)';
+                    } else {
+                        self.dataset.mode = 'remove';
+                        self.textContent = '✅ Kiemelt! Levétel';
+                        self.style.borderColor   = '#00c850';
+                        self.style.color         = '#00c850';
+                        self.style.background    = 'rgba(0,200,80,.12)';
+                    }
                 } else {
                     self.disabled    = false;
-                    self.textContent = '⚡ Előre';
+                    self.textContent = originalText;
                     alert(res.data && res.data.message ? res.data.message : 'Hiba történt.');
                 }
             })
             .catch(function(){
                 self.disabled    = false;
-                self.textContent = '⚡ Előre';
+                self.textContent = originalText;
             });
         });
     });
