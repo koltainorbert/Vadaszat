@@ -11,6 +11,7 @@
 - [x] Mobilos masodik sor elrejtes visszavonva, hogy a teljes szoveg latszodjon
 - [x] Hero cim, kiemelt span es alcim szine fix feherre allitva
 - [x] Hero ket CTA gomb elrejtve mobilon
+- [x] Mobil hero fuggoleges gap csokkentve (min-height, padding, marginok)
 
 ### Hol tartunk
 A hero szoveg most minden nezetben a kert tartalommal jelenik meg, a cim 3 sorra torheto, az alcim `Veszprém`.
