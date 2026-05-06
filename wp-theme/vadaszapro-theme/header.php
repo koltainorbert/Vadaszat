@@ -115,8 +115,9 @@
                 <?php endforeach; ?>
                 <!-- Mobil kereső a nav alján -->
                 <form class="va-nav__search" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get" autocomplete="off">
-                    <input class="va-nav__search-input" type="text" name="s" placeholder="<?php echo esc_attr( $header_search_placeholder ); ?>" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
+                    <input class="va-nav__search-input" id="va-nav-search-input" type="text" name="s" placeholder="<?php echo esc_attr( $header_search_placeholder ); ?>" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
                     <button class="va-nav__search-btn" type="submit" aria-label="Keresés"></button>
+                    <div class="va-search-dropdown va-nav-search-dropdown" id="va-nav-search-dropdown" hidden></div>
                 </form>
             </nav>
 
@@ -182,6 +183,42 @@
                         dropdown.hidden = true;
                     }
                 });
+
+                // Mobil nav kereső – ugyanaz a logika
+                var mInput    = document.getElementById('va-nav-search-input');
+                var mDropdown = document.getElementById('va-nav-search-dropdown');
+                var mTimer;
+                if (mInput && mDropdown) {
+                    mInput.addEventListener('input', function(){
+                        clearTimeout(mTimer);
+                        var q = this.value.trim();
+                        if (q.length < 2) { mDropdown.hidden = true; return; }
+                        mTimer = setTimeout(function(){
+                            var fd = new FormData();
+                            fd.append('action', 'va_live_search');
+                            fd.append('q', q);
+                            fetch(ajaxUrl, { method:'POST', body:fd })
+                                .then(function(r){ return r.json(); })
+                                .then(function(d){
+                                    if (!d.success || !d.data.length) { mDropdown.hidden = true; return; }
+                                    var baseUrl = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>';
+                                    mDropdown.innerHTML = d.data.map(function(r){
+                                        return '<a class="va-sd__item" href="'+r.url+'">'
+                                            + (r.thumb ? '<img class="va-sd__thumb" src="'+r.thumb+'" alt="" loading="lazy">' : '<span class="va-sd__no-img"></span>')
+                                            + '<span class="va-sd__info"><span class="va-sd__title">'+r.title+'</span>'
+                                            + (r.price ? '<span class="va-sd__price">'+r.price+'</span>' : '')
+                                            + '</span>'
+                                            + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':r.type==='category'?'Kategória':r.type==='user'?'Felhasználó':'Hirdetés')+'</span>'
+                                            + '</a>';
+                                    }).join('') + '<a class="va-sd__all" href="'+baseUrl+'?s='+encodeURIComponent(mInput.value)+'">Összes találat →</a>';
+                                    mDropdown.hidden = false;
+                                });
+                        }, 220);
+                    });
+                    document.addEventListener('click', function(e){
+                        if (!mInput.closest('form').contains(e.target)) mDropdown.hidden = true;
+                    });
+                }
             })();
             </script>
 

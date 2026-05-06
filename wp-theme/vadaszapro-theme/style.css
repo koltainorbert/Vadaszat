@@ -534,6 +534,14 @@ body { top:0 !important; }
   /* Mobil nav kereső – csak nyitott nav-ban */
   .va-nav.open .va-nav__search {
     display: flex !important;
+    position: relative;
+  }
+  .va-nav-search-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    z-index: 10000;
+  }
     align-items: center;
     border: 1px solid #ff8800;
     border-radius: 999px;
