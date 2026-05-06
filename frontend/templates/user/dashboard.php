@@ -205,23 +205,23 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 $is_boosted_now = VA_User_Roles::is_boosted( $l->ID );
                                 if ( $is_boosted_now ):
                             ?>
-                            <button class="va-boost-btn va-btn va-btn--accent va-btn--sm"
+                            <button class="va-boost-btn va-boost-btn--on"
                                     data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
                                     data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
                                     data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
                                     data-mode="remove"
-                                    style="background:rgba(0,200,80,.12);border:1px solid #00c850;color:#00c850;">
-                                ✅ Kiemelt! Levétel
+                                    aria-pressed="true">
+                                <span class="va-boost-btn__dot" aria-hidden="true"></span>Kiemelt: BE
                             </button>
                             <?php elseif ( $boost_info['can'] ):
                             ?>
-                            <button class="va-boost-btn va-btn va-btn--accent va-btn--sm"
+                            <button class="va-boost-btn va-boost-btn--off"
                                     data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
                                     data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
                                     data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
                                     data-mode="boost"
-                                    style="background:rgba(255,200,0,.15);border:1px solid #ffcc00;color:#ffcc00;">
-                                &#9889; Kiemelés
+                                    aria-pressed="false">
+                                <span class="va-boost-btn__dot" aria-hidden="true"></span>Kiemelés: KI
                             </button>
                             <?php else:
                                 $hrs = (int) ceil( $boost_info['seconds_remaining'] / 3600 );
@@ -585,9 +585,44 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
 .va-profile-avatar-editor__fields { flex:1;display:flex;flex-direction:column;gap:8px; }
 .va-profile-avatar-editor__remove { font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:7px; }
 
-/* ── Boost gomb ── */
-.va-boost-btn { cursor:pointer;font-size:12px; }
-.va-boost-btn:disabled { opacity:.5;cursor:not-allowed; }
+/* ── Boost toggle ── */
+.va-boost-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-width:132px;
+    height:34px;
+    padding:0 14px;
+    border-radius:999px;
+    border:1px solid transparent;
+    font-size:12px;
+    font-weight:700;
+    line-height:1;
+    letter-spacing:.02em;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+.va-boost-btn__dot {
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:currentColor;
+    box-shadow:0 0 8px currentColor;
+}
+.va-boost-btn--on {
+    color:#00d46a;
+    border-color:#00b85c;
+    background:linear-gradient(135deg,rgba(0,212,106,.18),rgba(0,120,64,.14));
+}
+.va-boost-btn--off {
+    color:#ffcc00;
+    border-color:#ffcc00;
+    background:linear-gradient(135deg,rgba(255,204,0,.18),rgba(160,110,0,.14));
+}
+.va-boost-btn:hover { filter:brightness(1.08); transform:translateY(-1px); }
+.va-boost-btn:disabled { opacity:.65;cursor:not-allowed;transform:none; }
 
 /* ── Veszélyes zóna ── */
 .va-danger-zone {
@@ -629,7 +664,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
             var originalText = self.textContent;
 
             self.disabled = true;
-            self.textContent = '⏳ Mentés...';
+            self.textContent = 'Mentés...';
 
             var data = new URLSearchParams({
                 action  : 'va_boost_listing',
@@ -649,16 +684,16 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                     self.disabled = false;
                     if (res.data && res.data.removed) {
                         self.dataset.mode = 'boost';
-                        self.textContent = '⚡ Kiemelés';
-                        self.style.borderColor   = '#ffcc00';
-                        self.style.color         = '#ffcc00';
-                        self.style.background    = 'rgba(255,200,0,.15)';
+                        self.setAttribute('aria-pressed', 'false');
+                        self.classList.remove('va-boost-btn--on');
+                        self.classList.add('va-boost-btn--off');
+                        self.innerHTML = '<span class="va-boost-btn__dot" aria-hidden="true"></span>Kiemelés: KI';
                     } else {
                         self.dataset.mode = 'remove';
-                        self.textContent = '✅ Kiemelt! Levétel';
-                        self.style.borderColor   = '#00c850';
-                        self.style.color         = '#00c850';
-                        self.style.background    = 'rgba(0,200,80,.12)';
+                        self.setAttribute('aria-pressed', 'true');
+                        self.classList.remove('va-boost-btn--off');
+                        self.classList.add('va-boost-btn--on');
+                        self.innerHTML = '<span class="va-boost-btn__dot" aria-hidden="true"></span>Kiemelt: BE';
                     }
                 } else {
                     self.disabled    = false;
