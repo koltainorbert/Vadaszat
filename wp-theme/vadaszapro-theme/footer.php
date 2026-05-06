@@ -199,19 +199,28 @@
 
     // Hamburger toggle
     if(hbtn && nav){
+        function setNavTop(){
+            if(hdr && window.innerWidth <= 1024){
+                nav.style.top = hdr.getBoundingClientRect().bottom + 'px';
+            }
+        }
         hbtn.addEventListener('click', function(){
+            setNavTop();
             var open = nav.classList.toggle('open');
             hbtn.classList.toggle('open', open);
+            hbtn.setAttribute('aria-expanded', open ? 'true' : 'false');
             document.body.style.overflow = open ? 'hidden' : '';
         });
-        // Kattint\u00e1s nav-on k\u00edv\u00fcl z\u00e1rja
+        // Kattintás nav-on kívül zárja
         document.addEventListener('click', function(e){
-            if(nav.classList.contains('open') && !nav.contains(e.target) && e.target !== hbtn && !hbtn.contains(e.target)){
+            if(nav.classList.contains('open') && !nav.contains(e.target) && !hbtn.contains(e.target)){
                 nav.classList.remove('open');
                 hbtn.classList.remove('open');
+                hbtn.setAttribute('aria-expanded','false');
                 document.body.style.overflow = '';
             }
         });
+        window.addEventListener('resize', function(){ if(nav.classList.contains('open')) setNavTop(); });
     }
 
     // Aktiv nav item

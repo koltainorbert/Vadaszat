@@ -341,34 +341,17 @@
     </header>
     <script>
     (function(){
-        var btn    = document.getElementById('va-hamburger');
-        var nav    = document.getElementById('va-main-nav');
-        var header = document.querySelector('.va-header');
-        if (!btn || !nav) return;
-        function setNavTop() {
-            if (header && window.innerWidth <= 1024) {
-                nav.style.top = header.getBoundingClientRect().bottom + 'px';
+        // ESC bezárja a menüt
+        document.addEventListener('keydown', function(e){
+            if (e.key !== 'Escape') return;
+            var nav  = document.getElementById('va-main-nav');
+            var hbtn = document.getElementById('va-hamburger');
+            if (nav && nav.classList.contains('open')) {
+                nav.classList.remove('open');
+                if (hbtn) hbtn.classList.remove('open');
+                document.body.style.overflow = '';
             }
-        }
-        function close() {
-            nav.classList.remove('open');
-            btn.classList.remove('open');
-            btn.setAttribute('aria-expanded','false');
-            document.body.style.overflow = '';
-        }
-        btn.addEventListener('click', function(e){
-            e.stopPropagation();
-            setNavTop();
-            var open = nav.classList.toggle('open');
-            btn.classList.toggle('open', open);
-            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-            document.body.style.overflow = open ? 'hidden' : '';
         });
-        document.addEventListener('click', function(e){
-            if (nav.classList.contains('open') && !nav.contains(e.target) && e.target !== btn) close();
-        });
-        document.addEventListener('keydown', function(e){ if (e.key === 'Escape') close(); });
-        window.addEventListener('resize', function(){ if (!nav.classList.contains('open')) return; setNavTop(); });
     })();
     </script>
 
