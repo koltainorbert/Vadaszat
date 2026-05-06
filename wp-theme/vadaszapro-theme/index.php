@@ -1230,7 +1230,7 @@ updateHnOverflowState();
     // Legújabb hirdetések – boost-aware rendezés
     global $wpdb;
     $_boost_cfg     = class_exists('VA_User_Roles') ? VA_User_Roles::get_all_plan_configs() : [];
-    $_boost_window  = (int) ( $_boost_cfg['_global']['boost_badge_window'] ?? 14 );
+    $_boost_window  = (int) ( $_boost_cfg['_global']['boost_badge_window'] ?? 7 );
     $_boost_cutoff  = time() - $_boost_window * DAY_IN_SECONDS;
     $_latest_ids    = $wpdb->get_col( $wpdb->prepare(
         "SELECT p.ID FROM {$wpdb->posts} p

@@ -1095,7 +1095,7 @@ class VA_Ajax {
         if ( class_exists( 'VA_User_Roles' ) ) {
             $global_cfg = VA_User_Roles::get_all_plan_configs()['_global'] ?? [];
             if ( ! empty( $global_cfg['boost_enabled'] ) ) {
-                $window_days        = (int) ( $global_cfg['boost_badge_window'] ?? 14 );
+                $window_days        = (int) ( $global_cfg['boost_badge_window'] ?? 7 );
                 $boost_cutoff       = time() - $window_days * DAY_IN_SECONDS;
                 $boost_join         = "LEFT JOIN {$wpdb->postmeta} AS va_bst
                                         ON ( va_bst.post_id = p.ID AND va_bst.meta_key = 'va_boost_time' )";
