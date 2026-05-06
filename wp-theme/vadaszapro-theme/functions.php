@@ -1221,6 +1221,7 @@ add_action( 'wp_enqueue_scripts', function () {
         '.vh__sub{max-width:100% !important;margin-bottom:22px !important;margin-left:auto !important;margin-right:auto !important;}' .
         '.vh__actions{gap:10px !important;row-gap:10px !important;justify-content:center !important;}' .
         '.vh__btn{padding:11px 20px !important;font-size:14px !important;}' .
+        '.vh__title2{display:none !important;}' .
     '}' .
     '@media (max-width:420px){' .
         '.vh{min-height:520px !important;}' .

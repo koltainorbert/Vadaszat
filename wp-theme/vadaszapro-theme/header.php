@@ -485,8 +485,7 @@
             <?php endif; ?>
             <div class="vh__badge"><span class="vcp-hero__badge-dot"></span><?php echo esc_html( $home_badge ); ?></div>
             <h2 class="vh__title">
-                <?php echo esc_html( $home_title1 ); ?><br>
-                <?php echo esc_html( $home_title2 ); ?>
+                <?php echo esc_html( $home_title1 ); ?><span class="vh__title2"><br><?php echo esc_html( $home_title2 ); ?></span>
             </h2>
             <p class="vh__sub">
                 <?php echo esc_html( $home_sub ); ?>
