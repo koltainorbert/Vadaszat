@@ -12,6 +12,7 @@
 - [x] Hero cim, kiemelt span es alcim szine fix feherre allitva
 - [x] Hero ket CTA gomb elrejtve mobilon
 - [x] Mobil hero fuggoleges gap csokkentve (min-height, padding, marginok)
+- [x] Mobilon a badge alatti gap a cim-es-alcim gaphez igazitva
 
 ### Hol tartunk
 A hero szoveg most minden nezetben a kert tartalommal jelenik meg, a cim 3 sorra torheto, az alcim `Veszprém`.

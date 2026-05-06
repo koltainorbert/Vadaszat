@@ -1218,7 +1218,7 @@ add_action( 'wp_enqueue_scripts', function () {
         '.va-header__search-input,.va-nav__search-input{font-size:16px !important;}' .
         '.vh{height:auto !important;min-height:420px !important;align-items:center !important;}' .
         '.vh__content{max-width:100% !important;padding:calc(var(--nav,66px) + 4px) 12px 6px !important;text-align:center !important;}' .
-        '.vh__badge{margin-bottom:12px !important;}' .
+        '.vh__badge{margin-bottom:10px !important;}' .
         '.vh__title{margin-bottom:10px !important;}' .
         '.vh__sub{max-width:100% !important;margin-bottom:8px !important;margin-left:auto !important;margin-right:auto !important;}' .
         '.vh__actions{display:none !important;gap:10px !important;row-gap:10px !important;justify-content:center !important;}' .
