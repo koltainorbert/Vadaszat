@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 06. – Session #189 ("Új" pill: auto 7 nap + dashboard toggle)
+
+### Mit csinaltunk [x]
+- [x] Uj meta bevezetve: `va_new_pill_time` (uj hirdetesnel automatikusan beall)
+- [x] Uj logika: `is_new_pill()` 7 napos fix ablakban jelzi az aktiv "Új" pillt
+- [x] Uj AJAX vegpont: `va_toggle_new_pill` (KI/BE kapcsolas sajat hirdetesen)
+- [x] Kartyanezetben uj badge megjelenites: `Új` (piros hatter, feher szoveg)
+- [x] Dashboardban azonos helyen uj toggle gomb: "Új pill: BE/KI"
+- [x] Modositasok atvezetve source + plugin mirror fajlokba
+- [x] Hibavizsgalat lefuttatva (PHP/template oldalon nincs uj hiba)
+
+### Hol tartunk
+Minden ujonnan feltoltott hirdetes alapbol kap "Új" pillt 7 napra, es a `/va-fiok/` oldalon ugyanott kapcsolhato KI/BE, ahol a kiemeles toggle is van.
+
+---
+
 ## 2026. 05. 06. – Session #188 (Boost pill: 7 nap + dashboard toggle levetel)
 
 ### Mit csinaltunk [x]

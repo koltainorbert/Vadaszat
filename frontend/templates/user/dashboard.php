@@ -203,6 +203,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                             if ( class_exists( 'VA_User_Roles' ) ) :
                                 $boost_info = VA_User_Roles::can_boost( $user->ID, $l->ID );
                                 $is_boosted_now = VA_User_Roles::is_boosted( $l->ID );
+                                $is_new_pill_now = VA_User_Roles::is_new_pill( $l->ID );
                                 if ( $is_boosted_now ):
                             ?>
                             <button class="va-boost-btn va-boost-btn--on"
@@ -232,6 +233,29 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                             </span>
                             <?php
                                 endif;
+
+                                if ( $is_new_pill_now ):
+                            ?>
+                            <button class="va-newpill-btn va-newpill-btn--on"
+                                    data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                    data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                    data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    data-mode="off"
+                                    aria-pressed="true"
+                                    style="margin-top:6px;">
+                                <span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: BE
+                            </button>
+                            <?php else: ?>
+                            <button class="va-newpill-btn va-newpill-btn--off"
+                                    data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                    data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                    data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    data-mode="on"
+                                    aria-pressed="false"
+                                    style="margin-top:6px;">
+                                <span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: KI
+                            </button>
+                            <?php endif;
                             endif;
                             ?>
                         </td>
@@ -624,6 +648,44 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
 .va-boost-btn:hover { filter:brightness(1.08); transform:translateY(-1px); }
 .va-boost-btn:disabled { opacity:.65;cursor:not-allowed;transform:none; }
 
+.va-newpill-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    min-width:132px;
+    height:34px;
+    padding:0 14px;
+    border-radius:999px;
+    border:1px solid transparent;
+    font-size:12px;
+    font-weight:700;
+    line-height:1;
+    letter-spacing:.02em;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+.va-newpill-btn__dot {
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:currentColor;
+    box-shadow:0 0 8px currentColor;
+}
+.va-newpill-btn--on {
+    color:#ffffff;
+    border-color:#ff2a2a;
+    background:linear-gradient(135deg,rgba(255,42,42,.9),rgba(180,0,0,.9));
+}
+.va-newpill-btn--off {
+    color:#ff8a8a;
+    border-color:#ff3a3a;
+    background:linear-gradient(135deg,rgba(255,42,42,.18),rgba(110,0,0,.16));
+}
+.va-newpill-btn:hover { filter:brightness(1.06); transform:translateY(-1px); }
+.va-newpill-btn:disabled { opacity:.65;cursor:not-allowed;transform:none; }
+
 /* ── Veszélyes zóna ── */
 .va-danger-zone {
     padding:20px;
@@ -703,6 +765,60 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
             })
             .catch(function(){
                 self.disabled    = false;
+                self.textContent = originalText;
+            });
+        });
+    });
+
+    document.querySelectorAll('.va-newpill-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId   = this.dataset.postId;
+            var nonce    = this.dataset.nonce;
+            var ajaxUrl  = this.dataset.ajaxUrl;
+            var mode     = this.dataset.mode || 'toggle';
+            var self     = this;
+            var originalText = self.textContent;
+
+            self.disabled = true;
+            self.textContent = 'Mentés...';
+
+            var data = new URLSearchParams({
+                action  : 'va_toggle_new_pill',
+                nonce   : nonce,
+                post_id : postId,
+                mode    : mode
+            });
+
+            fetch(ajaxUrl, {
+                method  : 'POST',
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body    : data.toString()
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                if(res.success){
+                    self.disabled = false;
+                    if (res.data && res.data.active) {
+                        self.dataset.mode = 'off';
+                        self.setAttribute('aria-pressed', 'true');
+                        self.classList.remove('va-newpill-btn--off');
+                        self.classList.add('va-newpill-btn--on');
+                        self.innerHTML = '<span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: BE';
+                    } else {
+                        self.dataset.mode = 'on';
+                        self.setAttribute('aria-pressed', 'false');
+                        self.classList.remove('va-newpill-btn--on');
+                        self.classList.add('va-newpill-btn--off');
+                        self.innerHTML = '<span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: KI';
+                    }
+                } else {
+                    self.disabled = false;
+                    self.textContent = originalText;
+                    alert(res.data && res.data.message ? res.data.message : 'Hiba történt.');
+                }
+            })
+            .catch(function(){
+                self.disabled = false;
                 self.textContent = originalText;
             });
         });
