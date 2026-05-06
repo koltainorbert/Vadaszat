@@ -5,8 +5,12 @@
  */
 get_header(); ?>
 
-<div class="va-wrap">
-    <?php if (have_posts()): while (have_posts()): the_post(); ?>
+<?php if (have_posts()): while (have_posts()): the_post(); ?>
+    <?php
+    $has_pb_blocks = ! empty( get_post_meta( get_the_ID(), 'va_page_blocks', true ) );
+    $wrap_class    = 'va-wrap' . ( $has_pb_blocks ? ' va-wrap--pb' : '' );
+    ?>
+<div class="<?php echo esc_attr( $wrap_class ); ?>">
         <?php
         $content = trim( (string) get_the_content() );
 
@@ -17,7 +21,7 @@ get_header(); ?>
             the_content();
         }
         ?>
-    <?php endwhile; endif; ?>
+<?php endwhile; endif; ?>
 </div>
 
 <?php get_footer(); ?>
