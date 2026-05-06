@@ -580,8 +580,8 @@ body { top:0 !important; }
   .va-nav.open { display: flex; }
   .va-nav__item {
     width: 100%;
-    padding: 18px 20px;
-    font-size: 1.15rem;
+    padding: 36px 20px;
+    font-size: 2.3rem;
     border-radius: 8px;
     border-bottom: none;
     text-align: center;
