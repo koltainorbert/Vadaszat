@@ -560,9 +560,9 @@ body:not(.nav-open) .va-site-wrap > *:not(.va-header):not(.va-nav) {
 ────────────────────────────────────────────────────────── */
 .va-content-layout {
   display: flex; gap: 0;
-  min-height: calc(100vh - var(--nav) - 48px);
   background: #060606;
 }
+main.va-container { flex: 1; }
 
 /* Bal oldalsáv – nincs használva, letiltva */
 .va-sidebar.va-sidebar--left { display: none !important; }
