@@ -593,6 +593,16 @@ body { top:0 !important; }
   .va-header { position: fixed; }
   .va-site-wrap--inner { padding-top: var(--nav); }
 }
+.va-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: rgba(0,0,0,.35);
+}
+.va-nav-overlay.active { display: block; }
 @media (max-width: 500px) {
   .va-logo { padding-right: 0; gap: 9px; }
 }

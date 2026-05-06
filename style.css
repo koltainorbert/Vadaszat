@@ -500,6 +500,16 @@ body { top:0 !important; }
   .va-hamburger { display: flex; }
   .va-header__submit-btn { display: none; }
 }
+.va-nav-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 398;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  background: rgba(0,0,0,.35);
+}
+.va-nav-overlay.active { display: block; }
 @media (max-width: 500px) {
   .va-header__inner { padding: 0 14px 0 0; }
   .va-logo { padding-right: 0; gap: 9px; }
