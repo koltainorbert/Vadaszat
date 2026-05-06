@@ -525,60 +525,6 @@ body { top:0 !important; }
     max-height: calc(100vh - var(--nav));
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
   }
-  /* Mobil nav kereső – pontosan mint a desktop */
-.va-nav__search { display: none; }
-
-  .va-nav__search {
-    display: flex;
-    align-items: center;
-    border: 1px solid #ff8800;
-    border-radius: 999px;
-    padding: 0 10px 0 18px;
-    height: 44px;
-    box-sizing: border-box;
-    background: rgba(255,255,255,.02);
-    position: relative;
-    margin-top: 8px;
-    transition: border-color .18s ease, background .18s ease;
-  }
-  .va-nav__search:focus-within {
-    border-color: #ff8800;
-    background: rgba(255,255,255,.03);
-  }
-  .va-nav__search-input {
-    flex: 1;
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
-    color: #fff;
-    font-size: .85rem;
-    font-style: italic;
-    padding: 0;
-    -webkit-appearance: none;
-    appearance: none;
-    box-shadow: none !important;
-  }
-  .va-nav__search-input::placeholder { color: rgba(255,255,255,.4); }
-  .va-nav__search-btn {
-    flex-shrink: 0;
-    width: 28px; height: 28px;
-    position: relative;
-    background: rgba(255,255,255,.14);
-    border: none; cursor: pointer; border-radius: 50%;
-    opacity: .92;
-    animation: va-search-icon-float 1.8s ease-in-out infinite;
-    box-shadow: 0 4px 14px rgba(0,0,0,.22);
-  }
-  .va-nav__search-btn::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    margin: auto;
-    width: 16px; height: 16px;
-    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cline x1='16' y1='16' x2='21' y2='21'/%3E%3C/svg%3E") center/16px 16px no-repeat;
-    pointer-events: none;
-  }
-  .va-nav__search-btn:hover { opacity: 1; background: rgba(255,255,255,.22); }
   .va-nav.open { display: flex; }
   .va-nav__item {
     width: 100%;
