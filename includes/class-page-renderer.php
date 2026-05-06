@@ -28,6 +28,9 @@ class VA_Page_Renderer {
         .va-pb-btn--outline:hover{background:rgba(255,255,255,.08);}
         .va-pb-btn--ghost{background:transparent;border-color:transparent;text-decoration:underline;}
         .va-pb-eyebrow{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px;}
+        @media(max-width:900px){
+            .va-pb-wrap{margin-left:15px!important;margin-right:15px!important;overflow-x:hidden;}
+        }
         @media(max-width:768px){
             .va-pb-imgtext-grid{grid-template-columns:1fr!important;}
             .va-pb-cards-grid{grid-template-columns:repeat(2,1fr)!important;}
