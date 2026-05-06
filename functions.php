@@ -1119,8 +1119,8 @@ add_action( 'wp_enqueue_scripts', function () {
     $hero_badge_bg          = va_design_css_color( (string) get_option( 'va_color_hero_badge_bg',          'rgba(6,6,6,.56)' ),          'rgba(6,6,6,.56)' );
     $hero_badge_border      = va_design_css_color( (string) get_option( 'va_color_hero_badge_border',      'rgba(255,0,0,.55)' ),        'rgba(255,0,0,.55)' );
     $hero_badge_text        = va_design_css_color( (string) get_option( 'va_color_hero_badge_text',        '#ffffff' ),                  '#ffffff' );
-    $hero_title_color       = va_design_css_color( (string) get_option( 'va_color_hero_title',             '#ffffff' ),                  '#ffffff' );
-    $hero_sub_color         = va_design_css_color( (string) get_option( 'va_color_hero_sub',               'rgba(255,255,255,.80)' ),    'rgba(255,255,255,.80)' );
+    $hero_title_color       = '#ffffff';
+    $hero_sub_color         = '#ffffff';
     $hero_btn_primary_bg    = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_bg',    '#ff0000' ),                  '#ff0000' );
     $hero_btn_primary_hover = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover', '#cc0000' ),                  '#cc0000' );
     $hero_btn_primary_text  = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_text',  '#ffffff' ),                  '#ffffff' );
@@ -1244,7 +1244,7 @@ add_action( 'wp_enqueue_scripts', function () {
     $hero_scroll_dot_color  = va_design_css_color( (string) get_option( 'va_hero_scroll_dot_color',  '#ff0000' ), '#ff0000' );
     $hero_scroll_opacity    = (float) get_option( 'va_hero_scroll_opacity', '0.50' );
 
-    $hero_title_span_color         = va_design_css_color( (string) get_option( 'va_color_hero_title_span',             '#ff0000' ), '#ff0000' );
+    $hero_title_span_color         = '#ffffff';
     $hero_btn_primary_hover_text   = va_design_css_color( (string) get_option( 'va_color_hero_btn_primary_hover_text', '#ffffff' ), '#ffffff' );
     $hero_btn_ghost_hover_text     = va_design_css_color( (string) get_option( 'va_color_hero_btn_ghost_hover_text',   '#ffffff' ), '#ffffff' );
 
