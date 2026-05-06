@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 06. – Session #188 (Boost pill: 7 nap + dashboard toggle levetel)
+
+### Mit csinaltunk [x]
+- [x] Boost pill ablak default/fallback 14 naprol 7 napra allitva (source + plugin mirror, index + ajax + admin defaults)
+- [x] `va_boost_listing` AJAX vegpont toggle-ra bovitve: kiemeles felrakasa es levetele ugyanazzal a gombbal
+- [x] Platinum/admin jogosultsaggal barmikor leveheto a pill (`va_boost_time` torles)
+- [x] Fiók dashboard boost gomb UX atdolgozva: `Kiemelés` ↔ `Kiemelt! Levétel` allapotok
+- [x] Modositasok atvezetve source + plugin mirror sablonokra es classokra
+- [x] Hibavizsgalat lefuttatva az erintett fajlokon (nincs uj hiba)
+
+### Hol tartunk
+A kiemeles pill alapertelmezett ablaka 7 nap, es platinum/admin felhasznalo a `/va-fiok/` oldalon mar barmikor le is tudja venni a pillt ugyanazzal a gombbal.
+
+---
+
 ## 2026. 05. 04. – Session #187 (Publikus olvaso mod: feher szoveg + fiok/feladas linkek kivezetese)
 
 ### Mit csinaltunk [x]

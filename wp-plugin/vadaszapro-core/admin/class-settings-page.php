@@ -6941,7 +6941,7 @@ class VA_Settings_Page {
         if ( ! current_user_can( 'manage_options' ) ) return;
 
         $plans      = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::get_all_plan_configs() : [];
-        $global     = $plans['_global'] ?? [ 'boost_badge_window' => 14, 'boost_badge_text' => '⚡ Előre téve', 'boost_enabled' => true ];
+        $global     = $plans['_global'] ?? [ 'boost_badge_window' => 7, 'boost_badge_text' => '⚡ Előre téve', 'boost_enabled' => true ];
         $defaults   = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::PLANS : [];
         $nonce      = wp_create_nonce( 'va_admin_plan_cfg' );
         $plan_slugs = array_keys( $defaults );
@@ -8043,7 +8043,7 @@ class VA_Settings_Page {
                     payload[slug] = item;
                 });
                 payload._global = {
-                    boost_badge_window: (document.getElementById('va-pc-global-window') || { value: 14 }).value,
+                    boost_badge_window: (document.getElementById('va-pc-global-window') || { value: 7 }).value,
                     boost_badge_text: (document.getElementById('va-pc-global-badgetext') || { value: '' }).value,
                     boost_enabled: globalToggle && globalToggle.checked ? 1 : 0
                 };
