@@ -132,7 +132,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                     <thead>
                         <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Cím</th>
-                            <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Ár</th>
+                            <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);white-space:nowrap;min-width:110px;">Ár</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Státusz</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Dátum</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Kiemelés</th>
@@ -194,7 +194,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                                 </div>
                             </div>
                         </td>
-                        <td style="padding:10px 8px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
+                        <td style="padding:10px 8px;white-space:nowrap;min-width:110px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
                         <td style="padding:10px 8px;">
