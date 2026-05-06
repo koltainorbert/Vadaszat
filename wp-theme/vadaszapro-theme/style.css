@@ -528,20 +528,13 @@ body { top:0 !important; }
     gap: 4px;
     overflow-y: auto;
     max-height: calc(100vh - var(--nav));
+    height: auto;
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
   }
   .va-nav.open { display: flex; }
   /* Mobil nav kereső – csak nyitott nav-ban */
   .va-nav.open .va-nav__search {
     display: flex !important;
-    position: relative;
-  }
-  .va-nav-search-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0; right: 0;
-    z-index: 10000;
-  }
     align-items: center;
     border: 1px solid #ff8800;
     border-radius: 999px;
@@ -551,6 +544,12 @@ body { top:0 !important; }
     background: rgba(255,255,255,.02);
     position: relative;
     margin-top: 8px;
+  }
+  .va-nav-search-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0; right: 0;
+    z-index: 10000;
   }
   .va-nav__search-input {
     flex: 1;
