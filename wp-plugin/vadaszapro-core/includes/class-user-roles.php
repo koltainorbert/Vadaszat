@@ -337,7 +337,7 @@ class VA_User_Roles {
     /**
      * Új hirdetésnél automatikusan beállítja az "Új" pill induló idejét.
      */
-    public static function ensure_new_pill_on_create( int $post_id, \\WP_Post $post, bool $update ): void {
+    public static function ensure_new_pill_on_create( int $post_id, \WP_Post $post, bool $update ): void {
         if ( wp_is_post_revision( $post_id ) ) return;
         if ( $post->post_type !== 'va_listing' ) return;
         if ( $update ) return;
