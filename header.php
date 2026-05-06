@@ -375,7 +375,7 @@
         $submit_page = get_page_by_path('va-hirdetes-feladas');
         $search_page = get_page_by_path('va-hirdetes-kereses');
         $home_badge  = get_option( 'va_home_hero_badge_text', 'Magyarország első vadászati hirdetőoldala' );
-        $home_title1 = 'Weingartner Autó';
+        $home_title1 = 'Weingartner';
         $home_title2 = "Autó-Motor\nÉrtékesítés";
         $home_sub    = 'Veszprém';
         $home_cta_1  = get_option( 'va_home_hero_primary_cta_text', 'Kapcsolatfelvetel' );
