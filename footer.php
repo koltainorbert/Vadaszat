@@ -193,15 +193,11 @@
 
     // Hamburger toggle
     if(hbtn && nav){
-        var overlay = document.createElement('div');
-        overlay.className = 'va-nav-overlay';
-        document.body.appendChild(overlay);
-
         hbtn.addEventListener('click', function(){
             var open = nav.classList.toggle('open');
             hbtn.classList.toggle('open', open);
             document.body.style.overflow = open ? 'hidden' : '';
-            overlay.classList.toggle('active', open);
+            document.body.classList.toggle('nav-open', open);
         });
         // Kattintás nav-on kívül zárja
         document.addEventListener('click', function(e){
@@ -209,7 +205,7 @@
                 nav.classList.remove('open');
                 hbtn.classList.remove('open');
                 document.body.style.overflow = '';
-                overlay.classList.remove('active');
+                document.body.classList.remove('nav-open');
             }
         });
     }
