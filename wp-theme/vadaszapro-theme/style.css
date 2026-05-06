@@ -162,6 +162,9 @@ hr { border-color: var(--border); }
   box-shadow: none !important;
 }
 .va-header__search-input::placeholder { color: rgba(255,255,255,.4); }
+@media (max-width: 1024px) {
+  .va-header__search-input::placeholder { color: #ff8800 !important; }
+}
 .va-header__search-btn {
   flex-shrink: 0;
   width: 28px; height: 28px;
