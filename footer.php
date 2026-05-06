@@ -193,17 +193,23 @@
 
     // Hamburger toggle
     if(hbtn && nav){
+        var overlay = document.createElement('div');
+        overlay.className = 'va-nav-overlay';
+        document.body.appendChild(overlay);
+
         hbtn.addEventListener('click', function(){
             var open = nav.classList.toggle('open');
             hbtn.classList.toggle('open', open);
             document.body.style.overflow = open ? 'hidden' : '';
+            overlay.classList.toggle('active', open);
         });
-        // Kattint\u00e1s nav-on k\u00edv\u00fcl z\u00e1rja
+        // Kattintás nav-on kívül zárja
         document.addEventListener('click', function(e){
             if(nav.classList.contains('open') && !nav.contains(e.target) && e.target !== hbtn && !hbtn.contains(e.target)){
                 nav.classList.remove('open');
                 hbtn.classList.remove('open');
                 document.body.style.overflow = '';
+                overlay.classList.remove('active');
             }
         });
     }
