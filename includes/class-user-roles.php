@@ -153,7 +153,7 @@ class VA_User_Roles {
 
         // Globális boost beállítások
         $global_defaults = [
-            'boost_badge_window' => 14,
+            'boost_badge_window' => 7,
             'boost_badge_text'   => '⚡ Előre téve',
             'boost_enabled'      => true,
         ];
@@ -316,13 +316,26 @@ class VA_User_Roles {
     }
 
     /**
+     * Boost (pill) levétele.
+     */
+    public static function do_unboost( int $post_id ): bool {
+        delete_post_meta( $post_id, 'va_boost_time' );
+
+        if ( class_exists( 'VA_Ajax' ) ) {
+            VA_Ajax::flush_filter_cache();
+        }
+
+        return true;
+    }
+
+    /**
      * Hirdetés boostednak számít-e (kategória badge megjelenítéshez)?
      * Az ablak mérete a globális konfigból jön (alapba 14 nap).
      */
     public static function is_boosted( int $post_id, int $window_days = 0 ): bool {
         if ( $window_days <= 0 ) {
             $cfg = self::get_all_plan_configs();
-            $window_days = (int) ( $cfg['_global']['boost_badge_window'] ?? 14 );
+            $window_days = (int) ( $cfg['_global']['boost_badge_window'] ?? 7 );
         }
         $bt = (int) get_post_meta( $post_id, 'va_boost_time', true );
         if ( $bt <= 0 ) return false;
@@ -367,7 +380,7 @@ class VA_User_Roles {
 
         // Ablakidő a DB-ből (boost_badge_window nap) – az ablakon kívüliek nem számítanak boostnak
         $global_cfg   = self::get_all_plan_configs()['_global'] ?? [];
-        $window_days  = (int) ( $global_cfg['boost_badge_window'] ?? 14 );
+        $window_days  = (int) ( $global_cfg['boost_badge_window'] ?? 7 );
         $boost_cutoff = time() - $window_days * DAY_IN_SECONDS;
 
         // Boosted (az ablakon belül) hirdetések először, aztán feladás dátuma
@@ -418,7 +431,7 @@ class VA_User_Roles {
         if ( isset( $input['_global'] ) && is_array( $input['_global'] ) ) {
             $g = $input['_global'];
             $current['_global'] = [
-                'boost_badge_window' => max( 1, (int) ( $g['boost_badge_window'] ?? 14 ) ),
+                'boost_badge_window' => max( 1, (int) ( $g['boost_badge_window'] ?? 7 ) ),
                 'boost_badge_text'   => sanitize_text_field( $g['boost_badge_text']  ?? '⚡ Előre téve' ),
                 'boost_enabled'      => ! empty( $g['boost_enabled'] ),
             ];
@@ -573,6 +586,29 @@ class VA_User_Roles {
             wp_send_json_error( [ 'message' => 'Csak saját hirdetést emelhetsz ki.' ] );
         }
 
+        $mode = sanitize_key( (string) ( $_POST['mode'] ?? 'toggle' ) );
+        if ( ! in_array( $mode, [ 'toggle', 'boost', 'remove' ], true ) ) {
+            $mode = 'toggle';
+        }
+
+        $is_boosted_now = self::is_boosted( $post_id );
+        $plan           = self::get_user_plan( $user_id );
+        $is_admin       = self::is_admin_user( $user_id );
+
+        // Pill levétele: platinum és admin bármikor leveheti
+        if ( $mode === 'remove' || ( $mode === 'toggle' && $is_boosted_now ) ) {
+            if ( ! $is_admin && $plan !== 'platinum' ) {
+                wp_send_json_error( [ 'message' => 'A pill levételéhez legalább Platinum csomag szükséges.' ] );
+            }
+
+            self::do_unboost( $post_id );
+
+            wp_send_json_success( [
+                'message' => 'Kiemelés levéve.',
+                'removed' => true,
+            ] );
+        }
+
         $check = self::can_boost( $user_id, $post_id );
 
         if ( ! $check['can'] ) {
@@ -591,6 +627,7 @@ class VA_User_Roles {
 
         wp_send_json_success( [
             'message' => '✅ Hirdetés kiemelve! Az adott kategóriában az élre kerültél.',
+            'removed' => false,
         ] );
     }
 }
