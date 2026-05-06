@@ -32,14 +32,14 @@ class VA_Page_Renderer {
             .va-pb-imgtext-grid{grid-template-columns:1fr!important;}
             .va-pb-cards-grid{grid-template-columns:repeat(2,1fr)!important;}
             .va-pb-hero{min-height:0!important;padding-top:40px!important;padding-bottom:40px!important;align-items:flex-start!important;}
-            .va-pb-hero__btns{flex-direction:row!important;flex-wrap:wrap!important;justify-content:flex-start!important;}
+            .va-pb-cnt{padding-left:16px!important;padding-right:16px!important;}
         }
-        @media(max-width:480px){
-            .va-pb-cards-grid{grid-template-columns:1fr!important;}
+        @media(max-width:420px){
             .va-pb-hero{padding-top:28px!important;padding-bottom:28px!important;}
-            .va-pb-btn{padding:11px 20px!important;font-size:14px!important;}
-            .va-pb-hero__btns{gap:8px!important;}
+            .va-pb-hero__btns{flex-direction:column!important;align-items:flex-start!important;gap:10px!important;}
+            .va-pb-btn{padding:12px 22px!important;font-size:14px!important;width:auto!important;}
         }
+        @media(max-width:480px){.va-pb-cards-grid{grid-template-columns:1fr!important;}}
         </style>' . "\n";
     }
 
