@@ -84,9 +84,10 @@
                 <?php
                 $nav_items = apply_filters('va_nav_items', (function() {
                     $default = [
-                        ['url' => home_url('/va-hirdetes-kereses'), 'label' => 'Hirdetések', 'class' => '', 'enabled' => true],
-                        ['url' => home_url('/kategoria'),           'label' => 'Kategóriák', 'class' => '', 'enabled' => true],
-                        ['url' => home_url('/kapcsolat'),           'label' => 'Kapcsolat',  'class' => '', 'enabled' => true],
+                        ['url' => home_url('/va-hirdetes-kereses'), 'label' => 'Hirdetések',       'class' => '', 'enabled' => true],
+                        ['url' => home_url('/kategoria'),           'label' => 'Kategóriák',       'class' => '', 'enabled' => true],
+                        ['url' => home_url('/kapcsolat'),           'label' => 'Kapcsolat',        'class' => '', 'enabled' => true],
+                        ['url' => 'https://www.weingartnertrans.hu','label' => 'Weingartner Trans','class' => '', 'enabled' => true],
                     ];
                     $json = get_option('va_nav_items_json', '');
                     if (!$json) return $default;
