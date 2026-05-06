@@ -529,6 +529,45 @@ body { top:0 !important; }
     box-shadow: 0 8px 32px rgba(0,0,0,.6);
   }
   .va-nav.open { display: flex; }
+  /* Mobil nav kereső */
+  .va-nav__search {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ff8800;
+    border-radius: 999px;
+    padding: 0 10px 0 18px;
+    height: 44px;
+    box-sizing: border-box;
+    background: rgba(255,255,255,.02);
+    position: relative;
+    margin-top: 8px;
+  }
+  .va-nav__search-input {
+    flex: 1;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    color: #fff;
+    font-size: .85rem;
+    padding: 0;
+    -webkit-appearance: none;
+    appearance: none;
+    box-shadow: none !important;
+  }
+  .va-nav__search-input::placeholder { color: #ff8800; }
+  .va-nav__search-btn {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: #ff8800;
+    border: none; cursor: pointer; border-radius: 50%;
+  }
+  .va-nav__search-btn::before {
+    content: "";
+    display: block;
+    width: 16px; height: 16px;
+    margin: 6px auto;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cline x1='16' y1='16' x2='21' y2='21'/%3E%3C/svg%3E") center/16px 16px no-repeat;
+  }
   .va-nav__item {
     width: 100%;
     padding: 10px 20px;

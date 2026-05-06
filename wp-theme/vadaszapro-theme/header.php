@@ -113,6 +113,11 @@
                 ?>
                     <a href="<?php echo esc_url($item['url']); ?>" class="<?php echo esc_attr($cls); ?>"><?php echo esc_html($item['label']); ?></a>
                 <?php endforeach; ?>
+                <!-- Mobil kereső a nav alján -->
+                <form class="va-nav__search" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get" autocomplete="off">
+                    <input class="va-nav__search-input" type="text" name="s" placeholder="<?php echo esc_attr( $header_search_placeholder ); ?>" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">
+                    <button class="va-nav__search-btn" type="submit" aria-label="Keresés"></button>
+                </form>
             </nav>
 
             <!-- Kereső -->
