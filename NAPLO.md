@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 06. – Session #190 (Hero szoveg mobil/desktop finomitas)
+
+### Mit csinaltunk [x]
+- [x] Fooldali hero cim atallitva: `Weingartner Autó` / `Autó-Motor` / `Értékesítés`
+- [x] Hero alcim atallitva: `Veszprém`
+- [x] A masodik cimsor tobb soros megjelenitesre allitva (`nl2br`)
+- [x] Mobilos masodik sor elrejtes visszavonva, hogy a teljes szoveg latszodjon
+
+### Hol tartunk
+A hero szoveg most minden nezetben a kert tartalommal jelenik meg, a cim 3 sorra torheto, az alcim `Veszprém`.
+
+---
+
 ## 2026. 05. 06. – Session #189 ("Új" pill: auto 7 nap + dashboard toggle)
 
 ### Mit csinaltunk [x]

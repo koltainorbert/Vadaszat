@@ -432,9 +432,9 @@
         $submit_page = get_page_by_path('va-hirdetes-feladas');
         $search_page = get_page_by_path('va-hirdetes-kereses');
         $home_badge  = get_option( 'va_home_hero_badge_text', 'Magyarország első vadászati hirdetőoldala' );
-        $home_title1 = get_option( 'va_home_hero_title_top', 'VadászBazár' );
-        $home_title2 = get_option( 'va_home_hero_title_bottom', 'és Apróhirdetés' );
-        $home_sub    = get_option( 'va_home_hero_sub_text', 'Magyarország első vadászati hirdetőoldala' );
+        $home_title1 = 'Weingartner Autó';
+        $home_title2 = "Autó-Motor\nÉrtékesítés";
+        $home_sub    = 'Veszprém';
         $home_cta_1  = get_option( 'va_home_hero_primary_cta_text', 'Kapcsolatfelvetel' );
         if ( preg_match( '/hirdet[eé]s\s*felad/i', (string) $home_cta_1 ) ) {
             $home_cta_1 = 'Kapcsolatfelvetel';
@@ -485,7 +485,7 @@
             <?php endif; ?>
             <div class="vh__badge"><span class="vcp-hero__badge-dot"></span><?php echo esc_html( $home_badge ); ?></div>
             <h2 class="vh__title">
-                <?php echo esc_html( $home_title1 ); ?><span class="vh__title2"><br><?php echo esc_html( $home_title2 ); ?></span>
+                <?php echo esc_html( $home_title1 ); ?><span class="vh__title2"><br><?php echo nl2br( esc_html( $home_title2 ) ); ?></span>
             </h2>
             <p class="vh__sub">
                 <?php echo esc_html( $home_sub ); ?>
