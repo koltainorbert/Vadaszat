@@ -11,9 +11,56 @@ function va_auctions_enabled(): bool {
 }
 
 /* ── Megtekintés szám (determinisztikus alap + valós) ─── */
+function va_client_ip(): string {
+    $candidates = [
+        $_SERVER['HTTP_CF_CONNECTING_IP'] ?? '',
+        $_SERVER['HTTP_X_FORWARDED_FOR']  ?? '',
+        $_SERVER['HTTP_CLIENT_IP']        ?? '',
+        $_SERVER['REMOTE_ADDR']           ?? '',
+    ];
+
+    foreach ( $candidates as $candidate ) {
+        $candidate = sanitize_text_field( wp_unslash( (string) $candidate ) );
+        if ( $candidate === '' ) {
+            continue;
+        }
+
+        if ( strpos( $candidate, ',' ) !== false ) {
+            $parts = array_map( 'trim', explode( ',', $candidate ) );
+            $candidate = (string) ( $parts[0] ?? '' );
+        }
+
+        if ( filter_var( $candidate, FILTER_VALIDATE_IP ) ) {
+            return $candidate;
+        }
+    }
+
+    return '0.0.0.0';
+}
+
+function va_views_floor_key( int $post_id ): string {
+    $ip = va_client_ip();
+    $hash = substr( md5( $ip . '|' . wp_salt( 'auth' ) . '|' . $post_id ), 0, 16 );
+    return 'va_vwf_' . $post_id . '_' . $hash;
+}
+
+function va_apply_views_floor( int $post_id, int $display_views ): int {
+    $key = va_views_floor_key( $post_id );
+    $stored = (int) get_transient( $key );
+    $final  = max( $display_views, $stored );
+
+    // 30 napig megtartjuk az adott IP altal latott max erteket.
+    if ( $final !== $stored ) {
+        set_transient( $key, $final, DAY_IN_SECONDS * 30 );
+    }
+
+    return $final;
+}
+
 function va_display_views( int $post_id ): int {
     $base = 30 + ( $post_id % 70 );
-    return intval( get_post_meta( $post_id, 'va_views', true ) ) + $base;
+    $display_views = intval( get_post_meta( $post_id, 'va_views', true ) ) + $base;
+    return va_apply_views_floor( $post_id, $display_views );
 }
 
 /* ── Social Media SVG ikonok (hivatalos brand logók) ─── */

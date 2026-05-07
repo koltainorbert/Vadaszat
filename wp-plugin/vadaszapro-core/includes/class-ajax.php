@@ -910,7 +910,11 @@ class VA_Ajax {
 
         $views = intval( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
         update_post_meta( $post_id, 'va_views', $views + 1 );
-        wp_send_json_success( [ 'views' => $views + 1 ] );
+        $display_views = function_exists( 'va_display_views' ) ? va_display_views( $post_id ) : ( $views + 1 );
+        wp_send_json_success( [
+            'views'         => $views + 1,
+            'display_views' => $display_views,
+        ] );
     }
 
     /* ── Hirdetések szűrő AJAX ─────────────────────────── */
