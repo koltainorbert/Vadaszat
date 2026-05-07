@@ -67,6 +67,127 @@ if ( $va_welcome_preview_remaining > 0 ) {
     update_user_meta( $user->ID, 'va_daily_welcome_seen', $va_today_local );
 }
 
+$va_daily_welcome_message = '';
+$va_welcome_image_url = content_url( 'uploads/fortune-cookies.png' );
+if ( $va_show_daily_welcome ) {
+    $va_wish_openers = [
+        'Ma tisztan latod az utad',
+        'A mai nap neked dolgozik',
+        'Csendben erosodsz',
+        'A szerencse most figyel rad',
+        'Ma konnyebb lesz donteni',
+        'A jo idozites melletted all',
+        'Ma jol olvasod a jeleket',
+        'Most nyitott az ut a jo alkalmakra',
+        'A kitartasod ma gyorsabban terul meg',
+        'Ma tiszta fejjel lepsz elore',
+        'A batorsagod ma jutalmat kap',
+        'A mai nap egy uj ritmust ad',
+        'Most minden kicsit a helyere pattan',
+        'A figyelmed ma aranyat er',
+        'A mai lepesed holnapot epiti',
+        'Ma megerkezik egy jo visszajelzes',
+        'A higgadtsagod ma elony lesz',
+        'Most jo helyen vagy jo idoben',
+        'A mai napban tobb van, mint latszik',
+        'Ma konnyebben kapcsolodnak ossze a dolgok',
+    ];
+    $va_wish_focuses = [
+        'a figyelmed minden fontos reszletet megtalal',
+        'a jo emberek ma konnyebben talalnak rad',
+        'a jo dontes ma kevesebb ketseggel jon',
+        'a nyugalmad ma eros pajzs lesz',
+        'a kitartasod ma tiszta eredmenyt hoz',
+        'a lenduleted ma vegig kitart',
+        'az otleteid ma jol hasznosulnak',
+        'egy regi terv ma uj erore kap',
+        'a munkad ma lathato nyomot hagy',
+        'a jo hir ma gyorsabban erkezik',
+        'a kapcsolataid ma tamogatobbak lesznek',
+        'a megerzesed ma pontos iranytu',
+        'a korulmenyek ma inkabb segitenek, mint akadalyoznak',
+        'a mai beszelgetesek hasznos fordulatot adnak',
+        'a turelmed ma gyorsabb haladast szul',
+        'a figyelmed ma penzt es idot sporol',
+        'a jo ritmus ma vegig veled marad',
+        'a mai kezdet stabil folytatast hoz',
+        'a valasztasod ma hosszabb tavon is nyereseges',
+        'a regi bizonytalansag ma elcsendesedik',
+    ];
+    $va_wish_outcomes = [
+        'estere elegedett mosollyal zarod a napot',
+        'egy jo hir megerositi a donteseidet',
+        'tobb tiszta igen erkezik, mint nemet',
+        'pont annyi segitseget kapsz, amennyi kell',
+        'a mai eredmeny holnap is tartani fog',
+        'a kis lepeseid nagy tavolsagot adnak',
+        'a jo lehetoseg idoben kopogtat',
+        'nyugodt erosseg marad benned estig',
+        'egy varatlan jo fordulat mosolyt hoz',
+        'minden lenyeges valasz idoben megerkezik',
+        'a mai munka megmutatja az ertelmet',
+        'jo emberek allnak melletted a fontos pillanatban',
+        'a mai nyereseged kesobb is latszani fog',
+        'konnyebb lesz tovabblepni, mint gondoltad',
+        'a bizonytalansag helyett tiszta terv marad',
+        'a nap vegere buszke leszel magadra',
+        'a jo ritmus holnap is folytatodik',
+        'a siker csendben, de biztosan megerkezik',
+        'a mai dontesed eros alapot ad',
+        'az ested nyugodt es megelegedett lesz',
+    ];
+
+    $va_wishes = [];
+    foreach ( $va_wish_openers as $va_open ) {
+        foreach ( $va_wish_focuses as $va_focus ) {
+            foreach ( $va_wish_outcomes as $va_outcome ) {
+                $va_wishes[] = $va_open . ', {nev}! Ma ' . $va_focus . ', es ' . $va_outcome . '.';
+                if ( count( $va_wishes ) >= 1000 ) {
+                    break 3;
+                }
+            }
+        }
+    }
+
+    $va_client_ip = '';
+    if ( ! empty( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) {
+        $va_forwarded = explode( ',', sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ) );
+        $va_client_ip = trim( (string) $va_forwarded[0] );
+    }
+    if ( '' === $va_client_ip && ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
+        $va_client_ip = sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) );
+    }
+    if ( '' === $va_client_ip ) {
+        $va_client_ip = 'unknown';
+    }
+
+    $va_ip_hash = md5( $va_client_ip );
+    $va_seen_key = 'va_welcome_seen_' . $va_ip_hash;
+    $va_seen_ids = get_transient( $va_seen_key );
+    if ( ! is_array( $va_seen_ids ) ) {
+        $va_seen_ids = [];
+    }
+    $va_seen_ids = array_values( array_unique( array_filter( array_map( 'intval', $va_seen_ids ), static function( $id ) {
+        return $id >= 0 && $id < 1000;
+    } ) ) );
+
+    $va_available_ids = array_values( array_diff( range( 0, 999 ), $va_seen_ids ) );
+    if ( empty( $va_available_ids ) ) {
+        $va_seen_ids = [];
+        $va_available_ids = range( 0, 999 );
+    }
+
+    $va_pick_id = $va_available_ids[ wp_rand( 0, count( $va_available_ids ) - 1 ) ];
+    $va_seen_ids[] = (int) $va_pick_id;
+    set_transient( $va_seen_key, $va_seen_ids, YEAR_IN_SECONDS );
+
+    $va_name = trim( (string) $user->display_name );
+    if ( '' === $va_name ) {
+        $va_name = 'Vadasz';
+    }
+    $va_daily_welcome_message = str_replace( '{nev}', $va_name, $va_wishes[ $va_pick_id ] );
+}
+
 // CRM statisztika adatelokeszites (valid, adminnal egyezo nezetseggel)
 $crm_now_ts         = current_time( 'timestamp' );
 $crm_total_listings = count( $listings );
@@ -1099,17 +1220,11 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 <?php if ( $va_show_daily_welcome ) : ?>
 <div class="va-welcome-overlay" id="va-welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="va-welcome-title">
     <div class="va-welcome-modal" id="va-welcome-modal">
-        <div class="va-welcome-modal__cookie" aria-hidden="true">
-            <svg width="112" height="112" viewBox="0 0 120 120" fill="none">
-                <circle cx="60" cy="60" r="50" stroke="currentColor" stroke-opacity=".22" stroke-width="6"/>
-                <path d="M34 56c22-16 48-16 70 2-20 6-35 19-43 38-17-14-24-26-27-40z" stroke="currentColor" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-                <path d="M51 64l18-8" stroke="currentColor" stroke-opacity=".28" stroke-width="4" stroke-linecap="round"/>
-            </svg>
-        </div>
+        <div class="va-welcome-modal__hero" aria-hidden="true" style="background-image:url('<?php echo esc_url( $va_welcome_image_url ); ?>');"></div>
         <h3 class="va-welcome-modal__title" id="va-welcome-title"></h3>
         <button type="button" class="va-welcome-modal__cta" id="va-welcome-close">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
-            Szerencsesüti bezárása
+            Napi kívánság bezárása
         </button>
     </div>
 </div>
@@ -1125,9 +1240,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     justify-content: center;
     padding: 22px;
     background:
-        radial-gradient(circle at 22% 20%, rgba(255, 40, 40, 0.22), transparent 55%),
-        radial-gradient(circle at 82% 78%, rgba(255, 170, 55, 0.18), transparent 60%),
-        rgba(4, 4, 4, 0.82);
+        radial-gradient(circle at 22% 20%, rgba(255, 18, 18, 0.24), transparent 55%),
+        radial-gradient(circle at 82% 78%, rgba(255, 70, 70, 0.2), transparent 60%),
+        rgba(3, 3, 3, 0.86);
     backdrop-filter: blur(10px) saturate(1.15);
     -webkit-backdrop-filter: blur(10px) saturate(1.15);
 }
@@ -1137,9 +1252,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     position: relative;
     width: min(560px, 94vw);
     border-radius: 22px;
-    border: 1px solid rgba(255, 255, 255, 0.17);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     background:
-        linear-gradient(140deg, rgba(255, 86, 0, 0.22), rgba(8, 8, 8, 0.86) 38%, rgba(8, 8, 8, 0.94)),
+        linear-gradient(140deg, rgba(255, 24, 24, 0.28), rgba(8, 8, 8, 0.88) 38%, rgba(8, 8, 8, 0.95)),
         repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 24px),
         repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 24px);
     box-shadow: 0 28px 90px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.16);
@@ -1153,15 +1268,21 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-welcome-modal,
 .va-welcome-modal * {
-    color: #fff;
+    color: #fff !important;
 }
-.va-welcome-modal__cookie {
+.va-welcome-modal__hero {
     display:flex;
     align-items:center;
     justify-content:center;
-    margin-bottom: 10px;
-    opacity:.92;
-    animation: vaWelcomeFloatA 8s ease-in-out infinite;
+    width:100%;
+    aspect-ratio: 16 / 7;
+    margin-bottom: 14px;
+    border-radius: 14px;
+    border:1px solid rgba(255,255,255,.16);
+    background-color: rgba(255,255,255,.04);
+    background-size: cover;
+    background-position: center;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
 }
 .va-welcome-modal__title {
     margin: 4px 0 0;
@@ -1180,9 +1301,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     justify-content:center;
     gap:8px;
     border-radius: 999px;
-    border: 1px solid rgba(255,195,120,.75);
-    background: linear-gradient(90deg, #d87a18 0%, #f3a239 100%);
-    color: #fff;
+    border: 1px solid rgba(255,80,80,.8);
+    background: linear-gradient(90deg, #b30000 0%, #ff0000 100%);
+    color: #fff !important;
     font-size: 13px;
     font-weight: 800;
     letter-spacing: .02em;
@@ -1192,7 +1313,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-welcome-modal__cta:hover {
     transform: translateY(-1px);
-    box-shadow: 0 10px 30px rgba(255,160,60,.4);
+    box-shadow: 0 10px 30px rgba(255,40,40,.42);
 }
 
 @keyframes vaWelcomeFadeIn {
@@ -1215,6 +1336,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 @media (max-width: 640px) {
     .va-welcome-overlay { padding: 14px; }
     .va-welcome-modal { padding: 24px 18px 18px; border-radius: 16px; }
+    .va-welcome-modal__hero { aspect-ratio: 4 / 3; }
     .va-welcome-modal__title { font-size: 22px; }
     .va-welcome-modal__cta { width: 100%; }
 }
@@ -2670,25 +2792,8 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         var titleEl = document.getElementById('va-welcome-title');
         if (!overlay || !closeBtn || !titleEl) return;
 
-        var ownerName = <?php echo wp_json_encode( (string) $user->display_name ); ?> || 'Vadász';
-        var greetings = [
-            'Napi üdvözlet, ' + ownerName + '!',
-            'Szép napot, ' + ownerName + '!',
-            'Jó, hogy itt vagy ma is, ' + ownerName + '!',
-            'Sikeres napot kívánunk, ' + ownerName + '!',
-            'Napi szerencsesüti üdvözlet: hajrá, ' + ownerName + '!'
-        ];
-
-        function rnd(max) {
-            if (window.crypto && window.crypto.getRandomValues) {
-                var arr = new Uint32Array(1);
-                window.crypto.getRandomValues(arr);
-                return arr[0] % max;
-            }
-            return Math.floor(Math.random() * max);
-        }
-
-        titleEl.textContent = greetings[rnd(greetings.length)];
+        var welcomeMessage = <?php echo wp_json_encode( (string) $va_daily_welcome_message ); ?>;
+        titleEl.textContent = welcomeMessage || 'Ma is jo, hogy itt vagy.';
 
         function closeWelcome() { overlay.classList.remove('open'); }
         overlay.classList.add('open');
