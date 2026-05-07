@@ -9,6 +9,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 $post_id   = $post->ID;
 $price     = get_post_meta( $post_id, 'va_price', true );
 $price_type= get_post_meta( $post_id, 'va_price_type', true ) ?: 'fixed';
+$sale_price = get_post_meta( $post_id, 'va_sale_price', true );
+$sale_end   = get_post_meta( $post_id, 'va_sale_price_end', true );
+$has_sale   = $sale_price && floatval( $sale_price ) > 0
+              && ( ! $sale_end || strtotime( $sale_end ) >= current_time( 'timestamp' ) );
 $location  = get_post_meta( $post_id, 'va_location', true );
 $views      = va_display_views( $post_id );
 $featured  = get_post_meta( $post_id, 'va_featured', true ) === '1';
@@ -172,7 +176,15 @@ if ( ! $card_image_html ) {
             </div>
         <?php else: ?>
             <div class="va-card__price-row">
-                <div class="va-card__price"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></div>
+                <div class="va-card__price">
+                    <?php if ( $has_sale ): ?>
+                        <del style="color:rgba(255,255,255,.35);font-size:11px;font-weight:400;display:block;line-height:1.2;"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></del>
+                        <span style="color:#ff3333;font-weight:800;"><?php echo esc_html( number_format( floatval( $sale_price ), 0, ',', ' ' ) . ' Ft' ); ?></span>
+                        <span style="font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:rgba(255,0,0,.25);border:1px solid rgba(255,0,0,.5);border-radius:4px;padding:1px 5px;color:#ff8888;vertical-align:middle;margin-left:4px;">AKCIÓ</span>
+                    <?php else: ?>
+                        <?php echo esc_html( va_format_price( $price, $price_type ) ); ?>
+                    <?php endif; ?>
+                </div>
                 <?php echo $watchlist_button_html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
             </div>
         <?php endif; ?>

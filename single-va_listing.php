@@ -789,8 +789,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 .sl__spec-row--full { grid-column:1/-1;padding-right:0 !important;border-left:none !important; }
 
-.sl__params-scroll-wrap { position:relative; }
-.sl__params-scroll { position:relative; max-height:min(68vh,720px);overflow:auto;padding-right:14px; }
+.sl__params-scroll { position:relative; max-height:min(68vh,720px);overflow:auto;padding-right:6px; }
 .sl__params-scroll::-webkit-scrollbar { width:8px; }
 .sl__params-scroll::-webkit-scrollbar-thumb {
     border-radius: 8px;
@@ -799,36 +798,9 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
     animation: sl_scrollbar_flow 1.4s linear infinite;
 }
 .sl__params-scroll::-webkit-scrollbar-track { background:transparent; }
-.sl__params-flowbar {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 7px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.16);
-    overflow: hidden;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .2s ease;
-}
-.sl__params-flowbar-glow {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 44%;
-    min-height: 46px;
-    border-radius: 999px;
-    background: linear-gradient(180deg, rgba(224,119,39,0) 0%, rgba(224,119,39,.95) 52%, rgba(255,157,72,.82) 100%);
-    animation: sl_params_flowbar 1.15s linear infinite;
-}
 @keyframes sl_scrollbar_flow {
     0% { background-position: 0 0; }
     100% { background-position: 0 220%; }
-}
-@keyframes sl_params_flowbar {
-    0% { transform: translateY(-120%); }
-    100% { transform: translateY(230%); }
 }
 
 /* Extras pills */
@@ -953,7 +925,6 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
     .sl__params-scroll { max-height:none;overflow:visible;padding-right:0; }
-    .sl__params-flowbar { display:none; }
 
 
     .sl__specs-table { grid-template-columns:1fr; }
@@ -989,7 +960,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl__more-img { width:54px;height:40px;object-fit:cover;border-radius:4px;flex-shrink:0; }
 .sl__more-img--empty { display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);font-size:20px; }
 .sl__more-title { font-size:13px;font-weight:600;color:#fff;line-height:1.3; }
-.sl__more-price { font-size:13px;font-weight:700;color:#ff0000;margin-top:2px; }
+.sl__more-price { font-size:13px;font-weight:700;color:#e27019;margin-top:2px; }
 .sl__more-list { max-height:190px;overflow:auto;padding-right:4px; }
 .sl__more-list::-webkit-scrollbar { width:8px; }
 .sl__more-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,.2);border-radius:8px; }
@@ -1477,9 +1448,6 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 <div class="sl__card-title">R&#233;szletek</div>
 
 
-                <div class="sl__params-scroll-wrap">
-
-
                 <div class="sl__params-scroll">
 
 
@@ -1556,12 +1524,6 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                     <?php endforeach; ?>
                 </div>
                 <?php endif; ?>
-
-
-                </div>
-
-
-                <div class="sl__params-flowbar" id="sl-params-flowbar" aria-hidden="true"><span class="sl__params-flowbar-glow"></span></div>
 
 
                 </div>
@@ -1903,7 +1865,7 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
             <div class="sl__card sl__more">
 
 
-                <div class="sl__card-title">Felad&#243; tov&#225;bbi hirdet&#233;sei</div>
+                <div class="sl__card-title">Tov&#225;bbi hirdet&#233;seink</div>
 
 
                 <div class="sl__more-list">
@@ -2028,7 +1990,7 @@ $related = new WP_Query([
 
 if ( $related->have_posts() ):
 ?>
-<div style="max-width:<?php echo esc_attr((string)$sl_content_max); ?>px;margin:28px auto 0;padding:0 16px;">
+<div class="sl__related-wrap" style="max-width:<?php echo esc_attr((string)$sl_content_max); ?>px;margin:28px auto 0;padding:0 16px;">
     <div class="sl__card" style="margin-bottom:0;">
         <div class="sl__card-title" style="margin-bottom:14px;">Hasonl&#243; hirdet&#233;sek</div>
         <div class="va-grid">
@@ -2197,24 +2159,6 @@ $watching_sticky   = is_user_logged_in() ? va_user_watches($post_id) : false;
         mainImg.src = src;
 
 
-    }
-
-
-    var paramsScroll = document.querySelector('.sl__params-scroll');
-    var paramsFlowbar = document.getElementById('sl-params-flowbar');
-    if (paramsScroll && paramsFlowbar) {
-        var updateFlowbar = function() {
-            var hasMore = (paramsScroll.scrollHeight - paramsScroll.clientHeight) > 8;
-            var atBottom = (paramsScroll.scrollTop + paramsScroll.clientHeight) >= (paramsScroll.scrollHeight - 6);
-            paramsFlowbar.style.opacity = (hasMore && !atBottom) ? '1' : '0';
-        };
-        updateFlowbar();
-        paramsScroll.addEventListener('scroll', updateFlowbar, { passive: true });
-        window.addEventListener('resize', updateFlowbar);
-        if (typeof ResizeObserver !== 'undefined') {
-            var flowObserver = new ResizeObserver(updateFlowbar);
-            flowObserver.observe(paramsScroll);
-        }
     }
 
 
