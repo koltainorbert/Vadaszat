@@ -3417,3 +3417,17 @@ Az ikonok most látványosan nagyobbak, erősebb kontrasztúak és következetes
 
 ---
 
+## 2026. 05. 07. – Session: Ikon összeérés spacing fix
+
+### Mit csináltunk [x]
+- [x] Bal menü ikon+sor spacing javítva központi CSS-ben (rács, gap, min-height)
+- [x] Nav ikon cella szélesítve, sorok ritmusának növelése
+- [x] Ár szerkesztő ceruza gomb margó/távolság javítva a táblázatban
+- [x] Root + plugin mirror fájlok szinkronban
+- [x] Local deploy kész
+
+### Hol tartunk
+A dashboardon az ikonok és feliratok már nem érnek össze, a vizuális ritmus szellősebb.
+
+---
+
