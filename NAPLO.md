@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #215 (Alapból csukott stat blokkok + login redirect fix)
+
+### Mit csinaltunk [x]
+- [x] A fő chart alatti `Alapadatok` blokk alapból nyitott állapota megszüntetve
+- [x] Eredmény: a fő chart alatt most minden lenyitható blokk csukva indul
+- [x] A theme `login_redirect` filterből kivéve az admin oldalra kényszerítő átirányítás
+- [x] Eredmény: admin belépés után már nem a custom admin oldal tölt be automatikusan
+- [x] Dashboard plugin mirror szinkron + Deploy All sikeresen lefutott
+
+### Hol tartunk
+A stat szekció letisztultabb induló állapotot kapott, és az admin login többé nem írja felül automatikusan a WordPress belépési redirectet.
+
+---
+
 ## 2026. 05. 07. – Session #214 (Stat panel egyszerűsítés lenyitható blokkokkal)
 
 ### Mit csinaltunk [x]
