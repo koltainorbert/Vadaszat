@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 07. – Session #222 (Welcome popup tipográfia + UTF-8 + képfallback)
+
+### Mit csinaltunk [x]
+- [x] A napi kívánság szöveg idézőjeles (nyitó/záró idézőjel) tördelést kapott
+- [x] A címbetű mérete és súlya visszafogottabb, elegánsabb lett
+- [x] A kívánság szótár teljesen ékezetes UTF-8 magyar szövegre cserélve
+- [x] Hero kép blokk átállítva valódi `img` elemre, hibakezelő fallbackgel
+- [x] Képforrás-feloldás bővítve: user legfrissebb képes feltöltés fallback is bekerült
+- [x] Root dashboard sablon szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+A popup már nem túl nagy betűs, a szöveg idézőjeles és ékezetes, a kép pedig betöltési hiba esetén is biztosan megjelenik fallbackkel.
+
+---
+
 ## 2026. 05. 07. – Session #221 (Welcome popup: kep + fiokspecifikus nev)
 
 ### Mit csinaltunk [x]
