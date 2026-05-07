@@ -1,4 +1,6 @@
             </div><!-- .va-main-content -->
+<?php if ( ! is_page( 'va-fiok' ) ) : ?>
+            </div><!-- .va-main-content -->
 
             <!-- Jobb oldalsáv -->
             <aside class="va-sidebar va-sidebar--right">
@@ -177,7 +179,7 @@
             <a href="<?php echo esc_url(home_url('/adatkezeles/')); ?>"><?php echo esc_html( $f_privacy_bottom ); ?></a>
         </div>
     </footer>
-
+<?php endif; // ! is_page('va-fiok') ?>
 
 </div><!-- .va-site-wrap -->
 

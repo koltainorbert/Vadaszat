@@ -173,7 +173,7 @@
             <a href="<?php echo esc_url(home_url('/adatkezeles/')); ?>"><?php echo esc_html( $f_privacy_bottom ); ?></a>
         </div>
     </footer>
-
+<?php endif; // ! is_page('va-fiok') ?>
 
 </div><!-- .va-site-wrap -->
 
