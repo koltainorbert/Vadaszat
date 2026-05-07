@@ -139,19 +139,9 @@ if ( ! in_array( $sort_dir, [ 'asc', 'desc' ], true ) ) $sort_dir = 'desc';
 // Képszámok (batch)
 $listing_ids_all = array_column( (array) $listings, 'ID' );
 $gallery_meta_map = [];
-if ( $listing_ids_all ) {
-    $gm_results = get_post_meta_for_ids( $listing_ids_all, 'va_gallery_ids' );
-    foreach ( (array) $gm_results as $row ) {
-        $ids_arr = array_filter( array_map( 'intval', explode( ',', (string) $row ) ) );
-        $gallery_meta_map[ $row ] = count( $ids_arr );
-    }
-    // fallback: egyenként
-    foreach ( $listing_ids_all as $lid ) {
-        if ( ! isset( $gallery_meta_map[ $lid ] ) ) {
-            $g = get_post_meta( $lid, 'va_gallery_ids', true );
-            $gallery_meta_map[ $lid ] = count( array_filter( array_map( 'intval', explode( ',', (string) $g ) ) ) );
-        }
-    }
+foreach ( $listing_ids_all as $lid ) {
+    $g = get_post_meta( $lid, 'va_gallery_ids', true );
+    $gallery_meta_map[ $lid ] = count( array_filter( array_map( 'intval', explode( ',', (string) $g ) ) ) );
 }
 
 // Akciós árak + lejáratok per listing
