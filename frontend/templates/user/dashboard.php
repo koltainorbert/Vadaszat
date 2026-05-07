@@ -1066,13 +1066,13 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:inline-block;
     vertical-align:middle;
     flex-shrink:0;
-    width:18px;
-    height:18px;
+    width:20px;
+    height:20px;
     transition:transform .2s ease, filter .2s ease, opacity .2s ease;
 }
 .va-dashboard__nav-ico {
-    width:30px;
-    height:30px;
+    width:34px;
+    height:34px;
     display:inline-flex;
     align-items:center;
     justify-content:center;
@@ -1586,7 +1586,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 /* ── Akciós ár inline edit gomb ── */
 .va-sale-edit-btn {
     display:inline-flex;align-items:center;justify-content:center;
-    width:30px;height:30px;margin-left:6px;
+    width:30px;height:30px;margin-left:10px;margin-top:4px;
     border-radius:6px;border:1px solid rgba(255,255,255,.25);
     background:rgba(255,255,255,.06);color:#fff;
     cursor:pointer;font-size:14px;line-height:1;vertical-align:middle;
@@ -1594,6 +1594,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-sale-edit-btn:hover { transform:translateY(-1px); }
 .va-sale-edit-btn .va-ico { width:14px !important;height:14px !important; }
+.va-user-listings-table td .va-sale-edit-btn { flex-shrink:0; }
 .va-sale-edit-btn--active {
     border-color:rgba(255,0,0,.55);
     background:rgba(255,0,0,.18);
