@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #227 (Végső social meta kimenet felülírás)
+
+### Mit csinaltunk [x]
+- [x] A listing oldalaknál output buffer alapú végső HTML social meta felülírás került be
+- [x] Célzottan cserélve: `og:title`, `twitter:title`, `og:description`, `twitter:description`
+- [x] A social leírás most már tartalmazza az árat és aktív akciónál az akciós árat is
+- [x] Ezzel a későbbi plugin/meta felülírások (pl. Rank Math) is megkerülhetők a végső kimenetben
+- [x] Root SEO fájl szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+A hirdetésoldal végső HTML-je most már kényszerítve tartalmazza az `Eladó | Ár` / `Akciós ár` social meta adatokat, így a Facebook scraper ezt kell hogy lássa.
+
+---
+
 ## 2026. 05. 07. – Session #226 (CookieYes vizuális redesign)
 
 ### Mit csinaltunk [x]
