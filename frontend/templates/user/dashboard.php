@@ -522,10 +522,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <del style="color:rgba(255,255,255,.4);font-size:12px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></del><br>
                                 <span style="color:#ff3030;font-weight:700;"><?php echo esc_html( number_format( $l_sale_price, 0, ',', ' ' ) . ' Ft' ); ?> <span style="font-size:10px;background:rgba(255,0,0,.2);border:1px solid rgba(255,0,0,.4);border-radius:4px;padding:1px 5px;">AKCIÓ</span></span>
                                 <?php if ( $l_sale_end ): ?><br><span style="font-size:10px;color:rgba(255,255,255,.35);">–<?php echo esc_html( $l_sale_end ); ?></span><?php endif; ?>
-                                <button class="va-sale-edit-btn va-sale-edit-btn--active" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Akciós ár szerkesztése">✎</button>
+                                <button class="va-sale-edit-btn va-sale-edit-btn--active" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-normal-price="<?php echo esc_attr( (string) floatval( $price ) ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Ár szerkesztése">✎</button>
                             <?php else: ?>
                                 <?php echo esc_html( va_format_price( $price, $p_type ) ); ?>
-                                <button class="va-sale-edit-btn va-sale-edit-btn--idle" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="" data-sale-end="" title="Akciós ár beállítása">✎</button>
+                                <button class="va-sale-edit-btn va-sale-edit-btn--idle" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-normal-price="<?php echo esc_attr( (string) floatval( $price ) ); ?>" data-sale-price="" data-sale-end="" title="Ár szerkesztése">✎</button>
                             <?php endif; ?>
                         </td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
@@ -855,8 +855,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
 <div class="va-sale-modal-overlay" id="va-sale-modal-overlay" role="dialog" aria-modal="true" aria-label="Akciós ár beállítása">
     <div class="va-sale-modal">
-        <h3>Akciós ár szerkesztése</h3>
+        <h3>Árak szerkesztése</h3>
         <input type="hidden" id="va-sale-modal-post-id">
+        <label>Normál ár (Ft)</label>
+        <input type="number" id="va-sale-modal-normal-price" min="0" placeholder="pl. 2500000">
         <label>Akciós ár (Ft) — 0 = törlés</label>
         <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
         <label>Akció vége (opcionális)</label>
@@ -1810,32 +1812,42 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     /* ── Sale price modal edit ── */
     var saleOverlay = document.getElementById('va-sale-modal-overlay');
     var salePostId  = document.getElementById('va-sale-modal-post-id');
+    var saleNormal  = document.getElementById('va-sale-modal-normal-price');
     var salePrice   = document.getElementById('va-sale-modal-price');
     var saleEnd     = document.getElementById('va-sale-modal-end');
     var saleSaveBtn = document.getElementById('va-sale-modal-save');
     var saleRemBtn  = document.getElementById('va-sale-modal-remove');
     var saleCancel  = document.getElementById('va-sale-modal-cancel');
 
-    function openSaleModal(postId, curPrice, curEnd) {
+    function openSaleModal(postId, curNormal, curSale, curEnd) {
         if (!saleOverlay) return;
         salePostId.value = postId || '';
-        salePrice.value  = curPrice || '';
+        saleNormal.value = curNormal || '';
+        salePrice.value  = curSale || '';
         saleEnd.value    = curEnd || '';
         saleOverlay.classList.add('open');
-        if (salePrice) salePrice.focus();
+        if (saleNormal) saleNormal.focus();
     }
     function closeSaleModal() {
         if (saleOverlay) saleOverlay.classList.remove('open');
         if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; }
     }
 
-    function saveSalePrice(postId, price, endDate) {
+    function saveSalePrice(postId, normalPrice, salePriceValue, endDate) {
         if (!postId) return;
+        var normalPriceNum = parseFloat(normalPrice || 0);
+        if (isNaN(normalPriceNum) || normalPriceNum < 0) {
+            alert('Normál ár nem lehet negatív.');
+            return;
+        }
         var saleEndNorm = normalizeIsoDateText(endDate);
         if (saleEndNorm === null) { alert('Akció vége dátum formátum: YYYY-MM-DD'); return; }
         var params = new URLSearchParams({
             action: 'va_set_sale_price', nonce: _nonce,
-            post_id: postId, sale_price: price, sale_end: saleEndNorm || ''
+            post_id: postId,
+            normal_price: normalPriceNum,
+            sale_price: salePriceValue,
+            sale_end: saleEndNorm || ''
         });
         if (saleSaveBtn) { saleSaveBtn.disabled = true; saleSaveBtn.textContent = 'Mentés...'; }
         fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
@@ -1856,7 +1868,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
     document.querySelectorAll('.va-sale-edit-btn').forEach(function(btn){
         btn.addEventListener('click', function(){
-            openSaleModal(this.dataset.postId, this.dataset.salePrice, this.dataset.saleEnd);
+            openSaleModal(this.dataset.postId, this.dataset.normalPrice, this.dataset.salePrice, this.dataset.saleEnd);
         });
     });
 
@@ -1868,13 +1880,23 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     }
     if (saleSaveBtn) {
         saleSaveBtn.addEventListener('click', function(){
-            saveSalePrice(salePostId ? salePostId.value : '', salePrice ? salePrice.value : 0, saleEnd ? saleEnd.value : '');
+            saveSalePrice(
+                salePostId ? salePostId.value : '',
+                saleNormal ? saleNormal.value : 0,
+                salePrice ? salePrice.value : 0,
+                saleEnd ? saleEnd.value : ''
+            );
         });
     }
     if (saleRemBtn) {
         saleRemBtn.addEventListener('click', function(){
             if (!confirm('Törlöd az akciós árat?')) return;
-            saveSalePrice(salePostId ? salePostId.value : '', 0, '');
+            saveSalePrice(
+                salePostId ? salePostId.value : '',
+                saleNormal ? saleNormal.value : 0,
+                0,
+                ''
+            );
         });
     }
 
