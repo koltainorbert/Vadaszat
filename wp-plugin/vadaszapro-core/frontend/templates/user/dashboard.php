@@ -863,6 +863,15 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
         <label>Akció vége (opcionális)</label>
         <input type="date" id="va-sale-modal-end" class="va-sale-modal__date-input" placeholder="YYYY-MM-DD">
+        <div class="va-sale-preview" id="va-sale-preview">
+            <div class="va-sale-preview__label">Előnézet</div>
+            <div class="va-sale-preview__prices">
+                <span class="va-sale-preview__old" id="va-sale-preview-old"></span>
+                <span class="va-sale-preview__new" id="va-sale-preview-new"></span>
+                <span class="va-sale-preview__badge" id="va-sale-preview-badge" style="display:none;">AKCIÓ</span>
+            </div>
+            <div class="va-sale-preview__meta" id="va-sale-preview-meta"></div>
+        </div>
         <div class="va-sale-modal__actions">
             <button class="va-sale-modal__remove" id="va-sale-modal-remove">Akció törlése</button>
             <button class="va-sale-modal__cancel" id="va-sale-modal-cancel">Mégse</button>
@@ -1435,6 +1444,52 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     filter:invert(1) brightness(1.25);
     opacity:.9;
 }
+.va-sale-preview {
+    margin-top:10px;
+    padding:10px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.03);
+}
+.va-sale-preview__label {
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,.55);
+    margin-bottom:4px;
+}
+.va-sale-preview__prices {
+    display:flex;
+    align-items:center;
+    gap:6px;
+    flex-wrap:wrap;
+}
+.va-sale-preview__old {
+    color:rgba(255,255,255,.45);
+    text-decoration:line-through;
+    font-size:12px;
+}
+.va-sale-preview__new {
+    color:#fff;
+    font-size:14px;
+    font-weight:800;
+}
+.va-sale-preview__badge {
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:.05em;
+    padding:1px 5px;
+    border-radius:4px;
+    border:1px solid rgba(255,0,0,.45);
+    background:rgba(255,0,0,.2);
+    color:#ff8e8e;
+}
+.va-sale-preview__meta {
+    margin-top:4px;
+    font-size:11px;
+    color:rgba(255,255,255,.45);
+}
 .va-sale-modal__actions {
     display:flex;
     align-items:center;
@@ -1815,9 +1870,39 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     var saleNormal  = document.getElementById('va-sale-modal-normal-price');
     var salePrice   = document.getElementById('va-sale-modal-price');
     var saleEnd     = document.getElementById('va-sale-modal-end');
+    var salePreviewOld   = document.getElementById('va-sale-preview-old');
+    var salePreviewNew   = document.getElementById('va-sale-preview-new');
+    var salePreviewBadge = document.getElementById('va-sale-preview-badge');
+    var salePreviewMeta  = document.getElementById('va-sale-preview-meta');
     var saleSaveBtn = document.getElementById('va-sale-modal-save');
     var saleRemBtn  = document.getElementById('va-sale-modal-remove');
     var saleCancel  = document.getElementById('va-sale-modal-cancel');
+
+    function fmtFt(value) {
+        var n = parseFloat(value || 0);
+        if (isNaN(n) || n <= 0) return '-';
+        return n.toLocaleString('hu-HU') + ' Ft';
+    }
+
+    function refreshSalePreview() {
+        if (!salePreviewNew) return;
+        var normal = parseFloat(saleNormal && saleNormal.value ? saleNormal.value : 0);
+        var sale   = parseFloat(salePrice && salePrice.value ? salePrice.value : 0);
+        var endVal = saleEnd ? saleEnd.value : '';
+        var hasSale = !isNaN(sale) && sale > 0;
+
+        if (hasSale) {
+            if (salePreviewOld) salePreviewOld.textContent = fmtFt(normal);
+            if (salePreviewNew) salePreviewNew.textContent = fmtFt(sale);
+            if (salePreviewBadge) salePreviewBadge.style.display = 'inline-flex';
+            if (salePreviewMeta) salePreviewMeta.textContent = endVal ? ('Akció vége: ' + endVal) : 'Akció vége nincs beállítva';
+        } else {
+            if (salePreviewOld) salePreviewOld.textContent = '';
+            if (salePreviewNew) salePreviewNew.textContent = fmtFt(normal);
+            if (salePreviewBadge) salePreviewBadge.style.display = 'none';
+            if (salePreviewMeta) salePreviewMeta.textContent = 'Nincs aktív akciós ár';
+        }
+    }
 
     function openSaleModal(postId, curNormal, curSale, curEnd) {
         if (!saleOverlay) return;
@@ -1825,6 +1910,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         saleNormal.value = curNormal || '';
         salePrice.value  = curSale || '';
         saleEnd.value    = curEnd || '';
+        refreshSalePreview();
         saleOverlay.classList.add('open');
         if (saleNormal) saleNormal.focus();
     }
@@ -1899,6 +1985,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
             );
         });
     }
+    if (saleNormal) saleNormal.addEventListener('input', refreshSalePreview);
+    if (salePrice) salePrice.addEventListener('input', refreshSalePreview);
+    if (saleEnd) saleEnd.addEventListener('change', refreshSalePreview);
 
 })();
 </script>
