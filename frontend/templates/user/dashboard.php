@@ -37,6 +37,7 @@ $avatar_id    = (int) get_user_meta( $user->ID, 'va_profile_avatar_id', true );
 $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail' ) : '';
 
 $va_welcome_preview_remaining = (int) get_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', true );
+$va_welcome_preview_armed = false;
 if (
     $_SERVER['REQUEST_METHOD'] === 'POST'
     && isset( $_POST['va_action'] )
@@ -44,6 +45,7 @@ if (
     && isset( $_POST['va_welcome_preview_nonce'] )
     && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_welcome_preview_nonce'] ) ), 'va_welcome_preview_10' )
 ) {
+    $va_welcome_preview_armed = true;
     $va_welcome_preview_remaining = 10;
     update_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', $va_welcome_preview_remaining );
 }
@@ -53,11 +55,13 @@ $va_last_welcome_seen = (string) get_user_meta( $user->ID, 'va_daily_welcome_see
 $va_show_daily_welcome = $va_last_welcome_seen !== $va_today_local;
 if ( $va_welcome_preview_remaining > 0 ) {
     $va_show_daily_welcome = true;
-    $va_welcome_preview_remaining--;
-    if ( $va_welcome_preview_remaining > 0 ) {
-        update_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', $va_welcome_preview_remaining );
-    } else {
-        delete_user_meta( $user->ID, 'va_daily_welcome_preview_remaining' );
+    if ( ! $va_welcome_preview_armed ) {
+        $va_welcome_preview_remaining--;
+        if ( $va_welcome_preview_remaining > 0 ) {
+            update_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', $va_welcome_preview_remaining );
+        } else {
+            delete_user_meta( $user->ID, 'va_daily_welcome_preview_remaining' );
+        }
     }
 } elseif ( $va_show_daily_welcome ) {
     update_user_meta( $user->ID, 'va_daily_welcome_seen', $va_today_local );
@@ -1413,6 +1417,38 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-profile-avatar-editor__fields { flex:1;display:flex;flex-direction:column;gap:8px; }
 .va-profile-avatar-editor__remove { font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:7px; }
 
+.va-dashboard__title-actions {
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+.va-welcome-preview-form {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.va-welcome-preview-btn {
+    border:1px solid rgba(126,226,255,.32) !important;
+    background:linear-gradient(180deg, rgba(126,226,255,.14), rgba(126,226,255,.08)) !important;
+    color:#fff !important;
+}
+.va-welcome-preview-btn:hover { filter:brightness(1.08); }
+.va-welcome-preview-note {
+    display:inline-flex;
+    align-items:center;
+    min-height:32px;
+    padding:0 10px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.05);
+    color:rgba(255,255,255,.78);
+    font-size:11px;
+    font-weight:600;
+}
+
 /* ── CRM stat blokk ── */
 .va-crm {
     margin:0 0 20px;
@@ -1995,6 +2031,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     .va-crm__panels { grid-template-columns:1fr; }
 }
 @media (max-width: 640px) {
+    .va-dashboard__title-actions { justify-content:flex-start; }
     .va-crm { padding:14px; border-radius:18px; }
     .va-crm__head h3 { font-size:20px; }
     .va-crm__screen { padding:14px; min-height:auto; }
