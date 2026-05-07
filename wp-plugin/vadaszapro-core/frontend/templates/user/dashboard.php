@@ -154,6 +154,22 @@ $crm_flow_scaled = array_map(
     },
     $crm_flow_raw
 );
+$crm_chart_labels = [ 'H', 'K', 'Sze', 'Cs', 'P', 'Szo', 'V' ];
+$crm_chart_line_points = [];
+$crm_chart_area_points = [];
+$crm_chart_dots = [];
+foreach ( $crm_flow_scaled as $idx => $val ) {
+    $x = 18 + ( $idx * 44 );
+    $y = 112 - ( ( $val / 100 ) * 76 );
+    $crm_chart_line_points[] = round( $x, 1 ) . ',' . round( $y, 1 );
+    $crm_chart_area_points[] = round( $x, 1 ) . ' ' . round( $y, 1 );
+    $crm_chart_dots[] = [
+        'x' => round( $x, 1 ),
+        'y' => round( $y, 1 ),
+    ];
+}
+$crm_chart_polyline = implode( ' ', $crm_chart_line_points );
+$crm_chart_area     = 'M 18 112 L ' . implode( ' L ', $crm_chart_area_points ) . ' L 282 112 Z';
 
 $crm_top_title = $crm_top_rows ? (string) $crm_top_rows[0]['title'] : 'Nincs adat';
 $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
@@ -309,98 +325,170 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
                 <section class="va-crm" aria-label="Hirdetés statisztika">
                     <div class="va-crm__head">
-                        <h3>Teljesitmeny iranyitopult</h3>
-                        <p>Valid megtekintes + publikacios allapot + aktivitas egy helyen</p>
+                        <div>
+                            <h3>Piaci vezérlőpult</h3>
+                            <p>Valós megtekintések, állapotok és aktivitási minták egyetlen prémium nézetben.</p>
+                        </div>
+                        <div class="va-crm__head-pills">
+                            <span class="va-crm__head-pill"><?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?> aktív</span>
+                            <span class="va-crm__head-pill"><?php echo esc_html( number_format( $crm_avg_views, 1, ',', ' ' ) ); ?> / hirdetés</span>
+                            <span class="va-crm__head-pill"><?php echo esc_html( $crm_plan_limit > 0 ? ( $crm_plan_used . '/' . $crm_plan_limit . ' csomag' ) : 'nincs limit' ); ?></span>
+                        </div>
                     </div>
 
                     <div class="va-crm__hero">
-                        <article class="va-crm__hero-chart">
-                            <div class="va-crm__hero-title">Piaci mozgas</div>
-                            <svg viewBox="0 0 320 130" class="va-crm__linechart" role="img" aria-label="Aktivitasi trend grafikon">
+                        <article class="va-crm__screen">
+                            <div class="va-crm__screen-top">
+                                <div>
+                                    <div class="va-crm__eyebrow">Előrejelző nézet</div>
+                                    <h4>Piaci mozgás</h4>
+                                </div>
+                                <div class="va-crm__switches" aria-hidden="true">
+                                    <span class="is-active">7 nap</span>
+                                    <span>30 nap</span>
+                                    <span>Élő</span>
+                                </div>
+                            </div>
+
+                            <div class="va-crm__screen-stats">
+                                <div class="va-crm__screen-stat">
+                                    <span>Megtekintés</span>
+                                    <strong><?php echo esc_html( number_format( $crm_total_views, 0, ',', ' ' ) ); ?></strong>
+                                </div>
+                                <div class="va-crm__screen-stat">
+                                    <span>Átlagár</span>
+                                    <strong><?php echo esc_html( number_format( $crm_avg_price, 0, ',', ' ' ) ); ?> Ft</strong>
+                                </div>
+                                <div class="va-crm__screen-stat">
+                                    <span>Top címke</span>
+                                    <strong><?php echo esc_html( number_format( $crm_featured_count + $crm_boosted_count, 0, ',', ' ' ) ); ?></strong>
+                                </div>
+                            </div>
+
+                            <div class="va-crm__chart-shell">
+                            <svg viewBox="0 0 320 130" class="va-crm__linechart" role="img" aria-label="Aktivitási trend grafikon">
                                 <defs>
-                                    <linearGradient id="vaLineGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="rgba(84,182,255,.34)"/>
-                                        <stop offset="100%" stop-color="rgba(84,182,255,0)"/>
+                                    <linearGradient id="vaChartAreaGradient" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#77dbff" stop-opacity="0.34"/>
+                                        <stop offset="100%" stop-color="#77dbff" stop-opacity="0"/>
+                                    </linearGradient>
+                                    <linearGradient id="vaChartLineGradient" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#6edbff"/>
+                                        <stop offset="55%" stop-color="#70f1cf"/>
+                                        <stop offset="100%" stop-color="#ffd47a"/>
                                     </linearGradient>
                                 </defs>
-                                <path class="va-crm__line-area" d="M16 110 L54 84 L92 90 L130 60 L168 66 L206 38 L244 46 L282 24 L282 110 Z" fill="url(#vaLineGrad)"></path>
-                                <polyline class="va-crm__line-stroke" points="16,110 54,84 92,90 130,60 168,66 206,38 244,46 282,24" fill="none"></polyline>
+                                <g class="va-crm__gridlines" aria-hidden="true">
+                                    <line x1="18" y1="24" x2="282" y2="24" />
+                                    <line x1="18" y1="52" x2="282" y2="52" />
+                                    <line x1="18" y1="80" x2="282" y2="80" />
+                                    <line x1="18" y1="108" x2="282" y2="108" />
+                                </g>
+                                <path class="va-crm__line-area" d="<?php echo esc_attr( $crm_chart_area ); ?>" fill="url(#vaChartAreaGradient)"></path>
+                                <polyline class="va-crm__line-stroke" points="<?php echo esc_attr( $crm_chart_polyline ); ?>" fill="none"></polyline>
                                 <g class="va-crm__line-points" fill="#fff">
-                                    <circle cx="16" cy="110" r="2.8"/>
-                                    <circle cx="54" cy="84" r="2.8"/>
-                                    <circle cx="92" cy="90" r="2.8"/>
-                                    <circle cx="130" cy="60" r="2.8"/>
-                                    <circle cx="168" cy="66" r="2.8"/>
-                                    <circle cx="206" cy="38" r="2.8"/>
-                                    <circle cx="244" cy="46" r="2.8"/>
-                                    <circle cx="282" cy="24" r="2.8"/>
+                                    <?php foreach ( $crm_chart_dots as $dot ) : ?>
+                                    <circle cx="<?php echo esc_attr( (string) $dot['x'] ); ?>" cy="<?php echo esc_attr( (string) $dot['y'] ); ?>" r="3"></circle>
+                                    <?php endforeach; ?>
                                 </g>
                             </svg>
-                            <div class="va-crm__flow-bars" aria-hidden="true">
-                                <?php foreach ( $crm_flow_scaled as $h ): ?>
-                                <span style="height:<?php echo esc_attr( $h ); ?>%"></span>
+                            </div>
+
+                            <div class="va-crm__chart-foot">
+                                <div class="va-crm__flow-bars" aria-hidden="true">
+                                <?php foreach ( $crm_flow_scaled as $idx => $h ): ?>
+                                <span style="height:<?php echo esc_attr( $h ); ?>%" data-label="<?php echo esc_attr( $crm_chart_labels[ $idx ] ?? '' ); ?>"></span>
                                 <?php endforeach; ?>
+                                </div>
+                                <div class="va-crm__chart-labels">
+                                    <?php foreach ( $crm_chart_labels as $label ) : ?>
+                                    <span><?php echo esc_html( $label ); ?></span>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
                         </article>
 
-                        <article class="va-crm__hero-metrics">
-                            <div class="va-crm__ring va-crm__ring--a" style="--pc:<?php echo esc_attr( $crm_active_rate_pc ); ?>;">
-                                <span><?php echo esc_html( $crm_active_rate_pc ); ?>%</span>
-                                <small>Aktiv arany</small>
-                            </div>
-                            <div class="va-crm__ring va-crm__ring--b" style="--pc:<?php echo esc_attr( $crm_momentum_pc ); ?>;">
-                                <span><?php echo esc_html( $crm_momentum_pc ); ?>%</span>
-                                <small>Heti tempo</small>
-                            </div>
-                            <div class="va-crm__ring va-crm__ring--c" style="--pc:<?php echo esc_attr( $crm_engagement_pc ); ?>;">
-                                <span><?php echo esc_html( $crm_engagement_pc ); ?>%</span>
-                                <small>Erdeklodes</small>
-                            </div>
-                        </article>
+                        <aside class="va-crm__signal-stack">
+                            <article class="va-crm__signal-card va-crm__signal-card--cyan">
+                                <div class="va-crm__signal-head">
+                                    <span>Aktív arány</span>
+                                    <strong><?php echo esc_html( $crm_active_rate_pc ); ?>%</strong>
+                                </div>
+                                <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_active_rate_pc ) ); ?>%"></span></div>
+                                <small><?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?> aktív a <?php echo esc_html( number_format( $crm_total_listings, 0, ',', ' ' ) ); ?> hirdetésből</small>
+                            </article>
+
+                            <article class="va-crm__signal-card va-crm__signal-card--mint">
+                                <div class="va-crm__signal-head">
+                                    <span>Heti tempó</span>
+                                    <strong><?php echo esc_html( $crm_momentum_pc ); ?>%</strong>
+                                </div>
+                                <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_momentum_pc ) ); ?>%"></span></div>
+                                <small><?php echo esc_html( number_format( $crm_last7_count, 0, ',', ' ' ) ); ?> új aktivitás az utóbbi 7 napban</small>
+                            </article>
+
+                            <article class="va-crm__signal-card va-crm__signal-card--amber">
+                                <div class="va-crm__signal-head">
+                                    <span>Érdeklődés</span>
+                                    <strong><?php echo esc_html( $crm_engagement_pc ); ?>%</strong>
+                                </div>
+                                <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_engagement_pc ) ); ?>%"></span></div>
+                                <small><?php echo esc_html( number_format( $crm_watch_count + $crm_bid_count, 0, ',', ' ' ) ); ?> kedvenc és licit összesen</small>
+                            </article>
+
+                            <article class="va-crm__signal-card va-crm__signal-card--violet">
+                                <div class="va-crm__signal-head">
+                                    <span><?php echo esc_html( $crm_plan_limit > 0 ? 'Csomagkihasználtság' : 'Kiemelt aktivitás' ); ?></span>
+                                    <strong><?php echo esc_html( $crm_plan_limit > 0 ? $crm_plan_usage_pc . '%' : number_format( $crm_featured_count + $crm_boosted_count + $crm_newpill_count, 0, ',', ' ' ) ); ?></strong>
+                                </div>
+                                <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_plan_limit > 0 ? $crm_plan_usage_pc : min( 100, 20 + ( $crm_featured_count + $crm_boosted_count + $crm_newpill_count ) * 12 ) ) ); ?>%"></span></div>
+                                <small><?php echo esc_html( $crm_plan_limit > 0 ? ( $crm_plan_used . ' / ' . $crm_plan_limit . ' hely felhasználva' ) : ( 'Kiemelt: ' . $crm_featured_count . ' | Boost: ' . $crm_boosted_count ) ); ?></small>
+                            </article>
+                        </aside>
                     </div>
 
                     <div class="va-crm__kpis">
                         <article class="va-crm__kpi">
-                            <span class="va-crm__kpi-label">Osszes hirdetes</span>
+                            <span class="va-crm__kpi-label">Összes hirdetés</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_listings, 0, ',', ' ' ) ); ?></strong>
-                            <small class="va-crm__kpi-sub">Aktiv: <?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?></small>
+                            <small class="va-crm__kpi-sub">Aktív: <?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?></small>
                             <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:30%"></span><span style="height:48%"></span><span style="height:36%"></span><span style="height:62%"></span><span style="height:58%"></span><span style="height:74%"></span><span style="height:66%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
-                            <span class="va-crm__kpi-label">Osszes valid megtekintes</span>
+                            <span class="va-crm__kpi-label">Összes megtekintés</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_views, 0, ',', ' ' ) ); ?></strong>
-                            <small class="va-crm__kpi-sub">Atlag/hirdetes: <?php echo esc_html( number_format( $crm_avg_views, 1, ',', ' ' ) ); ?></small>
+                            <small class="va-crm__kpi-sub">Átlag / hirdetés: <?php echo esc_html( number_format( $crm_avg_views, 1, ',', ' ' ) ); ?></small>
                             <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:24%"></span><span style="height:39%"></span><span style="height:44%"></span><span style="height:52%"></span><span style="height:70%"></span><span style="height:64%"></span><span style="height:80%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
-                            <span class="va-crm__kpi-label">Atlagos ar</span>
+                            <span class="va-crm__kpi-label">Átlagár</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_avg_price, 0, ',', ' ' ) ); ?> Ft</strong>
-                            <small class="va-crm__kpi-sub">Szamolt hirdetes: <?php echo esc_html( number_format( $crm_priced_count, 0, ',', ' ' ) ); ?></small>
+                            <small class="va-crm__kpi-sub">Számolt hirdetés: <?php echo esc_html( number_format( $crm_priced_count, 0, ',', ' ' ) ); ?></small>
                             <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:55%"></span><span style="height:62%"></span><span style="height:58%"></span><span style="height:50%"></span><span style="height:68%"></span><span style="height:61%"></span><span style="height:72%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
-                            <span class="va-crm__kpi-label">Top hirdetes</span>
+                            <span class="va-crm__kpi-label">Top hirdetés</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_top_views, 0, ',', ' ' ) ); ?></strong>
                             <small class="va-crm__kpi-sub"><?php echo esc_html( wp_trim_words( $crm_top_title, 6, '...' ) ); ?></small>
                             <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:16%"></span><span style="height:32%"></span><span style="height:49%"></span><span style="height:74%"></span><span style="height:63%"></span><span style="height:77%"></span><span style="height:88%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
-                            <span class="va-crm__kpi-label">Uj aktivitás</span>
+                            <span class="va-crm__kpi-label">Friss aktivitás</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_last7_count, 0, ',', ' ' ) ); ?> / 7 nap</strong>
                             <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_last30_count, 0, ',', ' ' ) ); ?> / 30 nap</small>
                             <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:26%"></span><span style="height:36%"></span><span style="height:41%"></span><span style="height:57%"></span><span style="height:48%"></span><span style="height:69%"></span><span style="height:75%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
-                            <span class="va-crm__kpi-label">Kapcsolodo mutatok</span>
+                            <span class="va-crm__kpi-label">Figyelők és licitek</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_watch_count, 0, ',', ' ' ) ); ?> kedvenc</strong>
                             <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?> licit | <?php echo esc_html( $crm_featured_count ); ?> kiemelt</small>
                             <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:22%"></span><span style="height:35%"></span><span style="height:58%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:56%"></span><span style="height:71%"></span></div>
                         </article>
                     </div>
 
-                    <div class="va-crm__panels">
+                    <div class="va-crm__panels va-crm__panels--triple">
                         <article class="va-crm__panel">
-                            <h4>Statusz megoszlas</h4>
+                            <h4>Státusz megoszlás</h4>
                             <div class="va-crm__status-list">
                                 <?php foreach ( $crm_status_counts as $label => $count ):
                                     $pc = $crm_total_listings > 0 ? ( $count / $crm_total_listings ) * 100 : 0;
@@ -427,7 +515,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         </article>
 
                         <article class="va-crm__panel">
-                            <h4>Top 5 hirdetes (valid megtekintes)</h4>
+                            <h4>Top 5 hirdetés</h4>
                             <?php if ( $crm_top_rows ): ?>
                             <ol class="va-crm__top-list">
                                 <?php foreach ( $crm_top_rows as $row ): ?>
@@ -438,13 +526,26 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <?php endforeach; ?>
                             </ol>
                             <?php else: ?>
-                            <p class="va-crm__empty">Meg nincs eleg adat a toplistahoz.</p>
+                            <p class="va-crm__empty">Még nincs elég adat a toplistához.</p>
                             <?php endif; ?>
+
+                            <div class="va-crm__panel-note">A lista a valós megtekintések alapján rendezett.</div>
+                        </article>
+
+                        <article class="va-crm__panel">
+                            <h4>Jelzők és kiemelések</h4>
+                            <div class="va-crm__metric-list">
+                                <div class="va-crm__metric-row"><span>Kiemelt hirdetések</span><strong><?php echo esc_html( number_format( $crm_featured_count, 0, ',', ' ' ) ); ?></strong></div>
+                                <div class="va-crm__metric-row"><span>Boost aktív</span><strong><?php echo esc_html( number_format( $crm_boosted_count, 0, ',', ' ' ) ); ?></strong></div>
+                                <div class="va-crm__metric-row"><span>Új címke aktív</span><strong><?php echo esc_html( number_format( $crm_newpill_count, 0, ',', ' ' ) ); ?></strong></div>
+                                <div class="va-crm__metric-row"><span>Kedvencek</span><strong><?php echo esc_html( number_format( $crm_watch_count, 0, ',', ' ' ) ); ?></strong></div>
+                                <div class="va-crm__metric-row"><span>Licit aktivitás</span><strong><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?></strong></div>
+                            </div>
 
                             <div class="va-crm__badges">
                                 <span>Kiemelt: <strong><?php echo esc_html( number_format( $crm_featured_count, 0, ',', ' ' ) ); ?></strong></span>
-                                <span>Boost aktiv: <strong><?php echo esc_html( number_format( $crm_boosted_count, 0, ',', ' ' ) ); ?></strong></span>
-                                <span>Uj pill aktiv: <strong><?php echo esc_html( number_format( $crm_newpill_count, 0, ',', ' ' ) ); ?></strong></span>
+                                <span>Boost: <strong><?php echo esc_html( number_format( $crm_boosted_count, 0, ',', ' ' ) ); ?></strong></span>
+                                <span>Új: <strong><?php echo esc_html( number_format( $crm_newpill_count, 0, ',', ' ' ) ); ?></strong></span>
                             </div>
                         </article>
                     </div>
@@ -1284,76 +1385,180 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 /* ── CRM stat blokk ── */
 .va-crm {
     margin:0 0 20px;
-    padding:16px;
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:18px;
+    padding:18px;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:24px;
     background:
-        radial-gradient(circle at 8% -16%, rgba(70,150,255,.26), transparent 44%),
-        radial-gradient(circle at 92% 108%, rgba(46,220,170,.18), transparent 42%),
-        radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px),
-        rgb(6,6,6);
-    background-size: auto, auto, 14px 14px, auto;
-    box-shadow: 0 18px 42px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
-    font-family: "Space Grotesk", "Rajdhani", "Segoe UI", sans-serif;
+        radial-gradient(circle at 0% 0%, rgba(112,193,255,.16), transparent 30%),
+        radial-gradient(circle at 100% 0%, rgba(173,123,255,.14), transparent 28%),
+        radial-gradient(circle at 100% 100%, rgba(79,232,200,.12), transparent 30%),
+        linear-gradient(180deg, rgba(15,16,24,.98), rgba(7,8,14,.98));
+    box-shadow: 0 24px 80px rgba(0,0,0,.42), inset 0 1px 0 rgba(255,255,255,.08);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    font-family: "Manrope", "Space Grotesk", "Segoe UI", sans-serif;
 }
 .va-crm__head {
     display:flex;
-    align-items:flex-end;
+    align-items:flex-start;
     justify-content:space-between;
-    gap:10px;
-    padding-bottom:10px;
-    border-bottom:1px solid rgba(255,255,255,.10);
+    gap:14px;
+    padding-bottom:14px;
+    border-bottom:1px solid rgba(255,255,255,.08);
 }
 .va-crm__head h3 {
     margin:0;
     color:#fff;
-    font-size:17px;
-    letter-spacing:.03em;
-    text-transform:uppercase;
+    font-size:24px;
+    font-weight:700;
+    letter-spacing:-.02em;
 }
 .va-crm__head p {
     margin:4px 0 0;
-    color:rgba(255,255,255,.74);
-    font-size:12px;
+    color:rgba(255,255,255,.66);
+    font-size:13px;
+    max-width:640px;
+}
+.va-crm__head-pills {
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.va-crm__head-pill {
+    display:inline-flex;
+    align-items:center;
+    height:30px;
+    padding:0 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.1);
+    color:rgba(255,255,255,.84);
+    font-size:11px;
+    font-weight:600;
 }
 .va-crm__hero {
-    margin-top:14px;
+    margin-top:16px;
     display:grid;
-    grid-template-columns: 1.65fr 1fr;
+    grid-template-columns:minmax(0,1.7fr) minmax(280px,.9fr);
+    gap:14px;
+}
+.va-crm__screen,
+.va-crm__signal-card,
+.va-crm__kpi,
+.va-crm__panel {
+    background:linear-gradient(180deg, rgba(255,255,255,.055), rgba(255,255,255,.022));
+    border:1px solid rgba(255,255,255,.09);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+.va-crm__screen {
+    border-radius:24px;
+    padding:16px;
+    min-height:340px;
+    position:relative;
+    overflow:hidden;
+}
+.va-crm__screen::before {
+    content:"";
+    position:absolute;
+    inset:auto -40px -40px auto;
+    width:180px;
+    height:180px;
+    background:radial-gradient(circle, rgba(123,148,255,.16), transparent 68%);
+    pointer-events:none;
+}
+.va-crm__screen-top {
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
     gap:12px;
 }
-.va-crm__hero-chart,
-.va-crm__hero-metrics {
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;
-    background:linear-gradient(165deg, rgba(18,18,24,.95), rgba(8,8,12,.9));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
-}
-.va-crm__hero-chart {
-    padding:10px 12px 12px;
-}
-.va-crm__hero-title {
-    display:inline-flex;
-    font-size:10px;
+.va-crm__eyebrow {
+    font-size:11px;
     text-transform:uppercase;
     letter-spacing:.12em;
-    color:rgba(255,255,255,.85);
-    border:1px solid rgba(255,255,255,.24);
+    color:#8ed8ff;
+    margin-bottom:8px;
+}
+.va-crm__screen-top h4 {
+    margin:0;
+    color:#fff;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:-.02em;
+}
+.va-crm__switches {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.va-crm__switches span {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    height:30px;
+    padding:0 12px;
     border-radius:999px;
-    padding:4px 8px;
+    color:rgba(255,255,255,.62);
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.06);
+    font-size:11px;
+}
+.va-crm__switches span.is-active {
+    color:#081019;
+    background:linear-gradient(90deg, #82dbff, #7af1cd);
+    border-color:transparent;
+    font-weight:700;
+}
+.va-crm__screen-stats {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+    margin-top:14px;
+}
+.va-crm__screen-stat {
+    padding:12px 12px 10px;
+    border-radius:16px;
+    background:rgba(255,255,255,.04);
+    border:1px solid rgba(255,255,255,.08);
+}
+.va-crm__screen-stat span {
+    display:block;
+    color:rgba(255,255,255,.58);
+    font-size:11px;
     margin-bottom:6px;
+}
+.va-crm__screen-stat strong {
+    display:block;
+    color:#fff;
+    font-size:20px;
+    font-weight:700;
+}
+.va-crm__chart-shell {
+    margin-top:16px;
+    border-radius:20px;
+    padding:14px 12px 10px;
+    background:linear-gradient(180deg, rgba(10,14,24,.96), rgba(12,12,22,.92));
+    border:1px solid rgba(255,255,255,.08);
 }
 .va-crm__linechart {
     width:100%;
-    height:130px;
+    height:150px;
     display:block;
 }
+.va-crm__gridlines line {
+    stroke:rgba(255,255,255,.09);
+    stroke-width:1;
+    stroke-dasharray:3 5;
+}
 .va-crm__line-stroke {
-    stroke:#66d1ff;
-    stroke-width:2;
+    stroke:url(#vaChartLineGradient);
+    stroke-width:2.3;
     stroke-linecap:round;
     stroke-linejoin:round;
-    filter: drop-shadow(0 0 6px rgba(84,182,255,.3));
+    filter: drop-shadow(0 0 10px rgba(102,209,255,.18));
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
     animation: vaChartDraw 1.2s ease forwards;
@@ -1364,88 +1569,108 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-crm__line-points circle {
     fill:#fff;
-    stroke:#59c6f8;
-    stroke-width:1.4;
+    stroke:#7ee1ff;
+    stroke-width:1.6;
+}
+.va-crm__chart-foot {
+    margin-top:8px;
 }
 .va-crm__flow-bars {
-    margin-top:8px;
     display:grid;
     grid-template-columns: repeat(7, minmax(0,1fr));
     gap:6px;
     align-items:end;
-    height:42px;
+    height:44px;
 }
 .va-crm__flow-bars span {
-    border-radius:4px 4px 2px 2px;
-    background:linear-gradient(180deg, rgba(109,220,255,.9), rgba(77,145,255,.82));
-    box-shadow: 0 0 8px rgba(98,188,255,.24);
+    border-radius:8px 8px 3px 3px;
+    background:linear-gradient(180deg, rgba(122,220,255,.95), rgba(90,137,255,.86));
+    box-shadow: 0 0 12px rgba(98,188,255,.14);
     animation: vaBarPop .55s ease both;
 }
 .va-crm__flow-bars span:nth-child(3n+2) {
-    background:linear-gradient(180deg, rgba(112,244,206,.9), rgba(52,196,161,.84));
-    box-shadow: 0 0 8px rgba(64,220,176,.22);
+    background:linear-gradient(180deg, rgba(126,246,214,.95), rgba(68,204,170,.84));
+    box-shadow: 0 0 12px rgba(64,220,176,.14);
 }
 .va-crm__flow-bars span:nth-child(3n) {
-    background:linear-gradient(180deg, rgba(255,210,112,.9), rgba(255,158,76,.82));
-    box-shadow: 0 0 8px rgba(255,176,94,.2);
+    background:linear-gradient(180deg, rgba(255,216,126,.95), rgba(255,171,95,.84));
+    box-shadow: 0 0 12px rgba(255,176,94,.12);
 }
-.va-crm__hero-metrics {
-    padding:12px;
+.va-crm__chart-labels {
     display:grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
+    grid-template-columns:repeat(7,minmax(0,1fr));
+    gap:6px;
+    margin-top:8px;
+}
+.va-crm__chart-labels span {
+    text-align:center;
+    font-size:10px;
+    color:rgba(255,255,255,.46);
+}
+.va-crm__signal-stack {
+    display:grid;
+    grid-template-columns:1fr;
+    gap:12px;
+}
+.va-crm__signal-card {
+    padding:14px;
+    border-radius:20px;
+}
+.va-crm__signal-head {
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
     gap:10px;
 }
-.va-crm__ring {
-    --ring-track: rgba(255,255,255,.12);
-    --ring-a:#66d1ff;
-    --ring-b:#55e4c5;
-    --ring-c:#ffc977;
-    position:relative;
-    aspect-ratio:1/1;
-    border-radius:50%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    background:
-        radial-gradient(closest-side, rgba(10,10,12,.98) 76%, transparent 77%),
-        conic-gradient(from 180deg, var(--ring-a) calc(var(--pc) * 1%), rgba(255,255,255,.07) 0),
-        conic-gradient(var(--ring-track) 0 100%);
-    border:1px solid rgba(255,255,255,.14);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+.va-crm__signal-head span {
+    color:rgba(255,255,255,.66);
+    font-size:12px;
 }
-.va-crm__ring--b {
-    --ring-a:#56e4c5;
-}
-.va-crm__ring--c {
-    --ring-a:#ffc578;
-}
-.va-crm__ring span {
+.va-crm__signal-head strong {
     color:#fff;
+    font-size:24px;
     font-weight:700;
-    font-size:17px;
-    line-height:1;
+    letter-spacing:-.02em;
 }
-.va-crm__ring small {
-    margin-top:4px;
-    color:rgba(255,255,255,.7);
-    font-size:9px;
-    text-transform:uppercase;
-    letter-spacing:.04em;
-    text-align:center;
+.va-crm__signal-bar {
+    margin-top:12px;
+    height:7px;
+    border-radius:999px;
+    background:rgba(255,255,255,.08);
+    overflow:hidden;
+}
+.va-crm__signal-bar span {
+    display:block;
+    height:100%;
+    border-radius:inherit;
+    background:linear-gradient(90deg, #7fe4ff, #7ff1c7);
+}
+.va-crm__signal-card small {
+    display:block;
+    margin-top:10px;
+    color:rgba(255,255,255,.62);
+    font-size:11px;
+    line-height:1.45;
+}
+.va-crm__signal-card--mint .va-crm__signal-bar span {
+    background:linear-gradient(90deg, #81ffd8, #6fe2ff);
+}
+.va-crm__signal-card--amber .va-crm__signal-bar span {
+    background:linear-gradient(90deg, #ffd586, #ffb174);
+}
+.va-crm__signal-card--violet .va-crm__signal-bar span {
+    background:linear-gradient(90deg, #b99cff, #74cfff);
 }
 .va-crm__kpis {
     margin-top:14px;
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:12px;
+    gap:14px;
 }
 .va-crm__kpi {
     position:relative;
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;
-    padding:12px 12px 11px;
-    background:linear-gradient(160deg, rgba(24,24,30,.94), rgba(10,10,13,.9));
+    border-radius:20px;
+    padding:16px 16px 14px;
     overflow:hidden;
     transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
@@ -1454,62 +1679,63 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     position:absolute;
     inset:0 0 auto 0;
     height:1px;
-    background:linear-gradient(90deg, #66d1ff, #58e2bf, #ffc578);
-    opacity:.65;
+    background:linear-gradient(90deg, rgba(126,226,255,.8), rgba(117,244,210,.7), rgba(255,210,126,.7));
+    opacity:.8;
 }
 .va-crm__kpi::after {
     content:"";
     position:absolute;
     right:10px;
     bottom:10px;
-    width:48px;
-    height:20px;
-    border-radius:7px;
+    width:64px;
+    height:26px;
+    border-radius:10px;
     background:
         repeating-linear-gradient(90deg,
-            rgba(255,255,255,.08) 0 5px,
-            transparent 5px 9px),
-        linear-gradient(180deg, rgba(88,198,255,.16), rgba(88,198,255,0));
-    opacity:.55;
+            rgba(255,255,255,.06) 0 5px,
+            transparent 5px 10px),
+        linear-gradient(180deg, rgba(130,206,255,.12), rgba(130,206,255,0));
+    opacity:.65;
     pointer-events:none;
 }
 .va-crm__kpi:hover {
     transform: translateY(-1px);
-    border-color: rgba(122,206,255,.45);
+    border-color: rgba(143,220,255,.36);
     box-shadow: 0 8px 18px rgba(0,0,0,.25);
 }
 .va-crm__kpi-label {
     display:block;
     font-size:11px;
-    color:rgba(255,255,255,.66);
-    margin-bottom:7px;
-    letter-spacing:.035em;
+    color:rgba(255,255,255,.58);
+    margin-bottom:10px;
+    letter-spacing:.06em;
     text-transform:uppercase;
 }
 .va-crm__kpi-value {
     display:block;
     color:#fff;
-    font-size:20px;
+    font-size:24px;
     font-weight:700;
     line-height:1.08;
-    text-shadow: 0 4px 12px rgba(0,0,0,.24);
+    letter-spacing:-.02em;
+    text-shadow: 0 4px 16px rgba(0,0,0,.18);
 }
 .va-crm__kpi-sub {
     display:block;
-    margin-top:6px;
-    color:rgba(255,255,255,.8);
-    font-size:11px;
+    margin-top:7px;
+    color:rgba(255,255,255,.7);
+    font-size:12px;
 }
 .va-crm__kpi-spark {
-    margin-top:8px;
-    height:26px;
+    margin-top:12px;
+    height:32px;
     display:grid;
     grid-template-columns: repeat(7, minmax(0,1fr));
-    gap:4px;
+    gap:5px;
     align-items:end;
 }
 .va-crm__kpi-spark span {
-    border-radius:3px 3px 2px 2px;
+    border-radius:8px 8px 3px 3px;
     background: linear-gradient(180deg, rgba(115,220,255,.88), rgba(84,156,255,.84));
     opacity:.92;
     transform-origin: bottom;
@@ -1532,41 +1758,41 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     margin-top:14px;
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:12px;
+    gap:14px;
+}
+.va-crm__panels--triple {
+    grid-template-columns:repeat(3,minmax(0,1fr));
 }
 .va-crm__panel {
-    border:1px solid rgba(255,255,255,.12);
-    border-radius:14px;
-    padding:12px;
-    background:linear-gradient(165deg, rgba(20,20,24,.94), rgba(8,8,12,.9));
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+    border-radius:20px;
+    padding:16px;
 }
 .va-crm__panel h4 {
     margin:0 0 10px;
-    font-size:12px;
-    font-weight:800;
+    font-size:13px;
+    font-weight:700;
     color:#fff;
-    letter-spacing:.04em;
+    letter-spacing:.02em;
     text-transform:uppercase;
 }
 .va-crm__status-list {
     display:flex;
     flex-direction:column;
-    gap:9px;
+    gap:10px;
 }
 .va-crm__status-meta {
     display:flex;
     align-items:center;
     justify-content:space-between;
-    font-size:11px;
-    color:rgba(255,255,255,.88);
+    font-size:12px;
+    color:rgba(255,255,255,.82);
 }
 .va-crm__status-meta strong { color:#fff; }
 .va-crm__status-bar {
     width:100%;
     height:8px;
     border-radius:999px;
-    background:rgba(255,255,255,.11);
+    background:rgba(255,255,255,.08);
     overflow:hidden;
     box-shadow: inset 0 1px 2px rgba(0,0,0,.35);
 }
@@ -1574,7 +1800,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:block;
     height:100%;
     border-radius:inherit;
-    background:linear-gradient(90deg,#ff2121,#ff4d1f 45%,#ff9d1d);
+    background:linear-gradient(90deg,#7de1ff,#76efcd,#ffd27f);
 }
 .va-crm__plan-use { margin-top:12px; }
 .va-crm__plan-use-meta {
@@ -1582,8 +1808,8 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     align-items:center;
     justify-content:space-between;
     margin-bottom:6px;
-    font-size:11px;
-    color:rgba(255,255,255,.88);
+    font-size:12px;
+    color:rgba(255,255,255,.82);
 }
 .va-crm__plan-use-meta strong { color:#fff; }
 .va-crm__top-list {
@@ -1591,7 +1817,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     padding-left:18px;
     display:flex;
     flex-direction:column;
-    gap:9px;
+    gap:10px;
 }
 .va-crm__top-list li {
     display:flex;
@@ -1601,7 +1827,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-crm__top-list a {
     color:#fff;
-    font-size:12px;
+    font-size:13px;
     font-weight:600;
     text-decoration:none;
     max-width:74%;
@@ -1609,19 +1835,48 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     text-overflow:ellipsis;
     white-space:nowrap;
 }
-.va-crm__top-list a:hover { color:#ff8d8d; }
+.va-crm__top-list a:hover { color:#8de4ff; }
 .va-crm__top-list span {
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    min-width:56px;
-    height:23px;
-    padding:0 8px;
+    min-width:60px;
+    height:26px;
+    padding:0 10px;
     border-radius:999px;
-    border:1px solid rgba(255,70,40,.58);
-    background:linear-gradient(135deg, rgba(255,34,34,.24), rgba(255,126,22,.22));
+    border:1px solid rgba(122,220,255,.26);
+    background:linear-gradient(135deg, rgba(111,223,255,.12), rgba(119,241,209,.12));
     color:#fff;
+    font-size:12px;
+    font-weight:700;
+}
+.va-crm__panel-note {
+    margin-top:12px;
+    color:rgba(255,255,255,.52);
     font-size:11px;
+}
+.va-crm__metric-list {
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+.va-crm__metric-row {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    padding-bottom:9px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+    color:rgba(255,255,255,.68);
+    font-size:12px;
+}
+.va-crm__metric-row:last-child {
+    padding-bottom:0;
+    border-bottom:0;
+}
+.va-crm__metric-row strong {
+    color:#fff;
+    font-size:16px;
     font-weight:700;
 }
 .va-crm__badges {
@@ -1634,27 +1889,30 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:inline-flex;
     align-items:center;
     gap:4px;
-    padding:4px 9px;
+    padding:6px 10px;
     border-radius:999px;
-    border:1px solid rgba(255,255,255,.18);
-    background:rgba(255,255,255,.08);
-    color:rgba(255,255,255,.9);
-    font-size:10px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgba(255,255,255,.05);
+    color:rgba(255,255,255,.82);
+    font-size:11px;
 }
 .va-crm__badges strong { color:#fff; }
 .va-crm__empty { margin:0;color:rgba(255,255,255,.68);font-size:12px; }
 @media (max-width: 980px) {
+    .va-crm__head { display:block; }
+    .va-crm__head-pills { justify-content:flex-start; margin-top:12px; }
     .va-crm__hero { grid-template-columns:1fr; }
+    .va-crm__panels--triple { grid-template-columns:1fr; }
     .va-crm__kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .va-crm__panels { grid-template-columns:1fr; }
 }
 @media (max-width: 640px) {
-    .va-crm { padding:13px; }
-    .va-crm__head { display:block; }
-    .va-crm__head h3 { font-size:15px; }
-    .va-crm__hero-metrics { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
-    .va-crm__ring span { font-size:15px; }
-    .va-crm__ring small { font-size:9px; }
+    .va-crm { padding:14px; border-radius:18px; }
+    .va-crm__head h3 { font-size:20px; }
+    .va-crm__screen { padding:14px; min-height:auto; }
+    .va-crm__screen-top { display:block; }
+    .va-crm__switches { margin-top:10px; }
+    .va-crm__screen-stats { grid-template-columns:1fr; }
     .va-crm__kpis { grid-template-columns:1fr; }
 }
 

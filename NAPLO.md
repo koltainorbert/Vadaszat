@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 07. – Session #213 (Future-market stat dashboard redesign)
+
+### Mit csinaltunk [x]
+- [x] A CRM stat blokk informacios hierarchiaja teljesen ujra lett tervezve 2026-os dashboard iranyba
+- [x] Uj fo resz: nagy chart-screen (grid, gradient line, labels, valos adatokbol szamitott pontok)
+- [x] Uj signal stack: kompakt jelzokartyak kulon kulon savokkal es rovid insight szoveggel
+- [x] KPI kartyak es also panelek uj uveg/premium stilust kaptak, jobb tipografiaval
+- [x] Minden felirat magyarositva es tartalmilag a valos metrikakhoz igazitva
+- [x] Root sablon szinkron plugin mirrorba + Deploy Plugin sikeresen lefutott
+
+### Hol tartunk
+A /va-fiok stat resz mar nem egyszeru blokkhalmaz, hanem egy modern, future-market jellegu vezerlopult, eros vizualis hierarchiaval.
+
+---
+
 ## 2026. 05. 07. – Session #212 (Chart finomhangolas: kecsesebb, szinesebb)
 
 ### Mit csinaltunk [x]
