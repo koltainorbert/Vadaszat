@@ -44,6 +44,11 @@ class VA_Ajax {
         // Élő keresés
         add_action( 'wp_ajax_va_live_search',        [ __CLASS__, 'live_search' ] );
         add_action( 'wp_ajax_nopriv_va_live_search', [ __CLASS__, 'live_search' ] );
+
+        // Felhasználói hirdetés-kezelés (dashboard)
+        add_action( 'wp_ajax_va_refresh_listing', [ __CLASS__, 'refresh_listing' ] );
+        add_action( 'wp_ajax_va_bulk_listings',   [ __CLASS__, 'bulk_listings' ] );
+        add_action( 'wp_ajax_va_set_sale_price',  [ __CLASS__, 'set_sale_price' ] );
     }
 
     /* ── Rate limiting helper ──────────────────────────── */
@@ -1392,5 +1397,104 @@ class VA_Ajax {
         if ( $thumb_id ) {
             wp_delete_attachment( $thumb_id, true );
         }
+    }
+
+    /* ── Hirdetés frissítése (lista tetejére tol) ───────────── */
+    public static function refresh_listing(): void {
+        check_ajax_referer( 'va_user_nonce', 'nonce' );
+        $user_id = get_current_user_id();
+        if ( ! $user_id ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+        $post_id = absint( $_POST['post_id'] ?? 0 );
+        $post    = get_post( $post_id );
+        if ( ! $post || (int) $post->post_author !== $user_id ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés.' ] );
+        }
+        $now = current_time( 'mysql' );
+        wp_update_post( [
+            'ID'                => $post_id,
+            'post_date'         => $now,
+            'post_date_gmt'     => get_gmt_from_date( $now ),
+            'post_modified'     => $now,
+            'post_modified_gmt' => get_gmt_from_date( $now ),
+        ] );
+        update_post_meta( $post_id, 'va_active_since', current_time( 'timestamp' ) );
+        wp_send_json_success( [ 'message' => 'Hirdetés frissítve.' ] );
+    }
+
+    /* ── Tömeges hirdetés-kezelés ───────────────────────────── */
+    public static function bulk_listings(): void {
+        check_ajax_referer( 'va_user_nonce', 'nonce' );
+        $user_id = get_current_user_id();
+        if ( ! $user_id ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+        $action      = sanitize_key( $_POST['bulk_action'] ?? '' );
+        $raw_ids     = $_POST['listing_ids'] ?? [];
+        if ( ! is_array( $raw_ids ) || empty( $raw_ids ) ) {
+            wp_send_json_error( [ 'message' => 'Nincs kijelölt hirdetés.' ] );
+        }
+        $listing_ids = array_map( 'absint', $raw_ids );
+        $new_price   = isset( $_POST['new_price'] ) ? floatval( $_POST['new_price'] ) : null;
+        $updated     = 0;
+
+        foreach ( $listing_ids as $pid ) {
+            $post = get_post( $pid );
+            if ( ! $post || (int) $post->post_author !== $user_id ) {
+                continue;
+            }
+            if ( $action === 'delete' ) {
+                wp_delete_post( $pid, true );
+            } elseif ( $action === 'suspend' ) {
+                wp_update_post( [ 'ID' => $pid, 'post_status' => 'private' ] );
+                update_post_meta( $pid, 'va_is_suspended', '1' );
+                update_post_meta( $pid, 'va_suspended_at', current_time( 'timestamp' ) );
+            } elseif ( $action === 'activate' ) {
+                wp_update_post( [ 'ID' => $pid, 'post_status' => 'publish' ] );
+                delete_post_meta( $pid, 'va_is_suspended' );
+                delete_post_meta( $pid, 'va_suspended_at' );
+            } elseif ( $action === 'price_change' && $new_price !== null && $new_price >= 0 ) {
+                update_post_meta( $pid, 'va_price', $new_price );
+                if ( function_exists( 'va_sync_listing_meta' ) ) {
+                    va_sync_listing_meta( $pid );
+                }
+            } else {
+                continue;
+            }
+            $updated++;
+        }
+        wp_send_json_success( [ 'updated' => $updated, 'action' => $action ] );
+    }
+
+    /* ── Akciós ár beállítása ────────────────────────────────── */
+    public static function set_sale_price(): void {
+        check_ajax_referer( 'va_user_nonce', 'nonce' );
+        $user_id = get_current_user_id();
+        if ( ! $user_id ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+        $post_id    = absint( $_POST['post_id'] ?? 0 );
+        $post       = get_post( $post_id );
+        if ( ! $post || (int) $post->post_author !== $user_id ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés.' ] );
+        }
+        $sale_price = floatval( $_POST['sale_price'] ?? 0 );
+        $sale_end   = sanitize_text_field( $_POST['sale_end'] ?? '' );
+        if ( $sale_price > 0 ) {
+            update_post_meta( $post_id, 'va_sale_price', $sale_price );
+            if ( $sale_end ) {
+                update_post_meta( $post_id, 'va_sale_price_end', $sale_end );
+            } else {
+                delete_post_meta( $post_id, 'va_sale_price_end' );
+            }
+        } else {
+            delete_post_meta( $post_id, 'va_sale_price' );
+            delete_post_meta( $post_id, 'va_sale_price_end' );
+        }
+        if ( function_exists( 'va_sync_listing_meta' ) ) {
+            va_sync_listing_meta( $post_id );
+        }
+        wp_send_json_success( [ 'message' => 'Akciós ár mentve.' ] );
     }
 }

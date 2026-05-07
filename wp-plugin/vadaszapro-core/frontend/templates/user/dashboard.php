@@ -129,7 +129,75 @@ $crm_plan_usage_pc = $crm_plan_limit > 0 ? min( 100, (int) round( ( $crm_plan_us
 
 $crm_top_title = $crm_top_rows ? (string) $crm_top_rows[0]['title'] : 'Nincs adat';
 $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
-?>
+
+// Rendezés
+$sort_by  = sanitize_key( $_GET['sort_by'] ?? 'date' );
+$sort_dir = sanitize_key( $_GET['sort_dir'] ?? 'desc' );
+if ( ! in_array( $sort_by, [ 'date', 'views', 'price' ], true ) ) $sort_by = 'date';
+if ( ! in_array( $sort_dir, [ 'asc', 'desc' ], true ) ) $sort_dir = 'desc';
+
+// Képszámok (batch)
+$listing_ids_all = array_column( (array) $listings, 'ID' );
+$gallery_meta_map = [];
+if ( $listing_ids_all ) {
+    $gm_results = get_post_meta_for_ids( $listing_ids_all, 'va_gallery_ids' );
+    foreach ( (array) $gm_results as $row ) {
+        $ids_arr = array_filter( array_map( 'intval', explode( ',', (string) $row ) ) );
+        $gallery_meta_map[ $row ] = count( $ids_arr );
+    }
+    // fallback: egyenként
+    foreach ( $listing_ids_all as $lid ) {
+        if ( ! isset( $gallery_meta_map[ $lid ] ) ) {
+            $g = get_post_meta( $lid, 'va_gallery_ids', true );
+            $gallery_meta_map[ $lid ] = count( array_filter( array_map( 'intval', explode( ',', (string) $g ) ) ) );
+        }
+    }
+}
+
+// Akciós árak + lejáratok per listing
+$sale_prices = [];
+$sale_ends   = [];
+$active_sinces = [];
+foreach ( $listing_ids_all as $lid ) {
+    $sp = get_post_meta( $lid, 'va_sale_price', true );
+    $sale_prices[ $lid ] = $sp ? floatval( $sp ) : 0.0;
+    $se = get_post_meta( $lid, 'va_sale_price_end', true );
+    $sale_ends[ $lid ] = $se ?: '';
+    $as = (int) get_post_meta( $lid, 'va_active_since', true );
+    $active_sinces[ $lid ] = $as ?: 0;
+}
+
+// Sort listings
+usort( $listings, function( $a, $b ) use ( $sort_by, $sort_dir, $sale_prices ) {
+    if ( $sort_by === 'views' ) {
+        $av = (int) get_post_meta( $a->ID, 'va_views', true );
+        $bv = (int) get_post_meta( $b->ID, 'va_views', true );
+        $cmp = $av <=> $bv;
+    } elseif ( $sort_by === 'price' ) {
+        $ap = floatval( get_post_meta( $a->ID, 'va_price', true ) );
+        $bp = floatval( get_post_meta( $b->ID, 'va_price', true ) );
+        $cmp = $ap <=> $bp;
+    } else {
+        $cmp = strtotime( $a->post_date ) <=> strtotime( $b->post_date );
+    }
+    return $sort_dir === 'asc' ? $cmp : -$cmp;
+} );
+
+// Profil-teljességi %
+$completeness_items = [
+    'Megjelenítési név' => ! empty( $user->display_name ),
+    'E-mail'            => ! empty( $user->user_email ),
+    'Telefonszám'       => ! empty( $phone ),
+    'Bemutatkozás'      => ! empty( $user->description ),
+    'Profilkép'         => ! empty( $avatar_url ),
+    'Aktív hirdetés'    => $crm_active_count > 0,
+];
+$completeness_done  = count( array_filter( $completeness_items ) );
+$completeness_pct   = (int) round( $completeness_done / count( $completeness_items ) * 100 );
+
+// Tagság kora
+$membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) ) / 86400 );
+
 <div class="va-wrap">
     <?php va_display_flash(); ?>
 
@@ -313,9 +381,64 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
                 </section>
 
                 <?php if ( $listings ): ?>
+                <!-- Sort controls -->
+                <?php
+                $cur_url = strtok( (string) $_SERVER['REQUEST_URI'], '?' );
+                $make_sort_url = function( string $by ) use ( $cur_url, $sort_by, $sort_dir ): string {
+                    $dir = ( $sort_by === $by && $sort_dir === 'desc' ) ? 'asc' : 'desc';
+                    return esc_url( add_query_arg( [ 'sort_by' => $by, 'sort_dir' => $dir ], $cur_url ) );
+                };
+                $sort_arrow = function( string $by ) use ( $sort_by, $sort_dir ): string {
+                    if ( $sort_by !== $by ) return '<span style="opacity:.3">↕</span>';
+                    return $sort_dir === 'desc' ? '↓' : '↑';
+                };
+                ?>
+                <div class="va-sort-bar">
+                    <span style="font-size:11px;color:rgba(255,255,255,.4);margin-right:6px;">Rendezés:</span>
+                    <a href="<?php echo $make_sort_url('date'); ?>" class="va-sort-btn <?php echo $sort_by==='date'?'active':''; ?>">Dátum <?php echo $sort_arrow('date'); ?></a>
+                    <a href="<?php echo $make_sort_url('views'); ?>" class="va-sort-btn <?php echo $sort_by==='views'?'active':''; ?>">Nézettség <?php echo $sort_arrow('views'); ?></a>
+                    <a href="<?php echo $make_sort_url('price'); ?>" class="va-sort-btn <?php echo $sort_by==='price'?'active':''; ?>">Ár <?php echo $sort_arrow('price'); ?></a>
+                </div>
+
+                <!-- Bulk toolbar -->
+                <div class="va-bulk-toolbar" id="va-bulk-toolbar">
+                    <label class="va-bulk-select-all-label">
+                        <input type="checkbox" id="va-select-all"> Összes
+                    </label>
+                    <select class="va-bulk-select" id="va-bulk-action">
+                        <option value="">— Tömeges művelet —</option>
+                        <option value="activate">✅ Aktiválás</option>
+                        <option value="suspend">⏸ Szüneteltetés</option>
+                        <option value="price_change">💰 Ár módosítása</option>
+                        <option value="delete">🗑 Törlés</option>
+                    </select>
+                    <button class="va-btn va-btn--sm va-bulk-exec" id="va-bulk-exec" style="background:rgba(255,0,0,.18);border:1px solid rgba(255,0,0,.4);color:#fff;">Végrehajtás</button>
+                    <span class="va-bulk-count" id="va-bulk-count" style="font-size:11px;color:rgba(255,255,255,.45);margin-left:6px;"></span>
+                </div>
+
+                <!-- Bulk ár módosítás panel -->
+                <div class="va-bulk-price-panel" id="va-bulk-price-panel" style="display:none;">
+                    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+                        <div>
+                            <label class="va-bulk-price-label">Új ár (Ft)</label>
+                            <input type="number" id="va-bulk-new-price" class="va-bulk-price-input" min="0" placeholder="pl. 1500000">
+                        </div>
+                        <div>
+                            <label class="va-bulk-price-label">Akciós ár (opcionális, Ft)</label>
+                            <input type="number" id="va-bulk-sale-price" class="va-bulk-price-input" min="0" placeholder="Üresen hagyd, ha nincs">
+                        </div>
+                        <div>
+                            <label class="va-bulk-price-label">Akció vége (opcionális)</label>
+                            <input type="date" id="va-bulk-sale-end" class="va-bulk-price-input">
+                        </div>
+                    </div>
+                    <p style="font-size:11px;color:rgba(255,255,255,.4);margin:8px 0 0;">Az akciós ár minden kijelölt hirdetésre vonatkozik. A normál ár módosítása után külön akciós ár is állítható egyenként.</p>
+                </div>
+
                 <table class="va-user-listings-table" style="width:100%;border-collapse:collapse;font-size:14px;">
                     <thead>
                         <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                            <th style="padding:8px 4px;width:28px;"></th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Cím</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);white-space:nowrap;min-width:110px;">Ár</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Státusz</th>
@@ -333,11 +456,16 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
                         $is_suspended    = get_post_meta( $l->ID, 'va_is_suspended', true ) === '1';
                         $suspended_by_plan = get_post_meta( $l->ID, 'va_suspended_by_plan', true ) === '1';
                         $suspended_at    = (int) get_post_meta( $l->ID, 'va_suspended_at', true );
-                        $active_since_ts = (int) get_post_meta( $l->ID, 'va_active_since', true );
+                        $active_since_ts = isset( $active_sinces[ $l->ID ] ) ? $active_sinces[ $l->ID ] : (int) get_post_meta( $l->ID, 'va_active_since', true );
                         if ( ! $active_since_ts ) $active_since_ts = strtotime( $l->post_date );
                         $now             = current_time( 'timestamp' );
                         $can_suspend     = in_array( $user_plan, [ 'gold', 'platinum' ], true );
                         $buy_url         = home_url( '/va-kredit-vasarlas/' );
+                        $days_running    = (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) );
+                        $days_expiry     = max( 0, 30 - $days_running );
+                        $img_count       = isset( $gallery_meta_map[ $l->ID ] ) ? (int) $gallery_meta_map[ $l->ID ] : 0;
+                        $l_sale_price    = $sale_prices[ $l->ID ] ?? 0.0;
+                        $l_sale_end      = $sale_ends[ $l->ID ] ?? '';
                         $statuses = [
                             'publish' => '<span style="color:#00c850">● Aktív</span>',
                             'pending' => '<span style="color:#ffb400">● Jóváhagyásra vár</span>',
@@ -349,7 +477,10 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
                                     : '<span style="color:#888">● Privát</span>' ),
                         ];
                     ?>
-                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);" class="va-listing-row" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>">
+                        <td style="padding:10px 4px;text-align:center;vertical-align:middle;">
+                            <input type="checkbox" class="va-row-check" value="<?php echo esc_attr( (string) $l->ID ); ?>" style="cursor:pointer;width:15px;height:15px;accent-color:#ff2a2a;">
+                        </td>
                         <td style="padding:10px 8px;">
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <?php
@@ -365,23 +496,41 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
                                 <img src="<?php echo esc_url( $thumb_url ); ?>" alt="" style="width:52px;height:52px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid rgba(255,255,255,.1);">
                                 <?php endif; ?>
                                 <div style="min-width:0;">
-                                    <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;"><?php echo esc_html( $l->post_title ); ?></a>
-                                    <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
-                                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#3a2800,#1e1400);color:#ffc840;border:1px solid rgba(255,180,0,.5);box-shadow:0 0 8px rgba(255,160,0,.2);padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
-                                    <?php endif; ?>
-                                    <div style="margin-top:3px;font-size:11px;">
+                                    <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+                                        <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;"><?php echo esc_html( $l->post_title ); ?></a>
+                                        <?php if ( $img_count > 0 ): ?>
+                                        <span class="va-img-count-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><?php echo esc_html( $img_count ); ?></span>
+                                        <?php endif; ?>
+                                        <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
+                                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#3a2800,#1e1400);color:#ffc840;border:1px solid rgba(255,180,0,.5);box-shadow:0 0 8px rgba(255,160,0,.2);padding:2px 7px;border-radius:20px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div style="margin-top:3px;font-size:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                                     <?php if ( $suspended_by_plan ): ?>
                                         <span style="color:#ff4444;">Limit felett – kredit szükséges</span>
                                     <?php elseif ( $is_suspended && $suspended_at ): ?>
                                         <span style="color:#ff9900;">⏸ Szüneteltetve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
                                     <?php else: ?>
-                                        <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) ) . ' napja' ); ?></span>
+                                        <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( $days_running . ' napja' ); ?></span>
+                                        <?php if ( $l->post_status === 'publish' && $days_expiry <= 7 ): ?>
+                                        <span class="va-expiry-badge <?php echo $days_expiry <= 3 ? 'va-expiry-badge--critical' : 'va-expiry-badge--warn'; ?>">⏰ <?php echo $days_expiry > 0 ? esc_html( $days_expiry . ' nap múlva lejár' ) : 'Lejárt'; ?></span>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td style="padding:10px 8px;white-space:nowrap;min-width:110px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
+                        <td style="padding:10px 8px;white-space:nowrap;min-width:110px;">
+                            <?php if ( $l_sale_price > 0 ): ?>
+                                <del style="color:rgba(255,255,255,.4);font-size:12px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></del><br>
+                                <span style="color:#ff3030;font-weight:700;"><?php echo esc_html( number_format( $l_sale_price, 0, ',', ' ' ) . ' Ft' ); ?> <span style="font-size:10px;background:rgba(255,0,0,.2);border:1px solid rgba(255,0,0,.4);border-radius:4px;padding:1px 5px;">AKCIÓ</span></span>
+                                <?php if ( $l_sale_end ): ?><br><span style="font-size:10px;color:rgba(255,255,255,.35);">–<?php echo esc_html( $l_sale_end ); ?></span><?php endif; ?>
+                                <button class="va-sale-edit-btn" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Akciós ár szerkesztése">✏️</button>
+                            <?php else: ?>
+                                <?php echo esc_html( va_format_price( $price, $p_type ) ); ?>
+                                <button class="va-sale-edit-btn" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="" data-sale-end="" title="Akciós ár beállítása" style="opacity:.45;">🏷</button>
+                            <?php endif; ?>
+                        </td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
                         <td style="padding:10px 8px;">
@@ -472,6 +621,14 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
                             <?php else: ?>
                             <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
                                 <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--sm" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;white-space:nowrap;">Szerkesztés</a>
+                                <?php if ( $l->post_status === 'publish' ): ?>
+                                <button class="va-refresh-btn va-btn va-btn--sm"
+                                        data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                        data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                        data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                        title="Hirdetés frissítése (lista tetejére tol)"
+                                        style="background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.35);color:#60d0ff;white-space:nowrap;">↑ Frissítés</button>
+                                <?php endif; ?>
                                 <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
                                 <form method="post" style="margin:0;">
                                     <?php wp_nonce_field( 'va_suspend_listing', 'va_suspend_listing_nonce' ); ?>
@@ -560,6 +717,43 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
             <!-- Tab: Profilom -->
             <div id="va-tab-profile" class="va-dashboard__section">
                 <h2 class="va-dashboard__title">Profilom szerkesztése</h2>
+
+                <!-- Profil teljességi sáv -->
+                <div class="va-profile-completeness">
+                    <div class="va-profile-completeness__head">
+                        <span class="va-profile-completeness__label">Profil teljessége</span>
+                        <span class="va-profile-completeness__pct"><?php echo esc_html( $completeness_pct ); ?>%</span>
+                    </div>
+                    <div class="va-profile-completeness__bar">
+                        <div style="width:<?php echo esc_attr( $completeness_pct ); ?>%;background:<?php echo $completeness_pct >= 80 ? '#00c850' : ( $completeness_pct >= 50 ? '#ffb400' : '#ff4444' ); ?>"></div>
+                    </div>
+                    <div class="va-profile-completeness__items">
+                    <?php foreach ( $completeness_items as $item_label => $item_done ): ?>
+                        <span class="va-profile-completeness__item <?php echo $item_done ? 'done' : ''; ?>"><?php echo $item_done ? '✓' : '○'; ?> <?php echo esc_html( $item_label ); ?></span>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Trust badge-ek -->
+                <div class="va-trust-badges">
+                    <span class="va-trust-badge <?php echo $user->user_email ? 'active' : ''; ?>">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        E-mail megerősítve
+                    </span>
+                    <span class="va-trust-badge <?php echo $phone ? 'active' : ''; ?>">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Telefonszám megadva
+                    </span>
+                    <span class="va-trust-badge <?php echo $crm_active_count > 0 ? 'active' : ''; ?>">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Aktív hirdető
+                    </span>
+                    <span class="va-trust-badge active" title="Regisztráció óta">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Tagság: <?php echo esc_html( $membership_days < 365 ? $membership_days . ' nap' : round( $membership_days / 365, 1 ) . ' év' ); ?>
+                    </span>
+                </div>
+
                 <form method="post" enctype="multipart/form-data">
                     <?php wp_nonce_field( 'va_profile', 'va_profile_nonce' ); ?>
                     <input type="hidden" name="va_action" value="profile">
@@ -662,7 +856,24 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
     </div><!-- .va-dashboard -->
 </div>
 
-<style>
+<!-- Akciós ár modal -->
+<div class="va-sale-modal-overlay" id="va-sale-modal-overlay" role="dialog" aria-modal="true" aria-label="Akciós ár beállítása">
+    <div class="va-sale-modal">
+        <h3>🏷 Akciós ár beállítása</h3>
+        <input type="hidden" id="va-sale-modal-post-id">
+        <label>Akciós ár (Ft) — 0 = törlés</label>
+        <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
+        <label>Akció vége (opcionális dátum)</label>
+        <input type="date" id="va-sale-modal-end">
+        <div class="va-sale-modal__actions">
+            <button class="va-sale-modal__remove" id="va-sale-modal-remove">Akció törlése</button>
+            <button class="va-sale-modal__cancel" id="va-sale-modal-cancel">Mégse</button>
+            <button class="va-sale-modal__save" id="va-sale-modal-save">Mentés</button>
+        </div>
+    </div>
+</div>
+
+
 .va-dash-user-head {
     padding:14px;
     border-bottom:1px solid rgba(255,255,255,.08);
@@ -1084,6 +1295,128 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
 .va-dashboard__nav-item--danger .va-dashboard__nav-ico svg { stroke:#ff6060; }
 .va-dashboard__nav-item--danger:hover,
 .va-dashboard__nav-item--danger.active { background:rgba(255,42,42,.1) !important; }
+
+/* ── Sort bar ── */
+.va-sort-bar {
+    display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;
+}
+.va-sort-btn {
+    display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);
+    font-size:11px;font-weight:600;text-decoration:none;transition:.15s ease;
+}
+.va-sort-btn:hover { border-color:rgba(255,0,0,.4);color:#fff; }
+.va-sort-btn.active { border-color:rgba(255,0,0,.5);background:rgba(255,0,0,.12);color:#fff; }
+
+/* ── Bulk toolbar ── */
+.va-bulk-toolbar {
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    margin-bottom:10px;padding:8px 12px;
+    border:1px solid rgba(255,255,255,.08);border-radius:10px;
+    background:rgba(255,255,255,.03);
+}
+.va-bulk-select-all-label { font-size:12px;color:#fff;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer; }
+.va-bulk-select {
+    height:30px;padding:0 8px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.07);color:#fff;font-size:12px;cursor:pointer;
+}
+.va-bulk-select:focus { outline:none;border-color:#ff2a2a; }
+
+/* ── Bulk price panel ── */
+.va-bulk-price-panel {
+    margin-bottom:12px;padding:14px;border:1px solid rgba(255,200,0,.2);border-radius:10px;
+    background:rgba(255,200,0,.04);
+}
+.va-bulk-price-label { display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:4px; }
+.va-bulk-price-input {
+    height:32px;padding:0 10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.07);color:#fff;font-size:13px;min-width:140px;
+}
+.va-bulk-price-input:focus { outline:none;border-color:#ff2a2a; }
+
+/* ── Akciós ár quick-edit gomb ── */
+.va-sale-edit-btn {
+    background:none;border:none;cursor:pointer;font-size:13px;padding:2px 4px;
+    opacity:.55;transition:.15s;vertical-align:middle;
+}
+.va-sale-edit-btn:hover { opacity:1; }
+
+/* ── Akciós ár modal ── */
+.va-sale-modal-overlay {
+    display:none;position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,.75);align-items:center;justify-content:center;
+}
+.va-sale-modal-overlay.open { display:flex; }
+.va-sale-modal {
+    background:rgb(14,14,14);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:24px;max-width:380px;width:90%;
+    box-shadow:0 20px 60px rgba(0,0,0,.8);
+}
+.va-sale-modal h3 { margin:0 0 16px;font-size:16px;color:#fff; }
+.va-sale-modal label { display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.55);margin:10px 0 4px; }
+.va-sale-modal input {
+    width:100%;height:36px;padding:0 12px;border-radius:8px;
+    border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+    color:#fff;font-size:14px;box-sizing:border-box;
+}
+.va-sale-modal input:focus { outline:none;border-color:#ff2a2a;box-shadow:0 0 0 3px rgba(255,42,42,.15); }
+.va-sale-modal__actions { display:flex;gap:8px;margin-top:18px;justify-content:flex-end; }
+.va-sale-modal__save {
+    padding:0 18px;height:36px;border-radius:8px;border:1px solid rgba(255,0,0,.5);
+    background:rgba(255,0,0,.2);color:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:.15s;
+}
+.va-sale-modal__save:hover { background:rgba(255,0,0,.35); }
+.va-sale-modal__cancel {
+    padding:0 14px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;
+}
+.va-sale-modal__remove {
+    padding:0 14px;height:36px;border-radius:8px;border:1px solid rgba(255,42,42,.3);
+    background:rgba(255,42,42,.08);color:#ff8080;font-size:13px;cursor:pointer;margin-right:auto;
+}
+
+/* ── Lejárat badge ── */
+.va-expiry-badge {
+    display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:999px;
+    font-size:10px;font-weight:700;
+}
+.va-expiry-badge--warn { background:rgba(255,153,0,.15);border:1px solid rgba(255,153,0,.4);color:#ffb400; }
+.va-expiry-badge--critical { background:rgba(255,42,42,.18);border:1px solid rgba(255,42,42,.5);color:#ff5555; }
+
+/* ── Képszám badge ── */
+.va-img-count-badge {
+    display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:999px;
+    font-size:10px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.55);
+}
+
+/* ── Profil completeness ── */
+.va-profile-completeness {
+    margin-bottom:20px;padding:14px;border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;background:rgba(255,255,255,.03);
+}
+.va-profile-completeness__head { display:flex;justify-content:space-between;margin-bottom:8px; }
+.va-profile-completeness__label { font-size:12px;font-weight:700;color:#fff; }
+.va-profile-completeness__pct { font-size:12px;font-weight:800;color:#fff; }
+.va-profile-completeness__bar {
+    height:5px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin-bottom:10px;
+}
+.va-profile-completeness__bar > div { height:100%;border-radius:inherit;transition:width .4s; }
+.va-profile-completeness__items { display:flex;flex-wrap:wrap;gap:6px; }
+.va-profile-completeness__item {
+    font-size:11px;color:rgba(255,255,255,.4);padding:2px 8px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
+}
+.va-profile-completeness__item.done { color:#00c850;border-color:rgba(0,200,80,.3);background:rgba(0,200,80,.07); }
+
+/* ── Trust badge-ek ── */
+.va-trust-badges { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px; }
+.va-trust-badge {
+    display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
+    color:rgba(255,255,255,.35);font-size:11px;font-weight:600;
+}
+.va-trust-badge.active { color:#fff;border-color:rgba(0,200,80,.4);background:rgba(0,200,80,.09); }
+.va-trust-badge.active svg { stroke:#00c850; }
 </style>
 
 <script>
@@ -1216,5 +1549,167 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
             }
         });
     }
+
+    var _nonce  = '<?php echo esc_js( $boost_nonce ); ?>';
+    var _ajaxUrl= '<?php echo esc_js( $ajax_url ); ?>';
+
+    /* ── Select all checkbox ── */
+    var selectAll = document.getElementById('va-select-all');
+    var bulkCount = document.getElementById('va-bulk-count');
+    function updateBulkCount() {
+        var checked = document.querySelectorAll('.va-row-check:checked').length;
+        if (bulkCount) bulkCount.textContent = checked > 0 ? checked + ' kijelölve' : '';
+    }
+    if (selectAll) {
+        selectAll.addEventListener('change', function(){
+            document.querySelectorAll('.va-row-check').forEach(function(cb){ cb.checked = selectAll.checked; });
+            updateBulkCount();
+        });
+    }
+    document.querySelectorAll('.va-row-check').forEach(function(cb){
+        cb.addEventListener('change', updateBulkCount);
+    });
+
+    /* ── Bulk action panel toggle ── */
+    var bulkActionSel = document.getElementById('va-bulk-action');
+    var bulkPricePanel = document.getElementById('va-bulk-price-panel');
+    if (bulkActionSel && bulkPricePanel) {
+        bulkActionSel.addEventListener('change', function(){
+            bulkPricePanel.style.display = this.value === 'price_change' ? 'block' : 'none';
+        });
+    }
+
+    /* ── Bulk exec ── */
+    var bulkExecBtn = document.getElementById('va-bulk-exec');
+    if (bulkExecBtn) {
+        bulkExecBtn.addEventListener('click', function(){
+            var action = bulkActionSel ? bulkActionSel.value : '';
+            if (!action) { alert('Válassz műveletet!'); return; }
+            var ids = Array.from(document.querySelectorAll('.va-row-check:checked')).map(function(cb){ return cb.value; });
+            if (!ids.length) { alert('Jelölj ki legalább egy hirdetést!'); return; }
+            if (action === 'delete' && !confirm('Biztosan törlöd a kijelölt ' + ids.length + ' hirdetést?')) return;
+
+            var params = new URLSearchParams({
+                action: 'va_bulk_listings',
+                nonce: _nonce,
+                bulk_action: action
+            });
+            ids.forEach(function(id){ params.append('listing_ids[]', id); });
+
+            if (action === 'price_change') {
+                var newPrice = document.getElementById('va-bulk-new-price') ? document.getElementById('va-bulk-new-price').value : '';
+                if (!newPrice) { alert('Add meg az új árat!'); return; }
+                params.set('new_price', newPrice);
+                // bulk sale price
+                var saleP = document.getElementById('va-bulk-sale-price') ? document.getElementById('va-bulk-sale-price').value : '';
+                var saleE = document.getElementById('va-bulk-sale-end') ? document.getElementById('va-bulk-sale-end').value : '';
+                if (saleP) {
+                    ids.forEach(function(id){
+                        var sp = new URLSearchParams({
+                            action: 'va_set_sale_price', nonce: _nonce,
+                            post_id: id, sale_price: saleP, sale_end: saleE
+                        });
+                        fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:sp.toString() });
+                    });
+                }
+            }
+
+            bulkExecBtn.disabled = true;
+            bulkExecBtn.textContent = 'Folyamatban...';
+            fetch(_ajaxUrl, {
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: params.toString()
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                if (res.success) {
+                    alert(res.data.updated + ' hirdetés módosítva.');
+                    location.reload();
+                } else {
+                    alert((res.data && res.data.message) || 'Hiba történt.');
+                    bulkExecBtn.disabled = false;
+                    bulkExecBtn.textContent = 'Végrehajtás';
+                }
+            })
+            .catch(function(){
+                bulkExecBtn.disabled = false;
+                bulkExecBtn.textContent = 'Végrehajtás';
+            });
+        });
+    }
+
+    /* ── Refresh listing ── */
+    document.querySelectorAll('.va-refresh-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId = this.dataset.postId;
+            var self = this;
+            self.disabled = true;
+            self.textContent = '…';
+            var params = new URLSearchParams({ action:'va_refresh_listing', nonce:_nonce, post_id:postId });
+            fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                if (res.success) {
+                    self.textContent = '✓ Frissítve';
+                    setTimeout(function(){ self.textContent = '↑ Frissítés'; self.disabled = false; }, 2000);
+                } else {
+                    alert((res.data && res.data.message) || 'Hiba.');
+                    self.disabled = false; self.textContent = '↑ Frissítés';
+                }
+            })
+            .catch(function(){ self.disabled = false; self.textContent = '↑ Frissítés'; });
+        });
+    });
+
+    /* ── Sale price quick-edit modal ── */
+    var saleOverlay = document.getElementById('va-sale-modal-overlay');
+    var salePostId  = document.getElementById('va-sale-modal-post-id');
+    var salePrice   = document.getElementById('va-sale-modal-price');
+    var saleEnd     = document.getElementById('va-sale-modal-end');
+    var saleSaveBtn = document.getElementById('va-sale-modal-save');
+    var saleRemBtn  = document.getElementById('va-sale-modal-remove');
+    var saleCancel  = document.getElementById('va-sale-modal-cancel');
+
+    function openSaleModal(postId, curPrice, curEnd) {
+        if (!saleOverlay) return;
+        salePostId.value = postId;
+        salePrice.value  = curPrice || '';
+        saleEnd.value    = curEnd || '';
+        saleOverlay.classList.add('open');
+        salePrice.focus();
+    }
+    function closeSaleModal() { if (saleOverlay) saleOverlay.classList.remove('open'); }
+
+    document.querySelectorAll('.va-sale-edit-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            openSaleModal(this.dataset.postId, this.dataset.salePrice, this.dataset.saleEnd);
+        });
+    });
+
+    if (saleCancel)  saleCancel.addEventListener('click', closeSaleModal);
+    if (saleOverlay) saleOverlay.addEventListener('click', function(e){ if (e.target === saleOverlay) closeSaleModal(); });
+
+    function saveSalePrice(price) {
+        var pid = salePostId ? salePostId.value : '';
+        if (!pid) return;
+        var params = new URLSearchParams({
+            action: 'va_set_sale_price', nonce: _nonce,
+            post_id: pid, sale_price: price,
+            sale_end: saleEnd ? saleEnd.value : ''
+        });
+        if (saleSaveBtn) { saleSaveBtn.disabled = true; saleSaveBtn.textContent = 'Mentés...'; }
+        fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+            if (res.success) { closeSaleModal(); location.reload(); }
+            else { alert((res.data && res.data.message) || 'Hiba.'); if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; } }
+        })
+        .catch(function(){ if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; } });
+    }
+
+    if (saleSaveBtn) saleSaveBtn.addEventListener('click', function(){ saveSalePrice(salePrice ? salePrice.value : 0); });
+    if (saleRemBtn)  saleRemBtn.addEventListener('click', function(){ if (confirm('Törlöd az akciós árat?')) saveSalePrice(0); });
+
 })();
 </script>
