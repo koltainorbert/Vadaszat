@@ -49,9 +49,9 @@ function va_apply_views_floor( int $post_id, int $display_views ): int {
     $stored = (int) get_transient( $key );
     $final  = max( $display_views, $stored );
 
-    // 30 napig megtartjuk az adott IP altal latott max erteket.
+    // 100 napig megtartjuk az adott IP altal latott max erteket.
     if ( $final !== $stored ) {
-        set_transient( $key, $final, DAY_IN_SECONDS * 30 );
+        set_transient( $key, $final, DAY_IN_SECONDS * 100 );
     }
 
     return $final;

@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 07. – Session #191 (Megtekintes szam stabilitas IP alapon)
+
+### Mit csinaltunk [x]
+- [x] A frontend megtekintes kijelzes megtartotta a magas (base + valos) logikat
+- [x] Uj IP helper kerult be (`va_client_ip`) proxy fejlecek tamogatasaval
+- [x] Uj IP+post alapu high-water kulcs es alkalmazas kerult be (`va_views_floor_key`, `va_apply_views_floor`)
+- [x] `va_display_views()` most mar sosem ad vissza kisebb erteket ugyanannak az IP-nek ugyanarra a hirdetesre (30 napos transient)
+- [x] `va_increment_views` AJAX valasz kibovitve `display_views` mezovel
+- [x] Modositasok atvezetve source + plugin mirror fajlokba
+- [x] Hibavizsgalat lefuttatva az erintett fajlokon (nincs uj hiba)
+
+### Hol tartunk
+Ugyanaz az IP ugyanarra a hirdetesre visszanezeskor nem lat kisebb megtekintes szamot, mint amit korabban mar latott.
+
+---
+
 ## 2026. 05. 06. – Session #190 (Hero szoveg mobil/desktop finomitas)
 
 ### Mit csinaltunk [x]
