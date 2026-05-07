@@ -2,7 +2,29 @@
 
 ---
 
-## 2026. 05. 07. – Session #194 (Fiókoldal: CRM szintű statisztikai irányítópult)
+## 2026. 05. 07. – Session #195 (Dashboard: bulk árazó, akciós ár, rendezés, profil)
+
+### Mit csinaltunk [x]
+- [x] 3 új AJAX endpoint: `va_refresh_listing`, `va_bulk_listings`, `va_set_sale_price` (class-ajax.php)
+- [x] Tömeges műveletek (bulk): aktiválás, szüneteltetés, törlés, ár módosítása – per-row checkbox + toolbar
+- [x] **Tömeges árváltoztató panel**: új ár + opcionális akciós ár + akció vége dátum
+- [x] **Akciós ár** per-hirdetés: quick-edit modal, `va_sale_price` + `va_sale_price_end` meta mentés
+- [x] Ár cellában: ha van akciós ár → áthúzott eredeti + piros akciós ár + "AKCIÓ" badge
+- [x] Rendezés oszloponként (dátum/nézettség/ár, asc/desc) – sort bar GET paraméterrel
+- [x] Képszám badge (galéria képek darabszáma) a cím mellett
+- [x] Lejárat-jelző: ha ≤7 nap van hátra (sárga) vagy ≤3 nap (piros)
+- [x] ↑ Frissítés gomb aktív hirdetéseknél (lista tetejére tol, AJAX)
+- [x] Profil teljességi sáv (completeness % + item check lista)
+- [x] Trust badge-ek: e-mail, telefon, aktív hirdető, tagság kora
+- [x] Minden CSS + JS beépítve a dashboard template-be
+- [x] Plugin tükör szinkron + Deploy All – sikeres
+
+### Hol tartunk
+A `/va-fiok/` dashboard teljeskörű CRM eszköz: tömeges műveletek, árkezelés, akciós ár, profil teljességi visszajelzés, bizalmi badge-ek.
+
+---
+
+
 
 ### Mit csinaltunk [x]
 - [x] A `/va-fiok/` Hirdetéseim tab tetejere teljesitmeny iranyitopult kerult
