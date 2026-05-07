@@ -187,7 +187,7 @@ $completeness_pct   = (int) round( $completeness_done / count( $completeness_ite
 
 // Tagság kora
 $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) ) / 86400 );
-
+?>
 <div class="va-wrap">
     <?php va_display_flash(); ?>
 
