@@ -82,11 +82,10 @@ $va_welcome_svg_fallback = 'data:image/svg+xml;utf8,' . rawurlencode(
 );
 
 $va_welcome_image_url = '';
-$va_welcome_image_paths = [];
 
 $va_upload_cookie_path = WP_CONTENT_DIR . '/uploads/fortune-cookies.png';
 if ( file_exists( $va_upload_cookie_path ) ) {
-    $va_welcome_image_url = content_url( 'uploads/fortune-cookies.png' );
+    $va_welcome_image_url = site_url( '/wp-content/uploads/fortune-cookies.png' );
 }
 
 if ( '' === $va_welcome_image_url ) {
@@ -104,12 +103,32 @@ if ( '' === $va_welcome_image_url && defined( 'VA_PLUGIN_DIR' ) && defined( 'VA_
 }
 
 if ( '' === $va_welcome_image_url ) {
+    $va_latest_image = get_posts( [
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'post_mime_type' => 'image',
+        'author'         => (int) $user->ID,
+        'posts_per_page' => 1,
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+        'fields'         => 'ids',
+        'no_found_rows'  => true,
+    ] );
+    if ( ! empty( $va_latest_image[0] ) ) {
+        $va_latest_url = wp_get_attachment_image_url( (int) $va_latest_image[0], 'large' );
+        if ( $va_latest_url ) {
+            $va_welcome_image_url = $va_latest_url;
+        }
+    }
+}
+
+if ( '' === $va_welcome_image_url ) {
     $va_welcome_image_url = $va_welcome_svg_fallback;
 }
 
 $va_welcome_name = trim( (string) $user->display_name );
 if ( '' === $va_welcome_name ) {
-    $va_welcome_name = 'Vadasz';
+    $va_welcome_name = 'Vadász';
 }
 if ( strtolower( (string) $user->user_login ) === 'weingartnerauto' || strtolower( $va_welcome_name ) === 'weingartnerauto' ) {
     // Kifejezetten ehhez a fiokhoz kert nevfeluliras.
@@ -118,77 +137,77 @@ if ( strtolower( (string) $user->user_login ) === 'weingartnerauto' || strtolowe
 
 if ( $va_show_daily_welcome ) {
     $va_wish_openers = [
-        'Ma tisztan latod az utad',
+        'Ma tisztán látod az utad',
         'A mai nap neked dolgozik',
-        'Csendben erosodsz',
-        'A szerencse most figyel rad',
-        'Ma konnyebb lesz donteni',
-        'A jo idozites melletted all',
-        'Ma jol olvasod a jeleket',
-        'Most nyitott az ut a jo alkalmakra',
-        'A kitartasod ma gyorsabban terul meg',
-        'Ma tiszta fejjel lepsz elore',
-        'A batorsagod ma jutalmat kap',
-        'A mai nap egy uj ritmust ad',
-        'Most minden kicsit a helyere pattan',
-        'A figyelmed ma aranyat er',
-        'A mai lepesed holnapot epiti',
-        'Ma megerkezik egy jo visszajelzes',
-        'A higgadtsagod ma elony lesz',
-        'Most jo helyen vagy jo idoben',
-        'A mai napban tobb van, mint latszik',
-        'Ma konnyebben kapcsolodnak ossze a dolgok',
+        'Csendben erősödsz',
+        'A szerencse most figyel rád',
+        'Ma könnyebb lesz dönteni',
+        'A jó időzítés melletted áll',
+        'Ma jól olvasod a jeleket',
+        'Most nyitott az út a jó alkalmakra',
+        'A kitartásod ma gyorsabban térül meg',
+        'Ma tiszta fejjel lépsz előre',
+        'A bátorságod ma jutalmat kap',
+        'A mai nap egy új ritmust ad',
+        'Most minden kicsit a helyére pattan',
+        'A figyelmed ma aranyat ér',
+        'A mai lépésed holnapot építi',
+        'Ma megérkezik egy jó visszajelzés',
+        'A higgadtságod ma előny lesz',
+        'Most jó helyen vagy jó időben',
+        'A mai napban több van, mint látszik',
+        'Ma könnyebben kapcsolódnak össze a dolgok',
     ];
     $va_wish_focuses = [
-        'a figyelmed minden fontos reszletet megtalal',
-        'a jo emberek ma konnyebben talalnak rad',
-        'a jo dontes ma kevesebb ketseggel jon',
-        'a nyugalmad ma eros pajzs lesz',
-        'a kitartasod ma tiszta eredmenyt hoz',
-        'a lenduleted ma vegig kitart',
-        'az otleteid ma jol hasznosulnak',
-        'egy regi terv ma uj erore kap',
-        'a munkad ma lathato nyomot hagy',
-        'a jo hir ma gyorsabban erkezik',
-        'a kapcsolataid ma tamogatobbak lesznek',
-        'a megerzesed ma pontos iranytu',
-        'a korulmenyek ma inkabb segitenek, mint akadalyoznak',
-        'a mai beszelgetesek hasznos fordulatot adnak',
-        'a turelmed ma gyorsabb haladast szul',
-        'a figyelmed ma penzt es idot sporol',
-        'a jo ritmus ma vegig veled marad',
-        'a mai kezdet stabil folytatast hoz',
-        'a valasztasod ma hosszabb tavon is nyereseges',
-        'a regi bizonytalansag ma elcsendesedik',
+        'a figyelmed minden fontos részletet megtalál',
+        'a jó emberek ma könnyebben találnak rád',
+        'a jó döntés ma kevesebb kétellyel jön',
+        'a nyugalmad ma erős pajzs lesz',
+        'a kitartásod ma tiszta eredményt hoz',
+        'a lendületed ma végig kitart',
+        'az ötleteid ma jól hasznosulnak',
+        'egy régi terv ma új erőre kap',
+        'a munkád ma látható nyomot hagy',
+        'a jó hír ma gyorsabban érkezik',
+        'a kapcsolataid ma támogatóbbak lesznek',
+        'a megérzésed ma pontos iránytű',
+        'a körülmények ma inkább segítenek, mint akadályoznak',
+        'a mai beszélgetések hasznos fordulatot adnak',
+        'a türelmed ma gyorsabb haladást szül',
+        'a figyelmed ma pénzt és időt spórol',
+        'a jó ritmus ma végig veled marad',
+        'a mai kezdet stabil folytatást hoz',
+        'a választásod ma hosszabb távon is nyereséges',
+        'a régi bizonytalanság ma elcsendesedik',
     ];
     $va_wish_outcomes = [
-        'estere elegedett mosollyal zarod a napot',
-        'egy jo hir megerositi a donteseidet',
-        'tobb tiszta igen erkezik, mint nemet',
-        'pont annyi segitseget kapsz, amennyi kell',
-        'a mai eredmeny holnap is tartani fog',
-        'a kis lepeseid nagy tavolsagot adnak',
-        'a jo lehetoseg idoben kopogtat',
-        'nyugodt erosseg marad benned estig',
-        'egy varatlan jo fordulat mosolyt hoz',
-        'minden lenyeges valasz idoben megerkezik',
-        'a mai munka megmutatja az ertelmet',
-        'jo emberek allnak melletted a fontos pillanatban',
-        'a mai nyereseged kesobb is latszani fog',
-        'konnyebb lesz tovabblepni, mint gondoltad',
-        'a bizonytalansag helyett tiszta terv marad',
-        'a nap vegere buszke leszel magadra',
-        'a jo ritmus holnap is folytatodik',
-        'a siker csendben, de biztosan megerkezik',
-        'a mai dontesed eros alapot ad',
-        'az ested nyugodt es megelegedett lesz',
+        'estére elégedett mosollyal zárod a napot',
+        'egy jó hír megerősíti a döntéseidet',
+        'több tiszta igen érkezik, mint nemet',
+        'pont annyi segítséget kapsz, amennyi kell',
+        'a mai eredmény holnap is tartani fog',
+        'a kis lépéseid nagy távolságot adnak',
+        'a jó lehetőség időben kopogtat',
+        'nyugodt erősség marad benned estig',
+        'egy váratlan jó fordulat mosolyt hoz',
+        'minden lényeges válasz időben megérkezik',
+        'a mai munka megmutatja az értelmet',
+        'jó emberek állnak melletted a fontos pillanatban',
+        'a mai nyereséged később is látszani fog',
+        'könnyebb lesz továbblépni, mint gondoltad',
+        'a bizonytalanság helyett tiszta terv marad',
+        'a nap végére büszke leszel magadra',
+        'a jó ritmus holnap is folytatódik',
+        'a siker csendben, de biztosan megérkezik',
+        'a mai döntésed erős alapot ad',
+        'az estéd nyugodt és megelégedett lesz',
     ];
 
     $va_wishes = [];
     foreach ( $va_wish_openers as $va_open ) {
         foreach ( $va_wish_focuses as $va_focus ) {
             foreach ( $va_wish_outcomes as $va_outcome ) {
-                $va_wishes[] = $va_open . ', {nev}! Ma ' . $va_focus . ', es ' . $va_outcome . '.';
+                $va_wishes[] = $va_open . ', {nev}! Ma ' . $va_focus . ', és ' . $va_outcome . '.';
                 if ( count( $va_wishes ) >= 1000 ) {
                     break 3;
                 }
@@ -1275,8 +1294,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 <?php if ( $va_show_daily_welcome ) : ?>
 <div class="va-welcome-overlay" id="va-welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="va-welcome-title">
     <div class="va-welcome-modal" id="va-welcome-modal">
-        <div class="va-welcome-modal__hero" aria-hidden="true" style="background-image:url('<?php echo esc_url( $va_welcome_image_url ); ?>');"></div>
-        <h3 class="va-welcome-modal__title" id="va-welcome-title"></h3>
+        <div class="va-welcome-modal__hero" aria-hidden="true">
+            <img src="<?php echo esc_url( $va_welcome_image_url ); ?>" data-fallback="<?php echo esc_attr( $va_welcome_svg_fallback ); ?>" alt="Szerencsesüti kép" id="va-welcome-hero-img">
+        </div>
+        <div class="va-welcome-modal__quote">
+            <h3 class="va-welcome-modal__title" id="va-welcome-title"></h3>
+        </div>
         <button type="button" class="va-welcome-modal__cta" id="va-welcome-close">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
             Napi kívánság bezárása
@@ -1335,17 +1358,38 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     border-radius: 14px;
     border:1px solid rgba(255,255,255,.16);
     background-color: rgba(255,255,255,.04);
-    background-size: cover;
-    background-position: center;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.15);
 }
+.va-welcome-modal__hero img {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+    border-radius: 14px;
+}
+.va-welcome-modal__quote {
+    position: relative;
+    margin: 6px 0 2px;
+    padding: 6px 14px;
+}
+.va-welcome-modal__quote::before,
+.va-welcome-modal__quote::after {
+    position:absolute;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 34px;
+    color: rgba(255,255,255,.58);
+    line-height: 1;
+}
+.va-welcome-modal__quote::before { content: '“'; left: 0; top: -2px; }
+.va-welcome-modal__quote::after { content: '”'; right: 0; bottom: -4px; }
 .va-welcome-modal__title {
     margin: 4px 0 0;
-    font-size: clamp(23px, 4vw, 32px);
-    line-height: 1.2;
-    font-weight: 900;
-    letter-spacing: -0.01em;
-    text-shadow: 0 8px 22px rgba(0,0,0,.48);
+    font-family: 'Trebuchet MS', 'Segoe UI', Arial, sans-serif;
+    font-size: clamp(17px, 2.3vw, 24px);
+    line-height: 1.38;
+    font-weight: 700;
+    letter-spacing: .005em;
+    text-shadow: 0 6px 14px rgba(0,0,0,.44);
 }
 .va-welcome-modal__cta {
     margin-top: 18px;
@@ -1392,7 +1436,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     .va-welcome-overlay { padding: 14px; }
     .va-welcome-modal { padding: 24px 18px 18px; border-radius: 16px; }
     .va-welcome-modal__hero { aspect-ratio: 4 / 3; }
-    .va-welcome-modal__title { font-size: 22px; }
+    .va-welcome-modal__title { font-size: 18px; }
     .va-welcome-modal__cta { width: 100%; }
 }
 
@@ -2845,7 +2889,17 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         var overlay = document.getElementById('va-welcome-overlay');
         var closeBtn = document.getElementById('va-welcome-close');
         var titleEl = document.getElementById('va-welcome-title');
+        var heroImg = document.getElementById('va-welcome-hero-img');
         if (!overlay || !closeBtn || !titleEl) return;
+
+        if (heroImg) {
+            heroImg.addEventListener('error', function(){
+                var fb = heroImg.getAttribute('data-fallback');
+                if (fb && heroImg.src !== fb) {
+                    heroImg.src = fb;
+                }
+            });
+        }
 
         var welcomeMessage = <?php echo wp_json_encode( (string) $va_daily_welcome_message ); ?>;
         titleEl.textContent = welcomeMessage || 'Ma is jo, hogy itt vagy.';
