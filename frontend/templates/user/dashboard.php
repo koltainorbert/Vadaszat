@@ -395,13 +395,20 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                     <label class="va-bulk-select-all-label">
                         <input type="checkbox" id="va-select-all"> Összes
                     </label>
-                    <select class="va-bulk-select" id="va-bulk-action">
-                        <option value="">— Tömeges művelet —</option>
-                        <option value="activate">✅ Aktiválás</option>
-                        <option value="suspend">⏸ Szüneteltetés</option>
-                        <option value="price_change">💰 Ár módosítása</option>
-                        <option value="delete">🗑 Törlés</option>
-                    </select>
+                    <div class="va-bulk-dropdown" id="va-bulk-dropdown">
+                        <button type="button" class="va-bulk-dropdown__toggle" id="va-bulk-dropdown-toggle">
+                            <span id="va-bulk-dropdown-label">— Tömeges művelet —</span>
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+                        </button>
+                        <div class="va-bulk-dropdown__menu" id="va-bulk-dropdown-menu" style="display:none;">
+                            <button type="button" class="va-bulk-dropdown__item" data-value="" data-label="— Tömeges művelet —">— Tömeges művelet —</button>
+                            <button type="button" class="va-bulk-dropdown__item" data-value="activate" data-label="✅ Aktiválás">✅ Aktiválás</button>
+                            <button type="button" class="va-bulk-dropdown__item" data-value="suspend" data-label="⏸ Szüneteltetés">⏸ Szüneteltetés</button>
+                            <button type="button" class="va-bulk-dropdown__item" data-value="price_change" data-label="💰 Ár módosítása">💰 Ár módosítása</button>
+                            <button type="button" class="va-bulk-dropdown__item" data-value="delete" data-label="🗑 Törlés">🗑 Törlés</button>
+                        </div>
+                        <input type="hidden" id="va-bulk-action" value="">
+                    </div>
                     <button class="va-btn va-btn--sm va-bulk-exec" id="va-bulk-exec" style="background:rgba(255,0,0,.18);border:1px solid rgba(255,0,0,.4);color:#fff;">Végrehajtás</button>
                     <span class="va-bulk-count" id="va-bulk-count" style="font-size:11px;color:rgba(255,255,255,.45);margin-left:6px;"></span>
                 </div>

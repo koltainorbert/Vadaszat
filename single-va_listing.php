@@ -212,6 +212,10 @@ $price       = get_post_meta( $post_id, 'va_price',       true );
 
 
 $price_type  = get_post_meta( $post_id, 'va_price_type',  true ) ?: 'fixed';
+$sale_price  = get_post_meta( $post_id, 'va_sale_price',     true );
+$sale_end    = get_post_meta( $post_id, 'va_sale_price_end', true );
+$has_sale    = $sale_price && floatval( $sale_price ) > 0
+               && ( ! $sale_end || strtotime( $sale_end ) >= current_time( 'timestamp' ) );
 
 
 $brand       = get_post_meta( $post_id, 'va_brand',       true );
@@ -1202,7 +1206,12 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
                 </h1>
 
 
+                <?php if ( $has_sale ): ?>
+                <del style="color:rgba(255,255,255,.35);font-size:18px;font-weight:400;display:block;line-height:1.3;margin-bottom:2px;"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></del>
+                <div class="sl__price" style="color:#ff3333;"><?php echo esc_html( number_format( floatval( $sale_price ), 0, ',', ' ' ) . ' Ft' ); ?> <span style="font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,0,0,.2);border:1px solid rgba(255,0,0,.5);border-radius:6px;padding:2px 8px;color:#ff8888;vertical-align:middle;">AKCIÓ</span></div>
+                <?php else: ?>
                 <div class="sl__price"><?php echo esc_html( va_format_price($price, $price_type) ); ?></div>
+                <?php endif; ?>
 
 
 
