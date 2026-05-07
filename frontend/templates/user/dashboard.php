@@ -456,7 +456,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         </div>
                     </details>
 
-                    <details class="va-crm__fold" open>
+                    <details class="va-crm__fold">
                         <summary class="va-crm__fold-summary">
                             <span>Alapadatok</span>
                             <small>Összesítő számok és gyors áttekintés</small>
