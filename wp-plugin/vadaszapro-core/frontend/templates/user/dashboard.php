@@ -36,34 +36,10 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
 $avatar_id    = (int) get_user_meta( $user->ID, 'va_profile_avatar_id', true );
 $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail' ) : '';
 
-$va_welcome_preview_remaining = (int) get_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', true );
-$va_welcome_preview_armed = false;
-if (
-    $_SERVER['REQUEST_METHOD'] === 'POST'
-    && isset( $_POST['va_action'] )
-    && $_POST['va_action'] === 'welcome_preview_10'
-    && isset( $_POST['va_welcome_preview_nonce'] )
-    && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_welcome_preview_nonce'] ) ), 'va_welcome_preview_10' )
-) {
-    $va_welcome_preview_armed = true;
-    $va_welcome_preview_remaining = 10;
-    update_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', $va_welcome_preview_remaining );
-}
-
 $va_today_local       = current_time( 'Y-m-d' );
 $va_last_welcome_seen = (string) get_user_meta( $user->ID, 'va_daily_welcome_seen', true );
-$va_show_daily_welcome = $va_last_welcome_seen !== $va_today_local;
-if ( $va_welcome_preview_remaining > 0 ) {
-    $va_show_daily_welcome = true;
-    if ( ! $va_welcome_preview_armed ) {
-        $va_welcome_preview_remaining--;
-        if ( $va_welcome_preview_remaining > 0 ) {
-            update_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', $va_welcome_preview_remaining );
-        } else {
-            delete_user_meta( $user->ID, 'va_daily_welcome_preview_remaining' );
-        }
-    }
-} elseif ( $va_show_daily_welcome ) {
+$va_show_daily_welcome = current_user_can( 'manage_options' ) && $va_last_welcome_seen !== $va_today_local;
+if ( $va_show_daily_welcome ) {
     update_user_meta( $user->ID, 'va_daily_welcome_seen', $va_today_local );
 }
 
@@ -500,12 +476,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
                     <h2 class="va-dashboard__title">Hirdetéseim</h2>
                     <div class="va-dashboard__title-actions">
-                        <form method="post" class="va-welcome-preview-form">
-                            <?php wp_nonce_field( 'va_welcome_preview_10', 'va_welcome_preview_nonce' ); ?>
-                            <input type="hidden" name="va_action" value="welcome_preview_10">
-                            <button type="submit" class="va-btn va-btn--sm va-welcome-preview-btn">Napi üdvözlés x10</button>
-                            <span class="va-welcome-preview-note">Maradék: <?php echo esc_html( max( 0, $va_welcome_preview_remaining ) ); ?></span>
-                        </form>
                         <?php if ( $submit_page ): ?>
                             <a href="<?php echo esc_url( get_permalink( $submit_page ) ); ?>" class="va-btn va-btn--primary va-btn--sm">+ Új hirdetés</a>
                         <?php endif; ?>
@@ -1613,30 +1583,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     gap:10px;
     flex-wrap:wrap;
     justify-content:flex-end;
-}
-.va-welcome-preview-form {
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-}
-.va-welcome-preview-btn {
-    border:1px solid rgba(126,226,255,.32) !important;
-    background:linear-gradient(180deg, rgba(126,226,255,.14), rgba(126,226,255,.08)) !important;
-    color:#fff !important;
-}
-.va-welcome-preview-btn:hover { filter:brightness(1.08); }
-.va-welcome-preview-note {
-    display:inline-flex;
-    align-items:center;
-    min-height:32px;
-    padding:0 10px;
-    border-radius:999px;
-    border:1px solid rgba(255,255,255,.12);
-    background:rgba(255,255,255,.05);
-    color:rgba(255,255,255,.78);
-    font-size:11px;
-    font-weight:600;
 }
 
 /* ── CRM stat blokk ── */
