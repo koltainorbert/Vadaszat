@@ -717,6 +717,43 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
             <!-- Tab: Profilom -->
             <div id="va-tab-profile" class="va-dashboard__section">
                 <h2 class="va-dashboard__title">Profilom szerkesztése</h2>
+
+                <!-- Profil teljességi sáv -->
+                <div class="va-profile-completeness">
+                    <div class="va-profile-completeness__head">
+                        <span class="va-profile-completeness__label">Profil teljessége</span>
+                        <span class="va-profile-completeness__pct"><?php echo esc_html( $completeness_pct ); ?>%</span>
+                    </div>
+                    <div class="va-profile-completeness__bar">
+                        <div style="width:<?php echo esc_attr( $completeness_pct ); ?>%;background:<?php echo $completeness_pct >= 80 ? '#00c850' : ( $completeness_pct >= 50 ? '#ffb400' : '#ff4444' ); ?>"></div>
+                    </div>
+                    <div class="va-profile-completeness__items">
+                    <?php foreach ( $completeness_items as $item_label => $item_done ): ?>
+                        <span class="va-profile-completeness__item <?php echo $item_done ? 'done' : ''; ?>"><?php echo $item_done ? '✓' : '○'; ?> <?php echo esc_html( $item_label ); ?></span>
+                    <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- Trust badge-ek -->
+                <div class="va-trust-badges">
+                    <span class="va-trust-badge <?php echo $user->user_email ? 'active' : ''; ?>">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        E-mail megerősítve
+                    </span>
+                    <span class="va-trust-badge <?php echo $phone ? 'active' : ''; ?>">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.56 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                        Telefonszám megadva
+                    </span>
+                    <span class="va-trust-badge <?php echo $crm_active_count > 0 ? 'active' : ''; ?>">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        Aktív hirdető
+                    </span>
+                    <span class="va-trust-badge active" title="Regisztráció óta">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        Tagság: <?php echo esc_html( $membership_days < 365 ? $membership_days . ' nap' : round( $membership_days / 365, 1 ) . ' év' ); ?>
+                    </span>
+                </div>
+
                 <form method="post" enctype="multipart/form-data">
                     <?php wp_nonce_field( 'va_profile', 'va_profile_nonce' ); ?>
                     <input type="hidden" name="va_action" value="profile">
@@ -1241,6 +1278,128 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-dashboard__nav-item--danger .va-dashboard__nav-ico svg { stroke:#ff6060; }
 .va-dashboard__nav-item--danger:hover,
 .va-dashboard__nav-item--danger.active { background:rgba(255,42,42,.1) !important; }
+
+/* ── Sort bar ── */
+.va-sort-bar {
+    display:flex;align-items:center;gap:6px;margin-bottom:10px;flex-wrap:wrap;
+}
+.va-sort-btn {
+    display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);color:rgba(255,255,255,.6);
+    font-size:11px;font-weight:600;text-decoration:none;transition:.15s ease;
+}
+.va-sort-btn:hover { border-color:rgba(255,0,0,.4);color:#fff; }
+.va-sort-btn.active { border-color:rgba(255,0,0,.5);background:rgba(255,0,0,.12);color:#fff; }
+
+/* ── Bulk toolbar ── */
+.va-bulk-toolbar {
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    margin-bottom:10px;padding:8px 12px;
+    border:1px solid rgba(255,255,255,.08);border-radius:10px;
+    background:rgba(255,255,255,.03);
+}
+.va-bulk-select-all-label { font-size:12px;color:#fff;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer; }
+.va-bulk-select {
+    height:30px;padding:0 8px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.07);color:#fff;font-size:12px;cursor:pointer;
+}
+.va-bulk-select:focus { outline:none;border-color:#ff2a2a; }
+
+/* ── Bulk price panel ── */
+.va-bulk-price-panel {
+    margin-bottom:12px;padding:14px;border:1px solid rgba(255,200,0,.2);border-radius:10px;
+    background:rgba(255,200,0,.04);
+}
+.va-bulk-price-label { display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.6);margin-bottom:4px; }
+.va-bulk-price-input {
+    height:32px;padding:0 10px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
+    background:rgba(255,255,255,.07);color:#fff;font-size:13px;min-width:140px;
+}
+.va-bulk-price-input:focus { outline:none;border-color:#ff2a2a; }
+
+/* ── Akciós ár quick-edit gomb ── */
+.va-sale-edit-btn {
+    background:none;border:none;cursor:pointer;font-size:13px;padding:2px 4px;
+    opacity:.55;transition:.15s;vertical-align:middle;
+}
+.va-sale-edit-btn:hover { opacity:1; }
+
+/* ── Akciós ár modal ── */
+.va-sale-modal-overlay {
+    display:none;position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,.75);align-items:center;justify-content:center;
+}
+.va-sale-modal-overlay.open { display:flex; }
+.va-sale-modal {
+    background:rgb(14,14,14);border:1px solid rgba(255,255,255,.12);
+    border-radius:16px;padding:24px;max-width:380px;width:90%;
+    box-shadow:0 20px 60px rgba(0,0,0,.8);
+}
+.va-sale-modal h3 { margin:0 0 16px;font-size:16px;color:#fff; }
+.va-sale-modal label { display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.55);margin:10px 0 4px; }
+.va-sale-modal input {
+    width:100%;height:36px;padding:0 12px;border-radius:8px;
+    border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
+    color:#fff;font-size:14px;box-sizing:border-box;
+}
+.va-sale-modal input:focus { outline:none;border-color:#ff2a2a;box-shadow:0 0 0 3px rgba(255,42,42,.15); }
+.va-sale-modal__actions { display:flex;gap:8px;margin-top:18px;justify-content:flex-end; }
+.va-sale-modal__save {
+    padding:0 18px;height:36px;border-radius:8px;border:1px solid rgba(255,0,0,.5);
+    background:rgba(255,0,0,.2);color:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:.15s;
+}
+.va-sale-modal__save:hover { background:rgba(255,0,0,.35); }
+.va-sale-modal__cancel {
+    padding:0 14px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;
+}
+.va-sale-modal__remove {
+    padding:0 14px;height:36px;border-radius:8px;border:1px solid rgba(255,42,42,.3);
+    background:rgba(255,42,42,.08);color:#ff8080;font-size:13px;cursor:pointer;margin-right:auto;
+}
+
+/* ── Lejárat badge ── */
+.va-expiry-badge {
+    display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:999px;
+    font-size:10px;font-weight:700;
+}
+.va-expiry-badge--warn { background:rgba(255,153,0,.15);border:1px solid rgba(255,153,0,.4);color:#ffb400; }
+.va-expiry-badge--critical { background:rgba(255,42,42,.18);border:1px solid rgba(255,42,42,.5);color:#ff5555; }
+
+/* ── Képszám badge ── */
+.va-img-count-badge {
+    display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:999px;
+    font-size:10px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.55);
+}
+
+/* ── Profil completeness ── */
+.va-profile-completeness {
+    margin-bottom:20px;padding:14px;border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;background:rgba(255,255,255,.03);
+}
+.va-profile-completeness__head { display:flex;justify-content:space-between;margin-bottom:8px; }
+.va-profile-completeness__label { font-size:12px;font-weight:700;color:#fff; }
+.va-profile-completeness__pct { font-size:12px;font-weight:800;color:#fff; }
+.va-profile-completeness__bar {
+    height:5px;border-radius:999px;background:rgba(255,255,255,.1);overflow:hidden;margin-bottom:10px;
+}
+.va-profile-completeness__bar > div { height:100%;border-radius:inherit;transition:width .4s; }
+.va-profile-completeness__items { display:flex;flex-wrap:wrap;gap:6px; }
+.va-profile-completeness__item {
+    font-size:11px;color:rgba(255,255,255,.4);padding:2px 8px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
+}
+.va-profile-completeness__item.done { color:#00c850;border-color:rgba(0,200,80,.3);background:rgba(0,200,80,.07); }
+
+/* ── Trust badge-ek ── */
+.va-trust-badges { display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px; }
+.va-trust-badge {
+    display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
+    color:rgba(255,255,255,.35);font-size:11px;font-weight:600;
+}
+.va-trust-badge.active { color:#fff;border-color:rgba(0,200,80,.4);background:rgba(0,200,80,.09); }
+.va-trust-badge.active svg { stroke:#00c850; }
 </style>
 
 <script>
