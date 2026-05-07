@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #192 (Fiókoldal: valid megtekintés oszlop)
+
+### Mit csinaltunk [x]
+- [x] A sajat fiok Hirdetéseim tablajaban uj oszlop: `Megtekintés`
+- [x] Az oszlop erteke a nyers `va_views` meta (adminnal egyezo, valid szam)
+- [x] Modositas atvezetve source + plugin mirror dashboard sablonba
+- [x] Hibavizsgalat lefuttatva az erintett fajlokon (nincs uj hiba)
+
+### Hol tartunk
+A `/va-fiok/` oldalon a sajat feltoltott hirdetesek mellett most mar a valos, admin oldallal megegyezo megtekintes latszik.
+
+---
+
 ## 2026. 05. 07. – Session #191 (Megtekintes szam stabilitas IP alapon)
 
 ### Mit csinaltunk [x]

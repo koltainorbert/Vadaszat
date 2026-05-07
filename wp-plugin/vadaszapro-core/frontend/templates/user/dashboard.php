@@ -135,6 +135,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);white-space:nowrap;min-width:110px;">Ár</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Státusz</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Dátum</th>
+                            <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Megtekintés</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Kiemelés</th>
                             <th style="padding:8px;"></th>
                         </tr>
@@ -143,6 +144,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                     <?php foreach ( $listings as $l ):
                         $price    = get_post_meta( $l->ID, 'va_price', true );
                         $p_type   = get_post_meta( $l->ID, 'va_price_type', true ) ?: 'fixed';
+                        $valid_views = (int) get_post_meta( $l->ID, 'va_views', true );
                         $is_suspended    = get_post_meta( $l->ID, 'va_is_suspended', true ) === '1';
                         $suspended_by_plan = get_post_meta( $l->ID, 'va_suspended_by_plan', true ) === '1';
                         $suspended_at    = (int) get_post_meta( $l->ID, 'va_suspended_at', true );
@@ -197,6 +199,7 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                         <td style="padding:10px 8px;white-space:nowrap;min-width:110px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
+                        <td style="padding:10px 8px;color:rgba(255,255,255,0.85);"><?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?></td>
                         <td style="padding:10px 8px;">
                             <?php
                             // Boost gomb
