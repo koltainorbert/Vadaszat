@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 07. – Session #207 (Fiók dashboard UX: fix bal menü + bulk egyszerűsítés)
+
+### Mit csinaltunk [x]
+- [x] Dashboard layout felülírás: bal menü fixen marad, a középső tartalom saját sávban scrollozik
+- [x] Mobilon visszaáll normál folyó layoutra (ne törjön az oldal)
+- [x] Tömeges műveletből eltávolítva az `Ár módosítása` opció
+- [x] Bulk ár/akció panel teljesen eltávolítva (HTML + CSS)
+- [x] Kapcsolódó JS logika tisztítva (`price_change` ág kivéve)
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+Fiók oldalon már nem az egész oldal scrollozik desktopon: a bal nav fix, a fő tartalom külön görgethető; a bulk művelet csak Aktiválás/Szüneteltetés/Törlés.
+
+---
+
 ## 2026. 05. 07. – Session #206 (Custom fekete naptár a popupban)
 
 ### Mit csinaltunk [x]
