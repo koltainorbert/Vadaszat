@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #210 (CRM stat panel vizuális redesign)
+
+### Mit csinaltunk [x]
+- [x] A Hirdeteseim statisztikai blokk teljes visual refresh-t kapott modern dashboard stilusban
+- [x] KPI kartyak uj stilusa: melyebb panel, eros tipografia, glow/gradient header line, hover emeles
+- [x] Panelek/progress barok/toplista badge-ek atdolgozva jobb kontrasztra es premium megjelenesre
+- [x] Dot-grid + sotet alap megtartva, feher szoveggel es piros-narancs accenttel
+- [x] Root sablon szinkron plugin mirrorba + Deploy Plugin sikeresen lefutott
+
+### Hol tartunk
+A /va-fiok statisztika mar nem fapados: modern, kontrasztos dashboard kartyas nezetet ad ugyanazzal az adattartalommal.
+
+---
+
 ## 2026. 05. 07. – Session #209 (Napi üdvözlő popup véglegesítés: szerencsesüti)
 
 ### Mit csinaltunk [x]
