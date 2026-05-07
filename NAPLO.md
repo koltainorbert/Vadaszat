@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #196 (Dashboard render hotfix)
+
+### Mit csinaltunk [x]
+- [x] Javítva: a `frontend/templates/user/dashboard.php` fájlban hiányzó `<style>` nyitó tag
+- [x] Tünet: teljes CSS szövegként jelent meg a `/va-fiok/` oldalon, layout szétesett
+- [x] Plugin mirror szinkron (dashboard.php)
+- [x] Deploy All futtatva, sikeres
+
+### Hol tartunk
+A dashboard oldal CSS-e újra rendesen értelmeződik, a lap normálisan renderel.
+
+---
+
 ## 2026. 05. 07. – Session #195 (Dashboard: bulk árazó, akciós ár, rendezés, profil)
 
 ### Mit csinaltunk [x]
