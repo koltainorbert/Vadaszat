@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 07. – Session #214 (Stat panel egyszerűsítés lenyitható blokkokkal)
+
+### Mit csinaltunk [x]
+- [x] A stat panel alapnezetet letisztitottuk: csak a fo attekinto resz marad egybol lathato
+- [x] A jelzesek/trendek kulon lenyithato blokkba kerultek
+- [x] Az alap KPI adatok kulon lenyithato blokkba kerultek, nyitott alapallapottal
+- [x] A reszletes bontas (statusz, toplista, kiemelesek) kulon lenyithato blokk lett
+- [x] Natív `details/summary` megoldas hasznalva, kulon JS nelkul
+- [x] Root sablon szinkron plugin mirrorba + Deploy Plugin sikeresen lefutott
+
+### Hol tartunk
+A /va-fiok statisztika most mar sokkal atlathatobb: a fo adatok latszanak azonnal, a reszletesebb blokkok pedig lenyithatok.
+
+---
+
 ## 2026. 05. 07. – Session #213 (Future-market stat dashboard redesign)
 
 ### Mit csinaltunk [x]
