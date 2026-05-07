@@ -404,32 +404,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                             <button type="button" class="va-bulk-dropdown__item" data-value="" data-label="— Tömeges művelet —">— Tömeges művelet —</button>
                             <button type="button" class="va-bulk-dropdown__item" data-value="activate" data-label="✅ Aktiválás">✅ Aktiválás</button>
                             <button type="button" class="va-bulk-dropdown__item" data-value="suspend" data-label="⏸ Szüneteltetés">⏸ Szüneteltetés</button>
-                            <button type="button" class="va-bulk-dropdown__item" data-value="price_change" data-label="💰 Ár módosítása">💰 Ár módosítása</button>
                             <button type="button" class="va-bulk-dropdown__item" data-value="delete" data-label="🗑 Törlés">🗑 Törlés</button>
                         </div>
                         <input type="hidden" id="va-bulk-action" value="">
                     </div>
                     <button class="va-btn va-btn--sm va-bulk-exec" id="va-bulk-exec" style="background:rgba(255,0,0,.18);border:1px solid rgba(255,0,0,.4);color:#fff;">Végrehajtás</button>
                     <span class="va-bulk-count" id="va-bulk-count" style="font-size:11px;color:rgba(255,255,255,.45);margin-left:6px;"></span>
-                </div>
-
-                <!-- Bulk ár módosítás panel -->
-                <div class="va-bulk-price-panel" id="va-bulk-price-panel" style="display:none;">
-                    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
-                        <div>
-                            <label class="va-bulk-price-label">Új ár (Ft)</label>
-                            <input type="number" id="va-bulk-new-price" class="va-bulk-price-input" min="0" placeholder="pl. 1500000">
-                        </div>
-                        <div>
-                            <label class="va-bulk-price-label">Akciós ár (opcionális, Ft)</label>
-                            <input type="number" id="va-bulk-sale-price" class="va-bulk-price-input" min="0" placeholder="Üresen hagyd, ha nincs">
-                        </div>
-                        <div>
-                            <label class="va-bulk-price-label">Akció vége (opcionális)</label>
-                            <input type="text" id="va-bulk-sale-end" class="va-bulk-price-input" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
-                        </div>
-                    </div>
-                    <p style="font-size:11px;color:rgba(255,255,255,.4);margin:8px 0 0;">Az akciós ár minden kijelölt hirdetésre vonatkozik. A normál ár módosítása után külön akciós ár is állítható egyenként.</p>
                 </div>
 
                 <table class="va-user-listings-table" style="width:100%;border-collapse:collapse;font-size:14px;">
@@ -1844,7 +1824,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     var bulkDropdownToggle = document.getElementById('va-bulk-dropdown-toggle');
     var bulkDropdownLabel= document.getElementById('va-bulk-dropdown-label');
     var bulkActionInput  = document.getElementById('va-bulk-action');
-    var bulkPricePanel   = document.getElementById('va-bulk-price-panel');
 
     function closeBulkDropdown() {
         if (bulkDropdown) bulkDropdown.classList.remove('open');
@@ -1878,7 +1857,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                 bulkDropdownMenu.querySelectorAll('.va-bulk-dropdown__item').forEach(function(i){ i.classList.remove('selected'); });
                 this.classList.add('selected');
                 closeBulkDropdown();
-                if (bulkPricePanel) bulkPricePanel.style.display = val === 'price_change' ? 'block' : 'none';
             });
         });
     }
@@ -1899,26 +1877,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                 bulk_action: action
             });
             ids.forEach(function(id){ params.append('listing_ids[]', id); });
-
-            if (action === 'price_change') {
-                var newPrice = document.getElementById('va-bulk-new-price') ? document.getElementById('va-bulk-new-price').value : '';
-                if (!newPrice) { alert('Add meg az új árat!'); return; }
-                params.set('new_price', newPrice);
-                // bulk sale price
-                var saleP = document.getElementById('va-bulk-sale-price') ? document.getElementById('va-bulk-sale-price').value : '';
-                var saleERaw = document.getElementById('va-bulk-sale-end') ? document.getElementById('va-bulk-sale-end').value : '';
-                var saleE = normalizeIsoDateText(saleERaw);
-                if (saleE === null) { alert('Akció vége dátum formátum: YYYY-MM-DD'); return; }
-                if (saleP) {
-                    ids.forEach(function(id){
-                        var sp = new URLSearchParams({
-                            action: 'va_set_sale_price', nonce: _nonce,
-                            post_id: id, sale_price: saleP, sale_end: saleE
-                        });
-                        fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:sp.toString() });
-                    });
-                }
-            }
 
             bulkExecBtn.disabled = true;
             bulkExecBtn.textContent = 'Folyamatban...';
