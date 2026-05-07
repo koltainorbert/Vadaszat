@@ -270,6 +270,8 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         <!-- Tartalom -->
 
         <style>
+
+        <style>
         <div class="va-dashboard__content">
 
             <!-- Tab: Hirdetéseim -->
