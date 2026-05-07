@@ -860,12 +860,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         <label>Akciós ár (Ft) — 0 = törlés</label>
         <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
         <label>Akció vége (opcionális)</label>
-        <div class="va-sale-modal__date-wrap">
-            <input type="date" id="va-sale-modal-end" class="va-sale-modal__date-input" placeholder="YYYY-MM-DD">
-            <button type="button" id="va-sale-modal-end-pick" class="va-sale-modal__date-pick" aria-label="Naptár megnyitása" title="Naptár megnyitása">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            </button>
-        </div>
+        <input type="date" id="va-sale-modal-end" class="va-sale-modal__date-input" placeholder="YYYY-MM-DD">
         <div class="va-sale-modal__actions">
             <button class="va-sale-modal__remove" id="va-sale-modal-remove">Akció törlése</button>
             <button class="va-sale-modal__cancel" id="va-sale-modal-cancel">Mégse</button>
@@ -1403,6 +1398,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     padding:18px;
     background:linear-gradient(180deg, rgba(18,18,18,.98), rgba(8,8,8,.98));
     box-shadow:0 22px 60px rgba(0,0,0,.65), 0 0 0 1px rgba(255,0,0,.12) inset;
+    color-scheme:dark;
 }
 .va-sale-modal h3 { margin:0 0 12px; font-size:16px; color:#fff; }
 .va-sale-modal label { display:block; font-size:11px; font-weight:700; color:rgba(255,255,255,.55); margin:10px 0 4px; }
@@ -1430,32 +1426,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     border-color:rgba(255,0,0,.55);
     box-shadow:0 0 0 3px rgba(255,0,0,.14);
 }
-.va-sale-modal__date-wrap {
-    position:relative;
-}
 .va-sale-modal__date-input {
-    padding-right:44px !important;
+    color-scheme:dark;
 }
-.va-sale-modal__date-pick {
-    position:absolute;
-    right:6px;
-    top:50%;
-    transform:translateY(-50%);
-    width:30px;
-    height:30px;
-    border-radius:8px;
-    border:1px solid rgba(255,255,255,.18);
-    background:rgba(255,255,255,.06);
-    color:#fff;
-    display:inline-flex;
-    align-items:center;
-    justify-content:center;
-    cursor:pointer;
-    transition:.15s;
-}
-.va-sale-modal__date-pick:hover {
-    border-color:rgba(255,0,0,.45);
-    background:rgba(255,0,0,.16);
+.va-sale-modal__date-input::-webkit-calendar-picker-indicator {
+    filter:invert(1) brightness(1.25);
+    opacity:.9;
 }
 .va-sale-modal__actions {
     display:flex;
@@ -1836,7 +1812,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     var salePostId  = document.getElementById('va-sale-modal-post-id');
     var salePrice   = document.getElementById('va-sale-modal-price');
     var saleEnd     = document.getElementById('va-sale-modal-end');
-    var saleEndPick = document.getElementById('va-sale-modal-end-pick');
     var saleSaveBtn = document.getElementById('va-sale-modal-save');
     var saleRemBtn  = document.getElementById('va-sale-modal-remove');
     var saleCancel  = document.getElementById('va-sale-modal-cancel');
@@ -1900,15 +1875,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         saleRemBtn.addEventListener('click', function(){
             if (!confirm('Törlöd az akciós árat?')) return;
             saveSalePrice(salePostId ? salePostId.value : '', 0, '');
-        });
-    }
-    if (saleEndPick && saleEnd) {
-        saleEndPick.addEventListener('click', function(){
-            if (typeof saleEnd.showPicker === 'function') {
-                saleEnd.showPicker();
-            } else {
-                saleEnd.focus();
-            }
         });
     }
 

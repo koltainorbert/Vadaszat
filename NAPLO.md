@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #203 (Dupla naptár ikon fix + dark picker)
+
+### Mit csinaltunk [x]
+- [x] Akció modalból eltávolítva a második (custom) naptár gomb
+- [x] Egyetlen natív naptárválasztó ikon maradt a dátummezőben
+- [x] Dátummezőre és modalra `color-scheme: dark` beállítás került
+- [x] Naptár ikon kontrasztja javítva (`::-webkit-calendar-picker-indicator` filter)
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+Az akció popupban már csak 1 naptár ikon látszik, és a picker megjelenése a lehető legjobban sötétítve van a böngésző korlátain belül.
+
+---
+
 ## 2026. 05. 07. – Session #202 (Akció modal: naptár ikon + gomb polish)
 
 ### Mit csinaltunk [x]
