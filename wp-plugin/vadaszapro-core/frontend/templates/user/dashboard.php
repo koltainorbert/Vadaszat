@@ -315,12 +315,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
                     <div class="va-crm__hero">
                         <article class="va-crm__hero-chart">
-                            <div class="va-crm__hero-title">Market Flow</div>
+                            <div class="va-crm__hero-title">Piaci mozgas</div>
                             <svg viewBox="0 0 320 130" class="va-crm__linechart" role="img" aria-label="Aktivitasi trend grafikon">
                                 <defs>
                                     <linearGradient id="vaLineGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stop-color="rgba(255,56,56,.40)"/>
-                                        <stop offset="100%" stop-color="rgba(255,56,56,0)"/>
+                                        <stop offset="0%" stop-color="rgba(84,182,255,.34)"/>
+                                        <stop offset="100%" stop-color="rgba(84,182,255,0)"/>
                                     </linearGradient>
                                 </defs>
                                 <path class="va-crm__line-area" d="M16 110 L54 84 L92 90 L130 60 L168 66 L206 38 L244 46 L282 24 L282 110 Z" fill="url(#vaLineGrad)"></path>
@@ -344,17 +344,17 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         </article>
 
                         <article class="va-crm__hero-metrics">
-                            <div class="va-crm__ring" style="--pc:<?php echo esc_attr( $crm_active_rate_pc ); ?>;">
+                            <div class="va-crm__ring va-crm__ring--a" style="--pc:<?php echo esc_attr( $crm_active_rate_pc ); ?>;">
                                 <span><?php echo esc_html( $crm_active_rate_pc ); ?>%</span>
-                                <small>Aktiv rata</small>
+                                <small>Aktiv arany</small>
                             </div>
-                            <div class="va-crm__ring" style="--pc:<?php echo esc_attr( $crm_momentum_pc ); ?>;">
+                            <div class="va-crm__ring va-crm__ring--b" style="--pc:<?php echo esc_attr( $crm_momentum_pc ); ?>;">
                                 <span><?php echo esc_html( $crm_momentum_pc ); ?>%</span>
-                                <small>7/30 momentum</small>
+                                <small>Heti tempo</small>
                             </div>
-                            <div class="va-crm__ring" style="--pc:<?php echo esc_attr( $crm_engagement_pc ); ?>;">
+                            <div class="va-crm__ring va-crm__ring--c" style="--pc:<?php echo esc_attr( $crm_engagement_pc ); ?>;">
                                 <span><?php echo esc_html( $crm_engagement_pc ); ?>%</span>
-                                <small>Engagement</small>
+                                <small>Erdeklodes</small>
                             </div>
                         </article>
                     </div>
@@ -1288,12 +1288,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     border:1px solid rgba(255,255,255,.12);
     border-radius:18px;
     background:
-        radial-gradient(circle at 8% -16%, rgba(255,0,0,.35), transparent 44%),
-        radial-gradient(circle at 92% 108%, rgba(255,120,0,.22), transparent 42%),
+        radial-gradient(circle at 8% -16%, rgba(70,150,255,.26), transparent 44%),
+        radial-gradient(circle at 92% 108%, rgba(46,220,170,.18), transparent 42%),
         radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px),
         rgb(6,6,6);
     background-size: auto, auto, 14px 14px, auto;
-    box-shadow: 0 26px 60px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.12);
+    box-shadow: 0 18px 42px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.1);
     font-family: "Space Grotesk", "Rajdhani", "Segoe UI", sans-serif;
 }
 .va-crm__head {
@@ -1349,11 +1349,11 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:block;
 }
 .va-crm__line-stroke {
-    stroke:#ff4b31;
-    stroke-width:3.1;
+    stroke:#66d1ff;
+    stroke-width:2;
     stroke-linecap:round;
     stroke-linejoin:round;
-    filter: drop-shadow(0 0 8px rgba(255,85,45,.45));
+    filter: drop-shadow(0 0 6px rgba(84,182,255,.3));
     stroke-dasharray: 600;
     stroke-dashoffset: 600;
     animation: vaChartDraw 1.2s ease forwards;
@@ -1364,8 +1364,8 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-crm__line-points circle {
     fill:#fff;
-    stroke:#ff3f24;
-    stroke-width:1.8;
+    stroke:#59c6f8;
+    stroke-width:1.4;
 }
 .va-crm__flow-bars {
     margin-top:8px;
@@ -1377,9 +1377,17 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-crm__flow-bars span {
     border-radius:4px 4px 2px 2px;
-    background:linear-gradient(180deg, rgba(255,140,38,.92), rgba(255,38,38,.9));
-    box-shadow: 0 0 10px rgba(255,66,30,.32);
+    background:linear-gradient(180deg, rgba(109,220,255,.9), rgba(77,145,255,.82));
+    box-shadow: 0 0 8px rgba(98,188,255,.24);
     animation: vaBarPop .55s ease both;
+}
+.va-crm__flow-bars span:nth-child(3n+2) {
+    background:linear-gradient(180deg, rgba(112,244,206,.9), rgba(52,196,161,.84));
+    box-shadow: 0 0 8px rgba(64,220,176,.22);
+}
+.va-crm__flow-bars span:nth-child(3n) {
+    background:linear-gradient(180deg, rgba(255,210,112,.9), rgba(255,158,76,.82));
+    box-shadow: 0 0 8px rgba(255,176,94,.2);
 }
 .va-crm__hero-metrics {
     padding:12px;
@@ -1389,7 +1397,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-crm__ring {
     --ring-track: rgba(255,255,255,.12);
-    --ring-fill: linear-gradient(145deg,#ff2020,#ff8d19);
+    --ring-a:#66d1ff;
+    --ring-b:#55e4c5;
+    --ring-c:#ffc977;
     position:relative;
     aspect-ratio:1/1;
     border-radius:50%;
@@ -1399,21 +1409,27 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     justify-content:center;
     background:
         radial-gradient(closest-side, rgba(10,10,12,.98) 76%, transparent 77%),
-        conic-gradient(from 180deg, #ff1818 calc(var(--pc) * 1%), #ff8f14 0),
+        conic-gradient(from 180deg, var(--ring-a) calc(var(--pc) * 1%), rgba(255,255,255,.07) 0),
         conic-gradient(var(--ring-track) 0 100%);
     border:1px solid rgba(255,255,255,.14);
     box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
 }
+.va-crm__ring--b {
+    --ring-a:#56e4c5;
+}
+.va-crm__ring--c {
+    --ring-a:#ffc578;
+}
 .va-crm__ring span {
     color:#fff;
-    font-weight:900;
-    font-size:18px;
+    font-weight:700;
+    font-size:17px;
     line-height:1;
 }
 .va-crm__ring small {
     margin-top:4px;
     color:rgba(255,255,255,.7);
-    font-size:10px;
+    font-size:9px;
     text-transform:uppercase;
     letter-spacing:.04em;
     text-align:center;
@@ -1437,9 +1453,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     content:"";
     position:absolute;
     inset:0 0 auto 0;
-    height:2px;
-    background:linear-gradient(90deg, #ff1a1a, #ff6f00);
-    opacity:.8;
+    height:1px;
+    background:linear-gradient(90deg, #66d1ff, #58e2bf, #ffc578);
+    opacity:.65;
 }
 .va-crm__kpi::after {
     content:"";
@@ -1453,14 +1469,14 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         repeating-linear-gradient(90deg,
             rgba(255,255,255,.08) 0 5px,
             transparent 5px 9px),
-        linear-gradient(180deg, rgba(255,0,0,.22), rgba(255,0,0,0));
-    opacity:.75;
+        linear-gradient(180deg, rgba(88,198,255,.16), rgba(88,198,255,0));
+    opacity:.55;
     pointer-events:none;
 }
 .va-crm__kpi:hover {
-    transform: translateY(-2px);
-    border-color: rgba(255,70,70,.55);
-    box-shadow: 0 10px 26px rgba(0,0,0,.34);
+    transform: translateY(-1px);
+    border-color: rgba(122,206,255,.45);
+    box-shadow: 0 8px 18px rgba(0,0,0,.25);
 }
 .va-crm__kpi-label {
     display:block;
@@ -1473,10 +1489,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-crm__kpi-value {
     display:block;
     color:#fff;
-    font-size:22px;
-    font-weight:900;
+    font-size:20px;
+    font-weight:700;
     line-height:1.08;
-    text-shadow: 0 7px 22px rgba(0,0,0,.35);
+    text-shadow: 0 4px 12px rgba(0,0,0,.24);
 }
 .va-crm__kpi-sub {
     display:block;
@@ -1494,10 +1510,16 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-crm__kpi-spark span {
     border-radius:3px 3px 2px 2px;
-    background: linear-gradient(180deg, rgba(255,153,42,.9), rgba(255,42,42,.86));
+    background: linear-gradient(180deg, rgba(115,220,255,.88), rgba(84,156,255,.84));
     opacity:.92;
     transform-origin: bottom;
     animation: vaBarPop .55s ease both;
+}
+.va-crm__kpi-spark span:nth-child(3n+2) {
+    background: linear-gradient(180deg, rgba(116,241,208,.88), rgba(70,200,164,.84));
+}
+.va-crm__kpi-spark span:nth-child(3n) {
+    background: linear-gradient(180deg, rgba(255,216,126,.88), rgba(255,173,94,.84));
 }
 .va-crm__kpi-spark span:nth-child(1) { animation-delay:.02s; }
 .va-crm__kpi-spark span:nth-child(2) { animation-delay:.05s; }
