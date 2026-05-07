@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #224 (Facebook megosztás cím finomítás)
+
+### Mit csinaltunk [x]
+- [x] A `va_listing` oldalak social címe külön logikát kapott (OG + Twitter)
+- [x] Megosztási cím formátum: `Főcím | Eladó | Ár: ...`
+- [x] Akció esetén: `Főcím | Eladó | Akciós ár: ... (eredeti: ...)`
+- [x] Lejárt akció automatikusan nem számít aktív akciónak
+- [x] Root SEO fájl szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+Facebook megosztásnál a hirdetés címe most már tartalmazza az `Eladó` jelzést és az árat, aktív akciónál pedig az akciós árat is.
+
+---
+
 ## 2026. 05. 07. – Session #223 (Komplett SEO motor beépítés)
 
 ### Mit csinaltunk [x]
