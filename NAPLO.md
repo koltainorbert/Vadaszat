@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 07. – Session #219 (Napi kívánság popup újratervezés)
+
+### Mit csinaltunk [x]
+- [x] A napi popup vizualis resze teljesen atdolgozva (ikonos "suti" blokk eltavolitva)
+- [x] Feher szovegkenyszer beallitva a popup teljes tartalmara
+- [x] Gombfelirat cserelve: `Napi kívánság bezárása`
+- [x] Szerveroldali 1000 darabos magyar kivansag generator beepitve
+- [x] IP-alapu 1 eves ismetlesvedelem beepitve (`transient` alapon)
+- [x] Dashboard sablon plugin mirror szinkron + Deploy Plugin sikeres
+
+### Hol tartunk
+A napi popup most mar egyetlen, szerveroldalon valasztott magyar kivansagot mutat, es ugyanazon IP-n 1 evig nem adja ujra ugyanazt a kivansagot.
+
+---
+
 ## 2026. 05. 07. – Session #218 (Napi üdvözlés x10 ideiglenes előnézet)
 
 ### Mit csinaltunk [x]
