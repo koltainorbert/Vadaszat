@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 05. 07. – Session #198 (Dashboard CSS megjelenés végleges hotfix)
+
+### Mit csinaltunk [x]
+- [x] Javítva: hiányzó `<style>` nyitó tag visszaállítva a modal blokk után
+- [x] Tünet: CSS szövegként jelent meg a dashboard alján
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+A dashboard CSS újra stíluslapként renderelődik, nem szövegként.
+
+---
+
 ## 2026. 05. 07. – Session #197 (Dashboard content visszaállítás)
 
 ### Mit csinaltunk [x]
