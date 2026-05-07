@@ -68,7 +68,54 @@ if ( $va_welcome_preview_remaining > 0 ) {
 }
 
 $va_daily_welcome_message = '';
-$va_welcome_image_url = content_url( 'uploads/fortune-cookies.png' );
+
+$va_welcome_svg_fallback = 'data:image/svg+xml;utf8,' . rawurlencode(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 560">'
+    . '<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2a0909"/><stop offset="100%" stop-color="#070707"/></linearGradient></defs>'
+    . '<rect width="1280" height="560" fill="url(#bg)"/>'
+    . '<g fill="#f6d9af" stroke="#d8b487" stroke-width="6" opacity=".95">'
+    . '<path d="M170 290c70-56 156-62 238 12-70 24-120 72-150 142-58-42-88-88-88-154z"/>'
+    . '<path d="M470 210c64-50 144-54 214 14-62 20-108 62-136 124-52-38-78-78-78-138z"/>'
+    . '<path d="M760 300c70-56 156-62 238 12-70 24-120 72-150 142-58-42-88-88-88-154z"/>'
+    . '<path d="M970 190c58-46 128-50 190 12-54 18-92 52-116 104-44-32-66-66-74-116z"/>'
+    . '</g></svg>'
+);
+
+$va_welcome_image_url = '';
+$va_welcome_image_paths = [];
+
+$va_upload_cookie_path = WP_CONTENT_DIR . '/uploads/fortune-cookies.png';
+if ( file_exists( $va_upload_cookie_path ) ) {
+    $va_welcome_image_url = content_url( 'uploads/fortune-cookies.png' );
+}
+
+if ( '' === $va_welcome_image_url ) {
+    $va_user_image_url = trim( (string) get_user_meta( $user->ID, 'va_welcome_image_url', true ) );
+    if ( '' !== $va_user_image_url ) {
+        $va_welcome_image_url = $va_user_image_url;
+    }
+}
+
+if ( '' === $va_welcome_image_url && defined( 'VA_PLUGIN_DIR' ) && defined( 'VA_PLUGIN_URL' ) ) {
+    $va_plugin_cookie_path = VA_PLUGIN_DIR . 'assets/demo/fortune-cookies.png';
+    if ( file_exists( $va_plugin_cookie_path ) ) {
+        $va_welcome_image_url = VA_PLUGIN_URL . 'assets/demo/fortune-cookies.png';
+    }
+}
+
+if ( '' === $va_welcome_image_url ) {
+    $va_welcome_image_url = $va_welcome_svg_fallback;
+}
+
+$va_welcome_name = trim( (string) $user->display_name );
+if ( '' === $va_welcome_name ) {
+    $va_welcome_name = 'Vadasz';
+}
+if ( strtolower( (string) $user->user_login ) === 'weingartnerauto' || strtolower( $va_welcome_name ) === 'weingartnerauto' ) {
+    // Kifejezetten ehhez a fiokhoz kert nevfeluliras.
+    $va_welcome_name = 'Adri';
+}
+
 if ( $va_show_daily_welcome ) {
     $va_wish_openers = [
         'Ma tisztan latod az utad',
@@ -181,11 +228,7 @@ if ( $va_show_daily_welcome ) {
     $va_seen_ids[] = (int) $va_pick_id;
     set_transient( $va_seen_key, $va_seen_ids, YEAR_IN_SECONDS );
 
-    $va_name = trim( (string) $user->display_name );
-    if ( '' === $va_name ) {
-        $va_name = 'Vadasz';
-    }
-    $va_daily_welcome_message = str_replace( '{nev}', $va_name, $va_wishes[ $va_pick_id ] );
+    $va_daily_welcome_message = str_replace( '{nev}', $va_welcome_name, $va_wishes[ $va_pick_id ] );
 }
 
 // CRM statisztika adatelokeszites (valid, adminnal egyezo nezetseggel)
