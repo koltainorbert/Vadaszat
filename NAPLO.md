@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #231 (CookieYes keret karcsúsítás + belső szöveg beljebb)
+
+### Mit csinaltunk [x]
+- [x] A dupla külső keret-hatás megszüntetve (csak a fő consent bar kap border+glow stílust)
+- [x] A szöveges blokk belső paddingja növelve (desktop és mobil)
+- [x] A consent bar saját paddingja karcsúsítva, kompaktabb vizuál
+- [x] Theme deploy sikeresen lefutott
+
+### Eredmény
+A sütisáv kevésbé „hatalmas doboz”, a szöveg beljebb került és tisztábban ül a belső tartalmi tengelyen.
+
+---
+
 ## 2026. 05. 07. – Session #230 (CookieYes margó- és belső spacing fix)
 
 ### Mit csinaltunk [x]
