@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #228 (CookieYes konténer finomítás + fix jókívánság kép)
+
+### Mit csinaltunk [x]
+- [x] A CookieYes sáv külső konténer-hatása kivezetve, hogy ne látszódjon dupla doboz
+- [x] Mobilon a szöveg és a gombsor extra belső paddinget kapott, hogy ne vágja a border
+- [x] A napi jókívánság popup képe fixre állítva a `wp-content/Névtelen.png` fájlra
+- [x] Ha ez a fájl nem található, csak akkor esik vissza SVG fallbackre
+- [x] Theme deploy + Plugin deploy sikeresen lefutott
+
+### Hol tartunk
+A sütisáv most már egyetlen, tisztább konténerrel jelenik meg és mobilon sem szorul rá a szegélyre, a jókívánság popup pedig mindig a `wp-content` gyökerében lévő fix képet használja.
+
+---
+
 ## 2026. 05. 07. – Session #227 (Végső social meta kimenet felülírás)
 
 ### Mit csinaltunk [x]
