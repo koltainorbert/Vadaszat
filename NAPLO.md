@@ -2,6 +2,26 @@
 
 ---
 
+## 2026. 05. 07. – Session #223 (Komplett SEO motor beépítés)
+
+### Mit csinaltunk [x]
+- [x] Új központi SEO osztály létrehozva: [includes/class-seo.php](includes/class-seo.php)
+- [x] Teljes head meta réteg: title/description, canonical, robots, OG, Twitter, hreflang
+- [x] Strukturált adatok (JSON-LD): WebSite, Organization, BreadcrumbList, ItemList, Product, Auction
+- [x] XML sitemap rendszer beépítve:
+  - [sitemap.xml](sitemap.xml) index
+  - poszt típus sitemap oldalak
+  - taxonómia sitemap oldalak
+- [x] robots.txt sitemap sor automatikus hozzáadás
+- [x] Search és 404 oldalak noindex, nofollow
+- [x] Plugin bootba bekötve a SEO engine, rewrite verzió emelve: [vadaszapro-core.php](vadaszapro-core.php)
+- [x] Root -> plugin mirror szinkron + Deploy Plugin sikeres
+
+### Hol tartunk
+Az oldal most kapott egy teljes saját technikai SEO alapot, ami külső SEO plugin nélkül is korrekt indexelést, megosztási meta adatokat és sitemap infrastruktúrát ad.
+
+---
+
 ## 2026. 05. 07. – Session #222 (Welcome popup tipográfia + UTF-8 + képfallback)
 
 ### Mit csinaltunk [x]
