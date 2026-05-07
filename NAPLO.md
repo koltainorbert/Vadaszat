@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #221 (Welcome popup: kep + fiokspecifikus nev)
+
+### Mit csinaltunk [x]
+- [x] A welcome popup kepforrasa robusztusra allitva (letezo fajl ellenorzessel)
+- [x] Elsodleges kep: `wp-content/uploads/fortune-cookies.png` ha tenylegesen letezik
+- [x] Fallback kep beallitva (beepitett SVG), hogy a hero blokk soha ne legyen ures
+- [x] Fiokspecifikus nevfeluliras: `weingartnerauto` login/display nev eseten a popupban a nev `Adri`
+- [x] Root dashboard sablon szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+A popupban mar nem marad ures kephely, es ebben a fiokban a napi kivansag szovegben mar nem a regi nev jelenik meg, hanem Adri.
+
+---
+
 ## 2026. 05. 07. – Session #220 (Kiemelés stat + gomb javítás)
 
 ### Mit csinaltunk [x]
