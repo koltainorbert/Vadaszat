@@ -349,10 +349,60 @@ class VA_SEO {
         return 'VadászApró - vadászati hirdetések, aukciók és felszerelések egy helyen.';
     }
 
+    private static function listing_social_title( int $post_id ): string {
+        $title = wp_strip_all_tags( (string) get_the_title( $post_id ) );
+        $price_raw = get_post_meta( $post_id, 'va_price', true );
+        $price_type = (string) get_post_meta( $post_id, 'va_price_type', true );
+        $sale_raw = get_post_meta( $post_id, 'va_sale_price', true );
+        $sale_end_raw = (string) get_post_meta( $post_id, 'va_sale_price_end', true );
+
+        $base_price_txt = '';
+        if ( is_numeric( $price_raw ) && $price_type !== 'ask' ) {
+            $base_price_txt = number_format( (float) $price_raw, 0, ',', ' ' ) . ' Ft';
+        }
+
+        $sale_active = false;
+        if ( is_numeric( $sale_raw ) && (float) $sale_raw > 0 ) {
+            $sale_active = true;
+            if ( $sale_end_raw !== '' ) {
+                $sale_end_ts = strtotime( $sale_end_raw . ' 23:59:59' );
+                if ( $sale_end_ts && $sale_end_ts < current_time( 'timestamp' ) ) {
+                    $sale_active = false;
+                }
+            }
+        }
+
+        if ( $sale_active ) {
+            $sale_price_txt = number_format( (float) $sale_raw, 0, ',', ' ' ) . ' Ft';
+            if ( $base_price_txt !== '' ) {
+                return $title . ' | Eladó | Akciós ár: ' . $sale_price_txt . ' (eredeti: ' . $base_price_txt . ')';
+            }
+            return $title . ' | Eladó | Akciós ár: ' . $sale_price_txt;
+        }
+
+        if ( $base_price_txt !== '' ) {
+            return $title . ' | Eladó | Ár: ' . $base_price_txt;
+        }
+
+        return $title . ' | Eladó';
+    }
+
+    private static function social_title( string $default_title ): string {
+        if ( is_singular( 'va_listing' ) ) {
+            $id = get_queried_object_id();
+            if ( $id > 0 ) {
+                return self::listing_social_title( $id );
+            }
+        }
+
+        return $default_title;
+    }
+
     public static function render_head_meta(): void {
         if ( ! self::should_render_meta() ) return;
 
         $title = wp_get_document_title();
+        $social_title = self::social_title( $title );
         $desc  = self::meta_description();
         $url   = self::current_canonical();
         $img   = self::meta_image_url();
@@ -365,7 +415,7 @@ class VA_SEO {
         echo '<link rel="canonical" href="' . esc_url( $url ) . '">' . "\n";
         echo '<meta property="og:locale" content="hu_HU">' . "\n";
         echo '<meta property="og:type" content="' . esc_attr( is_singular() ? 'article' : 'website' ) . '">' . "\n";
-        echo '<meta property="og:title" content="' . esc_attr( $title ) . '">' . "\n";
+        echo '<meta property="og:title" content="' . esc_attr( $social_title ) . '">' . "\n";
         echo '<meta property="og:description" content="' . esc_attr( $desc ) . '">' . "\n";
         echo '<meta property="og:url" content="' . esc_url( $url ) . '">' . "\n";
         echo '<meta property="og:site_name" content="' . esc_attr( $site ) . '">' . "\n";
@@ -373,7 +423,7 @@ class VA_SEO {
             echo '<meta property="og:image" content="' . esc_url( $img ) . '">' . "\n";
         }
         echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
-        echo '<meta name="twitter:title" content="' . esc_attr( $title ) . '">' . "\n";
+        echo '<meta name="twitter:title" content="' . esc_attr( $social_title ) . '">' . "\n";
         echo '<meta name="twitter:description" content="' . esc_attr( $desc ) . '">' . "\n";
         if ( $img !== '' ) {
             echo '<meta name="twitter:image" content="' . esc_url( $img ) . '">' . "\n";
