@@ -386,8 +386,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                     return esc_url( add_query_arg( [ 'sort_by' => $by, 'sort_dir' => $dir ], $cur_url ) );
                 };
                 $sort_arrow = function( string $by ) use ( $sort_by, $sort_dir ): string {
-                    if ( $sort_by !== $by ) return '<span style="opacity:.3">↕</span>';
-                    return $sort_dir === 'desc' ? '↓' : '↑';
+                    if ( $sort_by !== $by ) {
+                        return '<svg class="va-ico va-sort-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 7l4-4 4 4"/><path d="M16 17l-4 4-4-4"/><path d="M12 4v16"/></svg>';
+                    }
+                    return $sort_dir === 'desc'
+                        ? '<svg class="va-ico va-sort-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 4v16"/><path d="M7 15l5 5 5-5"/></svg>'
+                        : '<svg class="va-ico va-sort-arrow" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20V4"/><path d="M7 9l5-5 5 5"/></svg>';
                 };
                 ?>
                 <div class="va-sort-bar">
@@ -483,7 +487,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                     <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
                                         <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;"><?php echo esc_html( $l->post_title ); ?></a>
                                         <?php if ( $img_count > 0 ): ?>
-                                        <span class="va-img-count-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><?php echo esc_html( $img_count ); ?></span>
+                                        <span class="va-img-count-badge"><svg class="va-ico" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><?php echo esc_html( $img_count ); ?></span>
                                         <?php endif; ?>
                                         <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
                                         <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#3a2800,#1e1400);color:#ffc840;border:1px solid rgba(255,180,0,.5);box-shadow:0 0 8px rgba(255,160,0,.2);padding:2px 7px;border-radius:20px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
@@ -519,7 +523,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
                         <td style="padding:10px 8px;">
                             <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;white-space:nowrap;">
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?>
                             </span>
                         </td>
@@ -1062,12 +1066,30 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:inline-block;
     vertical-align:middle;
     flex-shrink:0;
+    width:18px;
+    height:18px;
     transition:transform .2s ease, filter .2s ease, opacity .2s ease;
+}
+.va-dashboard__nav-ico {
+    width:30px;
+    height:30px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    background:linear-gradient(160deg, rgba(255,255,255,.12), rgba(255,255,255,.04));
+    border:1px solid rgba(255,255,255,.16);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 8px 18px rgba(0,0,0,.32);
+}
+.va-dashboard__nav-item:hover .va-dashboard__nav-ico,
+.va-dashboard__nav-item.active .va-dashboard__nav-ico {
+    background:linear-gradient(160deg, rgba(255,44,44,.3), rgba(255,120,0,.18));
+    border-color:rgba(255,80,80,.5);
 }
 .va-dashboard__nav-item:hover .va-ico,
 .va-dashboard__nav-item.active .va-ico {
     transform:translateY(-1px) scale(1.08);
-    filter:drop-shadow(0 0 8px rgba(255,42,42,.35));
+    filter:drop-shadow(0 0 10px rgba(255,42,42,.45));
 }
 .va-ico--heart { animation:vaIcoPulse 2.2s ease-in-out infinite; }
 .va-ico--hammer { animation:vaIcoTilt 2.8s ease-in-out infinite; transform-origin:70% 30%; }
@@ -1150,6 +1172,18 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-dash-plan-bar > div { height:3px;border-radius:2px;transition:width .3s; }
 .va-dash-plan-badge small { font-size:10px;color:rgba(255,255,255,.3);display:block;margin-top:6px; }
 .va-dash-plan-badge small .va-ico { margin-right:3px; opacity:.85; }
+.va-dash-plan-badge small .va-ico { width:13px;height:13px; }
+
+.va-btn .va-ico {
+    width:14px !important;
+    height:14px !important;
+    filter:drop-shadow(0 0 8px rgba(255,255,255,.15));
+}
+.va-sort-arrow {
+    width:13px !important;
+    height:13px !important;
+    opacity:.95;
+}
 .va-dash-plan-label-form {
     margin-top:10px;
     padding-top:10px;
@@ -1492,6 +1526,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-sort-btn:hover { border-color:rgba(255,0,0,.4);color:#fff; }
 .va-sort-btn.active { border-color:rgba(255,0,0,.5);background:rgba(255,0,0,.12);color:#fff; }
+.va-sort-btn .va-ico { width:13px !important;height:13px !important; }
 
 /* ── Bulk toolbar ── */
 .va-bulk-toolbar {
@@ -1534,6 +1569,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-bulk-dropdown__item:hover { background:rgba(255,42,42,.15);color:#fff; }
 .va-bulk-dropdown__item.selected { color:#ff4444;background:rgba(255,0,0,.08); }
+.va-bulk-dropdown__item .va-ico { width:14px !important;height:14px !important;opacity:.95; }
 
 /* ── Bulk price panel ── */
 .va-bulk-price-panel {
@@ -1547,16 +1583,17 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-bulk-price-input:focus { outline:none;border-color:#ff2a2a; }
 
-/* ── Akciós ár inline edit gomb ──
+/* ── Akciós ár inline edit gomb ── */
 .va-sale-edit-btn {
     display:inline-flex;align-items:center;justify-content:center;
-    width:24px;height:24px;margin-left:6px;
+    width:30px;height:30px;margin-left:6px;
     border-radius:6px;border:1px solid rgba(255,255,255,.25);
     background:rgba(255,255,255,.06);color:#fff;
     cursor:pointer;font-size:14px;line-height:1;vertical-align:middle;
     transition:.15s;border-color:.15s,background:.15s,transform:.15s;
 }
 .va-sale-edit-btn:hover { transform:translateY(-1px); }
+.va-sale-edit-btn .va-ico { width:14px !important;height:14px !important; }
 .va-sale-edit-btn--active {
     border-color:rgba(255,0,0,.55);
     background:rgba(255,0,0,.18);
@@ -1810,6 +1847,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:inline-flex;align-items:center;gap:3px;padding:1px 6px;border-radius:999px;
     font-size:10px;font-weight:700;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.55);
 }
+.va-img-count-badge .va-ico { width:11px !important;height:11px !important; }
 
 /* ── Profil completeness ── */
 .va-profile-completeness {
@@ -1837,6 +1875,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);
     color:rgba(255,255,255,.35);font-size:11px;font-weight:600;
 }
+.va-trust-badge svg { width:14px;height:14px; }
 .va-trust-badge.active { color:#fff;border-color:rgba(0,200,80,.4);background:rgba(0,200,80,.09); }
 .va-trust-badge.active svg { stroke:#00c850; }
 </style>
