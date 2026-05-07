@@ -1549,5 +1549,167 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
             }
         });
     }
+
+    var _nonce  = '<?php echo esc_js( $boost_nonce ); ?>';
+    var _ajaxUrl= '<?php echo esc_js( $ajax_url ); ?>';
+
+    /* ── Select all checkbox ── */
+    var selectAll = document.getElementById('va-select-all');
+    var bulkCount = document.getElementById('va-bulk-count');
+    function updateBulkCount() {
+        var checked = document.querySelectorAll('.va-row-check:checked').length;
+        if (bulkCount) bulkCount.textContent = checked > 0 ? checked + ' kijelölve' : '';
+    }
+    if (selectAll) {
+        selectAll.addEventListener('change', function(){
+            document.querySelectorAll('.va-row-check').forEach(function(cb){ cb.checked = selectAll.checked; });
+            updateBulkCount();
+        });
+    }
+    document.querySelectorAll('.va-row-check').forEach(function(cb){
+        cb.addEventListener('change', updateBulkCount);
+    });
+
+    /* ── Bulk action panel toggle ── */
+    var bulkActionSel = document.getElementById('va-bulk-action');
+    var bulkPricePanel = document.getElementById('va-bulk-price-panel');
+    if (bulkActionSel && bulkPricePanel) {
+        bulkActionSel.addEventListener('change', function(){
+            bulkPricePanel.style.display = this.value === 'price_change' ? 'block' : 'none';
+        });
+    }
+
+    /* ── Bulk exec ── */
+    var bulkExecBtn = document.getElementById('va-bulk-exec');
+    if (bulkExecBtn) {
+        bulkExecBtn.addEventListener('click', function(){
+            var action = bulkActionSel ? bulkActionSel.value : '';
+            if (!action) { alert('Válassz műveletet!'); return; }
+            var ids = Array.from(document.querySelectorAll('.va-row-check:checked')).map(function(cb){ return cb.value; });
+            if (!ids.length) { alert('Jelölj ki legalább egy hirdetést!'); return; }
+            if (action === 'delete' && !confirm('Biztosan törlöd a kijelölt ' + ids.length + ' hirdetést?')) return;
+
+            var params = new URLSearchParams({
+                action: 'va_bulk_listings',
+                nonce: _nonce,
+                bulk_action: action
+            });
+            ids.forEach(function(id){ params.append('listing_ids[]', id); });
+
+            if (action === 'price_change') {
+                var newPrice = document.getElementById('va-bulk-new-price') ? document.getElementById('va-bulk-new-price').value : '';
+                if (!newPrice) { alert('Add meg az új árat!'); return; }
+                params.set('new_price', newPrice);
+                // bulk sale price
+                var saleP = document.getElementById('va-bulk-sale-price') ? document.getElementById('va-bulk-sale-price').value : '';
+                var saleE = document.getElementById('va-bulk-sale-end') ? document.getElementById('va-bulk-sale-end').value : '';
+                if (saleP) {
+                    ids.forEach(function(id){
+                        var sp = new URLSearchParams({
+                            action: 'va_set_sale_price', nonce: _nonce,
+                            post_id: id, sale_price: saleP, sale_end: saleE
+                        });
+                        fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:sp.toString() });
+                    });
+                }
+            }
+
+            bulkExecBtn.disabled = true;
+            bulkExecBtn.textContent = 'Folyamatban...';
+            fetch(_ajaxUrl, {
+                method:'POST',
+                headers:{'Content-Type':'application/x-www-form-urlencoded'},
+                body: params.toString()
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                if (res.success) {
+                    alert(res.data.updated + ' hirdetés módosítva.');
+                    location.reload();
+                } else {
+                    alert((res.data && res.data.message) || 'Hiba történt.');
+                    bulkExecBtn.disabled = false;
+                    bulkExecBtn.textContent = 'Végrehajtás';
+                }
+            })
+            .catch(function(){
+                bulkExecBtn.disabled = false;
+                bulkExecBtn.textContent = 'Végrehajtás';
+            });
+        });
+    }
+
+    /* ── Refresh listing ── */
+    document.querySelectorAll('.va-refresh-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId = this.dataset.postId;
+            var self = this;
+            self.disabled = true;
+            self.textContent = '…';
+            var params = new URLSearchParams({ action:'va_refresh_listing', nonce:_nonce, post_id:postId });
+            fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                if (res.success) {
+                    self.textContent = '✓ Frissítve';
+                    setTimeout(function(){ self.textContent = '↑ Frissítés'; self.disabled = false; }, 2000);
+                } else {
+                    alert((res.data && res.data.message) || 'Hiba.');
+                    self.disabled = false; self.textContent = '↑ Frissítés';
+                }
+            })
+            .catch(function(){ self.disabled = false; self.textContent = '↑ Frissítés'; });
+        });
+    });
+
+    /* ── Sale price quick-edit modal ── */
+    var saleOverlay = document.getElementById('va-sale-modal-overlay');
+    var salePostId  = document.getElementById('va-sale-modal-post-id');
+    var salePrice   = document.getElementById('va-sale-modal-price');
+    var saleEnd     = document.getElementById('va-sale-modal-end');
+    var saleSaveBtn = document.getElementById('va-sale-modal-save');
+    var saleRemBtn  = document.getElementById('va-sale-modal-remove');
+    var saleCancel  = document.getElementById('va-sale-modal-cancel');
+
+    function openSaleModal(postId, curPrice, curEnd) {
+        if (!saleOverlay) return;
+        salePostId.value = postId;
+        salePrice.value  = curPrice || '';
+        saleEnd.value    = curEnd || '';
+        saleOverlay.classList.add('open');
+        salePrice.focus();
+    }
+    function closeSaleModal() { if (saleOverlay) saleOverlay.classList.remove('open'); }
+
+    document.querySelectorAll('.va-sale-edit-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            openSaleModal(this.dataset.postId, this.dataset.salePrice, this.dataset.saleEnd);
+        });
+    });
+
+    if (saleCancel)  saleCancel.addEventListener('click', closeSaleModal);
+    if (saleOverlay) saleOverlay.addEventListener('click', function(e){ if (e.target === saleOverlay) closeSaleModal(); });
+
+    function saveSalePrice(price) {
+        var pid = salePostId ? salePostId.value : '';
+        if (!pid) return;
+        var params = new URLSearchParams({
+            action: 'va_set_sale_price', nonce: _nonce,
+            post_id: pid, sale_price: price,
+            sale_end: saleEnd ? saleEnd.value : ''
+        });
+        if (saleSaveBtn) { saleSaveBtn.disabled = true; saleSaveBtn.textContent = 'Mentés...'; }
+        fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
+        .then(function(r){ return r.json(); })
+        .then(function(res){
+            if (res.success) { closeSaleModal(); location.reload(); }
+            else { alert((res.data && res.data.message) || 'Hiba.'); if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; } }
+        })
+        .catch(function(){ if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; } });
+    }
+
+    if (saleSaveBtn) saleSaveBtn.addEventListener('click', function(){ saveSalePrice(salePrice ? salePrice.value : 0); });
+    if (saleRemBtn)  saleRemBtn.addEventListener('click', function(){ if (confirm('Törlöd az akciós árat?')) saveSalePrice(0); });
+
 })();
 </script>
