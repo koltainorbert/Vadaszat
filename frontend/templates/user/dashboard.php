@@ -69,6 +69,10 @@ if ( $va_welcome_preview_remaining > 0 ) {
 
 $va_daily_welcome_message = '';
 
+$va_fixed_welcome_filename = 'Névtelen.png';
+$va_fixed_welcome_path = WP_CONTENT_DIR . '/' . $va_fixed_welcome_filename;
+$va_fixed_welcome_url = site_url( '/wp-content/' . rawurlencode( $va_fixed_welcome_filename ) );
+
 $va_welcome_svg_fallback = 'data:image/svg+xml;utf8,' . rawurlencode(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 560">'
     . '<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2a0909"/><stop offset="100%" stop-color="#070707"/></linearGradient></defs>'
@@ -83,43 +87,8 @@ $va_welcome_svg_fallback = 'data:image/svg+xml;utf8,' . rawurlencode(
 
 $va_welcome_image_url = '';
 
-$va_upload_cookie_path = WP_CONTENT_DIR . '/uploads/fortune-cookies.png';
-if ( file_exists( $va_upload_cookie_path ) ) {
-    $va_welcome_image_url = site_url( '/wp-content/uploads/fortune-cookies.png' );
-}
-
-if ( '' === $va_welcome_image_url ) {
-    $va_user_image_url = trim( (string) get_user_meta( $user->ID, 'va_welcome_image_url', true ) );
-    if ( '' !== $va_user_image_url ) {
-        $va_welcome_image_url = $va_user_image_url;
-    }
-}
-
-if ( '' === $va_welcome_image_url && defined( 'VA_PLUGIN_DIR' ) && defined( 'VA_PLUGIN_URL' ) ) {
-    $va_plugin_cookie_path = VA_PLUGIN_DIR . 'assets/demo/fortune-cookies.png';
-    if ( file_exists( $va_plugin_cookie_path ) ) {
-        $va_welcome_image_url = VA_PLUGIN_URL . 'assets/demo/fortune-cookies.png';
-    }
-}
-
-if ( '' === $va_welcome_image_url ) {
-    $va_latest_image = get_posts( [
-        'post_type'      => 'attachment',
-        'post_status'    => 'inherit',
-        'post_mime_type' => 'image',
-        'author'         => (int) $user->ID,
-        'posts_per_page' => 1,
-        'orderby'        => 'date',
-        'order'          => 'DESC',
-        'fields'         => 'ids',
-        'no_found_rows'  => true,
-    ] );
-    if ( ! empty( $va_latest_image[0] ) ) {
-        $va_latest_url = wp_get_attachment_image_url( (int) $va_latest_image[0], 'large' );
-        if ( $va_latest_url ) {
-            $va_welcome_image_url = $va_latest_url;
-        }
-    }
+if ( file_exists( $va_fixed_welcome_path ) ) {
+    $va_welcome_image_url = $va_fixed_welcome_url;
 }
 
 if ( '' === $va_welcome_image_url ) {

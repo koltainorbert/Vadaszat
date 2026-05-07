@@ -195,9 +195,16 @@ add_action( 'wp_head', function () {
             width: auto !important;
             max-width: none !important;
             z-index: 999999 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
         }
 
-        .cky-consent-container .cky-consent-bar,
+        .cky-consent-container .cky-consent-bar {
+            margin: 0 !important;
+        }
+
         .cky-consent-container .cky-notice,
         .cky-consent-container .cky-banner-element,
         .cky-modal {
@@ -212,6 +219,28 @@ add_action( 'wp_head', function () {
 
         .cky-consent-bar {
             padding: 20px 22px !important;
+            border-radius: 24px !important;
+            border: 1px solid var(--va-cookie-border) !important;
+            background: var(--va-cookie-bg) !important;
+            backdrop-filter: blur(16px) saturate(1.15) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(1.15) !important;
+            box-shadow: var(--va-cookie-glow) !important;
+        }
+
+        .cky-notice {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+        }
+
+        .cky-notice-group {
+            padding: 0 !important;
+        }
+
+        .cky-notice-des {
+            padding-right: 12px !important;
         }
 
         .cky-notice-title,
@@ -332,8 +361,15 @@ add_action( 'wp_head', function () {
             }
 
             .cky-consent-bar {
-                padding: 16px !important;
+                padding: 16px 16px 14px !important;
                 border-radius: 18px !important;
+            }
+
+            .cky-notice-group,
+            .cky-notice-des,
+            .cky-notice-btn-wrapper {
+                padding-left: 2px !important;
+                padding-right: 2px !important;
             }
 
             .cky-notice-title,
