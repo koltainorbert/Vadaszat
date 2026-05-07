@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #225 (Rank Math social title kompatibilitás)
+
+### Mit csinaltunk [x]
+- [x] Rank Math OG/Twitter title filterekre közvetlen bekötés a listing social cím logikához
+- [x] Rank Math OG/Twitter description filterekre bekötés listing oldali leíráshoz
+- [x] Cél: Facebook megosztásnál biztosan látszódjon az `Eladó | Ár` és akció esetén az `Akciós ár`
+- [x] Root SEO fájl szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+Rank Math használat mellett is a hirdetés megosztási címe most már a testreszabott áras logikából épül.
+
+---
+
 ## 2026. 05. 07. – Session #224 (Facebook megosztás cím finomítás)
 
 ### Mit csinaltunk [x]
