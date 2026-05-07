@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #229 (Welcome preview kivezetése)
+
+### Mit csinaltunk [x]
+- [x] Az ideiglenes `Napi üdvözlés x10` gomb eltávolítva a dashboard fejlécből
+- [x] A preview user meta és POST aktiváló logika kivezetve
+- [x] A napi welcome popup logikája admin-only napi 1 megjelenésre állítva vissza
+- [x] A 1000 darabos random kívánság és az IP-alapú 365 napos ismétlésvédelem változatlanul megmaradt
+- [x] Root dashboard sablon szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+A dashboardból eltűnt az ideiglenes tesztgomb, és a napi jókívánság most már csak adminnál jelenik meg napi egyszer, a korábban beállított randomizálással és ismétlésvédelemmel.
+
+---
+
 ## 2026. 05. 07. – Session #228 (CookieYes konténer finomítás + fix jókívánság kép)
 
 ### Mit csinaltunk [x]
