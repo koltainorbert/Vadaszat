@@ -197,6 +197,7 @@ $crm_priced_count   = 0;
 $crm_active_count   = 0;
 $crm_featured_count = 0;
 $crm_boosted_count  = 0;
+$crm_highlight_ids  = [];
 $crm_newpill_count  = 0;
 $crm_last7_count    = 0;
 $crm_last30_count   = 0;
@@ -230,9 +231,12 @@ foreach ( $listings as $l ) {
 
     if ( $is_featured ) {
         $crm_featured_count++;
+        $crm_highlight_ids[ (int) $l->ID ] = 1;
     }
-    if ( class_exists( 'VA_User_Roles' ) && VA_User_Roles::is_boosted( $l->ID ) ) {
+    $is_boosted = class_exists( 'VA_User_Roles' ) && VA_User_Roles::is_boosted( $l->ID );
+    if ( $is_boosted ) {
         $crm_boosted_count++;
+        $crm_highlight_ids[ (int) $l->ID ] = 1;
     }
     if ( class_exists( 'VA_User_Roles' ) && VA_User_Roles::is_new_pill( $l->ID ) ) {
         $crm_newpill_count++;
@@ -271,6 +275,7 @@ usort( $crm_rows, static function( array $a, array $b ): int {
 } );
 
 $crm_top_rows      = array_slice( $crm_rows, 0, 5 );
+$crm_highlight_count = count( $crm_highlight_ids );
 $crm_avg_views     = $crm_total_listings > 0 ? ( $crm_total_views / $crm_total_listings ) : 0;
 $crm_avg_price     = $crm_priced_count > 0 ? ( $crm_total_price / $crm_priced_count ) : 0;
 $crm_watch_count   = count( $watchlist );
@@ -290,7 +295,7 @@ $crm_flow_raw = [
     max( 1, $crm_active_count ),
     max( 1, $crm_watch_count ),
     max( 1, $crm_bid_count ),
-    max( 1, $crm_featured_count + $crm_boosted_count ),
+    max( 1, $crm_highlight_count ),
 ];
 $crm_flow_max = max( $crm_flow_raw );
 $crm_flow_scaled = array_map(
@@ -533,16 +538,14 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         <article class="va-crm__panel">
                             <h4>Jelzők és kiemelések</h4>
                             <div class="va-crm__metric-list">
-                                <div class="va-crm__metric-row"><span>Kiemelt hirdetések</span><strong><?php echo esc_html( number_format( $crm_featured_count, 0, ',', ' ' ) ); ?></strong></div>
-                                <div class="va-crm__metric-row"><span>Boost aktív</span><strong><?php echo esc_html( number_format( $crm_boosted_count, 0, ',', ' ' ) ); ?></strong></div>
+                                <div class="va-crm__metric-row"><span>Kiemelt hirdetések</span><strong><?php echo esc_html( number_format( $crm_highlight_count, 0, ',', ' ' ) ); ?></strong></div>
                                 <div class="va-crm__metric-row"><span>Új címke aktív</span><strong><?php echo esc_html( number_format( $crm_newpill_count, 0, ',', ' ' ) ); ?></strong></div>
                                 <div class="va-crm__metric-row"><span>Kedvencek</span><strong><?php echo esc_html( number_format( $crm_watch_count, 0, ',', ' ' ) ); ?></strong></div>
                                 <div class="va-crm__metric-row"><span>Licit aktivitás</span><strong><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?></strong></div>
                             </div>
 
                             <div class="va-crm__badges">
-                                <span>Kiemelt: <strong><?php echo esc_html( number_format( $crm_featured_count, 0, ',', ' ' ) ); ?></strong></span>
-                                <span>Boost: <strong><?php echo esc_html( number_format( $crm_boosted_count, 0, ',', ' ' ) ); ?></strong></span>
+                                <span>Kiemelt: <strong><?php echo esc_html( number_format( $crm_highlight_count, 0, ',', ' ' ) ); ?></strong></span>
                                 <span>Új: <strong><?php echo esc_html( number_format( $crm_newpill_count, 0, ',', ' ' ) ); ?></strong></span>
                             </div>
                         </article>
@@ -579,7 +582,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                         </div>
                                         <div class="va-crm__screen-stat">
                                             <span>Top címke</span>
-                                            <strong><?php echo esc_html( number_format( $crm_featured_count + $crm_boosted_count, 0, ',', ' ' ) ); ?></strong>
+                                            <strong><?php echo esc_html( number_format( $crm_highlight_count, 0, ',', ' ' ) ); ?></strong>
                                         </div>
                                     </div>
 
@@ -658,10 +661,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <article class="va-crm__signal-card va-crm__signal-card--violet">
                                     <div class="va-crm__signal-head">
                                         <span><?php echo esc_html( $crm_plan_limit > 0 ? 'Csomagkihasználtság' : 'Kiemelt aktivitás' ); ?></span>
-                                        <strong><?php echo esc_html( $crm_plan_limit > 0 ? $crm_plan_usage_pc . '%' : number_format( $crm_featured_count + $crm_boosted_count + $crm_newpill_count, 0, ',', ' ' ) ); ?></strong>
+                                        <strong><?php echo esc_html( $crm_plan_limit > 0 ? $crm_plan_usage_pc . '%' : number_format( $crm_highlight_count + $crm_newpill_count, 0, ',', ' ' ) ); ?></strong>
                                     </div>
-                                    <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_plan_limit > 0 ? $crm_plan_usage_pc : min( 100, 20 + ( $crm_featured_count + $crm_boosted_count + $crm_newpill_count ) * 12 ) ) ); ?>%"></span></div>
-                                    <small><?php echo esc_html( $crm_plan_limit > 0 ? ( $crm_plan_used . ' / ' . $crm_plan_limit . ' hely felhasználva' ) : ( 'Kiemelt: ' . $crm_featured_count . ' | Boost: ' . $crm_boosted_count ) ); ?></small>
+                                    <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_plan_limit > 0 ? $crm_plan_usage_pc : min( 100, 20 + ( $crm_highlight_count + $crm_newpill_count ) * 12 ) ) ); ?>%"></span></div>
+                                    <small><?php echo esc_html( $crm_plan_limit > 0 ? ( $crm_plan_used . ' / ' . $crm_plan_limit . ' hely felhasználva' ) : ( 'Kiemelt: ' . $crm_highlight_count ) ); ?></small>
                                 </article>
                             </div>
 
@@ -699,7 +702,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <article class="va-crm__kpi">
                                     <span class="va-crm__kpi-label">Figyelők és licitek</span>
                                     <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_watch_count, 0, ',', ' ' ) ); ?> kedvenc</strong>
-                                    <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?> licit | <?php echo esc_html( $crm_featured_count ); ?> kiemelt</small>
+                                    <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?> licit | <?php echo esc_html( $crm_highlight_count ); ?> kiemelt</small>
                                     <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:22%"></span><span style="height:35%"></span><span style="height:58%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:56%"></span><span style="height:71%"></span></div>
                                 </article>
                             </div>
@@ -888,10 +891,19 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                             <?php else:
                                 $hrs = (int) ceil( $boost_info['seconds_remaining'] / 3600 );
                                 $days_left = (int) ceil( $boost_info['seconds_remaining'] / 86400 );
+                                $wait_label = $boost_info['seconds_remaining'] >= 86400 ? ( $days_left . ' nap' ) : ( $hrs . ' óra' );
                             ?>
-                            <span class="va-boost-cd" style="font-size:11px;color:rgba(255,255,255,.35);" title="<?php echo esc_attr( $boost_info['cooldown_days'] . ' naponként emelhető' ); ?>">
-                                &#9889; <?php echo $boost_info['seconds_remaining'] >= 86400 ? esc_html( $days_left . ' nap' ) : esc_html( $hrs . 'ó' ); ?>
-                            </span>
+                            <button class="va-boost-btn va-boost-btn--off"
+                                    data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                    data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                    data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    data-mode="boost"
+                                    aria-pressed="false"
+                                    aria-disabled="true"
+                                    disabled
+                                    title="<?php echo esc_attr( $boost_info['cooldown_days'] . ' naponként emelhető' ); ?>">
+                                <span class="va-boost-btn__dot" aria-hidden="true"></span>Kiemelés: várakozás (<?php echo esc_html( $wait_label ); ?>)
+                            </button>
                             <?php
                                 endif;
 

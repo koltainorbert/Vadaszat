@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #220 (Kiemelés stat + gomb javítás)
+
+### Mit csinaltunk [x]
+- [x] A stat panelből kiveve a kulon `Boost aktív` sor (duplikacio csokkentese)
+- [x] Bevezetve az osszesitett `Kiemelt hirdetesek` szamitas (featured + boost egyedi hirdetes alapjan)
+- [x] Kapcsolodo stat mezok ehhez igazitva (`Top cimke`, `Kiemelt` badge, KPI alreszek)
+- [x] A hirdetes sorban a `Kiemeles` gomb cooldown alatt is lathato marad (tiltott, varakozasi idovel)
+- [x] Root dashboard sablon szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+A statisztika mar nem mutat kulon boost duplikaciot, es a kiemeles kezelese a hirdetes mellett folyamatosan lathato a rang/cooldown logikaval egyutt.
+
+---
+
 ## 2026. 05. 07. – Session #219 (Napi kívánság popup újratervezés)
 
 ### Mit csinaltunk [x]
