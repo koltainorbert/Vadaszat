@@ -230,14 +230,14 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                 <?php endif; ?>
                 <button type="submit" class="va-dash-avatar-form__btn">Mentés</button>
             </form>
-            <span class="va-dashboard__nav-item active" data-tab="listings"><span class="va-dashboard__nav-ico" aria-hidden="true">📋</span><span class="va-dashboard__nav-label">Hirdetéseim (<?php echo count( $listings ); ?>)</span></span>
+            <span class="va-dashboard__nav-item active" data-tab="listings"><span class="va-dashboard__nav-ico" aria-hidden="true"><svg class="va-ico va-ico--list" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 8h8M8 12h8M8 16h6"/></svg></span><span class="va-dashboard__nav-label">Hirdetéseim (<?php echo count( $listings ); ?>)</span></span>
             <?php if ( $auctions_enabled ): ?>
-            <span class="va-dashboard__nav-item" data-tab="bids"><span class="va-dashboard__nav-ico" aria-hidden="true">🔨</span><span class="va-dashboard__nav-label">Licitjeim (<?php echo count( $bids ); ?>)</span></span>
+            <span class="va-dashboard__nav-item" data-tab="bids"><span class="va-dashboard__nav-ico" aria-hidden="true"><svg class="va-ico va-ico--hammer" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M14 5l5 5"/><path d="M11 8l5 5"/><path d="M3 21l8-8"/><path d="M10 4l6 6"/></svg></span><span class="va-dashboard__nav-label">Licitjeim (<?php echo count( $bids ); ?>)</span></span>
             <?php endif; ?>
-            <span class="va-dashboard__nav-item" data-tab="watchlist"><span class="va-dashboard__nav-ico" aria-hidden="true">♥</span><span class="va-dashboard__nav-label">Kedvenceim (<?php echo count( $watchlist ); ?>)</span></span>
-            <span class="va-dashboard__nav-item" data-tab="profile"><span class="va-dashboard__nav-ico" aria-hidden="true">👤</span><span class="va-dashboard__nav-label">Profilom</span></span>
+            <span class="va-dashboard__nav-item" data-tab="watchlist"><span class="va-dashboard__nav-ico" aria-hidden="true"><svg class="va-ico va-ico--heart" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.4-7 10-7 10z"/></svg></span><span class="va-dashboard__nav-label">Kedvenceim (<?php echo count( $watchlist ); ?>)</span></span>
+            <span class="va-dashboard__nav-item" data-tab="profile"><span class="va-dashboard__nav-ico" aria-hidden="true"><svg class="va-ico va-ico--user" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg></span><span class="va-dashboard__nav-label">Profilom</span></span>
             <span class="va-dashboard__nav-item va-dashboard__nav-item--danger" data-tab="deleteaccount"><span class="va-dashboard__nav-ico" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></span><span class="va-dashboard__nav-label">Fiók törlése</span></span>
-            <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="va-dashboard__nav-item va-dashboard__nav-item--logout"><span class="va-dashboard__nav-ico" aria-hidden="true">🚪</span><span class="va-dashboard__nav-label">Kijelentkezés</span></a>
+            <a href="<?php echo esc_url( wp_logout_url( home_url() ) ); ?>" class="va-dashboard__nav-item va-dashboard__nav-item--logout"><span class="va-dashboard__nav-ico" aria-hidden="true"><svg class="va-ico va-ico--exit" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M9 4H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg></span><span class="va-dashboard__nav-label">Kijelentkezés</span></a>
 
             <?php if ( $plan_cfg ): ?>
             <div class="va-dash-plan-badge" style="--pc:<?php echo esc_attr( $plan_cfg['color'] ); ?>;--pb:<?php echo esc_attr( $plan_cfg['bg'] ); ?>">
@@ -255,7 +255,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                     <div class="va-dash-plan-bar"><div style="width:<?php echo esc_attr( $pp ); ?>%;background:<?php echo esc_attr( $pc ); ?>"></div></div>
                 </div>
                 <?php endif; ?>
-                <small>⭡ <?php echo esc_html( $plan_cfg['boost_cooldown'] ); ?> naponként emelhető</small>
+                <small><svg class="va-ico va-ico--up" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 19V5"/><path d="M6 11l6-6 6 6"/></svg> <?php echo esc_html( $plan_cfg['boost_cooldown'] ); ?> naponként emelhető</small>
                 <?php if ( $user_plan === 'platinum' ): ?>
                 <form method="post" class="va-dash-plan-label-form">
                     <?php wp_nonce_field( 'va_profile_label', 'va_profile_label_nonce' ); ?>
@@ -409,9 +409,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         </button>
                         <div class="va-bulk-dropdown__menu" id="va-bulk-dropdown-menu" style="display:none;">
                             <button type="button" class="va-bulk-dropdown__item" data-value="" data-label="— Tömeges művelet —">— Tömeges művelet —</button>
-                            <button type="button" class="va-bulk-dropdown__item" data-value="activate" data-label="✅ Aktiválás">✅ Aktiválás</button>
-                            <button type="button" class="va-bulk-dropdown__item" data-value="suspend" data-label="⏸ Szüneteltetés">⏸ Szüneteltetés</button>
-                            <button type="button" class="va-bulk-dropdown__item" data-value="delete" data-label="🗑 Törlés">🗑 Törlés</button>
+                            <button type="button" class="va-bulk-dropdown__item" data-value="activate" data-label="Aktiválás"><svg class="va-ico" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Aktiválás</button>
+                            <button type="button" class="va-bulk-dropdown__item" data-value="suspend" data-label="Szüneteltetés"><svg class="va-ico" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg> Szüneteltetés</button>
+                            <button type="button" class="va-bulk-dropdown__item" data-value="delete" data-label="Törlés"><svg class="va-ico" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg> Törlés</button>
                         </div>
                         <input type="hidden" id="va-bulk-action" value="">
                     </div>
@@ -455,9 +455,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                             'pending' => '<span style="color:#ffb400">● Jóváhagyásra vár</span>',
                             'draft'   => '<span style="color:#888">● Piszkozat</span>',
                             'private' => $suspended_by_plan
-                                ? '<span style="color:#ff4444;font-weight:600;">⏹ Leállítva</span>'
+                                ? '<span style="color:#ff4444;font-weight:600;">● Leállítva</span>'
                                 : ( $is_suspended
-                                    ? '<span style="color:#ff9900">⏸ Szüneteltetve</span>'
+                                    ? '<span style="color:#ff9900">● Szüneteltetve</span>'
                                     : '<span style="color:#888">● Privát</span>' ),
                         ];
                     ?>
@@ -493,11 +493,11 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                     <?php if ( $suspended_by_plan ): ?>
                                         <span style="color:#ff4444;">Limit felett – kredit szükséges</span>
                                     <?php elseif ( $is_suspended && $suspended_at ): ?>
-                                        <span style="color:#ff9900;">⏸ Szüneteltetve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
+                                        <span style="color:#ff9900;">● Szüneteltetve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
                                     <?php else: ?>
                                         <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( $days_running . ' napja' ); ?></span>
                                         <?php if ( $l->post_status === 'publish' && $days_expiry <= 7 ): ?>
-                                        <span class="va-expiry-badge <?php echo $days_expiry <= 3 ? 'va-expiry-badge--critical' : 'va-expiry-badge--warn'; ?>">⏰ <?php echo $days_expiry > 0 ? esc_html( $days_expiry . ' nap múlva lejár' ) : 'Lejárt'; ?></span>
+                                        <span class="va-expiry-badge <?php echo $days_expiry <= 3 ? 'va-expiry-badge--critical' : 'va-expiry-badge--warn'; ?>"><svg class="va-ico" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> <?php echo $days_expiry > 0 ? esc_html( $days_expiry . ' nap múlva lejár' ) : 'Lejárt'; ?></span>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                     </div>
@@ -509,10 +509,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <del style="color:rgba(255,255,255,.4);font-size:12px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></del><br>
                                 <span style="color:#ff3030;font-weight:700;"><?php echo esc_html( number_format( $l_sale_price, 0, ',', ' ' ) . ' Ft' ); ?> <span style="font-size:10px;background:rgba(255,0,0,.2);border:1px solid rgba(255,0,0,.4);border-radius:4px;padding:1px 5px;">AKCIÓ</span></span>
                                 <?php if ( $l_sale_end ): ?><br><span style="font-size:10px;color:rgba(255,255,255,.35);">–<?php echo esc_html( $l_sale_end ); ?></span><?php endif; ?>
-                                <button class="va-sale-edit-btn va-sale-edit-btn--active" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-normal-price="<?php echo esc_attr( (string) floatval( $price ) ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Ár szerkesztése">✎</button>
+                                <button class="va-sale-edit-btn va-sale-edit-btn--active" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-normal-price="<?php echo esc_attr( (string) floatval( $price ) ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Ár szerkesztése"><svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
                             <?php else: ?>
                                 <?php echo esc_html( va_format_price( $price, $p_type ) ); ?>
-                                <button class="va-sale-edit-btn va-sale-edit-btn--idle" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-normal-price="<?php echo esc_attr( (string) floatval( $price ) ); ?>" data-sale-price="" data-sale-end="" title="Ár szerkesztése">✎</button>
+                                <button class="va-sale-edit-btn va-sale-edit-btn--idle" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-normal-price="<?php echo esc_attr( (string) floatval( $price ) ); ?>" data-sale-price="" data-sale-end="" title="Ár szerkesztése"><svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
                             <?php endif; ?>
                         </td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
@@ -611,7 +611,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                         data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
                                         data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
                                         title="Hirdetés frissítése (lista tetejére tol)"
-                                        style="background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.35);color:#60d0ff;white-space:nowrap;">↑ Frissítés</button>
+                                        style="background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.35);color:#60d0ff;white-space:nowrap;"><svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.5 14a8.5 8.5 0 1 1 2-5.5"/></svg> Frissítés</button>
                                 <?php endif; ?>
                                 <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
                                 <form method="post" style="margin:0;">
@@ -619,9 +619,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                     <input type="hidden" name="va_action" value="suspend_listing">
                                     <input type="hidden" name="listing_id" value="<?php echo esc_attr( (string) $l->ID ); ?>">
                                     <?php if ( $is_suspended ): ?>
-                                        <button type="submit" class="va-btn va-btn--sm" style="background:rgba(0,200,80,.12);border:1px solid rgba(0,200,80,.4);color:#00c850;white-space:nowrap;">▶ Indítás</button>
+                                        <button type="submit" class="va-btn va-btn--sm" style="background:rgba(0,200,80,.12);border:1px solid rgba(0,200,80,.4);color:#00c850;white-space:nowrap;"><svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="8,5 19,12 8,19"/></svg> Indítás</button>
                                     <?php else: ?>
-                                        <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,153,0,.12);border:1px solid rgba(255,153,0,.4);color:#ff9900;white-space:nowrap;">⏸ Szünet</button>
+                                        <button type="submit" class="va-btn va-btn--sm" style="background:rgba(255,153,0,.12);border:1px solid rgba(255,153,0,.4);color:#ff9900;white-space:nowrap;"><svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg> Szünet</button>
                                     <?php endif; ?>
                                 </form>
                                 <?php endif; ?>
@@ -1058,6 +1058,34 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-dash-user-head__avatar img { width:100% !important;height:100% !important;object-fit:cover;display:block;border-radius:50%;max-width:none !important;max-height:none !important; }
 .va-dash-user-head__name { color:#fff;font-size:12px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0; }
 
+.va-ico {
+    display:inline-block;
+    vertical-align:middle;
+    flex-shrink:0;
+    transition:transform .2s ease, filter .2s ease, opacity .2s ease;
+}
+.va-dashboard__nav-item:hover .va-ico,
+.va-dashboard__nav-item.active .va-ico {
+    transform:translateY(-1px) scale(1.08);
+    filter:drop-shadow(0 0 8px rgba(255,42,42,.35));
+}
+.va-ico--heart { animation:vaIcoPulse 2.2s ease-in-out infinite; }
+.va-ico--hammer { animation:vaIcoTilt 2.8s ease-in-out infinite; transform-origin:70% 30%; }
+.va-ico--list { animation:vaIcoFloat 3.2s ease-in-out infinite; }
+
+@keyframes vaIcoPulse {
+    0%,100% { transform:scale(1); }
+    50% { transform:scale(1.12); }
+}
+@keyframes vaIcoTilt {
+    0%,100% { transform:rotate(0deg); }
+    50% { transform:rotate(-10deg); }
+}
+@keyframes vaIcoFloat {
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(-2px); }
+}
+
 .va-dash-avatar-form {
     padding:10px 14px 12px;
     border-bottom:1px solid rgba(255,255,255,.08);
@@ -1121,6 +1149,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-dash-plan-bar > div { height:3px;border-radius:2px;transition:width .3s; }
 .va-dash-plan-badge small { font-size:10px;color:rgba(255,255,255,.3);display:block;margin-top:6px; }
+.va-dash-plan-badge small .va-ico { margin-right:3px; opacity:.85; }
 .va-dash-plan-label-form {
     margin-top:10px;
     padding-top:10px;
@@ -1498,7 +1527,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     overflow:hidden;
 }
 .va-bulk-dropdown__item {
-    display:block;width:100%;text-align:left;
+    display:flex;align-items:center;gap:8px;width:100%;text-align:left;
     padding:9px 14px;font-size:13px;color:#fff;
     background:none;border:none;cursor:pointer;
     transition:background .12s;white-space:nowrap;
@@ -2106,14 +2135,14 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
             .then(function(r){ return r.json(); })
             .then(function(res){
                 if (res.success) {
-                    self.textContent = '✓ Frissítve';
-                    setTimeout(function(){ self.textContent = '↑ Frissítés'; self.disabled = false; }, 2000);
+                    self.textContent = 'Frissítve';
+                    setTimeout(function(){ self.innerHTML = '<svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.5 14a8.5 8.5 0 1 1 2-5.5"/></svg> Frissítés'; self.disabled = false; }, 2000);
                 } else {
                     alert((res.data && res.data.message) || 'Hiba.');
-                    self.disabled = false; self.textContent = '↑ Frissítés';
+                    self.disabled = false; self.innerHTML = '<svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.5 14a8.5 8.5 0 1 1 2-5.5"/></svg> Frissítés';
                 }
             })
-            .catch(function(){ self.disabled = false; self.textContent = '↑ Frissítés'; });
+            .catch(function(){ self.disabled = false; self.innerHTML = '<svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.5 14a8.5 8.5 0 1 1 2-5.5"/></svg> Frissítés'; });
         });
     });
 
