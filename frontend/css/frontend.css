@@ -869,29 +869,34 @@
   pointer-events: none;
 }
 
-/* ── Dashboard ─────────────────────────────────── */
-.va-dashboard { display: grid; grid-template-columns: 260px 1fr; gap: 0; align-items: start; }
-@media (max-width: 768px) { .va-dashboard { grid-template-columns: 1fr; } }
+/* ── Dashboard – fix bal menü (admin panel stílus) ─ */
+.va-dashboard { display: block; min-height: calc(100vh - var(--nav, 66px)); }
 .va-dashboard__nav {
-  background: var(--va-card);
-  border: 1px solid var(--va-border);
-  border-right: none;
-  border-radius: var(--va-radius) 0 0 var(--va-radius);
-  padding: 16px 0;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: var(--nav, 66px);
+  width: 260px;
   height: calc(100vh - var(--nav, 66px));
+  background: var(--va-card);
+  border-right: 1px solid var(--va-border);
+  padding: 16px 0;
+  z-index: 200;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   scrollbar-color: rgba(255,0,0,.3) transparent;
 }
+.va-dashboard__nav::-webkit-scrollbar { width: 4px; }
+.va-dashboard__nav::-webkit-scrollbar-thumb { background: rgba(255,0,0,.2); border-radius: 2px; }
 .admin-bar .va-dashboard__nav {
   top: calc(var(--nav, 66px) + 32px);
   height: calc(100vh - var(--nav, 66px) - 32px);
 }
 @media screen and (max-width: 782px) {
   .admin-bar .va-dashboard__nav { top: calc(var(--nav, 66px) + 46px); height: calc(100vh - var(--nav, 66px) - 46px); }
+}
+@media (max-width: 768px) {
+  .va-dashboard__nav { position: static; height: auto; overflow: visible; width: 100%; }
 }
 .va-dashboard__nav-item {
   display: grid;
@@ -943,7 +948,8 @@
 .va-dashboard__nav-item[data-tab="watchlist"].active .va-dashboard__nav-ico {
   color: #ff0000;
 }
-.va-dashboard__content { min-width: 0; border: 1px solid var(--va-border); border-radius: 0 var(--va-radius) var(--va-radius) 0; }
+.va-dashboard__content { margin-left: 260px; min-height: calc(100vh - var(--nav, 66px)); }
+@media (max-width: 768px) { .va-dashboard__content { margin-left: 0; } }
 .va-dashboard__section { display: none; }
 .va-dashboard__section.active { display: block; }
 .va-dashboard__title { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
