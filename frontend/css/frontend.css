@@ -917,11 +917,12 @@
 }
 .va-dashboard__nav-item {
   display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
+  grid-template-columns: 34px minmax(0, 1fr);
   align-items: center;
-  column-gap: 10px;
+  column-gap: 12px;
   width: 100%;
-  padding: 10px 20px;
+  min-height: 48px;
+  padding: 11px 18px;
   color: var(--va-muted);
   text-decoration: none;
   font-size: 14px;
@@ -933,15 +934,17 @@
   transition: var(--va-transition);
 }
 .va-dashboard__nav-ico {
-  width: 20px;
+  width: 34px;
+  height: 34px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1;
 }
 .va-dashboard__nav-label {
   min-width: 0;
+  line-height: 1.25;
   overflow: hidden;
   text-overflow: ellipsis;
 }
