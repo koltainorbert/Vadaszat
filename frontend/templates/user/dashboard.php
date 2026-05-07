@@ -648,30 +648,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                             <?php endif; ?>
                         </td>
                     </tr>
-                    <tr class="va-sale-inline-row" id="va-sale-row-<?php echo esc_attr( (string) $l->ID ); ?>" style="display:none;">
-                        <td colspan="8" style="padding:0;border-bottom:1px solid rgba(255,0,0,.15);">
-                            <div class="va-sale-inline-panel">
-                                <span class="va-sale-inline-title">🏷 Akciós ár: <strong><?php echo esc_html( $l->post_title ); ?></strong></span>
-                                <div class="va-sale-inline-fields">
-                                    <div>
-                                        <label class="va-sale-inline-label">Akciós ár (Ft) — 0 = törlés</label>
-                                        <input type="number" class="va-sale-inline-price va-bulk-price-input" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" value="<?php echo esc_attr( $l_sale_price > 0 ? (string) $l_sale_price : '' ); ?>" min="0" placeholder="pl. 1200000">
-                                    </div>
-                                    <div>
-                                        <label class="va-sale-inline-label">Akció vége (opcionális)</label>
-                                        <input type="text" class="va-sale-inline-end va-bulk-price-input" value="<?php echo esc_attr( $l_sale_end ); ?>" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
-                                    </div>
-                                    <div class="va-sale-inline-actions">
-                                        <button type="button" class="va-sale-inline-save" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" style="height:36px;padding:0 16px;border-radius:8px;border:1px solid rgba(255,0,0,.5);background:rgba(255,0,0,.2);color:#fff;font-weight:700;font-size:13px;cursor:pointer;">Mentés</button>
-                                        <?php if ( $l_sale_price > 0 ): ?>
-                                        <button type="button" class="va-sale-inline-remove" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" style="height:36px;padding:0 14px;border-radius:8px;border:1px solid rgba(255,42,42,.3);background:rgba(255,42,42,.08);color:#ff8080;font-size:13px;cursor:pointer;">Akció törlése</button>
-                                        <?php endif; ?>
-                                        <button type="button" class="va-sale-inline-cancel" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" style="height:36px;padding:0 14px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;">Mégse</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -875,6 +851,22 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
         </div><!-- .va-dashboard__content -->
     </div><!-- .va-dashboard -->
+</div>
+
+<div class="va-sale-modal-overlay" id="va-sale-modal-overlay" role="dialog" aria-modal="true" aria-label="Akciós ár beállítása">
+    <div class="va-sale-modal">
+        <h3>Akciós ár szerkesztése</h3>
+        <input type="hidden" id="va-sale-modal-post-id">
+        <label>Akciós ár (Ft) — 0 = törlés</label>
+        <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
+        <label>Akció vége (opcionális)</label>
+        <input type="text" id="va-sale-modal-end" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+        <div class="va-sale-modal__actions">
+            <button class="va-sale-modal__remove" id="va-sale-modal-remove">Akció törlése</button>
+            <button class="va-sale-modal__cancel" id="va-sale-modal-cancel">Mégse</button>
+            <button class="va-sale-modal__save" id="va-sale-modal-save">Mentés</button>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -1387,15 +1379,79 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     color:rgba(255,255,255,.95);
 }
 
-/* ── Akciós ár inline panel (soron belül) ── */
-.va-sale-inline-row td { background:rgba(255,42,42,.03); }
-.va-sale-inline-panel {
-    padding:14px 16px;display:flex;flex-direction:column;gap:10px;
+/* ── Akciós ár középre popup (blur háttér) ── */
+.va-sale-modal-overlay {
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.45);
+    backdrop-filter:blur(8px);
 }
-.va-sale-inline-title { font-size:12px;font-weight:700;color:rgba(255,255,255,.7); }
-.va-sale-inline-label { display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:4px; }
-.va-sale-inline-fields { display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px; }
-.va-sale-inline-actions { display:flex;gap:8px;align-items:center; }
+.va-sale-modal-overlay.open { display:flex; }
+.va-sale-modal {
+    width:min(92vw, 430px);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:16px;
+    padding:18px;
+    background:linear-gradient(180deg, rgba(18,18,18,.98), rgba(8,8,8,.98));
+    box-shadow:0 22px 60px rgba(0,0,0,.65), 0 0 0 1px rgba(255,0,0,.12) inset;
+}
+.va-sale-modal h3 { margin:0 0 12px; font-size:16px; color:#fff; }
+.va-sale-modal label { display:block; font-size:11px; font-weight:700; color:rgba(255,255,255,.55); margin:10px 0 4px; }
+.va-sale-modal input {
+    width:100%;
+    height:36px;
+    padding:0 12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.06);
+    color:#fff;
+    font-size:13px;
+    box-sizing:border-box;
+}
+.va-sale-modal input:focus {
+    outline:none;
+    border-color:rgba(255,0,0,.55);
+    box-shadow:0 0 0 3px rgba(255,0,0,.14);
+}
+.va-sale-modal__actions {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:14px;
+}
+.va-sale-modal__save {
+    margin-left:auto;
+    height:36px;
+    padding:0 16px;
+    border-radius:8px;
+    border:1px solid rgba(255,0,0,.55);
+    background:rgba(255,0,0,.2);
+    color:#fff;
+    font-weight:700;
+    cursor:pointer;
+}
+.va-sale-modal__remove {
+    height:36px;
+    padding:0 14px;
+    border-radius:8px;
+    border:1px solid rgba(255,42,42,.35);
+    background:rgba(255,42,42,.08);
+    color:#ff8b8b;
+    cursor:pointer;
+}
+.va-sale-modal__cancel {
+    height:36px;
+    padding:0 14px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,.16);
+    background:rgba(255,255,255,.05);
+    color:rgba(255,255,255,.75);
+    cursor:pointer;
+}
 
 /* ── Lejárat badge ── */
 .va-expiry-badge {
@@ -1730,64 +1786,76 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         });
     });
 
-    /* ── Sale price inline edit ── */
-    function saveSalePrice(postId, price, endDate, saveBtn) {
+    /* ── Sale price modal edit ── */
+    var saleOverlay = document.getElementById('va-sale-modal-overlay');
+    var salePostId  = document.getElementById('va-sale-modal-post-id');
+    var salePrice   = document.getElementById('va-sale-modal-price');
+    var saleEnd     = document.getElementById('va-sale-modal-end');
+    var saleSaveBtn = document.getElementById('va-sale-modal-save');
+    var saleRemBtn  = document.getElementById('va-sale-modal-remove');
+    var saleCancel  = document.getElementById('va-sale-modal-cancel');
+
+    function openSaleModal(postId, curPrice, curEnd) {
+        if (!saleOverlay) return;
+        salePostId.value = postId || '';
+        salePrice.value  = curPrice || '';
+        saleEnd.value    = curEnd || '';
+        saleOverlay.classList.add('open');
+        if (salePrice) salePrice.focus();
+    }
+    function closeSaleModal() {
+        if (saleOverlay) saleOverlay.classList.remove('open');
+        if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; }
+    }
+
+    function saveSalePrice(postId, price, endDate) {
         if (!postId) return;
-        var saleEnd = normalizeIsoDateText(endDate);
-        if (saleEnd === null) { alert('Akció vége dátum formátum: YYYY-MM-DD'); return; }
+        var saleEndNorm = normalizeIsoDateText(endDate);
+        if (saleEndNorm === null) { alert('Akció vége dátum formátum: YYYY-MM-DD'); return; }
         var params = new URLSearchParams({
             action: 'va_set_sale_price', nonce: _nonce,
-            post_id: postId, sale_price: price, sale_end: saleEnd || ''
+            post_id: postId, sale_price: price, sale_end: saleEndNorm || ''
         });
-        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Mentés...'; }
+        if (saleSaveBtn) { saleSaveBtn.disabled = true; saleSaveBtn.textContent = 'Mentés...'; }
         fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
         .then(function(r){ return r.json(); })
         .then(function(res){
-            if (res.success) { location.reload(); }
-            else { alert((res.data && res.data.message) || 'Hiba.'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Mentés'; } }
+            if (res.success) {
+                closeSaleModal();
+                location.reload();
+            } else {
+                alert((res.data && res.data.message) || 'Hiba.');
+                if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; }
+            }
         })
-        .catch(function(){ if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Mentés'; } });
+        .catch(function(){
+            if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; }
+        });
     }
 
     document.querySelectorAll('.va-sale-edit-btn').forEach(function(btn){
         btn.addEventListener('click', function(){
-            var postId = this.dataset.postId;
-            var row = document.getElementById('va-sale-row-' + postId);
-            if (!row) return;
-            var isOpen = row.style.display !== 'none';
-            // Close all other inline rows first
-            document.querySelectorAll('.va-sale-inline-row').forEach(function(r){ r.style.display = 'none'; });
-            if (!isOpen) row.style.display = 'table-row';
+            openSaleModal(this.dataset.postId, this.dataset.salePrice, this.dataset.saleEnd);
         });
     });
 
-    document.querySelectorAll('.va-sale-inline-save').forEach(function(btn){
-        btn.addEventListener('click', function(){
-            var postId = this.dataset.postId;
-            var row = document.getElementById('va-sale-row-' + postId);
-            if (!row) return;
-            var priceInput = row.querySelector('.va-sale-inline-price');
-            var endInput   = row.querySelector('.va-sale-inline-end');
-            saveSalePrice(postId, priceInput ? priceInput.value : 0, endInput ? endInput.value : '', this);
+    if (saleCancel) saleCancel.addEventListener('click', closeSaleModal);
+    if (saleOverlay) {
+        saleOverlay.addEventListener('click', function(e){
+            if (e.target === saleOverlay) closeSaleModal();
         });
-    });
-
-    document.querySelectorAll('.va-sale-inline-remove').forEach(function(btn){
-        btn.addEventListener('click', function(){
+    }
+    if (saleSaveBtn) {
+        saleSaveBtn.addEventListener('click', function(){
+            saveSalePrice(salePostId ? salePostId.value : '', salePrice ? salePrice.value : 0, saleEnd ? saleEnd.value : '');
+        });
+    }
+    if (saleRemBtn) {
+        saleRemBtn.addEventListener('click', function(){
             if (!confirm('Törlöd az akciós árat?')) return;
-            var postId = this.dataset.postId;
-            var row = document.getElementById('va-sale-row-' + postId);
-            saveSalePrice(postId, 0, '', this);
+            saveSalePrice(salePostId ? salePostId.value : '', 0, '');
         });
-    });
-
-    document.querySelectorAll('.va-sale-inline-cancel').forEach(function(btn){
-        btn.addEventListener('click', function(){
-            var postId = this.dataset.postId;
-            var row = document.getElementById('va-sale-row-' + postId);
-            if (row) row.style.display = 'none';
-        });
-    });
+    }
 
 })();
 </script>

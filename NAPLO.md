@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #201 (Akció szerkesztés: popup modal visszaállítás)
+
+### Mit csinaltunk [x]
+- [x] Az inline soros akciós ár szerkesztő eltávolítva a Hirdetéseim táblából
+- [x] Visszaállítva a középre felugró akció szerkesztő modal
+- [x] Blur overlay visszarakva (`backdrop-filter: blur(8px)`)
+- [x] Mentés/Mégse/Akció törlése működés visszaállítva modal alapon
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+A módosítás újra középre nyíló, blur hátterű popupban történik, a korábbi "szép" modal UX szerint.
+
+---
+
 ## 2026. 05. 07. – Session #200 (Fiókoldal UX polish: dátummező + akció ikon)
 
 ### Mit csinaltunk [x]
