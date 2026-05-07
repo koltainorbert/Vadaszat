@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #202 (Akció modal: naptár ikon + gomb polish)
+
+### Mit csinaltunk [x]
+- [x] Akció modal dátummező visszaállítva `type=date` mezőre
+- [x] Dátummező mellé külön naptár ikon gomb került (`showPicker` támogatással)
+- [x] Modal mezők és action gombok vizuális finomítása (jobb kontraszt, hover, tisztább megjelenés)
+- [x] Számmező pörgető nyilak elrejtve a modalban (ne legyen "csúnya" spinner)
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+Az akció szerkesztő popupban már nem csak beírni lehet a dátumot: külön ikonról is megnyitható a naptárválasztó, és a modal gombok/mezők egységesebben néznek ki.
+
+---
+
 ## 2026. 05. 07. – Session #201 (Akció szerkesztés: popup modal visszaállítás)
 
 ### Mit csinaltunk [x]
