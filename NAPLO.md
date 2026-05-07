@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #216 (Stat blokk végső egyszerűsítés)
+
+### Mit csinaltunk [x]
+- [x] A stat szekcióból eltávolítva a fő chart, trend és alapadat blokkok
+- [x] Meghagyva csak a kompakt hárompaneles nézet: státusz megoszlás, top 5 hirdetés, jelzők és kiemelések
+- [x] A szekció címe ehhez igazítva: `Részletes bontás`
+- [x] Dashboard plugin mirror szinkron + Deploy Plugin sikeres
+
+### Hol tartunk
+A /va-fiok statisztika most már pontosan a kompakt, hárompaneles nézetet mutatja, extra felső blokkok nélkül.
+
+---
+
 ## 2026. 05. 07. – Session #215 (Alapból csukott stat blokkok + login redirect fix)
 
 ### Mit csinaltunk [x]
