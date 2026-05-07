@@ -802,6 +802,179 @@ $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
 .va-profile-avatar-editor__fields { flex:1;display:flex;flex-direction:column;gap:8px; }
 .va-profile-avatar-editor__remove { font-size:12px;color:rgba(255,255,255,.7);display:flex;align-items:center;gap:7px; }
 
+/* ── CRM stat blokk ── */
+.va-crm {
+    margin:0 0 18px;
+    padding:14px;
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:12px;
+    background:
+        radial-gradient(circle at 18% -10%, rgba(255,0,0,.20), transparent 40%),
+        linear-gradient(160deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+}
+.va-crm__head h3 {
+    margin:0;
+    color:#fff;
+    font-size:15px;
+    letter-spacing:.02em;
+}
+.va-crm__head p {
+    margin:4px 0 0;
+    color:rgba(255,255,255,.58);
+    font-size:12px;
+}
+.va-crm__kpis {
+    margin-top:12px;
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+}
+.va-crm__kpi {
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:10px;
+    padding:10px;
+    background:rgba(0,0,0,.22);
+}
+.va-crm__kpi-label {
+    display:block;
+    font-size:11px;
+    color:rgba(255,255,255,.55);
+    margin-bottom:6px;
+}
+.va-crm__kpi-value {
+    display:block;
+    color:#fff;
+    font-size:19px;
+    font-weight:800;
+    line-height:1.12;
+}
+.va-crm__kpi-sub {
+    display:block;
+    margin-top:5px;
+    color:rgba(255,255,255,.66);
+    font-size:11px;
+}
+.va-crm__panels {
+    margin-top:12px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+.va-crm__panel {
+    border:1px solid rgba(255,255,255,.10);
+    border-radius:10px;
+    padding:10px;
+    background:rgba(0,0,0,.22);
+}
+.va-crm__panel h4 {
+    margin:0 0 10px;
+    font-size:12px;
+    font-weight:800;
+    color:#fff;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+}
+.va-crm__status-list {
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.va-crm__status-meta {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-size:11px;
+    color:rgba(255,255,255,.78);
+}
+.va-crm__status-meta strong { color:#fff; }
+.va-crm__status-bar {
+    width:100%;
+    height:7px;
+    border-radius:999px;
+    background:rgba(255,255,255,.10);
+    overflow:hidden;
+}
+.va-crm__status-bar > span {
+    display:block;
+    height:100%;
+    border-radius:inherit;
+    background:linear-gradient(90deg,#ff2a2a,#ff8a00);
+}
+.va-crm__plan-use { margin-top:12px; }
+.va-crm__plan-use-meta {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:6px;
+    font-size:11px;
+    color:rgba(255,255,255,.78);
+}
+.va-crm__plan-use-meta strong { color:#fff; }
+.va-crm__top-list {
+    margin:0;
+    padding-left:18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.va-crm__top-list li {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+.va-crm__top-list a {
+    color:#fff;
+    font-size:12px;
+    text-decoration:none;
+    max-width:74%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+.va-crm__top-list a:hover { color:#ff6666; }
+.va-crm__top-list span {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:56px;
+    height:22px;
+    padding:0 8px;
+    border-radius:999px;
+    border:1px solid rgba(255,0,0,.45);
+    background:rgba(255,0,0,.14);
+    color:#fff;
+    font-size:11px;
+    font-weight:700;
+}
+.va-crm__badges {
+    margin-top:12px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.va-crm__badges span {
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    padding:3px 8px;
+    border-radius:999px;
+    border:1px solid rgba(255,255,255,.14);
+    background:rgba(255,255,255,.05);
+    color:rgba(255,255,255,.75);
+    font-size:10px;
+}
+.va-crm__badges strong { color:#fff; }
+.va-crm__empty { margin:0;color:rgba(255,255,255,.5);font-size:12px; }
+@media (max-width: 980px) {
+    .va-crm__kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .va-crm__panels { grid-template-columns:1fr; }
+}
+@media (max-width: 640px) {
+    .va-crm { padding:12px; }
+    .va-crm__kpis { grid-template-columns:1fr; }
+}
+
 /* ── Boost toggle ── */
 .va-pill-toggles {
     display:flex;

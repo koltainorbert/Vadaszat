@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 07. – Session #194 (Fiókoldal: CRM szintű statisztikai irányítópult)
+
+### Mit csinaltunk [x]
+- [x] A `/va-fiok/` Hirdetéseim tab tetejere teljesitmeny iranyitopult kerult
+- [x] KPI blokkok: osszes hirdetes, osszes valid megtekintes, atlagos megtekintes/hirdetes, atlagos ar, top hirdetes, 7/30 napos aktivitas, kapcsolodo mutatok
+- [x] Statusz-megoszlas savdiagram jellegu vizualizacio (aktiv, jovahagyas, piszkozat, privat/szunet, limit miatti leallitas)
+- [x] Csomagkihasznaltsag progress sav megjelenites (ha van limit)
+- [x] Top 5 hirdetes lista valid megtekintes szerint
+- [x] Kiemelt/Boost/Uj pill aktiv darabszam badge-ek
+- [x] Teljes funkcio atvezetve source + plugin mirror dashboard sablonba
+- [x] Hibavizsgalat lefuttatva az erintett fajlokon (nincs uj hiba)
+
+### Hol tartunk
+A felhasznaloi fiok Hirdetéseim nezet mar CRM-szeru statisztikakat ad, valid (nyers `va_views`) adatokkal, gyors dontestamogatashoz.
+
+---
+
 ## 2026. 05. 07. – Session #193 (Fiókoldal: megtekintés szem ikon + pill)
 
 ### Mit csinaltunk [x]
