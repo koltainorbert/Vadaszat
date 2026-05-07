@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 07. – Session #206 (Custom fekete naptár a popupban)
+
+### Mit csinaltunk [x]
+- [x] Natív fehér datepicker lecserélve saját (JS + CSS) dark naptár komponensre
+- [x] Dátummező most readonly szövegmező + külön naptár gomb
+- [x] Sötét naptár popup: hónap léptetés, naprács, mai nap jelölés, kijelölt nap jelölés
+- [x] Dátum kiválasztás után azonnali értékbeírás (`YYYY-MM-DD`) + előnézet frissítés
+- [x] Külső kattintásra naptár bezárás
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+Az ár/akció modalban a naptár már teljesen fekete, a projekt dizájnjához illeszkedő saját komponens.
+
+---
+
 ## 2026. 05. 07. – Session #205 (Popup: élő ár előnézet)
 
 ### Mit csinaltunk [x]

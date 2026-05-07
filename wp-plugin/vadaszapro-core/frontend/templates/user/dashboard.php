@@ -862,7 +862,23 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         <label>Akciós ár (Ft) — 0 = törlés</label>
         <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
         <label>Akció vége (opcionális)</label>
-        <input type="date" id="va-sale-modal-end" class="va-sale-modal__date-input" placeholder="YYYY-MM-DD">
+        <div class="va-sale-modal__date-wrap">
+            <input type="text" id="va-sale-modal-end" class="va-sale-modal__date-input" placeholder="YYYY-MM-DD" inputmode="numeric" autocomplete="off" readonly>
+            <button type="button" id="va-sale-modal-cal-btn" class="va-sale-modal__date-btn" aria-label="Naptár megnyitása" title="Naptár megnyitása">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </button>
+            <div id="va-sale-calendar" class="va-sale-calendar" style="display:none;">
+                <div class="va-sale-calendar__head">
+                    <button type="button" id="va-sale-cal-prev" class="va-sale-calendar__nav" aria-label="Előző hónap">‹</button>
+                    <div id="va-sale-cal-title" class="va-sale-calendar__title"></div>
+                    <button type="button" id="va-sale-cal-next" class="va-sale-calendar__nav" aria-label="Következő hónap">›</button>
+                </div>
+                <div class="va-sale-calendar__dow">
+                    <span>H</span><span>K</span><span>Sze</span><span>Cs</span><span>P</span><span>Szo</span><span>V</span>
+                </div>
+                <div id="va-sale-cal-grid" class="va-sale-calendar__grid"></div>
+            </div>
+        </div>
         <div class="va-sale-preview" id="va-sale-preview">
             <div class="va-sale-preview__label">Előnézet</div>
             <div class="va-sale-preview__prices">
@@ -1438,11 +1454,99 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     box-shadow:0 0 0 3px rgba(255,0,0,.14);
 }
 .va-sale-modal__date-input {
-    color-scheme:dark;
+    padding-right:42px !important;
 }
-.va-sale-modal__date-input::-webkit-calendar-picker-indicator {
-    filter:invert(1) brightness(1.25);
-    opacity:.9;
+.va-sale-modal__date-wrap {
+    position:relative;
+}
+.va-sale-modal__date-btn {
+    position:absolute;
+    right:6px;
+    top:50%;
+    transform:translateY(-50%);
+    width:30px;
+    height:30px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,.2);
+    background:rgba(255,255,255,.05);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+}
+.va-sale-modal__date-btn:hover {
+    border-color:rgba(255,0,0,.45);
+    background:rgba(255,0,0,.16);
+}
+.va-sale-calendar {
+    position:absolute;
+    top:calc(100% + 8px);
+    left:0;
+    width:100%;
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;
+    background:linear-gradient(180deg,#111,#080808);
+    box-shadow:0 18px 40px rgba(0,0,0,.7);
+    z-index:10020;
+    padding:10px;
+}
+.va-sale-calendar__head {
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:8px;
+}
+.va-sale-calendar__nav {
+    width:28px;
+    height:28px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.04);
+    color:#fff;
+    cursor:pointer;
+    font-size:18px;
+    line-height:1;
+}
+.va-sale-calendar__title {
+    font-size:13px;
+    font-weight:700;
+    color:#fff;
+}
+.va-sale-calendar__dow,
+.va-sale-calendar__grid {
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:4px;
+}
+.va-sale-calendar__dow span {
+    text-align:center;
+    font-size:10px;
+    color:rgba(255,255,255,.45);
+    padding:2px 0;
+}
+.va-sale-calendar__day {
+    height:28px;
+    border-radius:7px;
+    border:1px solid transparent;
+    background:transparent;
+    color:#fff;
+    font-size:12px;
+    cursor:pointer;
+}
+.va-sale-calendar__day:hover {
+    border-color:rgba(255,0,0,.35);
+    background:rgba(255,0,0,.14);
+}
+.va-sale-calendar__day--muted {
+    color:rgba(255,255,255,.28);
+}
+.va-sale-calendar__day--selected {
+    border-color:rgba(255,0,0,.55);
+    background:rgba(255,0,0,.22);
+}
+.va-sale-calendar__day--today {
+    box-shadow:0 0 0 1px rgba(255,255,255,.35) inset;
 }
 .va-sale-preview {
     margin-top:10px;
@@ -1870,6 +1974,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     var saleNormal  = document.getElementById('va-sale-modal-normal-price');
     var salePrice   = document.getElementById('va-sale-modal-price');
     var saleEnd     = document.getElementById('va-sale-modal-end');
+    var saleCalBtn  = document.getElementById('va-sale-modal-cal-btn');
+    var saleCalBox  = document.getElementById('va-sale-calendar');
+    var saleCalGrid = document.getElementById('va-sale-cal-grid');
+    var saleCalTitle= document.getElementById('va-sale-cal-title');
+    var saleCalPrev = document.getElementById('va-sale-cal-prev');
+    var saleCalNext = document.getElementById('va-sale-cal-next');
     var salePreviewOld   = document.getElementById('va-sale-preview-old');
     var salePreviewNew   = document.getElementById('va-sale-preview-new');
     var salePreviewBadge = document.getElementById('va-sale-preview-badge');
@@ -1877,6 +1987,82 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     var saleSaveBtn = document.getElementById('va-sale-modal-save');
     var saleRemBtn  = document.getElementById('va-sale-modal-remove');
     var saleCancel  = document.getElementById('va-sale-modal-cancel');
+    var saleCalViewDate = null;
+
+    function parseIsoDate(iso) {
+        if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
+        var p = iso.split('-').map(function(x){ return parseInt(x, 10); });
+        var d = new Date(p[0], p[1]-1, p[2]);
+        if (d.getFullYear() !== p[0] || d.getMonth() !== (p[1]-1) || d.getDate() !== p[2]) return null;
+        return d;
+    }
+
+    function toIsoDate(d) {
+        var y = d.getFullYear();
+        var m = String(d.getMonth() + 1).padStart(2, '0');
+        var day = String(d.getDate()).padStart(2, '0');
+        return y + '-' + m + '-' + day;
+    }
+
+    function openSaleCalendar() {
+        if (!saleCalBox) return;
+        saleCalBox.style.display = 'block';
+    }
+
+    function closeSaleCalendar() {
+        if (!saleCalBox) return;
+        saleCalBox.style.display = 'none';
+    }
+
+    function renderSaleCalendar(viewDate) {
+        if (!saleCalGrid || !saleCalTitle) return;
+        var months = ['január','február','március','április','május','június','július','augusztus','szeptember','október','november','december'];
+        var year = viewDate.getFullYear();
+        var month = viewDate.getMonth();
+        saleCalTitle.textContent = year + '. ' + months[month];
+
+        var first = new Date(year, month, 1);
+        var offset = (first.getDay() + 6) % 7; // Hétfő = 0
+        var daysInMonth = new Date(year, month + 1, 0).getDate();
+        var prevMonthDays = new Date(year, month, 0).getDate();
+        var selected = parseIsoDate(saleEnd ? saleEnd.value : '');
+        var today = new Date();
+        today.setHours(0,0,0,0);
+
+        saleCalGrid.innerHTML = '';
+        for (var i = 0; i < 42; i++) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'va-sale-calendar__day';
+            var dateObj;
+            if (i < offset) {
+                var d1 = prevMonthDays - offset + i + 1;
+                dateObj = new Date(year, month - 1, d1);
+                btn.classList.add('va-sale-calendar__day--muted');
+                btn.textContent = d1;
+            } else if (i >= offset + daysInMonth) {
+                var d2 = i - (offset + daysInMonth) + 1;
+                dateObj = new Date(year, month + 1, d2);
+                btn.classList.add('va-sale-calendar__day--muted');
+                btn.textContent = d2;
+            } else {
+                var d = i - offset + 1;
+                dateObj = new Date(year, month, d);
+                btn.textContent = d;
+            }
+            var iso = toIsoDate(dateObj);
+            btn.dataset.iso = iso;
+            if (selected && toIsoDate(selected) === iso) btn.classList.add('va-sale-calendar__day--selected');
+            if (toIsoDate(today) === iso) btn.classList.add('va-sale-calendar__day--today');
+            btn.addEventListener('click', function(){
+                if (!saleEnd) return;
+                saleEnd.value = this.dataset.iso || '';
+                refreshSalePreview();
+                closeSaleCalendar();
+            });
+            saleCalGrid.appendChild(btn);
+        }
+    }
 
     function fmtFt(value) {
         var n = parseFloat(value || 0);
@@ -1910,12 +2096,16 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         saleNormal.value = curNormal || '';
         salePrice.value  = curSale || '';
         saleEnd.value    = curEnd || '';
+        saleCalViewDate  = parseIsoDate(saleEnd.value) || new Date();
+        renderSaleCalendar(saleCalViewDate);
+        closeSaleCalendar();
         refreshSalePreview();
         saleOverlay.classList.add('open');
         if (saleNormal) saleNormal.focus();
     }
     function closeSaleModal() {
         if (saleOverlay) saleOverlay.classList.remove('open');
+        closeSaleCalendar();
         if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; }
     }
 
@@ -1964,6 +2154,48 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
             if (e.target === saleOverlay) closeSaleModal();
         });
     }
+    if (saleCalBtn) {
+        saleCalBtn.addEventListener('click', function(e){
+            e.stopPropagation();
+            if (!saleCalViewDate) saleCalViewDate = parseIsoDate(saleEnd ? saleEnd.value : '') || new Date();
+            renderSaleCalendar(saleCalViewDate);
+            if (saleCalBox && saleCalBox.style.display === 'none') openSaleCalendar(); else closeSaleCalendar();
+        });
+    }
+    if (saleEnd) {
+        saleEnd.addEventListener('click', function(e){
+            e.stopPropagation();
+            if (!saleCalViewDate) saleCalViewDate = parseIsoDate(saleEnd.value) || new Date();
+            renderSaleCalendar(saleCalViewDate);
+            openSaleCalendar();
+        });
+    }
+    if (saleCalPrev) {
+        saleCalPrev.addEventListener('click', function(e){
+            e.stopPropagation();
+            if (!saleCalViewDate) saleCalViewDate = new Date();
+            saleCalViewDate = new Date(saleCalViewDate.getFullYear(), saleCalViewDate.getMonth() - 1, 1);
+            renderSaleCalendar(saleCalViewDate);
+            openSaleCalendar();
+        });
+    }
+    if (saleCalNext) {
+        saleCalNext.addEventListener('click', function(e){
+            e.stopPropagation();
+            if (!saleCalViewDate) saleCalViewDate = new Date();
+            saleCalViewDate = new Date(saleCalViewDate.getFullYear(), saleCalViewDate.getMonth() + 1, 1);
+            renderSaleCalendar(saleCalViewDate);
+            openSaleCalendar();
+        });
+    }
+    document.addEventListener('click', function(e){
+        if (!saleOverlay || !saleOverlay.classList.contains('open')) return;
+        if (!saleCalBox || saleCalBox.style.display === 'none') return;
+        if (saleCalBox.contains(e.target)) return;
+        if (saleCalBtn && saleCalBtn.contains(e.target)) return;
+        if (saleEnd && saleEnd.contains(e.target)) return;
+        closeSaleCalendar();
+    });
     if (saleSaveBtn) {
         saleSaveBtn.addEventListener('click', function(){
             saveSalePrice(
