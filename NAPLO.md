@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #230 (CookieYes margó- és belső spacing fix)
+
+### Mit csinaltunk [x]
+- [x] A sütisáv konténer középre igazítva fix margóval (`min(1280px, calc(100% - 28px))`)
+- [x] A külső keretből kilógás megszüntetve, radius vágás elleni beállításokkal
+- [x] A belső szövegblokk plusz belső paddinget kapott, mobil clipping javítva
+- [x] Mobil szélességre külön konténerlimit: `calc(100% - 16px)`
+- [x] Theme deploy sikeresen lefutott
+
+### Hol tartunk
+A CookieYes sáv most már csak a belső lekerekített blokkban jelenik meg, fix margón belül marad, és mobilon sem vágja le a szöveget a border/radius.
+
+---
+
 ## 2026. 05. 07. – Session #229 (Welcome preview kivezetése)
 
 ### Mit csinaltunk [x]
