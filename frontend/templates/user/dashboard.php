@@ -129,7 +129,75 @@ $crm_plan_usage_pc = $crm_plan_limit > 0 ? min( 100, (int) round( ( $crm_plan_us
 
 $crm_top_title = $crm_top_rows ? (string) $crm_top_rows[0]['title'] : 'Nincs adat';
 $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
-?>
+
+// Rendezés
+$sort_by  = sanitize_key( $_GET['sort_by'] ?? 'date' );
+$sort_dir = sanitize_key( $_GET['sort_dir'] ?? 'desc' );
+if ( ! in_array( $sort_by, [ 'date', 'views', 'price' ], true ) ) $sort_by = 'date';
+if ( ! in_array( $sort_dir, [ 'asc', 'desc' ], true ) ) $sort_dir = 'desc';
+
+// Képszámok (batch)
+$listing_ids_all = array_column( (array) $listings, 'ID' );
+$gallery_meta_map = [];
+if ( $listing_ids_all ) {
+    $gm_results = get_post_meta_for_ids( $listing_ids_all, 'va_gallery_ids' );
+    foreach ( (array) $gm_results as $row ) {
+        $ids_arr = array_filter( array_map( 'intval', explode( ',', (string) $row ) ) );
+        $gallery_meta_map[ $row ] = count( $ids_arr );
+    }
+    // fallback: egyenként
+    foreach ( $listing_ids_all as $lid ) {
+        if ( ! isset( $gallery_meta_map[ $lid ] ) ) {
+            $g = get_post_meta( $lid, 'va_gallery_ids', true );
+            $gallery_meta_map[ $lid ] = count( array_filter( array_map( 'intval', explode( ',', (string) $g ) ) ) );
+        }
+    }
+}
+
+// Akciós árak + lejáratok per listing
+$sale_prices = [];
+$sale_ends   = [];
+$active_sinces = [];
+foreach ( $listing_ids_all as $lid ) {
+    $sp = get_post_meta( $lid, 'va_sale_price', true );
+    $sale_prices[ $lid ] = $sp ? floatval( $sp ) : 0.0;
+    $se = get_post_meta( $lid, 'va_sale_price_end', true );
+    $sale_ends[ $lid ] = $se ?: '';
+    $as = (int) get_post_meta( $lid, 'va_active_since', true );
+    $active_sinces[ $lid ] = $as ?: 0;
+}
+
+// Sort listings
+usort( $listings, function( $a, $b ) use ( $sort_by, $sort_dir, $sale_prices ) {
+    if ( $sort_by === 'views' ) {
+        $av = (int) get_post_meta( $a->ID, 'va_views', true );
+        $bv = (int) get_post_meta( $b->ID, 'va_views', true );
+        $cmp = $av <=> $bv;
+    } elseif ( $sort_by === 'price' ) {
+        $ap = floatval( get_post_meta( $a->ID, 'va_price', true ) );
+        $bp = floatval( get_post_meta( $b->ID, 'va_price', true ) );
+        $cmp = $ap <=> $bp;
+    } else {
+        $cmp = strtotime( $a->post_date ) <=> strtotime( $b->post_date );
+    }
+    return $sort_dir === 'asc' ? $cmp : -$cmp;
+} );
+
+// Profil-teljességi %
+$completeness_items = [
+    'Megjelenítési név' => ! empty( $user->display_name ),
+    'E-mail'            => ! empty( $user->user_email ),
+    'Telefonszám'       => ! empty( $phone ),
+    'Bemutatkozás'      => ! empty( $user->description ),
+    'Profilkép'         => ! empty( $avatar_url ),
+    'Aktív hirdetés'    => $crm_active_count > 0,
+];
+$completeness_done  = count( array_filter( $completeness_items ) );
+$completeness_pct   = (int) round( $completeness_done / count( $completeness_items ) * 100 );
+
+// Tagság kora
+$membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) ) / 86400 );
+
 <div class="va-wrap">
     <?php va_display_flash(); ?>
 
