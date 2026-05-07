@@ -1210,101 +1210,152 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
 /* ── CRM stat blokk ── */
 .va-crm {
-    margin:0 0 18px;
-    padding:14px;
-    border:1px solid rgba(255,255,255,.08);
-    border-radius:12px;
+    margin:0 0 20px;
+    padding:16px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
     background:
-        radial-gradient(circle at 18% -10%, rgba(255,0,0,.20), transparent 40%),
-        linear-gradient(160deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+        radial-gradient(circle at 8% -16%, rgba(255,0,0,.35), transparent 44%),
+        radial-gradient(circle at 92% 108%, rgba(255,120,0,.22), transparent 42%),
+        radial-gradient(circle, rgba(255,255,255,.05) 1px, transparent 1px),
+        rgb(6,6,6);
+    background-size: auto, auto, 14px 14px, auto;
+    box-shadow: 0 26px 60px rgba(0,0,0,.52), inset 0 1px 0 rgba(255,255,255,.12);
+    font-family: "Space Grotesk", "Rajdhani", "Segoe UI", sans-serif;
+}
+.va-crm__head {
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:10px;
+    padding-bottom:10px;
+    border-bottom:1px solid rgba(255,255,255,.10);
 }
 .va-crm__head h3 {
     margin:0;
     color:#fff;
-    font-size:15px;
-    letter-spacing:.02em;
+    font-size:17px;
+    letter-spacing:.03em;
+    text-transform:uppercase;
 }
 .va-crm__head p {
     margin:4px 0 0;
-    color:rgba(255,255,255,.58);
+    color:rgba(255,255,255,.74);
     font-size:12px;
 }
 .va-crm__kpis {
-    margin-top:12px;
+    margin-top:14px;
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:10px;
+    gap:12px;
 }
 .va-crm__kpi {
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:10px;
-    padding:10px;
-    background:rgba(0,0,0,.22);
+    position:relative;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;
+    padding:12px 12px 11px;
+    background:linear-gradient(160deg, rgba(24,24,30,.94), rgba(10,10,13,.9));
+    overflow:hidden;
+    transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.va-crm__kpi::before {
+    content:"";
+    position:absolute;
+    inset:0 0 auto 0;
+    height:2px;
+    background:linear-gradient(90deg, #ff1a1a, #ff6f00);
+    opacity:.8;
+}
+.va-crm__kpi::after {
+    content:"";
+    position:absolute;
+    right:10px;
+    bottom:10px;
+    width:48px;
+    height:20px;
+    border-radius:7px;
+    background:
+        repeating-linear-gradient(90deg,
+            rgba(255,255,255,.08) 0 5px,
+            transparent 5px 9px),
+        linear-gradient(180deg, rgba(255,0,0,.22), rgba(255,0,0,0));
+    opacity:.75;
+    pointer-events:none;
+}
+.va-crm__kpi:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255,70,70,.55);
+    box-shadow: 0 10px 26px rgba(0,0,0,.34);
 }
 .va-crm__kpi-label {
     display:block;
     font-size:11px;
-    color:rgba(255,255,255,.55);
-    margin-bottom:6px;
+    color:rgba(255,255,255,.66);
+    margin-bottom:7px;
+    letter-spacing:.035em;
+    text-transform:uppercase;
 }
 .va-crm__kpi-value {
     display:block;
     color:#fff;
-    font-size:19px;
-    font-weight:800;
-    line-height:1.12;
+    font-size:22px;
+    font-weight:900;
+    line-height:1.08;
+    text-shadow: 0 7px 22px rgba(0,0,0,.35);
 }
 .va-crm__kpi-sub {
     display:block;
-    margin-top:5px;
-    color:rgba(255,255,255,.66);
+    margin-top:6px;
+    color:rgba(255,255,255,.8);
     font-size:11px;
 }
 .va-crm__panels {
-    margin-top:12px;
+    margin-top:14px;
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
+    gap:12px;
 }
 .va-crm__panel {
-    border:1px solid rgba(255,255,255,.10);
-    border-radius:10px;
-    padding:10px;
-    background:rgba(0,0,0,.22);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;
+    padding:12px;
+    background:linear-gradient(165deg, rgba(20,20,24,.94), rgba(8,8,12,.9));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
 }
 .va-crm__panel h4 {
     margin:0 0 10px;
     font-size:12px;
     font-weight:800;
     color:#fff;
-    letter-spacing:.02em;
+    letter-spacing:.04em;
     text-transform:uppercase;
 }
 .va-crm__status-list {
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:9px;
 }
 .va-crm__status-meta {
     display:flex;
     align-items:center;
     justify-content:space-between;
     font-size:11px;
-    color:rgba(255,255,255,.78);
+    color:rgba(255,255,255,.88);
 }
 .va-crm__status-meta strong { color:#fff; }
 .va-crm__status-bar {
     width:100%;
-    height:7px;
+    height:8px;
     border-radius:999px;
-    background:rgba(255,255,255,.10);
+    background:rgba(255,255,255,.11);
     overflow:hidden;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.35);
 }
 .va-crm__status-bar > span {
     display:block;
     height:100%;
     border-radius:inherit;
-    background:linear-gradient(90deg,#ff2a2a,#ff8a00);
+    background:linear-gradient(90deg,#ff2121,#ff4d1f 45%,#ff9d1d);
 }
 .va-crm__plan-use { margin-top:12px; }
 .va-crm__plan-use-meta {
@@ -1313,7 +1364,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     justify-content:space-between;
     margin-bottom:6px;
     font-size:11px;
-    color:rgba(255,255,255,.78);
+    color:rgba(255,255,255,.88);
 }
 .va-crm__plan-use-meta strong { color:#fff; }
 .va-crm__top-list {
@@ -1321,7 +1372,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     padding-left:18px;
     display:flex;
     flex-direction:column;
-    gap:8px;
+    gap:9px;
 }
 .va-crm__top-list li {
     display:flex;
@@ -1332,23 +1383,24 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-crm__top-list a {
     color:#fff;
     font-size:12px;
+    font-weight:600;
     text-decoration:none;
     max-width:74%;
     overflow:hidden;
     text-overflow:ellipsis;
     white-space:nowrap;
 }
-.va-crm__top-list a:hover { color:#ff6666; }
+.va-crm__top-list a:hover { color:#ff8d8d; }
 .va-crm__top-list span {
     display:inline-flex;
     align-items:center;
     justify-content:center;
     min-width:56px;
-    height:22px;
+    height:23px;
     padding:0 8px;
     border-radius:999px;
-    border:1px solid rgba(255,0,0,.45);
-    background:rgba(255,0,0,.14);
+    border:1px solid rgba(255,70,40,.58);
+    background:linear-gradient(135deg, rgba(255,34,34,.24), rgba(255,126,22,.22));
     color:#fff;
     font-size:11px;
     font-weight:700;
@@ -1363,21 +1415,23 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:inline-flex;
     align-items:center;
     gap:4px;
-    padding:3px 8px;
+    padding:4px 9px;
     border-radius:999px;
-    border:1px solid rgba(255,255,255,.14);
-    background:rgba(255,255,255,.05);
-    color:rgba(255,255,255,.75);
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.08);
+    color:rgba(255,255,255,.9);
     font-size:10px;
 }
 .va-crm__badges strong { color:#fff; }
-.va-crm__empty { margin:0;color:rgba(255,255,255,.5);font-size:12px; }
+.va-crm__empty { margin:0;color:rgba(255,255,255,.68);font-size:12px; }
 @media (max-width: 980px) {
     .va-crm__kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .va-crm__panels { grid-template-columns:1fr; }
 }
 @media (max-width: 640px) {
-    .va-crm { padding:12px; }
+    .va-crm { padding:13px; }
+    .va-crm__head { display:block; }
+    .va-crm__head h3 { font-size:15px; }
     .va-crm__kpis { grid-template-columns:1fr; }
 }
 
