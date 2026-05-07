@@ -12,7 +12,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 define( 'VA_VERSION',        '1.1.2' );
-define( 'VA_REWRITE_VER',   '1.0.6' );   // Növeld meg ha CPT/tax slug változik!
+define( 'VA_REWRITE_VER',   '1.0.7' );   // Növeld meg ha CPT/tax slug változik!
 define( 'VA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'VA_TEXT_DOMAIN', 'vadaszapro' );
@@ -37,6 +37,7 @@ require_once VA_PLUGIN_DIR . 'includes/class-ajax.php';
 require_once VA_PLUGIN_DIR . 'includes/class-shortcodes.php';
 require_once VA_PLUGIN_DIR . 'includes/class-updater.php';
 require_once VA_PLUGIN_DIR . 'includes/class-page-renderer.php';
+require_once VA_PLUGIN_DIR . 'includes/class-seo.php';
 require_once VA_PLUGIN_DIR . 'includes/helpers.php';
 
 require_once VA_PLUGIN_DIR . 'admin/class-form-builder.php'; // frontend is használja (VA_Form_Builder::get_fields)
@@ -63,6 +64,7 @@ add_action( 'plugins_loaded', function () {
     VA_Shortcodes::init();
     VA_Updater::init();
     VA_Page_Renderer::init();
+    VA_SEO::init();
 
     // Settings Page init-je frontend-en is kell (wp_head CSS hookak: pill + kártya stílusok)
     VA_Settings_Page::init();
