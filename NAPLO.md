@@ -3360,3 +3360,26 @@ A következő WordPress betöltéskor a plugin egyszer lefuttatja a kategória-m
 
 ---
 
+## 2026. 05. 07. – Session: /va-fiok UX finomítás
+
+### Mit csináltunk [x]
+- [x] `/va-fiok` oldal layout: admin-szeru fix bal menü + külön scrollozó tartalom
+- [x] Dashboard konténer szélesség: teljes kijelző + normalis margók/gutter
+- [x] Footer és footer közeli elemek kikapcsolása `/va-fiok` oldalon
+- [x] "Vissza a tetejére" scroll-ring kikapcsolva `/va-fiok` oldalon
+- [x] Tömeges műveletből az ár módosítás opció eltávolítva
+- [x] Napi egyszeri (első megnyitás) személyre szabott üdvözlő popup beépítve
+  - [x] Felhasználó neve megjelenik a popupban
+  - [x] 300+ random üdvözlő variáció (kombinált üzenetkészlet)
+  - [x] Innovatív, animált, dark-red vizuális modal design
+  - [x] Napi limit user meta alapján: `va_daily_welcome_seen`
+
+### Hol tartunk
+A `/va-fiok` oldal most teljes szélességben, fix oldalsávval működik. A napi üdvözlő popup csak napi első belépéskor jelenik meg az adott felhasználónak, névre szóló és randomizált üzenettel.
+
+### TODO
+- [ ] Valós oldalon vizuális ellenőrzés desktop + mobil nézetben
+- [ ] Igény esetén popup szövegkészlet további bővítése (hangnem / stílus profilok)
+
+---
+
