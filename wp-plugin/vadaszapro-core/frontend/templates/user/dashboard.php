@@ -268,10 +268,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         </nav>
 
         <!-- Tartalom -->
-
-        <style>
-
-        <style>
         <div class="va-dashboard__content">
 
             <!-- Tab: Hirdetéseim -->
@@ -867,7 +863,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     </div>
 </div>
 
-
+<style>
 .va-dash-user-head {
     padding:14px;
     border-bottom:1px solid rgba(255,255,255,.08);

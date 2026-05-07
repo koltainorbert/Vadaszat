@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #199 (Dashboard tabla/tartalom visszaállítás)
+
+### Mit csinaltunk [x]
+- [x] Javítva: hibás `<style>` tagek eltávolítva a tartalomblokk elejéről
+- [x] Javítva: egyetlen helyes `<style>` nyitás maradt a CSS blokk előtt
+- [x] Eredmény: a jobb oldali dashboard tartalom (CRM + táblázat) újra renderelődik
+- [x] Plugin mirror sync + Deploy All lefutott
+
+### Hol tartunk
+A `/va-fiok/` oldalon a listings panel és a táblázat visszatöltődik.
+
+---
+
 ## 2026. 05. 07. – Session #198 (Dashboard CSS megjelenés végleges hotfix)
 
 ### Mit csinaltunk [x]
