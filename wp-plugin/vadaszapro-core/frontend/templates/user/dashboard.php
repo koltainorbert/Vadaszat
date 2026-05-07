@@ -133,6 +133,27 @@ $crm_bid_count     = count( $bids );
 $crm_plan_limit    = (int) ( $plan_check['limit'] ?? 0 );
 $crm_plan_used     = (int) ( $plan_check['used'] ?? 0 );
 $crm_plan_usage_pc = $crm_plan_limit > 0 ? min( 100, (int) round( ( $crm_plan_used / $crm_plan_limit ) * 100 ) ) : 0;
+$crm_active_rate_pc = $crm_total_listings > 0 ? min( 100, (int) round( ( $crm_active_count / $crm_total_listings ) * 100 ) ) : 0;
+$crm_momentum_pc    = $crm_last30_count > 0 ? min( 100, (int) round( ( $crm_last7_count / $crm_last30_count ) * 100 ) ) : 0;
+$crm_engage_raw     = $crm_total_listings > 0 ? ( ( $crm_watch_count + $crm_bid_count ) / $crm_total_listings ) * 16 : 0;
+$crm_engagement_pc  = min( 100, (int) round( $crm_engage_raw ) );
+
+$crm_flow_raw = [
+    max( 1, $crm_last7_count ),
+    max( 1, (int) round( $crm_last30_count / 4 ) ),
+    max( 1, (int) round( $crm_total_views / max( 1, $crm_total_listings ) ) ),
+    max( 1, $crm_active_count ),
+    max( 1, $crm_watch_count ),
+    max( 1, $crm_bid_count ),
+    max( 1, $crm_featured_count + $crm_boosted_count ),
+];
+$crm_flow_max = max( $crm_flow_raw );
+$crm_flow_scaled = array_map(
+    static function( $v ) use ( $crm_flow_max ) {
+        return (int) max( 18, round( ( $v / max( 1, $crm_flow_max ) ) * 100 ) );
+    },
+    $crm_flow_raw
+);
 
 $crm_top_title = $crm_top_rows ? (string) $crm_top_rows[0]['title'] : 'Nincs adat';
 $crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
@@ -292,36 +313,88 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         <p>Valid megtekintes + publikacios allapot + aktivitas egy helyen</p>
                     </div>
 
+                    <div class="va-crm__hero">
+                        <article class="va-crm__hero-chart">
+                            <div class="va-crm__hero-title">Market Flow</div>
+                            <svg viewBox="0 0 320 130" class="va-crm__linechart" role="img" aria-label="Aktivitasi trend grafikon">
+                                <defs>
+                                    <linearGradient id="vaLineGrad" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="rgba(255,56,56,.40)"/>
+                                        <stop offset="100%" stop-color="rgba(255,56,56,0)"/>
+                                    </linearGradient>
+                                </defs>
+                                <path class="va-crm__line-area" d="M16 110 L54 84 L92 90 L130 60 L168 66 L206 38 L244 46 L282 24 L282 110 Z" fill="url(#vaLineGrad)"></path>
+                                <polyline class="va-crm__line-stroke" points="16,110 54,84 92,90 130,60 168,66 206,38 244,46 282,24" fill="none"></polyline>
+                                <g class="va-crm__line-points" fill="#fff">
+                                    <circle cx="16" cy="110" r="2.8"/>
+                                    <circle cx="54" cy="84" r="2.8"/>
+                                    <circle cx="92" cy="90" r="2.8"/>
+                                    <circle cx="130" cy="60" r="2.8"/>
+                                    <circle cx="168" cy="66" r="2.8"/>
+                                    <circle cx="206" cy="38" r="2.8"/>
+                                    <circle cx="244" cy="46" r="2.8"/>
+                                    <circle cx="282" cy="24" r="2.8"/>
+                                </g>
+                            </svg>
+                            <div class="va-crm__flow-bars" aria-hidden="true">
+                                <?php foreach ( $crm_flow_scaled as $h ): ?>
+                                <span style="height:<?php echo esc_attr( $h ); ?>%"></span>
+                                <?php endforeach; ?>
+                            </div>
+                        </article>
+
+                        <article class="va-crm__hero-metrics">
+                            <div class="va-crm__ring" style="--pc:<?php echo esc_attr( $crm_active_rate_pc ); ?>;">
+                                <span><?php echo esc_html( $crm_active_rate_pc ); ?>%</span>
+                                <small>Aktiv rata</small>
+                            </div>
+                            <div class="va-crm__ring" style="--pc:<?php echo esc_attr( $crm_momentum_pc ); ?>;">
+                                <span><?php echo esc_html( $crm_momentum_pc ); ?>%</span>
+                                <small>7/30 momentum</small>
+                            </div>
+                            <div class="va-crm__ring" style="--pc:<?php echo esc_attr( $crm_engagement_pc ); ?>;">
+                                <span><?php echo esc_html( $crm_engagement_pc ); ?>%</span>
+                                <small>Engagement</small>
+                            </div>
+                        </article>
+                    </div>
+
                     <div class="va-crm__kpis">
                         <article class="va-crm__kpi">
                             <span class="va-crm__kpi-label">Osszes hirdetes</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_listings, 0, ',', ' ' ) ); ?></strong>
                             <small class="va-crm__kpi-sub">Aktiv: <?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?></small>
+                            <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:30%"></span><span style="height:48%"></span><span style="height:36%"></span><span style="height:62%"></span><span style="height:58%"></span><span style="height:74%"></span><span style="height:66%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
                             <span class="va-crm__kpi-label">Osszes valid megtekintes</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_views, 0, ',', ' ' ) ); ?></strong>
                             <small class="va-crm__kpi-sub">Atlag/hirdetes: <?php echo esc_html( number_format( $crm_avg_views, 1, ',', ' ' ) ); ?></small>
+                            <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:24%"></span><span style="height:39%"></span><span style="height:44%"></span><span style="height:52%"></span><span style="height:70%"></span><span style="height:64%"></span><span style="height:80%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
                             <span class="va-crm__kpi-label">Atlagos ar</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_avg_price, 0, ',', ' ' ) ); ?> Ft</strong>
                             <small class="va-crm__kpi-sub">Szamolt hirdetes: <?php echo esc_html( number_format( $crm_priced_count, 0, ',', ' ' ) ); ?></small>
+                            <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:55%"></span><span style="height:62%"></span><span style="height:58%"></span><span style="height:50%"></span><span style="height:68%"></span><span style="height:61%"></span><span style="height:72%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
                             <span class="va-crm__kpi-label">Top hirdetes</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_top_views, 0, ',', ' ' ) ); ?></strong>
                             <small class="va-crm__kpi-sub"><?php echo esc_html( wp_trim_words( $crm_top_title, 6, '...' ) ); ?></small>
+                            <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:16%"></span><span style="height:32%"></span><span style="height:49%"></span><span style="height:74%"></span><span style="height:63%"></span><span style="height:77%"></span><span style="height:88%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
                             <span class="va-crm__kpi-label">Uj aktivitás</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_last7_count, 0, ',', ' ' ) ); ?> / 7 nap</strong>
                             <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_last30_count, 0, ',', ' ' ) ); ?> / 30 nap</small>
+                            <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:26%"></span><span style="height:36%"></span><span style="height:41%"></span><span style="height:57%"></span><span style="height:48%"></span><span style="height:69%"></span><span style="height:75%"></span></div>
                         </article>
                         <article class="va-crm__kpi">
                             <span class="va-crm__kpi-label">Kapcsolodo mutatok</span>
                             <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_watch_count, 0, ',', ' ' ) ); ?> kedvenc</strong>
                             <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?> licit | <?php echo esc_html( $crm_featured_count ); ?> kiemelt</small>
+                            <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:22%"></span><span style="height:35%"></span><span style="height:58%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:56%"></span><span style="height:71%"></span></div>
                         </article>
                     </div>
 
@@ -1243,6 +1316,108 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     color:rgba(255,255,255,.74);
     font-size:12px;
 }
+.va-crm__hero {
+    margin-top:14px;
+    display:grid;
+    grid-template-columns: 1.65fr 1fr;
+    gap:12px;
+}
+.va-crm__hero-chart,
+.va-crm__hero-metrics {
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:14px;
+    background:linear-gradient(165deg, rgba(18,18,24,.95), rgba(8,8,12,.9));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+.va-crm__hero-chart {
+    padding:10px 12px 12px;
+}
+.va-crm__hero-title {
+    display:inline-flex;
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.12em;
+    color:rgba(255,255,255,.85);
+    border:1px solid rgba(255,255,255,.24);
+    border-radius:999px;
+    padding:4px 8px;
+    margin-bottom:6px;
+}
+.va-crm__linechart {
+    width:100%;
+    height:130px;
+    display:block;
+}
+.va-crm__line-stroke {
+    stroke:#ff4b31;
+    stroke-width:3.1;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+    filter: drop-shadow(0 0 8px rgba(255,85,45,.45));
+    stroke-dasharray: 600;
+    stroke-dashoffset: 600;
+    animation: vaChartDraw 1.2s ease forwards;
+}
+.va-crm__line-area {
+    opacity:.9;
+    animation: vaAreaFade .7s ease forwards;
+}
+.va-crm__line-points circle {
+    fill:#fff;
+    stroke:#ff3f24;
+    stroke-width:1.8;
+}
+.va-crm__flow-bars {
+    margin-top:8px;
+    display:grid;
+    grid-template-columns: repeat(7, minmax(0,1fr));
+    gap:6px;
+    align-items:end;
+    height:42px;
+}
+.va-crm__flow-bars span {
+    border-radius:4px 4px 2px 2px;
+    background:linear-gradient(180deg, rgba(255,140,38,.92), rgba(255,38,38,.9));
+    box-shadow: 0 0 10px rgba(255,66,30,.32);
+    animation: vaBarPop .55s ease both;
+}
+.va-crm__hero-metrics {
+    padding:12px;
+    display:grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap:10px;
+}
+.va-crm__ring {
+    --ring-track: rgba(255,255,255,.12);
+    --ring-fill: linear-gradient(145deg,#ff2020,#ff8d19);
+    position:relative;
+    aspect-ratio:1/1;
+    border-radius:50%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    background:
+        radial-gradient(closest-side, rgba(10,10,12,.98) 76%, transparent 77%),
+        conic-gradient(from 180deg, #ff1818 calc(var(--pc) * 1%), #ff8f14 0),
+        conic-gradient(var(--ring-track) 0 100%);
+    border:1px solid rgba(255,255,255,.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
+}
+.va-crm__ring span {
+    color:#fff;
+    font-weight:900;
+    font-size:18px;
+    line-height:1;
+}
+.va-crm__ring small {
+    margin-top:4px;
+    color:rgba(255,255,255,.7);
+    font-size:10px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    text-align:center;
+}
 .va-crm__kpis {
     margin-top:14px;
     display:grid;
@@ -1309,6 +1484,28 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     color:rgba(255,255,255,.8);
     font-size:11px;
 }
+.va-crm__kpi-spark {
+    margin-top:8px;
+    height:26px;
+    display:grid;
+    grid-template-columns: repeat(7, minmax(0,1fr));
+    gap:4px;
+    align-items:end;
+}
+.va-crm__kpi-spark span {
+    border-radius:3px 3px 2px 2px;
+    background: linear-gradient(180deg, rgba(255,153,42,.9), rgba(255,42,42,.86));
+    opacity:.92;
+    transform-origin: bottom;
+    animation: vaBarPop .55s ease both;
+}
+.va-crm__kpi-spark span:nth-child(1) { animation-delay:.02s; }
+.va-crm__kpi-spark span:nth-child(2) { animation-delay:.05s; }
+.va-crm__kpi-spark span:nth-child(3) { animation-delay:.08s; }
+.va-crm__kpi-spark span:nth-child(4) { animation-delay:.11s; }
+.va-crm__kpi-spark span:nth-child(5) { animation-delay:.14s; }
+.va-crm__kpi-spark span:nth-child(6) { animation-delay:.17s; }
+.va-crm__kpi-spark span:nth-child(7) { animation-delay:.2s; }
 .va-crm__panels {
     margin-top:14px;
     display:grid;
@@ -1425,6 +1622,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-crm__badges strong { color:#fff; }
 .va-crm__empty { margin:0;color:rgba(255,255,255,.68);font-size:12px; }
 @media (max-width: 980px) {
+    .va-crm__hero { grid-template-columns:1fr; }
     .va-crm__kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .va-crm__panels { grid-template-columns:1fr; }
 }
@@ -1432,7 +1630,22 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     .va-crm { padding:13px; }
     .va-crm__head { display:block; }
     .va-crm__head h3 { font-size:15px; }
+    .va-crm__hero-metrics { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+    .va-crm__ring span { font-size:15px; }
+    .va-crm__ring small { font-size:9px; }
     .va-crm__kpis { grid-template-columns:1fr; }
+}
+
+@keyframes vaChartDraw {
+    to { stroke-dashoffset: 0; }
+}
+@keyframes vaAreaFade {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: .9; transform: translateY(0); }
+}
+@keyframes vaBarPop {
+    from { transform: scaleY(.18); opacity:.35; }
+    to { transform: scaleY(1); opacity:.95; }
 }
 
 /* ── Boost toggle ── */

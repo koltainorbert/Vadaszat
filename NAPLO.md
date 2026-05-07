@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #211 (Tőzsdei chart design a stat panelben)
+
+### Mit csinaltunk [x]
+- [x] A CRM blokk kapott egy uj hero chart reszt (vonalgrafikon + area fill + pontok + mini oszlop flow)
+- [x] 3 kor/gyuru metrika kerult be (Aktiv rata, 7/30 momentum, Engagement)
+- [x] KPI kartyak aljara mini spark-bar grafikonok kerultek animacioval
+- [x] Kiegeszito chart animaciok: line draw + bar pop
+- [x] Root sablon szinkron plugin mirrorba + Deploy Plugin sikeres
+
+### Hol tartunk
+A /va-fiok statisztika mar chart-alapu, terminal jellegu, latvanyos dashboard elemeket mutat, sokkal kozelebb a modern tozsdei/analitikai UI vilaghoz.
+
+---
+
 ## 2026. 05. 07. – Session #210 (CRM stat panel vizuális redesign)
 
 ### Mit csinaltunk [x]
