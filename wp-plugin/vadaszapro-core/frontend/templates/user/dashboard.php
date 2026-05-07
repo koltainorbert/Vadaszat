@@ -35,6 +35,100 @@ $ajax_url     = admin_url( 'admin-ajax.php' );
 $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
 $avatar_id    = (int) get_user_meta( $user->ID, 'va_profile_avatar_id', true );
 $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail' ) : '';
+
+// CRM statisztika adatelokeszites (valid, adminnal egyezo nezetseggel)
+$crm_now_ts         = current_time( 'timestamp' );
+$crm_total_listings = count( $listings );
+$crm_total_views    = 0;
+$crm_total_price    = 0.0;
+$crm_priced_count   = 0;
+$crm_active_count   = 0;
+$crm_featured_count = 0;
+$crm_boosted_count  = 0;
+$crm_newpill_count  = 0;
+$crm_last7_count    = 0;
+$crm_last30_count   = 0;
+
+$crm_status_counts = [
+    'Aktiv'                  => 0,
+    'Jovahagyasra var'       => 0,
+    'Piszkozat'              => 0,
+    'Privat/Szunet'          => 0,
+    'Limit miatt leallitva'  => 0,
+];
+
+$crm_rows = [];
+foreach ( $listings as $l ) {
+    $valid_views = (int) get_post_meta( $l->ID, 'va_views', true );
+    $price_raw   = get_post_meta( $l->ID, 'va_price', true );
+    $price_type  = (string) get_post_meta( $l->ID, 'va_price_type', true );
+    $is_featured = get_post_meta( $l->ID, 'va_featured', true ) === '1';
+    $is_suspended = get_post_meta( $l->ID, 'va_is_suspended', true ) === '1';
+    $suspended_by_plan = get_post_meta( $l->ID, 'va_suspended_by_plan', true ) === '1';
+
+    $created_ts = strtotime( $l->post_date );
+    if ( $created_ts >= ( $crm_now_ts - ( 7 * DAY_IN_SECONDS ) ) ) {
+        $crm_last7_count++;
+    }
+    if ( $created_ts >= ( $crm_now_ts - ( 30 * DAY_IN_SECONDS ) ) ) {
+        $crm_last30_count++;
+    }
+
+    $crm_total_views += $valid_views;
+
+    if ( $is_featured ) {
+        $crm_featured_count++;
+    }
+    if ( class_exists( 'VA_User_Roles' ) && VA_User_Roles::is_boosted( $l->ID ) ) {
+        $crm_boosted_count++;
+    }
+    if ( class_exists( 'VA_User_Roles' ) && VA_User_Roles::is_new_pill( $l->ID ) ) {
+        $crm_newpill_count++;
+    }
+
+    if ( is_numeric( $price_raw ) && $price_type !== 'ask' ) {
+        $crm_total_price += (float) $price_raw;
+        $crm_priced_count++;
+    }
+
+    if ( $l->post_status === 'publish' ) {
+        $crm_active_count++;
+        $crm_status_counts['Aktiv']++;
+    } elseif ( $l->post_status === 'pending' ) {
+        $crm_status_counts['Jovahagyasra var']++;
+    } elseif ( $l->post_status === 'draft' ) {
+        $crm_status_counts['Piszkozat']++;
+    } elseif ( $suspended_by_plan ) {
+        $crm_status_counts['Limit miatt leallitva']++;
+    } else {
+        $crm_status_counts['Privat/Szunet']++;
+    }
+
+    $crm_rows[] = [
+        'id'      => (int) $l->ID,
+        'title'   => (string) $l->post_title,
+        'url'     => get_permalink( $l->ID ),
+        'views'   => $valid_views,
+        'date_ts' => $created_ts,
+        'status'  => (string) $l->post_status,
+    ];
+}
+
+usort( $crm_rows, static function( array $a, array $b ): int {
+    return $b['views'] <=> $a['views'];
+} );
+
+$crm_top_rows      = array_slice( $crm_rows, 0, 5 );
+$crm_avg_views     = $crm_total_listings > 0 ? ( $crm_total_views / $crm_total_listings ) : 0;
+$crm_avg_price     = $crm_priced_count > 0 ? ( $crm_total_price / $crm_priced_count ) : 0;
+$crm_watch_count   = count( $watchlist );
+$crm_bid_count     = count( $bids );
+$crm_plan_limit    = (int) ( $plan_check['limit'] ?? 0 );
+$crm_plan_used     = (int) ( $plan_check['used'] ?? 0 );
+$crm_plan_usage_pc = $crm_plan_limit > 0 ? min( 100, (int) round( ( $crm_plan_used / $crm_plan_limit ) * 100 ) ) : 0;
+
+$crm_top_title = $crm_top_rows ? (string) $crm_top_rows[0]['title'] : 'Nincs adat';
+$crm_top_views = $crm_top_rows ? (int) $crm_top_rows[0]['views'] : 0;
 ?>
 <div class="va-wrap">
     <?php va_display_flash(); ?>
@@ -126,6 +220,97 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                         <a href="<?php echo esc_url( get_permalink( $submit_page ) ); ?>" class="va-btn va-btn--primary va-btn--sm">+ Új hirdetés</a>
                     <?php endif; ?>
                 </div>
+
+                <section class="va-crm" aria-label="Hirdetés statisztika">
+                    <div class="va-crm__head">
+                        <h3>Teljesitmeny iranyitopult</h3>
+                        <p>Valid megtekintes + publikacios allapot + aktivitas egy helyen</p>
+                    </div>
+
+                    <div class="va-crm__kpis">
+                        <article class="va-crm__kpi">
+                            <span class="va-crm__kpi-label">Osszes hirdetes</span>
+                            <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_listings, 0, ',', ' ' ) ); ?></strong>
+                            <small class="va-crm__kpi-sub">Aktiv: <?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?></small>
+                        </article>
+                        <article class="va-crm__kpi">
+                            <span class="va-crm__kpi-label">Osszes valid megtekintes</span>
+                            <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_views, 0, ',', ' ' ) ); ?></strong>
+                            <small class="va-crm__kpi-sub">Atlag/hirdetes: <?php echo esc_html( number_format( $crm_avg_views, 1, ',', ' ' ) ); ?></small>
+                        </article>
+                        <article class="va-crm__kpi">
+                            <span class="va-crm__kpi-label">Atlagos ar</span>
+                            <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_avg_price, 0, ',', ' ' ) ); ?> Ft</strong>
+                            <small class="va-crm__kpi-sub">Szamolt hirdetes: <?php echo esc_html( number_format( $crm_priced_count, 0, ',', ' ' ) ); ?></small>
+                        </article>
+                        <article class="va-crm__kpi">
+                            <span class="va-crm__kpi-label">Top hirdetes</span>
+                            <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_top_views, 0, ',', ' ' ) ); ?></strong>
+                            <small class="va-crm__kpi-sub"><?php echo esc_html( wp_trim_words( $crm_top_title, 6, '...' ) ); ?></small>
+                        </article>
+                        <article class="va-crm__kpi">
+                            <span class="va-crm__kpi-label">Uj aktivitás</span>
+                            <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_last7_count, 0, ',', ' ' ) ); ?> / 7 nap</strong>
+                            <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_last30_count, 0, ',', ' ' ) ); ?> / 30 nap</small>
+                        </article>
+                        <article class="va-crm__kpi">
+                            <span class="va-crm__kpi-label">Kapcsolodo mutatok</span>
+                            <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_watch_count, 0, ',', ' ' ) ); ?> kedvenc</strong>
+                            <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?> licit | <?php echo esc_html( $crm_featured_count ); ?> kiemelt</small>
+                        </article>
+                    </div>
+
+                    <div class="va-crm__panels">
+                        <article class="va-crm__panel">
+                            <h4>Statusz megoszlas</h4>
+                            <div class="va-crm__status-list">
+                                <?php foreach ( $crm_status_counts as $label => $count ):
+                                    $pc = $crm_total_listings > 0 ? ( $count / $crm_total_listings ) * 100 : 0;
+                                ?>
+                                <div class="va-crm__status-row">
+                                    <div class="va-crm__status-meta">
+                                        <span><?php echo esc_html( $label ); ?></span>
+                                        <strong><?php echo esc_html( number_format( $count, 0, ',', ' ' ) ); ?></strong>
+                                    </div>
+                                    <div class="va-crm__status-bar"><span style="width:<?php echo esc_attr( max( 4, round( $pc, 1 ) ) ); ?>%"></span></div>
+                                </div>
+                                <?php endforeach; ?>
+                            </div>
+
+                            <?php if ( $crm_plan_limit > 0 ): ?>
+                            <div class="va-crm__plan-use">
+                                <div class="va-crm__plan-use-meta">
+                                    <span>Csomagkihasznaltsag</span>
+                                    <strong><?php echo esc_html( $crm_plan_used . '/' . $crm_plan_limit ); ?></strong>
+                                </div>
+                                <div class="va-crm__status-bar"><span style="width:<?php echo esc_attr( max( 4, $crm_plan_usage_pc ) ); ?>%"></span></div>
+                            </div>
+                            <?php endif; ?>
+                        </article>
+
+                        <article class="va-crm__panel">
+                            <h4>Top 5 hirdetes (valid megtekintes)</h4>
+                            <?php if ( $crm_top_rows ): ?>
+                            <ol class="va-crm__top-list">
+                                <?php foreach ( $crm_top_rows as $row ): ?>
+                                <li>
+                                    <a href="<?php echo esc_url( (string) $row['url'] ); ?>"><?php echo esc_html( (string) $row['title'] ); ?></a>
+                                    <span><?php echo esc_html( number_format( (int) $row['views'], 0, ',', ' ' ) ); ?></span>
+                                </li>
+                                <?php endforeach; ?>
+                            </ol>
+                            <?php else: ?>
+                            <p class="va-crm__empty">Meg nincs eleg adat a toplistahoz.</p>
+                            <?php endif; ?>
+
+                            <div class="va-crm__badges">
+                                <span>Kiemelt: <strong><?php echo esc_html( number_format( $crm_featured_count, 0, ',', ' ' ) ); ?></strong></span>
+                                <span>Boost aktiv: <strong><?php echo esc_html( number_format( $crm_boosted_count, 0, ',', ' ' ) ); ?></strong></span>
+                                <span>Uj pill aktiv: <strong><?php echo esc_html( number_format( $crm_newpill_count, 0, ',', ' ' ) ); ?></strong></span>
+                            </div>
+                        </article>
+                    </div>
+                </section>
 
                 <?php if ( $listings ): ?>
                 <table class="va-user-listings-table" style="width:100%;border-collapse:collapse;font-size:14px;">
