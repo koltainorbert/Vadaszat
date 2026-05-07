@@ -235,6 +235,8 @@ if ( $va_scroll_ring_border_color === '' ) {
 }
 ?>
 
+<?php if ( ! is_page( 'va-fiok' ) ) : ?>
+
 <!-- ── Scroll-progress pill videó widget ──────────────────── -->
 <div id="va-scroll-ring" role="button" aria-label="Vissza a tetejére" tabindex="0" style="--va-scroll-ring-color: <?php echo esc_attr( $va_scroll_ring_border_color ); ?>;">    <!-- progress border SVG (pill alak) – pathLength=100 → nincs kerület-hiba -->
     <svg id="va-ring-svg" viewBox="0 0 178 66" width="178" height="66" aria-hidden="true" style="position:absolute;top:0;left:0;pointer-events:none;z-index:3;">
@@ -344,5 +346,6 @@ if ( $va_scroll_ring_border_color === '' ) {
     update();
 })();
 </script>
+<?php endif; ?>
 </body>
 </html>
