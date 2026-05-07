@@ -856,7 +856,24 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     </div><!-- .va-dashboard -->
 </div>
 
-<style>
+<!-- Akciós ár modal -->
+<div class="va-sale-modal-overlay" id="va-sale-modal-overlay" role="dialog" aria-modal="true" aria-label="Akciós ár beállítása">
+    <div class="va-sale-modal">
+        <h3>🏷 Akciós ár beállítása</h3>
+        <input type="hidden" id="va-sale-modal-post-id">
+        <label>Akciós ár (Ft) — 0 = törlés</label>
+        <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
+        <label>Akció vége (opcionális dátum)</label>
+        <input type="date" id="va-sale-modal-end">
+        <div class="va-sale-modal__actions">
+            <button class="va-sale-modal__remove" id="va-sale-modal-remove">Akció törlése</button>
+            <button class="va-sale-modal__cancel" id="va-sale-modal-cancel">Mégse</button>
+            <button class="va-sale-modal__save" id="va-sale-modal-save">Mentés</button>
+        </div>
+    </div>
+</div>
+
+
 .va-dash-user-head {
     padding:14px;
     border-bottom:1px solid rgba(255,255,255,.08);
