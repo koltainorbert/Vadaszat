@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 05. 07. – Session #197 (Dashboard content visszaállítás)
+
+### Mit csinaltunk [x]
+- [x] Javítva: téves `<style>` tag eltávolítva a dashboard tartalom blokk elejéről
+- [x] Tünet: jobb oldali dashboard tartalom eltűnt (a browser CSS-ként értelmezte a HTML-t)
+- [x] Plugin mirror szinkron és Deploy All futtatva
+
+### Hol tartunk
+A jobb oldali dashboard tartalom ismét renderelődik.
+
+---
+
 ## 2026. 05. 07. – Session #196 (Dashboard render hotfix)
 
 ### Mit csinaltunk [x]
