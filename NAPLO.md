@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 07. – Session #205 (Popup: élő ár előnézet)
+
+### Mit csinaltunk [x]
+- [x] Akció/ár szerkesztő popupba élő "Előnézet" blokk került
+- [x] Előnézet mutatja normál ár + akciós ár kombinációt (AKCIÓ badge-del)
+- [x] Akció nélküli esetben csak a normál ár jelenik meg
+- [x] Akció végdátum szöveg is látszik az előnézetben
+- [x] Input közbeni azonnali frissítés (normál ár, akciós ár, dátum)
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+A kis popupban mentés előtt vizuálisan látható, pontosan hogyan fog kinézni az ár megjelenítése.
+
+---
+
 ## 2026. 05. 07. – Session #204 (Popup bővítés: normál ár módosítás)
 
 ### Mit csinaltunk [x]
