@@ -381,9 +381,64 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                 </section>
 
                 <?php if ( $listings ): ?>
+                <!-- Sort controls -->
+                <?php
+                $cur_url = strtok( (string) $_SERVER['REQUEST_URI'], '?' );
+                $make_sort_url = function( string $by ) use ( $cur_url, $sort_by, $sort_dir ): string {
+                    $dir = ( $sort_by === $by && $sort_dir === 'desc' ) ? 'asc' : 'desc';
+                    return esc_url( add_query_arg( [ 'sort_by' => $by, 'sort_dir' => $dir ], $cur_url ) );
+                };
+                $sort_arrow = function( string $by ) use ( $sort_by, $sort_dir ): string {
+                    if ( $sort_by !== $by ) return '<span style="opacity:.3">↕</span>';
+                    return $sort_dir === 'desc' ? '↓' : '↑';
+                };
+                ?>
+                <div class="va-sort-bar">
+                    <span style="font-size:11px;color:rgba(255,255,255,.4);margin-right:6px;">Rendezés:</span>
+                    <a href="<?php echo $make_sort_url('date'); ?>" class="va-sort-btn <?php echo $sort_by==='date'?'active':''; ?>">Dátum <?php echo $sort_arrow('date'); ?></a>
+                    <a href="<?php echo $make_sort_url('views'); ?>" class="va-sort-btn <?php echo $sort_by==='views'?'active':''; ?>">Nézettség <?php echo $sort_arrow('views'); ?></a>
+                    <a href="<?php echo $make_sort_url('price'); ?>" class="va-sort-btn <?php echo $sort_by==='price'?'active':''; ?>">Ár <?php echo $sort_arrow('price'); ?></a>
+                </div>
+
+                <!-- Bulk toolbar -->
+                <div class="va-bulk-toolbar" id="va-bulk-toolbar">
+                    <label class="va-bulk-select-all-label">
+                        <input type="checkbox" id="va-select-all"> Összes
+                    </label>
+                    <select class="va-bulk-select" id="va-bulk-action">
+                        <option value="">— Tömeges művelet —</option>
+                        <option value="activate">✅ Aktiválás</option>
+                        <option value="suspend">⏸ Szüneteltetés</option>
+                        <option value="price_change">💰 Ár módosítása</option>
+                        <option value="delete">🗑 Törlés</option>
+                    </select>
+                    <button class="va-btn va-btn--sm va-bulk-exec" id="va-bulk-exec" style="background:rgba(255,0,0,.18);border:1px solid rgba(255,0,0,.4);color:#fff;">Végrehajtás</button>
+                    <span class="va-bulk-count" id="va-bulk-count" style="font-size:11px;color:rgba(255,255,255,.45);margin-left:6px;"></span>
+                </div>
+
+                <!-- Bulk ár módosítás panel -->
+                <div class="va-bulk-price-panel" id="va-bulk-price-panel" style="display:none;">
+                    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+                        <div>
+                            <label class="va-bulk-price-label">Új ár (Ft)</label>
+                            <input type="number" id="va-bulk-new-price" class="va-bulk-price-input" min="0" placeholder="pl. 1500000">
+                        </div>
+                        <div>
+                            <label class="va-bulk-price-label">Akciós ár (opcionális, Ft)</label>
+                            <input type="number" id="va-bulk-sale-price" class="va-bulk-price-input" min="0" placeholder="Üresen hagyd, ha nincs">
+                        </div>
+                        <div>
+                            <label class="va-bulk-price-label">Akció vége (opcionális)</label>
+                            <input type="date" id="va-bulk-sale-end" class="va-bulk-price-input">
+                        </div>
+                    </div>
+                    <p style="font-size:11px;color:rgba(255,255,255,.4);margin:8px 0 0;">Az akciós ár minden kijelölt hirdetésre vonatkozik. A normál ár módosítása után külön akciós ár is állítható egyenként.</p>
+                </div>
+
                 <table class="va-user-listings-table" style="width:100%;border-collapse:collapse;font-size:14px;">
                     <thead>
                         <tr style="border-bottom:1px solid rgba(255,255,255,0.1);">
+                            <th style="padding:8px 4px;width:28px;"></th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Cím</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);white-space:nowrap;min-width:110px;">Ár</th>
                             <th style="text-align:left;padding:8px;color:rgba(255,255,255,0.5);">Státusz</th>
@@ -401,11 +456,16 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         $is_suspended    = get_post_meta( $l->ID, 'va_is_suspended', true ) === '1';
                         $suspended_by_plan = get_post_meta( $l->ID, 'va_suspended_by_plan', true ) === '1';
                         $suspended_at    = (int) get_post_meta( $l->ID, 'va_suspended_at', true );
-                        $active_since_ts = (int) get_post_meta( $l->ID, 'va_active_since', true );
+                        $active_since_ts = isset( $active_sinces[ $l->ID ] ) ? $active_sinces[ $l->ID ] : (int) get_post_meta( $l->ID, 'va_active_since', true );
                         if ( ! $active_since_ts ) $active_since_ts = strtotime( $l->post_date );
                         $now             = current_time( 'timestamp' );
                         $can_suspend     = in_array( $user_plan, [ 'gold', 'platinum' ], true );
                         $buy_url         = home_url( '/va-kredit-vasarlas/' );
+                        $days_running    = (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) );
+                        $days_expiry     = max( 0, 30 - $days_running );
+                        $img_count       = isset( $gallery_meta_map[ $l->ID ] ) ? (int) $gallery_meta_map[ $l->ID ] : 0;
+                        $l_sale_price    = $sale_prices[ $l->ID ] ?? 0.0;
+                        $l_sale_end      = $sale_ends[ $l->ID ] ?? '';
                         $statuses = [
                             'publish' => '<span style="color:#00c850">● Aktív</span>',
                             'pending' => '<span style="color:#ffb400">● Jóváhagyásra vár</span>',
@@ -417,8 +477,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                     : '<span style="color:#888">● Privát</span>' ),
                         ];
                     ?>
-                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
-                        <td style="padding:10px 8px;">
+                    <tr style="border-bottom:1px solid rgba(255,255,255,0.05);" class="va-listing-row" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>">
+                        <td style="padding:10px 4px;text-align:center;vertical-align:middle;">
+                            <input type="checkbox" class="va-row-check" value="<?php echo esc_attr( (string) $l->ID ); ?>" style="cursor:pointer;width:15px;height:15px;accent-color:#ff2a2a;">
+                        </td>
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <?php
                                 $thumb_id  = get_post_thumbnail_id( $l->ID );
