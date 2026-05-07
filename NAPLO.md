@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #193 (Fiókoldal: megtekintés szem ikon + pill)
+
+### Mit csinaltunk [x]
+- [x] A `/va-fiok/` Hirdetéseim tablaban a valid megtekintes most mar kis pillben jelenik meg
+- [x] A pill kapott kis szem ikont es kiemelt (pirosas) megjelenest
+- [x] Modositas atvezetve source + plugin mirror dashboard sablonba
+- [x] Hibavizsgalat lefuttatva az erintett fajlokon (nincs uj hiba)
+
+### Hol tartunk
+A fiok oldalon a hirdetesek melletti megtekintes szam most vizualisan pill badge-ben, szem ikon mellett lathato.
+
+---
+
 ## 2026. 05. 07. – Session #192 (Fiókoldal: valid megtekintés oszlop)
 
 ### Mit csinaltunk [x]

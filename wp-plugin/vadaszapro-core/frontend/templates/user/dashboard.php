@@ -199,7 +199,12 @@ $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail
                         <td style="padding:10px 8px;white-space:nowrap;min-width:110px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
-                        <td style="padding:10px 8px;color:rgba(255,255,255,0.85);"><?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?></td>
+                        <td style="padding:10px 8px;">
+                            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;white-space:nowrap;">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?>
+                            </span>
+                        </td>
                         <td style="padding:10px 8px;">
                             <?php
                             // Boost gomb
