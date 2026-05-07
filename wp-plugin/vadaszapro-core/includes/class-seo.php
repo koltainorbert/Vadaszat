@@ -28,6 +28,23 @@ class VA_SEO {
 
         add_filter( 'wp_robots', [ __CLASS__, 'filter_wp_robots' ] );
         add_filter( 'robots_txt', [ __CLASS__, 'filter_robots_txt' ], 10, 2 );
+
+        // Rank Math felülírhatja az OG/Twitter title-t, ezért közvetlenül ide is bekötjük.
+        add_filter( 'rank_math/opengraph/facebook/title', [ __CLASS__, 'rank_math_social_title' ] );
+        add_filter( 'rank_math/opengraph/twitter/title', [ __CLASS__, 'rank_math_social_title' ] );
+        add_filter( 'rank_math/opengraph/facebook/description', [ __CLASS__, 'rank_math_social_description' ] );
+        add_filter( 'rank_math/opengraph/twitter/description', [ __CLASS__, 'rank_math_social_description' ] );
+    }
+
+    public static function rank_math_social_title( $title ): string {
+        return self::social_title( is_string( $title ) ? $title : wp_get_document_title() );
+    }
+
+    public static function rank_math_social_description( $description ): string {
+        if ( is_singular( 'va_listing' ) ) {
+            return self::meta_description();
+        }
+        return is_string( $description ) && $description !== '' ? $description : self::meta_description();
     }
 
     public static function register_sitemap_routes(): void {
