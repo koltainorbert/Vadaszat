@@ -648,6 +648,30 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                             <?php endif; ?>
                         </td>
                     </tr>
+                    <tr class="va-sale-inline-row" id="va-sale-row-<?php echo esc_attr( (string) $l->ID ); ?>" style="display:none;">
+                        <td colspan="8" style="padding:0;border-bottom:1px solid rgba(255,0,0,.15);">
+                            <div class="va-sale-inline-panel">
+                                <span class="va-sale-inline-title">🏷 Akciós ár: <strong><?php echo esc_html( $l->post_title ); ?></strong></span>
+                                <div class="va-sale-inline-fields">
+                                    <div>
+                                        <label class="va-sale-inline-label">Akciós ár (Ft) — 0 = törlés</label>
+                                        <input type="number" class="va-sale-inline-price va-bulk-price-input" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" value="<?php echo esc_attr( $l_sale_price > 0 ? (string) $l_sale_price : '' ); ?>" min="0" placeholder="pl. 1200000">
+                                    </div>
+                                    <div>
+                                        <label class="va-sale-inline-label">Akció vége (opcionális)</label>
+                                        <input type="date" class="va-sale-inline-end va-bulk-price-input" value="<?php echo esc_attr( $l_sale_end ); ?>">
+                                    </div>
+                                    <div class="va-sale-inline-actions">
+                                        <button type="button" class="va-sale-inline-save" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" style="height:36px;padding:0 16px;border-radius:8px;border:1px solid rgba(255,0,0,.5);background:rgba(255,0,0,.2);color:#fff;font-weight:700;font-size:13px;cursor:pointer;">Mentés</button>
+                                        <?php if ( $l_sale_price > 0 ): ?>
+                                        <button type="button" class="va-sale-inline-remove" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" style="height:36px;padding:0 14px;border-radius:8px;border:1px solid rgba(255,42,42,.3);background:rgba(255,42,42,.08);color:#ff8080;font-size:13px;cursor:pointer;">Akció törlése</button>
+                                        <?php endif; ?>
+                                        <button type="button" class="va-sale-inline-cancel" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" style="height:36px;padding:0 14px;border-radius:8px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;">Mégse</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
                     <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -851,23 +875,6 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
         </div><!-- .va-dashboard__content -->
     </div><!-- .va-dashboard -->
-</div>
-
-<!-- Akciós ár modal -->
-<div class="va-sale-modal-overlay" id="va-sale-modal-overlay" role="dialog" aria-modal="true" aria-label="Akciós ár beállítása">
-    <div class="va-sale-modal">
-        <h3>🏷 Akciós ár beállítása</h3>
-        <input type="hidden" id="va-sale-modal-post-id">
-        <label>Akciós ár (Ft) — 0 = törlés</label>
-        <input type="number" id="va-sale-modal-price" min="0" placeholder="pl. 1200000">
-        <label>Akció vége (opcionális dátum)</label>
-        <input type="date" id="va-sale-modal-end">
-        <div class="va-sale-modal__actions">
-            <button class="va-sale-modal__remove" id="va-sale-modal-remove">Akció törlése</button>
-            <button class="va-sale-modal__cancel" id="va-sale-modal-cancel">Mégse</button>
-            <button class="va-sale-modal__save" id="va-sale-modal-save">Mentés</button>
-        </div>
-    </div>
 </div>
 
 <style>
@@ -1313,11 +1320,39 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     background:rgba(255,255,255,.03);
 }
 .va-bulk-select-all-label { font-size:12px;color:#fff;font-weight:600;display:flex;align-items:center;gap:6px;cursor:pointer; }
-.va-bulk-select {
-    height:30px;padding:0 8px;border-radius:8px;border:1px solid rgba(255,255,255,.15);
-    background:rgba(255,255,255,.07);color:#fff;font-size:12px;cursor:pointer;
+
+/* ── Custom bulk dropdown ── */
+.va-bulk-dropdown { position:relative; }
+.va-bulk-dropdown__toggle {
+    display:flex;align-items:center;gap:8px;
+    height:30px;padding:0 10px;border-radius:8px;
+    border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.07);
+    color:#fff;font-size:12px;cursor:pointer;min-width:180px;white-space:nowrap;
+    transition:border-color .15s,background .15s;
 }
-.va-bulk-select:focus { outline:none;border-color:#ff2a2a; }
+.va-bulk-dropdown__toggle:hover,
+.va-bulk-dropdown.open .va-bulk-dropdown__toggle {
+    border-color:rgba(255,42,42,.5);background:rgba(255,42,42,.1);
+}
+.va-bulk-dropdown__toggle span { flex:1;text-align:left; }
+.va-bulk-dropdown__toggle svg { flex-shrink:0;transition:transform .2s; }
+.va-bulk-dropdown.open .va-bulk-dropdown__toggle svg { transform:rotate(180deg); }
+.va-bulk-dropdown__menu {
+    position:absolute;top:calc(100% + 4px);left:0;z-index:900;
+    min-width:100%;border-radius:10px;
+    border:1px solid rgba(255,255,255,.12);
+    background:rgb(14,14,14);
+    box-shadow:0 12px 40px rgba(0,0,0,.7);
+    overflow:hidden;
+}
+.va-bulk-dropdown__item {
+    display:block;width:100%;text-align:left;
+    padding:9px 14px;font-size:13px;color:#fff;
+    background:none;border:none;cursor:pointer;
+    transition:background .12s;white-space:nowrap;
+}
+.va-bulk-dropdown__item:hover { background:rgba(255,42,42,.15);color:#fff; }
+.va-bulk-dropdown__item.selected { color:#ff4444;background:rgba(255,0,0,.08); }
 
 /* ── Bulk price panel ── */
 .va-bulk-price-panel {
@@ -1331,46 +1366,22 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 }
 .va-bulk-price-input:focus { outline:none;border-color:#ff2a2a; }
 
-/* ── Akciós ár quick-edit gomb ── */
+/* ── Akciós ár inline edit gomb ── */
 .va-sale-edit-btn {
     background:none;border:none;cursor:pointer;font-size:13px;padding:2px 4px;
     opacity:.55;transition:.15s;vertical-align:middle;
 }
 .va-sale-edit-btn:hover { opacity:1; }
 
-/* ── Akciós ár modal ── */
-.va-sale-modal-overlay {
-    display:none;position:fixed;inset:0;z-index:9999;
-    background:rgba(0,0,0,.75);align-items:center;justify-content:center;
+/* ── Akciós ár inline panel (soron belül) ── */
+.va-sale-inline-row td { background:rgba(255,42,42,.03); }
+.va-sale-inline-panel {
+    padding:14px 16px;display:flex;flex-direction:column;gap:10px;
 }
-.va-sale-modal-overlay.open { display:flex; }
-.va-sale-modal {
-    background:rgb(14,14,14);border:1px solid rgba(255,255,255,.12);
-    border-radius:16px;padding:24px;max-width:380px;width:90%;
-    box-shadow:0 20px 60px rgba(0,0,0,.8);
-}
-.va-sale-modal h3 { margin:0 0 16px;font-size:16px;color:#fff; }
-.va-sale-modal label { display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.55);margin:10px 0 4px; }
-.va-sale-modal input {
-    width:100%;height:36px;padding:0 12px;border-radius:8px;
-    border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);
-    color:#fff;font-size:14px;box-sizing:border-box;
-}
-.va-sale-modal input:focus { outline:none;border-color:#ff2a2a;box-shadow:0 0 0 3px rgba(255,42,42,.15); }
-.va-sale-modal__actions { display:flex;gap:8px;margin-top:18px;justify-content:flex-end; }
-.va-sale-modal__save {
-    padding:0 18px;height:36px;border-radius:8px;border:1px solid rgba(255,0,0,.5);
-    background:rgba(255,0,0,.2);color:#fff;font-weight:700;font-size:13px;cursor:pointer;transition:.15s;
-}
-.va-sale-modal__save:hover { background:rgba(255,0,0,.35); }
-.va-sale-modal__cancel {
-    padding:0 14px;height:36px;border-radius:8px;border:1px solid rgba(255,255,255,.14);
-    background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;
-}
-.va-sale-modal__remove {
-    padding:0 14px;height:36px;border-radius:8px;border:1px solid rgba(255,42,42,.3);
-    background:rgba(255,42,42,.08);color:#ff8080;font-size:13px;cursor:pointer;margin-right:auto;
-}
+.va-sale-inline-title { font-size:12px;font-weight:700;color:rgba(255,255,255,.7); }
+.va-sale-inline-label { display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,.5);margin-bottom:4px; }
+.va-sale-inline-fields { display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px; }
+.va-sale-inline-actions { display:flex;gap:8px;align-items:center; }
 
 /* ── Lejárat badge ── */
 .va-expiry-badge {
@@ -1567,12 +1578,48 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         cb.addEventListener('change', updateBulkCount);
     });
 
-    /* ── Bulk action panel toggle ── */
-    var bulkActionSel = document.getElementById('va-bulk-action');
-    var bulkPricePanel = document.getElementById('va-bulk-price-panel');
-    if (bulkActionSel && bulkPricePanel) {
-        bulkActionSel.addEventListener('change', function(){
-            bulkPricePanel.style.display = this.value === 'price_change' ? 'block' : 'none';
+    /* ── Custom bulk dropdown ── */
+    var bulkDropdown     = document.getElementById('va-bulk-dropdown');
+    var bulkDropdownMenu = document.getElementById('va-bulk-dropdown-menu');
+    var bulkDropdownToggle = document.getElementById('va-bulk-dropdown-toggle');
+    var bulkDropdownLabel= document.getElementById('va-bulk-dropdown-label');
+    var bulkActionInput  = document.getElementById('va-bulk-action');
+    var bulkPricePanel   = document.getElementById('va-bulk-price-panel');
+
+    function closeBulkDropdown() {
+        if (bulkDropdown) bulkDropdown.classList.remove('open');
+        if (bulkDropdownMenu) bulkDropdownMenu.style.display = 'none';
+    }
+
+    if (bulkDropdownToggle) {
+        bulkDropdownToggle.addEventListener('click', function(e){
+            e.stopPropagation();
+            var isOpen = bulkDropdown && bulkDropdown.classList.contains('open');
+            if (isOpen) {
+                closeBulkDropdown();
+            } else {
+                if (bulkDropdown) bulkDropdown.classList.add('open');
+                if (bulkDropdownMenu) bulkDropdownMenu.style.display = 'block';
+            }
+        });
+    }
+
+    document.addEventListener('click', function(e){
+        if (bulkDropdown && !bulkDropdown.contains(e.target)) closeBulkDropdown();
+    });
+
+    if (bulkDropdownMenu) {
+        bulkDropdownMenu.querySelectorAll('.va-bulk-dropdown__item').forEach(function(item){
+            item.addEventListener('click', function(){
+                var val   = this.dataset.value || '';
+                var label = this.dataset.label || this.textContent;
+                if (bulkActionInput) bulkActionInput.value = val;
+                if (bulkDropdownLabel) bulkDropdownLabel.textContent = label;
+                bulkDropdownMenu.querySelectorAll('.va-bulk-dropdown__item').forEach(function(i){ i.classList.remove('selected'); });
+                this.classList.add('selected');
+                closeBulkDropdown();
+                if (bulkPricePanel) bulkPricePanel.style.display = val === 'price_change' ? 'block' : 'none';
+            });
         });
     }
 
