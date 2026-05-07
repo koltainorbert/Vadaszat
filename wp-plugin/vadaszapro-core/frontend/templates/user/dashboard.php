@@ -890,13 +890,18 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 <?php if ( $va_show_daily_welcome ) : ?>
 <div class="va-welcome-overlay" id="va-welcome-overlay" role="dialog" aria-modal="true" aria-labelledby="va-welcome-title">
     <div class="va-welcome-modal" id="va-welcome-modal">
-        <span class="va-welcome-modal__orb va-welcome-modal__orb--a" aria-hidden="true"></span>
-        <span class="va-welcome-modal__orb va-welcome-modal__orb--b" aria-hidden="true"></span>
-        <div class="va-welcome-modal__eyebrow">Mai üdvözlet</div>
+        <div class="va-welcome-modal__cookie" aria-hidden="true">
+            <svg width="112" height="112" viewBox="0 0 120 120" fill="none">
+                <circle cx="60" cy="60" r="50" stroke="currentColor" stroke-opacity=".22" stroke-width="6"/>
+                <path d="M34 56c22-16 48-16 70 2-20 6-35 19-43 38-17-14-24-26-27-40z" stroke="currentColor" stroke-opacity=".35" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M51 64l18-8" stroke="currentColor" stroke-opacity=".28" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+        </div>
         <h3 class="va-welcome-modal__title" id="va-welcome-title"></h3>
-        <p class="va-welcome-modal__subtitle" id="va-welcome-subtitle"></p>
-        <div class="va-welcome-modal__line" id="va-welcome-line"></div>
-        <button type="button" class="va-welcome-modal__cta" id="va-welcome-close">Indulhat a nap</button>
+        <button type="button" class="va-welcome-modal__cta" id="va-welcome-close">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            Szerencsesüti bezárása
+        </button>
     </div>
 </div>
 <?php endif; ?>
@@ -911,8 +916,8 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     justify-content: center;
     padding: 22px;
     background:
-        radial-gradient(circle at 22% 20%, rgba(255, 40, 40, 0.30), transparent 55%),
-        radial-gradient(circle at 82% 78%, rgba(255, 120, 0, 0.20), transparent 60%),
+        radial-gradient(circle at 22% 20%, rgba(255, 40, 40, 0.22), transparent 55%),
+        radial-gradient(circle at 82% 78%, rgba(255, 170, 55, 0.18), transparent 60%),
         rgba(4, 4, 4, 0.82);
     backdrop-filter: blur(10px) saturate(1.15);
     -webkit-backdrop-filter: blur(10px) saturate(1.15);
@@ -921,93 +926,64 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
 .va-welcome-modal {
     position: relative;
-    width: min(680px, 94vw);
+    width: min(560px, 94vw);
     border-radius: 22px;
     border: 1px solid rgba(255, 255, 255, 0.17);
     background:
-        linear-gradient(140deg, rgba(255, 20, 20, 0.20), rgba(8, 8, 8, 0.86) 38%, rgba(8, 8, 8, 0.94)),
+        linear-gradient(140deg, rgba(255, 86, 0, 0.22), rgba(8, 8, 8, 0.86) 38%, rgba(8, 8, 8, 0.94)),
         repeating-linear-gradient(0deg, rgba(255,255,255,.02) 0 1px, transparent 1px 24px),
         repeating-linear-gradient(90deg, rgba(255,255,255,.018) 0 1px, transparent 1px 24px);
     box-shadow: 0 28px 90px rgba(0,0,0,.62), inset 0 1px 0 rgba(255,255,255,.16);
     color: #fff;
-    padding: 30px 28px 24px;
+    padding: 28px 24px 22px;
     overflow: hidden;
     transform: translateY(18px) scale(.97);
     opacity: 0;
     animation: vaWelcomePopIn .46s cubic-bezier(.22,.78,.2,1) forwards;
+    text-align: center;
 }
-.va-welcome-modal__orb {
-    position: absolute;
-    border-radius: 999px;
-    filter: blur(0.5px);
-    opacity: .72;
-    pointer-events: none;
+.va-welcome-modal,
+.va-welcome-modal * {
+    color: #fff;
 }
-.va-welcome-modal__orb--a {
-    width: 220px;
-    height: 220px;
-    right: -70px;
-    top: -72px;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.6), rgba(255,0,0,.2) 38%, rgba(255,0,0,0) 70%);
+.va-welcome-modal__cookie {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom: 10px;
+    opacity:.92;
     animation: vaWelcomeFloatA 8s ease-in-out infinite;
 }
-.va-welcome-modal__orb--b {
-    width: 160px;
-    height: 160px;
-    left: -42px;
-    bottom: -44px;
-    background: radial-gradient(circle at 65% 35%, rgba(255,160,0,.55), rgba(255,0,0,.12) 45%, rgba(255,0,0,0) 74%);
-    animation: vaWelcomeFloatB 7s ease-in-out infinite;
-}
-.va-welcome-modal__eyebrow {
-    display: inline-flex;
-    padding: 6px 11px;
-    border-radius: 999px;
-    font-size: 11px;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,.85);
-    border: 1px solid rgba(255,255,255,.26);
-    background: rgba(255,255,255,.06);
-}
 .va-welcome-modal__title {
-    margin: 14px 0 10px;
-    font-size: clamp(23px, 4vw, 34px);
-    line-height: 1.1;
+    margin: 4px 0 0;
+    font-size: clamp(23px, 4vw, 32px);
+    line-height: 1.2;
     font-weight: 900;
-    letter-spacing: -0.015em;
-}
-.va-welcome-modal__subtitle {
-    margin: 0;
-    font-size: 15px;
-    color: rgba(255,255,255,.78);
-}
-.va-welcome-modal__line {
-    margin-top: 16px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.45;
+    letter-spacing: -0.01em;
     text-shadow: 0 8px 22px rgba(0,0,0,.48);
 }
 .va-welcome-modal__cta {
-    margin-top: 22px;
-    height: 44px;
-    min-width: 180px;
+    margin-top: 18px;
+    height: 46px;
+    min-width: 230px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
     border-radius: 999px;
-    border: 1px solid rgba(255,90,90,.6);
-    background: linear-gradient(90deg, #ff1a1a 0%, #ff6a00 100%);
+    border: 1px solid rgba(255,195,120,.75);
+    background: linear-gradient(90deg, #d87a18 0%, #f3a239 100%);
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     letter-spacing: .02em;
     cursor: pointer;
-    box-shadow: 0 8px 26px rgba(255,32,0,.36);
+    box-shadow: 0 8px 26px rgba(255,140,35,.32);
     transition: transform .18s ease, box-shadow .18s ease;
 }
 .va-welcome-modal__cta:hover {
     transform: translateY(-1px);
-    box-shadow: 0 10px 30px rgba(255,32,0,.44);
+    box-shadow: 0 10px 30px rgba(255,160,60,.4);
 }
 
 @keyframes vaWelcomeFadeIn {
@@ -1030,7 +1006,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 @media (max-width: 640px) {
     .va-welcome-overlay { padding: 14px; }
     .va-welcome-modal { padding: 24px 18px 18px; border-radius: 16px; }
-    .va-welcome-modal__line { font-size: 16px; }
+    .va-welcome-modal__title { font-size: 22px; }
     .va-welcome-modal__cta { width: 100%; }
 }
 
@@ -2020,14 +1996,16 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         var overlay = document.getElementById('va-welcome-overlay');
         var closeBtn = document.getElementById('va-welcome-close');
         var titleEl = document.getElementById('va-welcome-title');
-        var subEl = document.getElementById('va-welcome-subtitle');
-        var lineEl = document.getElementById('va-welcome-line');
-        if (!overlay || !closeBtn || !titleEl || !subEl || !lineEl) return;
+        if (!overlay || !closeBtn || !titleEl) return;
 
         var ownerName = <?php echo wp_json_encode( (string) $user->display_name ); ?> || 'Vadász';
-        var greetings = ['Szia', 'Üdv újra', 'Jó, hogy itt vagy', 'Szép napot', 'Helló', 'Csodás reggelt', 'Erős napot', 'Üdv a fedélzeten', 'Örülünk, hogy visszatértél', 'Lendületes napot', 'Kiemelkedő napot', 'Inspiráló napot', 'Ragyogó napot', 'Üdvözlünk ismét', 'Köszöntünk', 'Fantasztikus napot', 'Energiadús napot', 'Üdv a mai körhöz', 'Remek, hogy itt vagy', 'Sikeres napot'];
-        var moods = ['ma a fókusz', 'ma a lendület', 'ma az inspiráció', 'ma a precizitás', 'ma a növekedés', 'ma a kreativitás', 'ma a magabiztosság', 'ma a minőség', 'ma az új lehetőségek', 'ma az eredményesség', 'ma az elegancia', 'ma az innováció', 'ma a tempó', 'ma az új szint', 'ma az értékteremtés', 'ma a teljesítmény', 'ma az átláthatóság', 'ma a figyelem', 'ma a stratégia', 'ma a hatás'];
-        var actions = ['készíts egy kiemelkedő hirdetést', 'finomítsd a legnézettebb listinged', 'aktiváld a legerősebb ajánlatod', 'adj új lendületet a profilodnak', 'állítsd be a mai csúcsteljesítményt', 'indítsd be a mai konverziót', 'hozd ki a maximumot a jelenlétedből', 'építs ma is prémium megjelenést', 'mutasd meg a kínálatod legjobb arcát', 'fókuszálj a legnagyobb értéket adó hirdetésre', 'frissíts stratégia mentén', 'emeld a figyelmet a top ajánlatokra', 'optimalizáld a láthatóságot', 'tervezz ma is előre', 'alakítsd át az érdeklődést eredménnyé'];
+        var greetings = [
+            'Napi üdvözlet, ' + ownerName + '!',
+            'Szép napot, ' + ownerName + '!',
+            'Jó, hogy itt vagy ma is, ' + ownerName + '!',
+            'Sikeres napot kívánunk, ' + ownerName + '!',
+            'Napi szerencsesüti üdvözlet: hajrá, ' + ownerName + '!'
+        ];
 
         function rnd(max) {
             if (window.crypto && window.crypto.getRandomValues) {
@@ -2038,12 +2016,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
             return Math.floor(Math.random() * max);
         }
 
-        var g = greetings[rnd(greetings.length)];
-        var m = moods[rnd(moods.length)];
-        var a = actions[rnd(actions.length)];
-        titleEl.textContent = g + ', ' + ownerName + '!';
-        subEl.textContent = 'Mai személyes üdvözleted készen áll.';
-        lineEl.textContent = 'A mai üzenet: ' + m + ' - ' + a + '.';
+        titleEl.textContent = greetings[rnd(greetings.length)];
 
         function closeWelcome() { overlay.classList.remove('open'); }
         overlay.classList.add('open');
