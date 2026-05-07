@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #200 (Fiókoldal UX polish: dátummező + akció ikon)
+
+### Mit csinaltunk [x]
+- [x] A fiókoldali akció dátummezők átállítva natív `type=date` helyett szöveges (`YYYY-MM-DD`) inputra
+- [x] Bulk és inline akció mentésnél dátum normalizálás/validáció: `YYYY-MM-DD`, `YYYY.MM.DD`, `YYYY/MM/DD` elfogadott
+- [x] Ár melletti akció módosítás piktogram újrastílusozva (mindig jól látható, külön idle/active állapot)
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+A `/va-fiok/` oldalon nincs többé fehér böngésző datepicker popup, és az ár melletti akció szerkesztő ikon kontrasztosan látható.
+
+---
+
 ## 2026. 05. 07. – Session #199 (Dashboard tabla/tartalom visszaállítás)
 
 ### Mit csinaltunk [x]

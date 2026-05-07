@@ -426,7 +426,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         </div>
                         <div>
                             <label class="va-bulk-price-label">Akció vége (opcionális)</label>
-                            <input type="date" id="va-bulk-sale-end" class="va-bulk-price-input">
+                            <input type="text" id="va-bulk-sale-end" class="va-bulk-price-input" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
                         </div>
                     </div>
                     <p style="font-size:11px;color:rgba(255,255,255,.4);margin:8px 0 0;">Az akciós ár minden kijelölt hirdetésre vonatkozik. A normál ár módosítása után külön akciós ár is állítható egyenként.</p>
@@ -522,10 +522,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <del style="color:rgba(255,255,255,.4);font-size:12px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></del><br>
                                 <span style="color:#ff3030;font-weight:700;"><?php echo esc_html( number_format( $l_sale_price, 0, ',', ' ' ) . ' Ft' ); ?> <span style="font-size:10px;background:rgba(255,0,0,.2);border:1px solid rgba(255,0,0,.4);border-radius:4px;padding:1px 5px;">AKCIÓ</span></span>
                                 <?php if ( $l_sale_end ): ?><br><span style="font-size:10px;color:rgba(255,255,255,.35);">–<?php echo esc_html( $l_sale_end ); ?></span><?php endif; ?>
-                                <button class="va-sale-edit-btn" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Akciós ár szerkesztése">✏️</button>
+                                <button class="va-sale-edit-btn va-sale-edit-btn--active" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Akciós ár szerkesztése">✎</button>
                             <?php else: ?>
                                 <?php echo esc_html( va_format_price( $price, $p_type ) ); ?>
-                                <button class="va-sale-edit-btn" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="" data-sale-end="" title="Akciós ár beállítása" style="opacity:.45;">🏷</button>
+                                <button class="va-sale-edit-btn va-sale-edit-btn--idle" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="" data-sale-end="" title="Akciós ár beállítása">✎</button>
                             <?php endif; ?>
                         </td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
@@ -659,7 +659,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                     </div>
                                     <div>
                                         <label class="va-sale-inline-label">Akció vége (opcionális)</label>
-                                        <input type="date" class="va-sale-inline-end va-bulk-price-input" value="<?php echo esc_attr( $l_sale_end ); ?>">
+                                        <input type="text" class="va-sale-inline-end va-bulk-price-input" value="<?php echo esc_attr( $l_sale_end ); ?>" placeholder="YYYY-MM-DD" inputmode="numeric" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
                                     </div>
                                     <div class="va-sale-inline-actions">
                                         <button type="button" class="va-sale-inline-save" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" style="height:36px;padding:0 16px;border-radius:8px;border:1px solid rgba(255,0,0,.5);background:rgba(255,0,0,.2);color:#fff;font-weight:700;font-size:13px;cursor:pointer;">Mentés</button>
@@ -1368,10 +1368,24 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 
 /* ── Akciós ár inline edit gomb ── */
 .va-sale-edit-btn {
-    background:none;border:none;cursor:pointer;font-size:13px;padding:2px 4px;
-    opacity:.55;transition:.15s;vertical-align:middle;
+    display:inline-flex;align-items:center;justify-content:center;
+    width:24px;height:24px;margin-left:6px;
+    border-radius:6px;border:1px solid rgba(255,255,255,.25);
+    background:rgba(255,255,255,.06);color:#fff;
+    cursor:pointer;font-size:14px;line-height:1;vertical-align:middle;
+    transition:.15s;border-color:.15s,background:.15s,transform:.15s;
 }
-.va-sale-edit-btn:hover { opacity:1; }
+.va-sale-edit-btn:hover { transform:translateY(-1px); }
+.va-sale-edit-btn--active {
+    border-color:rgba(255,0,0,.55);
+    background:rgba(255,0,0,.18);
+    color:#ff7777;
+}
+.va-sale-edit-btn--idle {
+    border-color:rgba(255,255,255,.35);
+    background:rgba(255,255,255,.08);
+    color:rgba(255,255,255,.95);
+}
 
 /* ── Akciós ár inline panel (soron belül) ── */
 .va-sale-inline-row td { background:rgba(255,42,42,.03); }
@@ -1561,6 +1575,14 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     var _nonce  = '<?php echo esc_js( $boost_nonce ); ?>';
     var _ajaxUrl= '<?php echo esc_js( $ajax_url ); ?>';
 
+    function normalizeIsoDateText(raw) {
+        var v = (raw || '').trim();
+        if (!v) return '';
+        v = v.replace(/\./g, '-').replace(/\//g, '-');
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return null;
+        return v;
+    }
+
     /* ── Select all checkbox ── */
     var selectAll = document.getElementById('va-select-all');
     var bulkCount = document.getElementById('va-bulk-count');
@@ -1646,7 +1668,9 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                 params.set('new_price', newPrice);
                 // bulk sale price
                 var saleP = document.getElementById('va-bulk-sale-price') ? document.getElementById('va-bulk-sale-price').value : '';
-                var saleE = document.getElementById('va-bulk-sale-end') ? document.getElementById('va-bulk-sale-end').value : '';
+                var saleERaw = document.getElementById('va-bulk-sale-end') ? document.getElementById('va-bulk-sale-end').value : '';
+                var saleE = normalizeIsoDateText(saleERaw);
+                if (saleE === null) { alert('Akció vége dátum formátum: YYYY-MM-DD'); return; }
                 if (saleP) {
                     ids.forEach(function(id){
                         var sp = new URLSearchParams({
@@ -1709,9 +1733,11 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     /* ── Sale price inline edit ── */
     function saveSalePrice(postId, price, endDate, saveBtn) {
         if (!postId) return;
+        var saleEnd = normalizeIsoDateText(endDate);
+        if (saleEnd === null) { alert('Akció vége dátum formátum: YYYY-MM-DD'); return; }
         var params = new URLSearchParams({
             action: 'va_set_sale_price', nonce: _nonce,
-            post_id: postId, sale_price: price, sale_end: endDate || ''
+            post_id: postId, sale_price: price, sale_end: saleEnd || ''
         });
         if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Mentés...'; }
         fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
