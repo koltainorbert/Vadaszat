@@ -870,9 +870,29 @@
 }
 
 /* ── Dashboard ─────────────────────────────────── */
-.va-dashboard { display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+.va-dashboard { display: grid; grid-template-columns: 260px 1fr; gap: 0; align-items: start; }
 @media (max-width: 768px) { .va-dashboard { grid-template-columns: 1fr; } }
-.va-dashboard__nav { background: var(--va-card); border: 1px solid var(--va-border); border-radius: var(--va-radius); padding: 16px 0; height: fit-content; }
+.va-dashboard__nav {
+  background: var(--va-card);
+  border: 1px solid var(--va-border);
+  border-right: none;
+  border-radius: var(--va-radius) 0 0 var(--va-radius);
+  padding: 16px 0;
+  position: sticky;
+  top: var(--nav, 66px);
+  height: calc(100vh - var(--nav, 66px));
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,0,0,.3) transparent;
+}
+.admin-bar .va-dashboard__nav {
+  top: calc(var(--nav, 66px) + 32px);
+  height: calc(100vh - var(--nav, 66px) - 32px);
+}
+@media screen and (max-width: 782px) {
+  .admin-bar .va-dashboard__nav { top: calc(var(--nav, 66px) + 46px); height: calc(100vh - var(--nav, 66px) - 46px); }
+}
 .va-dashboard__nav-item {
   display: grid;
   grid-template-columns: 20px minmax(0, 1fr);
@@ -923,7 +943,7 @@
 .va-dashboard__nav-item[data-tab="watchlist"].active .va-dashboard__nav-ico {
   color: #ff0000;
 }
-.va-dashboard__content { min-width: 0; }
+.va-dashboard__content { min-width: 0; border: 1px solid var(--va-border); border-radius: 0 var(--va-radius) var(--va-radius) 0; }
 .va-dashboard__section { display: none; }
 .va-dashboard__section.active { display: block; }
 .va-dashboard__title { font-size: 18px; font-weight: 700; margin-bottom: 18px; }
