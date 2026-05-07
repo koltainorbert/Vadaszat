@@ -3401,3 +3401,19 @@ Az admin/dashboard felületen a korábbi "1970-es" karakterikonok helyett konzis
 
 ---
 
+## 2026. 05. 07. – Session: Ikon láthatósági vészjavítás
+
+### Mit csináltunk [x]
+- [x] Dashboard ikonok méretének és kontrasztjának jelentős növelése
+- [x] Bal oldali menü ikonokra vizuális badge háttér + erősebb glow
+- [x] Sort nyilak teljes cseréje SVG-re
+- [x] Gombikonok egységes méretre hozása (`.va-btn .va-ico`)
+- [x] Inline ár-szerkesztő ikon nagyítása és vizuális erősítése
+- [x] Képszám és trust badge ikonok méretnövelése
+- [x] Kritikus CSS hiba javítása: lezáratlan komment helyreállítva
+
+### Hol tartunk
+Az ikonok most látványosan nagyobbak, erősebb kontrasztúak és következetesek a dashboard felületen.
+
+---
+
