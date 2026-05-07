@@ -481,6 +481,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         <td style="padding:10px 4px;text-align:center;vertical-align:middle;">
                             <input type="checkbox" class="va-row-check" value="<?php echo esc_attr( (string) $l->ID ); ?>" style="cursor:pointer;width:15px;height:15px;accent-color:#ff2a2a;">
                         </td>
+                        <td style="padding:10px 8px;">
                             <div style="display:flex;align-items:center;gap:10px;">
                                 <?php
                                 $thumb_id  = get_post_thumbnail_id( $l->ID );
@@ -495,23 +496,41 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <img src="<?php echo esc_url( $thumb_url ); ?>" alt="" style="width:52px;height:52px;object-fit:cover;border-radius:6px;flex-shrink:0;border:1px solid rgba(255,255,255,.1);">
                                 <?php endif; ?>
                                 <div style="min-width:0;">
-                                    <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;"><?php echo esc_html( $l->post_title ); ?></a>
-                                    <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
-                                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#3a2800,#1e1400);color:#ffc840;border:1px solid rgba(255,180,0,.5);box-shadow:0 0 8px rgba(255,160,0,.2);padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
-                                    <?php endif; ?>
-                                    <div style="margin-top:3px;font-size:11px;">
+                                    <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;">
+                                        <a href="<?php echo esc_url( get_permalink( $l->ID ) ); ?>" style="color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;"><?php echo esc_html( $l->post_title ); ?></a>
+                                        <?php if ( $img_count > 0 ): ?>
+                                        <span class="va-img-count-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><?php echo esc_html( $img_count ); ?></span>
+                                        <?php endif; ?>
+                                        <?php if ( get_post_meta( $l->ID, 'va_featured', true ) === '1' ): ?>
+                                        <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:linear-gradient(135deg,#3a2800,#1e1400);color:#ffc840;border:1px solid rgba(255,180,0,.5);box-shadow:0 0 8px rgba(255,160,0,.2);padding:2px 7px;border-radius:20px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div style="margin-top:3px;font-size:11px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                                     <?php if ( $suspended_by_plan ): ?>
                                         <span style="color:#ff4444;">Limit felett – kredit szükséges</span>
                                     <?php elseif ( $is_suspended && $suspended_at ): ?>
                                         <span style="color:#ff9900;">⏸ Szüneteltetve: <?php echo esc_html( date_i18n( 'Y.m.d', $suspended_at ) ); ?></span>
                                     <?php else: ?>
-                                        <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( (int) max( 1, ceil( ( $now - $active_since_ts ) / 86400 ) ) . ' napja' ); ?></span>
+                                        <span style="color:rgba(255,255,255,.35);">Fut: <?php echo esc_html( $days_running . ' napja' ); ?></span>
+                                        <?php if ( $l->post_status === 'publish' && $days_expiry <= 7 ): ?>
+                                        <span class="va-expiry-badge <?php echo $days_expiry <= 3 ? 'va-expiry-badge--critical' : 'va-expiry-badge--warn'; ?>">⏰ <?php echo $days_expiry > 0 ? esc_html( $days_expiry . ' nap múlva lejár' ) : 'Lejárt'; ?></span>
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td style="padding:10px 8px;white-space:nowrap;min-width:110px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></td>
+                        <td style="padding:10px 8px;white-space:nowrap;min-width:110px;">
+                            <?php if ( $l_sale_price > 0 ): ?>
+                                <del style="color:rgba(255,255,255,.4);font-size:12px;"><?php echo esc_html( va_format_price( $price, $p_type ) ); ?></del><br>
+                                <span style="color:#ff3030;font-weight:700;"><?php echo esc_html( number_format( $l_sale_price, 0, ',', ' ' ) . ' Ft' ); ?> <span style="font-size:10px;background:rgba(255,0,0,.2);border:1px solid rgba(255,0,0,.4);border-radius:4px;padding:1px 5px;">AKCIÓ</span></span>
+                                <?php if ( $l_sale_end ): ?><br><span style="font-size:10px;color:rgba(255,255,255,.35);">–<?php echo esc_html( $l_sale_end ); ?></span><?php endif; ?>
+                                <button class="va-sale-edit-btn" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="<?php echo esc_attr( (string) $l_sale_price ); ?>" data-sale-end="<?php echo esc_attr( $l_sale_end ); ?>" title="Akciós ár szerkesztése">✏️</button>
+                            <?php else: ?>
+                                <?php echo esc_html( va_format_price( $price, $p_type ) ); ?>
+                                <button class="va-sale-edit-btn" data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>" data-sale-price="" data-sale-end="" title="Akciós ár beállítása" style="opacity:.45;">🏷</button>
+                            <?php endif; ?>
+                        </td>
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
                         <td style="padding:10px 8px;">
@@ -602,6 +621,14 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                             <?php else: ?>
                             <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
                                 <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--sm" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;white-space:nowrap;">Szerkesztés</a>
+                                <?php if ( $l->post_status === 'publish' ): ?>
+                                <button class="va-refresh-btn va-btn va-btn--sm"
+                                        data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                        data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                        data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                        title="Hirdetés frissítése (lista tetejére tol)"
+                                        style="background:rgba(0,180,255,.1);border:1px solid rgba(0,180,255,.35);color:#60d0ff;white-space:nowrap;">↑ Frissítés</button>
+                                <?php endif; ?>
                                 <?php if ( $can_suspend && in_array( $l->post_status, [ 'publish', 'private' ], true ) ): ?>
                                 <form method="post" style="margin:0;">
                                     <?php wp_nonce_field( 'va_suspend_listing', 'va_suspend_listing_nonce' ); ?>
