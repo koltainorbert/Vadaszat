@@ -36,10 +36,30 @@ $seller_label = get_user_meta( $user->ID, 'va_seller_label', true );
 $avatar_id    = (int) get_user_meta( $user->ID, 'va_profile_avatar_id', true );
 $avatar_url   = $avatar_id ? wp_get_attachment_image_url( $avatar_id, 'thumbnail' ) : '';
 
+$va_welcome_preview_remaining = (int) get_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', true );
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && isset( $_POST['va_action'] )
+    && $_POST['va_action'] === 'welcome_preview_10'
+    && isset( $_POST['va_welcome_preview_nonce'] )
+    && wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['va_welcome_preview_nonce'] ) ), 'va_welcome_preview_10' )
+) {
+    $va_welcome_preview_remaining = 10;
+    update_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', $va_welcome_preview_remaining );
+}
+
 $va_today_local       = current_time( 'Y-m-d' );
 $va_last_welcome_seen = (string) get_user_meta( $user->ID, 'va_daily_welcome_seen', true );
 $va_show_daily_welcome = $va_last_welcome_seen !== $va_today_local;
-if ( $va_show_daily_welcome ) {
+if ( $va_welcome_preview_remaining > 0 ) {
+    $va_show_daily_welcome = true;
+    $va_welcome_preview_remaining--;
+    if ( $va_welcome_preview_remaining > 0 ) {
+        update_user_meta( $user->ID, 'va_daily_welcome_preview_remaining', $va_welcome_preview_remaining );
+    } else {
+        delete_user_meta( $user->ID, 'va_daily_welcome_preview_remaining' );
+    }
+} elseif ( $va_show_daily_welcome ) {
     update_user_meta( $user->ID, 'va_daily_welcome_seen', $va_today_local );
 }
 
@@ -318,9 +338,17 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
             <div id="va-tab-listings" class="va-dashboard__section active">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
                     <h2 class="va-dashboard__title">Hirdetéseim</h2>
-                    <?php if ( $submit_page ): ?>
-                        <a href="<?php echo esc_url( get_permalink( $submit_page ) ); ?>" class="va-btn va-btn--primary va-btn--sm">+ Új hirdetés</a>
-                    <?php endif; ?>
+                    <div class="va-dashboard__title-actions">
+                        <form method="post" class="va-welcome-preview-form">
+                            <?php wp_nonce_field( 'va_welcome_preview_10', 'va_welcome_preview_nonce' ); ?>
+                            <input type="hidden" name="va_action" value="welcome_preview_10">
+                            <button type="submit" class="va-btn va-btn--sm va-welcome-preview-btn">Napi üdvözlés x10</button>
+                            <span class="va-welcome-preview-note">Maradék: <?php echo esc_html( max( 0, $va_welcome_preview_remaining ) ); ?></span>
+                        </form>
+                        <?php if ( $submit_page ): ?>
+                            <a href="<?php echo esc_url( get_permalink( $submit_page ) ); ?>" class="va-btn va-btn--primary va-btn--sm">+ Új hirdetés</a>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
                 <section class="va-crm" aria-label="Hirdetés statisztika">
