@@ -1479,6 +1479,10 @@ class VA_Ajax {
         if ( ! $post || (int) $post->post_author !== $user_id ) {
             wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés.' ] );
         }
+        $normal_price = isset( $_POST['normal_price'] ) ? floatval( $_POST['normal_price'] ) : null;
+        if ( $normal_price !== null && $normal_price >= 0 ) {
+            update_post_meta( $post_id, 'va_price', $normal_price );
+        }
         $sale_price = floatval( $_POST['sale_price'] ?? 0 );
         $sale_end   = sanitize_text_field( $_POST['sale_end'] ?? '' );
         if ( $sale_price > 0 ) {

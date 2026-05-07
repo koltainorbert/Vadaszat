@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #204 (Popup bővítés: normál ár módosítás)
+
+### Mit csinaltunk [x]
+- [x] Az akció popup kibővítve új mezővel: `Normál ár (Ft)`
+- [x] A ✎ gomb most átadja az aktuális normál árat is a modalnak
+- [x] Egy mentéssel frissül a `va_price` (normál ár) és az akciós mezők (`va_sale_price`, `va_sale_price_end`)
+- [x] `va_set_sale_price` AJAX handler bővítve `normal_price` mentéssel
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+A kis popup már nem csak akciót kezel: ugyanabban az ablakban és mentésben a normál ár is módosítható.
+
+---
+
 ## 2026. 05. 07. – Session #203 (Dupla naptár ikon fix + dark picker)
 
 ### Mit csinaltunk [x]
