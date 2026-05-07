@@ -3383,3 +3383,21 @@ A `/va-fiok` oldal most teljes szélességben, fix oldalsávval működik. A nap
 
 ---
 
+## 2026. 05. 07. – Session: Dashboard ikonrendszer modernizálás
+
+### Mit csináltunk [x]
+- [x] `/va-fiok` dashboard régi emoji/karakter ikonok cseréje modern inline SVG ikonokra
+- [x] Bal oldali menü ikonok teljes cseréje (Hirdetések, Licit, Kedvencek, Profil, Kijelentkezés)
+- [x] Tömeges művelet dropdown ikonok modernizálása (Aktiválás, Szüneteltetés, Törlés)
+- [x] Sor szintű akció ikonok cseréje (ár szerkesztés, frissítés, indítás/szünet)
+- [x] Státuszoknál és lejárat badge-nél a problematikus karakter ikonok eltávolítása/cseréje
+- [x] Új ikon animációs rendszer (`.va-ico`) bevezetése: pulse/tilt/float effektek
+
+### Hol tartunk
+Az admin/dashboard felületen a korábbi "1970-es" karakterikonok helyett konzisztens, animált SVG ikonkészlet fut, a fő vizuális problémák javítva.
+
+### TODO
+- [ ] Éles böngészős ellenőrzés a maradék edge-state gombfeliratokra
+
+---
+
