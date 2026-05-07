@@ -531,6 +531,7 @@
     <?php endif; ?>
 
     <!-- Tartalom wrapper -->
+    <?php if ( ! is_page( 'va-fiok' ) ) : ?>
     <main class="va-container">
         <div class="va-content-layout">
 
@@ -538,3 +539,4 @@
             <div class="va-main-content">
                 <?php if ( is_singular() ) va_breadcrumb(); ?>
                 <?php if ( class_exists('VA_Ad_Zones') ) VA_Ad_Zones::render('content_top'); ?>
+    <?php endif; ?>

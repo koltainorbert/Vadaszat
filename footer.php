@@ -1,4 +1,6 @@
             </div><!-- .va-main-content -->
+<?php if ( ! is_page( 'va-fiok' ) ) : ?>
+            </div><!-- .va-main-content -->
 
             <!-- Jobb oldalsáv -->
             <aside class="va-sidebar va-sidebar--right">
