@@ -174,6 +174,188 @@ add_action( 'wp_head', function () {
     echo '<link rel="dns-prefetch" href="//s.gravatar.com">' . "\n";
 }, 1 );
 
+// CookieYes dizájn felülírás, hogy jobban illeszkedjen az oldal fekete-piros vizuáljához.
+add_action( 'wp_head', function () {
+    ?>
+    <style id="va-cookieyes-override">
+        :root {
+            --va-cookie-bg: linear-gradient(135deg, rgba(26, 7, 7, .96), rgba(8, 8, 8, .97));
+            --va-cookie-border: rgba(255, 255, 255, .14);
+            --va-cookie-accent: #ff0000;
+            --va-cookie-accent-2: #ff4545;
+            --va-cookie-text: #ffffff;
+            --va-cookie-muted: rgba(255, 255, 255, .76);
+            --va-cookie-glow: 0 24px 60px rgba(0, 0, 0, .42), 0 10px 34px rgba(255, 0, 0, .18);
+        }
+
+        .cky-consent-container {
+            bottom: 18px !important;
+            left: 18px !important;
+            right: 18px !important;
+            width: auto !important;
+            max-width: none !important;
+            z-index: 999999 !important;
+        }
+
+        .cky-consent-container .cky-consent-bar,
+        .cky-consent-container .cky-notice,
+        .cky-consent-container .cky-banner-element,
+        .cky-modal {
+            border-radius: 24px !important;
+            border: 1px solid var(--va-cookie-border) !important;
+            background: var(--va-cookie-bg) !important;
+            backdrop-filter: blur(16px) saturate(1.15) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(1.15) !important;
+            box-shadow: var(--va-cookie-glow) !important;
+            overflow: hidden !important;
+        }
+
+        .cky-consent-bar {
+            padding: 20px 22px !important;
+        }
+
+        .cky-notice-title,
+        .cky-title,
+        .cky-accordion-header .cky-accordion-title,
+        .cky-modal-title {
+            color: var(--va-cookie-text) !important;
+            font-size: 24px !important;
+            font-weight: 800 !important;
+            letter-spacing: -.02em !important;
+        }
+
+        .cky-notice-des,
+        .cky-notice-des p,
+        .cky-preference-body-wrapper,
+        .cky-preference-body-wrapper p,
+        .cky-cookie-des,
+        .cky-audit-table,
+        .cky-accordion-body,
+        .cky-accordion-body p,
+        .cky-policy,
+        .cky-policy p {
+            color: var(--va-cookie-muted) !important;
+            font-size: 15px !important;
+            line-height: 1.72 !important;
+        }
+
+        .cky-notice-btn-wrapper,
+        .cky-footer-wrapper {
+            gap: 10px !important;
+            margin-top: 18px !important;
+        }
+
+        .cky-consent-container .cky-btn,
+        .cky-modal .cky-btn {
+            min-height: 46px !important;
+            padding: 12px 20px !important;
+            border-radius: 14px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            letter-spacing: .01em !important;
+            border: 1px solid rgba(255,255,255,.16) !important;
+            transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease !important;
+        }
+
+        .cky-consent-container .cky-btn:hover,
+        .cky-modal .cky-btn:hover {
+            transform: translateY(-1px) !important;
+        }
+
+        .cky-btn.cky-btn-accept,
+        .cky-btn.cky-btn-accept:hover,
+        .cky-btn.cky-btn-confirm,
+        .cky-btn.cky-btn-confirm:hover {
+            background: linear-gradient(135deg, var(--va-cookie-accent), var(--va-cookie-accent-2)) !important;
+            color: #fff !important;
+            border-color: rgba(255, 92, 92, .7) !important;
+            box-shadow: 0 12px 30px rgba(255, 0, 0, .24) !important;
+        }
+
+        .cky-btn.cky-btn-reject,
+        .cky-btn.cky-btn-reject:hover,
+        .cky-btn.cky-btn-customize,
+        .cky-btn.cky-btn-customize:hover,
+        .cky-btn.cky-btn-preferences,
+        .cky-btn.cky-btn-preferences:hover {
+            background: rgba(255,255,255,.04) !important;
+            color: #fff !important;
+            border-color: rgba(255,255,255,.18) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.05) !important;
+        }
+
+        .cky-btn.cky-btn-reject:hover,
+        .cky-btn.cky-btn-customize:hover,
+        .cky-btn.cky-btn-preferences:hover {
+            background: rgba(255,255,255,.08) !important;
+            border-color: rgba(255,255,255,.28) !important;
+        }
+
+        .cky-consent-bar .cky-banner-btn-close {
+            top: 14px !important;
+            right: 14px !important;
+            width: 34px !important;
+            height: 34px !important;
+            border-radius: 999px !important;
+            border: 1px solid rgba(255,255,255,.16) !important;
+            background: rgba(255,255,255,.05) !important;
+        }
+
+        .cky-switch input[type="checkbox"]:checked + .cky-slider {
+            background-color: var(--va-cookie-accent) !important;
+            box-shadow: 0 0 0 1px rgba(255,0,0,.18), 0 0 18px rgba(255,0,0,.26) !important;
+        }
+
+        .cky-accordion {
+            border-color: rgba(255,255,255,.08) !important;
+        }
+
+        .cky-accordion-item {
+            border-bottom: 1px solid rgba(255,255,255,.08) !important;
+        }
+
+        .cky-powered-by {
+            color: rgba(255,255,255,.42) !important;
+            font-size: 12px !important;
+        }
+
+        .cky-modal-close {
+            background: rgba(255,255,255,.06) !important;
+            border-radius: 999px !important;
+        }
+
+        @media (max-width: 900px) {
+            .cky-consent-container {
+                left: 12px !important;
+                right: 12px !important;
+                bottom: 12px !important;
+            }
+
+            .cky-consent-bar {
+                padding: 16px !important;
+                border-radius: 18px !important;
+            }
+
+            .cky-notice-title,
+            .cky-title,
+            .cky-modal-title {
+                font-size: 20px !important;
+            }
+
+            .cky-notice-btn-wrapper,
+            .cky-footer-wrapper {
+                flex-direction: column !important;
+            }
+
+            .cky-consent-container .cky-btn,
+            .cky-modal .cky-btn {
+                width: 100% !important;
+            }
+        }
+    </style>
+    <?php
+}, 99 );
+
 function va_build_square_favicon_from_attachment( int $attachment_id, int $size ): string {
     $upload = wp_get_upload_dir();
     if ( empty( $upload['basedir'] ) || empty( $upload['baseurl'] ) ) {
