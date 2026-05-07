@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #208 (Rollback 1 lépés kérésre)
+
+### Mit csinaltunk [x]
+- [x] Visszaállítva az előző állapot: a fix bal menü + külön content scroll módosítás kivezetve
+- [x] Visszaállítva a tömeges műveletben az `Ár módosítása` opció
+- [x] Visszaállítva a bulk ár/akció panel (HTML + CSS + JS)
+- [x] Plugin mirror sync + Deploy All sikeresen lefutott
+
+### Hol tartunk
+A dashboard viselkedése egy lépéssel visszaállt a korábbi verzióra a kérésed szerint.
+
+---
+
 ## 2026. 05. 07. – Session #207 (Fiók dashboard UX: fix bal menü + bulk egyszerűsítés)
 
 ### Mit csinaltunk [x]
