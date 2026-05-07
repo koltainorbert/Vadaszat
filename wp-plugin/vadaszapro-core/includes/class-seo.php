@@ -22,6 +22,7 @@ class VA_SEO {
         add_action( 'init', [ __CLASS__, 'register_sitemap_routes' ] );
         add_filter( 'query_vars', [ __CLASS__, 'register_query_vars' ] );
         add_action( 'template_redirect', [ __CLASS__, 'maybe_render_sitemap' ], 0 );
+        add_action( 'template_redirect', [ __CLASS__, 'start_social_meta_buffer' ], 1 );
 
         add_action( 'wp_head', [ __CLASS__, 'render_head_meta' ], 1 );
         add_action( 'wp_head', [ __CLASS__, 'render_schema' ], 90 );
@@ -42,9 +43,41 @@ class VA_SEO {
 
     public static function rank_math_social_description( $description ): string {
         if ( is_singular( 'va_listing' ) ) {
-            return self::meta_description();
+            return self::social_description();
         }
         return is_string( $description ) && $description !== '' ? $description : self::meta_description();
+    }
+
+    public static function start_social_meta_buffer(): void {
+        if ( is_admin() || is_feed() || is_trackback() ) return;
+        if ( ! is_singular( 'va_listing' ) ) return;
+
+        ob_start( [ __CLASS__, 'rewrite_social_meta_buffer' ] );
+    }
+
+    public static function rewrite_social_meta_buffer( string $html ): string {
+        if ( $html === '' || ! is_singular( 'va_listing' ) ) {
+            return $html;
+        }
+
+        $social_title = self::social_title( wp_get_document_title() );
+        $social_desc  = self::social_description();
+
+        $replacements = [
+            '/(<meta[^>]+property=["\'])og:title(["\'][^>]+content=["\'])(.*?)(["\'][^>]*>)/i' => '$1og:title$2' . esc_attr( $social_title ) . '$4',
+            '/(<meta[^>]+name=["\'])twitter:title(["\'][^>]+content=["\'])(.*?)(["\'][^>]*>)/i' => '$1twitter:title$2' . esc_attr( $social_title ) . '$4',
+            '/(<meta[^>]+property=["\'])og:description(["\'][^>]+content=["\'])(.*?)(["\'][^>]*>)/i' => '$1og:description$2' . esc_attr( $social_desc ) . '$4',
+            '/(<meta[^>]+name=["\'])twitter:description(["\'][^>]+content=["\'])(.*?)(["\'][^>]*>)/i' => '$1twitter:description$2' . esc_attr( $social_desc ) . '$4',
+        ];
+
+        foreach ( $replacements as $pattern => $replacement ) {
+            $updated = preg_replace( $pattern, $replacement, $html, 1 );
+            if ( is_string( $updated ) ) {
+                $html = $updated;
+            }
+        }
+
+        return $html;
     }
 
     public static function register_sitemap_routes(): void {
@@ -404,6 +437,41 @@ class VA_SEO {
         return $title . ' | Eladó';
     }
 
+    private static function listing_social_description( int $post_id ): string {
+        $price_raw = get_post_meta( $post_id, 'va_price', true );
+        $price_type = (string) get_post_meta( $post_id, 'va_price_type', true );
+        $sale_raw = get_post_meta( $post_id, 'va_sale_price', true );
+        $sale_end_raw = (string) get_post_meta( $post_id, 'va_sale_price_end', true );
+        $content = wp_trim_words( wp_strip_all_tags( (string) get_post_field( 'post_content', $post_id ) ), 22, '...' );
+
+        $parts = [ 'Eladó hirdetés.' ];
+
+        if ( is_numeric( $price_raw ) && $price_type !== 'ask' ) {
+            $parts[] = 'Ár: ' . number_format( (float) $price_raw, 0, ',', ' ' ) . ' Ft.';
+        }
+
+        $sale_active = false;
+        if ( is_numeric( $sale_raw ) && (float) $sale_raw > 0 ) {
+            $sale_active = true;
+            if ( $sale_end_raw !== '' ) {
+                $sale_end_ts = strtotime( $sale_end_raw . ' 23:59:59' );
+                if ( $sale_end_ts && $sale_end_ts < current_time( 'timestamp' ) ) {
+                    $sale_active = false;
+                }
+            }
+        }
+
+        if ( $sale_active ) {
+            $parts[] = 'Akciós ár: ' . number_format( (float) $sale_raw, 0, ',', ' ' ) . ' Ft.';
+        }
+
+        if ( $content !== '' ) {
+            $parts[] = $content;
+        }
+
+        return trim( implode( ' ', $parts ) );
+    }
+
     private static function social_title( string $default_title ): string {
         if ( is_singular( 'va_listing' ) ) {
             $id = get_queried_object_id();
@@ -415,12 +483,24 @@ class VA_SEO {
         return $default_title;
     }
 
+    private static function social_description(): string {
+        if ( is_singular( 'va_listing' ) ) {
+            $id = get_queried_object_id();
+            if ( $id > 0 ) {
+                return self::listing_social_description( $id );
+            }
+        }
+
+        return self::meta_description();
+    }
+
     public static function render_head_meta(): void {
         if ( ! self::should_render_meta() ) return;
 
         $title = wp_get_document_title();
         $social_title = self::social_title( $title );
         $desc  = self::meta_description();
+        $social_desc = self::social_description();
         $url   = self::current_canonical();
         $img   = self::meta_image_url();
         $site  = get_bloginfo( 'name' );
@@ -433,7 +513,7 @@ class VA_SEO {
         echo '<meta property="og:locale" content="hu_HU">' . "\n";
         echo '<meta property="og:type" content="' . esc_attr( is_singular() ? 'article' : 'website' ) . '">' . "\n";
         echo '<meta property="og:title" content="' . esc_attr( $social_title ) . '">' . "\n";
-        echo '<meta property="og:description" content="' . esc_attr( $desc ) . '">' . "\n";
+        echo '<meta property="og:description" content="' . esc_attr( $social_desc ) . '">' . "\n";
         echo '<meta property="og:url" content="' . esc_url( $url ) . '">' . "\n";
         echo '<meta property="og:site_name" content="' . esc_attr( $site ) . '">' . "\n";
         if ( $img !== '' ) {
@@ -441,7 +521,7 @@ class VA_SEO {
         }
         echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
         echo '<meta name="twitter:title" content="' . esc_attr( $social_title ) . '">' . "\n";
-        echo '<meta name="twitter:description" content="' . esc_attr( $desc ) . '">' . "\n";
+        echo '<meta name="twitter:description" content="' . esc_attr( $social_desc ) . '">' . "\n";
         if ( $img !== '' ) {
             echo '<meta name="twitter:image" content="' . esc_url( $img ) . '">' . "\n";
         }
