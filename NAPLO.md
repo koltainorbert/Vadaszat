@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 07. – Session #218 (Napi üdvözlés x10 ideiglenes előnézet)
+
+### Mit csinaltunk [x]
+- [x] A dashboard fejlécébe bekerült egy ideiglenes `Napi üdvözlés x10` gomb
+- [x] A gomb 10 darab újratöltésre aktiválja a napi welcome popupot ugyanannak a felhasználónak
+- [x] Javítva a logika, hogy maga a gombnyomás ne fogyasszon el egy alkalmat
+- [x] Maradék számláló megjelenítve a gomb mellett
+- [x] Dashboard plugin mirror szinkron + Deploy Plugin sikeres
+
+### Hol tartunk
+A napi üdvözlő popup most ideiglenesen kényelmesen tesztelhető: az aktiválás után még 10 teljes reloadon át újra megjelenik, utána visszaáll a normál napi működés.
+
+---
+
 ## 2026. 05. 07. – Session #217 (További statisztikák vissza lenyitható blokkba)
 
 ### Mit csinaltunk [x]
