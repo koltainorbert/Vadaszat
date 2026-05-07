@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 07. – Session #217 (További statisztikák vissza lenyitható blokkba)
+
+### Mit csinaltunk [x]
+- [x] A kompakt hárompaneles fő nézet megmaradt láthatóan
+- [x] A korábban kivett extra statok visszakerültek egyetlen lenyitható blokkba
+- [x] A lenyitható blokk tartalma: piaci mozgás chart, jelzések, alap KPI adatok
+- [x] Dashboard plugin mirror szinkron + Deploy Plugin sikeres
+
+### Hol tartunk
+A statisztikai rész most úgy működik, ahogy kérted: a rövid fő nézet látszik, a többi extra adat pedig lenyithatóan elérhető.
+
+---
+
 ## 2026. 05. 07. – Session #216 (Stat blokk végső egyszerűsítés)
 
 ### Mit csinaltunk [x]

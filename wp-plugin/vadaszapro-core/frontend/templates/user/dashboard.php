@@ -394,6 +394,164 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                             </div>
                         </article>
                     </div>
+
+                    <details class="va-crm__fold">
+                        <summary class="va-crm__fold-summary">
+                            <span>További statisztikák</span>
+                            <small>Piaci mozgás, jelzések, alapadatok</small>
+                        </summary>
+                        <div class="va-crm__fold-content">
+                            <div class="va-crm__hero">
+                                <article class="va-crm__screen">
+                                    <div class="va-crm__screen-top">
+                                        <div>
+                                            <div class="va-crm__eyebrow">Előrejelző nézet</div>
+                                            <h4>Piaci mozgás</h4>
+                                        </div>
+                                        <div class="va-crm__switches" aria-hidden="true">
+                                            <span class="is-active">7 nap</span>
+                                            <span>30 nap</span>
+                                            <span>Élő</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="va-crm__screen-stats">
+                                        <div class="va-crm__screen-stat">
+                                            <span>Megtekintés</span>
+                                            <strong><?php echo esc_html( number_format( $crm_total_views, 0, ',', ' ' ) ); ?></strong>
+                                        </div>
+                                        <div class="va-crm__screen-stat">
+                                            <span>Átlagár</span>
+                                            <strong><?php echo esc_html( number_format( $crm_avg_price, 0, ',', ' ' ) ); ?> Ft</strong>
+                                        </div>
+                                        <div class="va-crm__screen-stat">
+                                            <span>Top címke</span>
+                                            <strong><?php echo esc_html( number_format( $crm_featured_count + $crm_boosted_count, 0, ',', ' ' ) ); ?></strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="va-crm__chart-shell">
+                                        <svg viewBox="0 0 320 130" class="va-crm__linechart" role="img" aria-label="Aktivitási trend grafikon">
+                                            <defs>
+                                                <linearGradient id="vaChartAreaGradient2" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stop-color="#77dbff" stop-opacity="0.34"/>
+                                                    <stop offset="100%" stop-color="#77dbff" stop-opacity="0"/>
+                                                </linearGradient>
+                                                <linearGradient id="vaChartLineGradient2" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stop-color="#6edbff"/>
+                                                    <stop offset="55%" stop-color="#70f1cf"/>
+                                                    <stop offset="100%" stop-color="#ffd47a"/>
+                                                </linearGradient>
+                                            </defs>
+                                            <g class="va-crm__gridlines" aria-hidden="true">
+                                                <line x1="18" y1="24" x2="282" y2="24" />
+                                                <line x1="18" y1="52" x2="282" y2="52" />
+                                                <line x1="18" y1="80" x2="282" y2="80" />
+                                                <line x1="18" y1="108" x2="282" y2="108" />
+                                            </g>
+                                            <path class="va-crm__line-area" d="<?php echo esc_attr( $crm_chart_area ); ?>" fill="url(#vaChartAreaGradient2)"></path>
+                                            <polyline class="va-crm__line-stroke" points="<?php echo esc_attr( $crm_chart_polyline ); ?>" fill="none" style="stroke:url(#vaChartLineGradient2);"></polyline>
+                                            <g class="va-crm__line-points" fill="#fff">
+                                                <?php foreach ( $crm_chart_dots as $dot ) : ?>
+                                                <circle cx="<?php echo esc_attr( (string) $dot['x'] ); ?>" cy="<?php echo esc_attr( (string) $dot['y'] ); ?>" r="3"></circle>
+                                                <?php endforeach; ?>
+                                            </g>
+                                        </svg>
+                                    </div>
+
+                                    <div class="va-crm__chart-foot">
+                                        <div class="va-crm__flow-bars" aria-hidden="true">
+                                        <?php foreach ( $crm_flow_scaled as $idx => $h ): ?>
+                                            <span style="height:<?php echo esc_attr( $h ); ?>%" data-label="<?php echo esc_attr( $crm_chart_labels[ $idx ] ?? '' ); ?>"></span>
+                                        <?php endforeach; ?>
+                                        </div>
+                                        <div class="va-crm__chart-labels">
+                                            <?php foreach ( $crm_chart_labels as $label ) : ?>
+                                            <span><?php echo esc_html( $label ); ?></span>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+
+                            <div class="va-crm__signal-stack va-crm__signal-stack--fold">
+                                <article class="va-crm__signal-card va-crm__signal-card--cyan">
+                                    <div class="va-crm__signal-head">
+                                        <span>Aktív arány</span>
+                                        <strong><?php echo esc_html( $crm_active_rate_pc ); ?>%</strong>
+                                    </div>
+                                    <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_active_rate_pc ) ); ?>%"></span></div>
+                                    <small><?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?> aktív a <?php echo esc_html( number_format( $crm_total_listings, 0, ',', ' ' ) ); ?> hirdetésből</small>
+                                </article>
+
+                                <article class="va-crm__signal-card va-crm__signal-card--mint">
+                                    <div class="va-crm__signal-head">
+                                        <span>Heti tempó</span>
+                                        <strong><?php echo esc_html( $crm_momentum_pc ); ?>%</strong>
+                                    </div>
+                                    <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_momentum_pc ) ); ?>%"></span></div>
+                                    <small><?php echo esc_html( number_format( $crm_last7_count, 0, ',', ' ' ) ); ?> új aktivitás az utóbbi 7 napban</small>
+                                </article>
+
+                                <article class="va-crm__signal-card va-crm__signal-card--amber">
+                                    <div class="va-crm__signal-head">
+                                        <span>Érdeklődés</span>
+                                        <strong><?php echo esc_html( $crm_engagement_pc ); ?>%</strong>
+                                    </div>
+                                    <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_engagement_pc ) ); ?>%"></span></div>
+                                    <small><?php echo esc_html( number_format( $crm_watch_count + $crm_bid_count, 0, ',', ' ' ) ); ?> kedvenc és licit összesen</small>
+                                </article>
+
+                                <article class="va-crm__signal-card va-crm__signal-card--violet">
+                                    <div class="va-crm__signal-head">
+                                        <span><?php echo esc_html( $crm_plan_limit > 0 ? 'Csomagkihasználtság' : 'Kiemelt aktivitás' ); ?></span>
+                                        <strong><?php echo esc_html( $crm_plan_limit > 0 ? $crm_plan_usage_pc . '%' : number_format( $crm_featured_count + $crm_boosted_count + $crm_newpill_count, 0, ',', ' ' ) ); ?></strong>
+                                    </div>
+                                    <div class="va-crm__signal-bar"><span style="width:<?php echo esc_attr( max( 6, $crm_plan_limit > 0 ? $crm_plan_usage_pc : min( 100, 20 + ( $crm_featured_count + $crm_boosted_count + $crm_newpill_count ) * 12 ) ) ); ?>%"></span></div>
+                                    <small><?php echo esc_html( $crm_plan_limit > 0 ? ( $crm_plan_used . ' / ' . $crm_plan_limit . ' hely felhasználva' ) : ( 'Kiemelt: ' . $crm_featured_count . ' | Boost: ' . $crm_boosted_count ) ); ?></small>
+                                </article>
+                            </div>
+
+                            <div class="va-crm__kpis">
+                                <article class="va-crm__kpi">
+                                    <span class="va-crm__kpi-label">Összes hirdetés</span>
+                                    <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_listings, 0, ',', ' ' ) ); ?></strong>
+                                    <small class="va-crm__kpi-sub">Aktív: <?php echo esc_html( number_format( $crm_active_count, 0, ',', ' ' ) ); ?></small>
+                                    <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:30%"></span><span style="height:48%"></span><span style="height:36%"></span><span style="height:62%"></span><span style="height:58%"></span><span style="height:74%"></span><span style="height:66%"></span></div>
+                                </article>
+                                <article class="va-crm__kpi">
+                                    <span class="va-crm__kpi-label">Összes megtekintés</span>
+                                    <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_total_views, 0, ',', ' ' ) ); ?></strong>
+                                    <small class="va-crm__kpi-sub">Átlag / hirdetés: <?php echo esc_html( number_format( $crm_avg_views, 1, ',', ' ' ) ); ?></small>
+                                    <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:24%"></span><span style="height:39%"></span><span style="height:44%"></span><span style="height:52%"></span><span style="height:70%"></span><span style="height:64%"></span><span style="height:80%"></span></div>
+                                </article>
+                                <article class="va-crm__kpi">
+                                    <span class="va-crm__kpi-label">Átlagár</span>
+                                    <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_avg_price, 0, ',', ' ' ) ); ?> Ft</strong>
+                                    <small class="va-crm__kpi-sub">Számolt hirdetés: <?php echo esc_html( number_format( $crm_priced_count, 0, ',', ' ' ) ); ?></small>
+                                    <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:55%"></span><span style="height:62%"></span><span style="height:58%"></span><span style="height:50%"></span><span style="height:68%"></span><span style="height:61%"></span><span style="height:72%"></span></div>
+                                </article>
+                                <article class="va-crm__kpi">
+                                    <span class="va-crm__kpi-label">Top hirdetés</span>
+                                    <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_top_views, 0, ',', ' ' ) ); ?></strong>
+                                    <small class="va-crm__kpi-sub"><?php echo esc_html( wp_trim_words( $crm_top_title, 6, '...' ) ); ?></small>
+                                    <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:16%"></span><span style="height:32%"></span><span style="height:49%"></span><span style="height:74%"></span><span style="height:63%"></span><span style="height:77%"></span><span style="height:88%"></span></div>
+                                </article>
+                                <article class="va-crm__kpi">
+                                    <span class="va-crm__kpi-label">Friss aktivitás</span>
+                                    <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_last7_count, 0, ',', ' ' ) ); ?> / 7 nap</strong>
+                                    <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_last30_count, 0, ',', ' ' ) ); ?> / 30 nap</small>
+                                    <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:26%"></span><span style="height:36%"></span><span style="height:41%"></span><span style="height:57%"></span><span style="height:48%"></span><span style="height:69%"></span><span style="height:75%"></span></div>
+                                </article>
+                                <article class="va-crm__kpi">
+                                    <span class="va-crm__kpi-label">Figyelők és licitek</span>
+                                    <strong class="va-crm__kpi-value"><?php echo esc_html( number_format( $crm_watch_count, 0, ',', ' ' ) ); ?> kedvenc</strong>
+                                    <small class="va-crm__kpi-sub"><?php echo esc_html( number_format( $crm_bid_count, 0, ',', ' ' ) ); ?> licit | <?php echo esc_html( $crm_featured_count ); ?> kiemelt</small>
+                                    <div class="va-crm__kpi-spark" aria-hidden="true"><span style="height:22%"></span><span style="height:35%"></span><span style="height:58%"></span><span style="height:46%"></span><span style="height:64%"></span><span style="height:56%"></span><span style="height:71%"></span></div>
+                                </article>
+                            </div>
+                        </div>
+                    </details>
                 </section>
 
                 <?php if ( $listings ): ?>
