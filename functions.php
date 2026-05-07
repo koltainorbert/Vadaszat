@@ -190,10 +190,11 @@ add_action( 'wp_head', function () {
 
         .cky-consent-container {
             bottom: 18px !important;
-            left: 18px !important;
-            right: 18px !important;
-            width: auto !important;
-            max-width: none !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: min(1280px, calc(100% - 28px)) !important;
+            max-width: min(1280px, calc(100% - 28px)) !important;
+            margin: 0 auto !important;
             z-index: 999999 !important;
             padding: 0 !important;
             background: transparent !important;
@@ -225,6 +226,7 @@ add_action( 'wp_head', function () {
             backdrop-filter: blur(16px) saturate(1.15) !important;
             -webkit-backdrop-filter: blur(16px) saturate(1.15) !important;
             box-shadow: var(--va-cookie-glow) !important;
+            overflow: hidden !important;
         }
 
         .cky-notice {
@@ -236,12 +238,15 @@ add_action( 'wp_head', function () {
         }
 
         .cky-notice-group {
-            padding: 0 !important;
+            padding: 2px 8px 0 !important;
         }
 
         .cky-notice-des {
-            padding-right: 12px !important;
+            padding: 0 10px 0 2px !important;
+            box-sizing: border-box !important;
         }
+
+        .cky-notice-des p { margin: 0 !important; }
 
         .cky-notice-title,
         .cky-title,
@@ -355,9 +360,9 @@ add_action( 'wp_head', function () {
 
         @media (max-width: 900px) {
             .cky-consent-container {
-                left: 12px !important;
-                right: 12px !important;
                 bottom: 12px !important;
+                width: calc(100% - 16px) !important;
+                max-width: calc(100% - 16px) !important;
             }
 
             .cky-consent-bar {
@@ -368,8 +373,8 @@ add_action( 'wp_head', function () {
             .cky-notice-group,
             .cky-notice-des,
             .cky-notice-btn-wrapper {
-                padding-left: 2px !important;
-                padding-right: 2px !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
             }
 
             .cky-notice-title,
