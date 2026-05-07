@@ -1627,7 +1627,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     var bulkExecBtn = document.getElementById('va-bulk-exec');
     if (bulkExecBtn) {
         bulkExecBtn.addEventListener('click', function(){
-            var action = bulkActionSel ? bulkActionSel.value : '';
+            var action = bulkActionInput ? bulkActionInput.value : '';
             if (!action) { alert('Válassz műveletet!'); return; }
             var ids = Array.from(document.querySelectorAll('.va-row-check:checked')).map(function(cb){ return cb.value; });
             if (!ids.length) { alert('Jelölj ki legalább egy hirdetést!'); return; }
@@ -1706,54 +1706,62 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
         });
     });
 
-    /* ── Sale price quick-edit modal ── */
-    var saleOverlay = document.getElementById('va-sale-modal-overlay');
-    var salePostId  = document.getElementById('va-sale-modal-post-id');
-    var salePrice   = document.getElementById('va-sale-modal-price');
-    var saleEnd     = document.getElementById('va-sale-modal-end');
-    var saleSaveBtn = document.getElementById('va-sale-modal-save');
-    var saleRemBtn  = document.getElementById('va-sale-modal-remove');
-    var saleCancel  = document.getElementById('va-sale-modal-cancel');
-
-    function openSaleModal(postId, curPrice, curEnd) {
-        if (!saleOverlay) return;
-        salePostId.value = postId;
-        salePrice.value  = curPrice || '';
-        saleEnd.value    = curEnd || '';
-        saleOverlay.classList.add('open');
-        salePrice.focus();
-    }
-    function closeSaleModal() { if (saleOverlay) saleOverlay.classList.remove('open'); }
-
-    document.querySelectorAll('.va-sale-edit-btn').forEach(function(btn){
-        btn.addEventListener('click', function(){
-            openSaleModal(this.dataset.postId, this.dataset.salePrice, this.dataset.saleEnd);
-        });
-    });
-
-    if (saleCancel)  saleCancel.addEventListener('click', closeSaleModal);
-    if (saleOverlay) saleOverlay.addEventListener('click', function(e){ if (e.target === saleOverlay) closeSaleModal(); });
-
-    function saveSalePrice(price) {
-        var pid = salePostId ? salePostId.value : '';
-        if (!pid) return;
+    /* ── Sale price inline edit ── */
+    function saveSalePrice(postId, price, endDate, saveBtn) {
+        if (!postId) return;
         var params = new URLSearchParams({
             action: 'va_set_sale_price', nonce: _nonce,
-            post_id: pid, sale_price: price,
-            sale_end: saleEnd ? saleEnd.value : ''
+            post_id: postId, sale_price: price, sale_end: endDate || ''
         });
-        if (saleSaveBtn) { saleSaveBtn.disabled = true; saleSaveBtn.textContent = 'Mentés...'; }
+        if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Mentés...'; }
         fetch(_ajaxUrl, { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:params.toString() })
         .then(function(r){ return r.json(); })
         .then(function(res){
-            if (res.success) { closeSaleModal(); location.reload(); }
-            else { alert((res.data && res.data.message) || 'Hiba.'); if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; } }
+            if (res.success) { location.reload(); }
+            else { alert((res.data && res.data.message) || 'Hiba.'); if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Mentés'; } }
         })
-        .catch(function(){ if (saleSaveBtn) { saleSaveBtn.disabled = false; saleSaveBtn.textContent = 'Mentés'; } });
+        .catch(function(){ if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Mentés'; } });
     }
 
-    if (saleSaveBtn) saleSaveBtn.addEventListener('click', function(){ saveSalePrice(salePrice ? salePrice.value : 0); });
-    if (saleRemBtn)  saleRemBtn.addEventListener('click', function(){ if (confirm('Törlöd az akciós árat?')) saveSalePrice(0); });
+    document.querySelectorAll('.va-sale-edit-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId = this.dataset.postId;
+            var row = document.getElementById('va-sale-row-' + postId);
+            if (!row) return;
+            var isOpen = row.style.display !== 'none';
+            // Close all other inline rows first
+            document.querySelectorAll('.va-sale-inline-row').forEach(function(r){ r.style.display = 'none'; });
+            if (!isOpen) row.style.display = 'table-row';
+        });
+    });
+
+    document.querySelectorAll('.va-sale-inline-save').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId = this.dataset.postId;
+            var row = document.getElementById('va-sale-row-' + postId);
+            if (!row) return;
+            var priceInput = row.querySelector('.va-sale-inline-price');
+            var endInput   = row.querySelector('.va-sale-inline-end');
+            saveSalePrice(postId, priceInput ? priceInput.value : 0, endInput ? endInput.value : '', this);
+        });
+    });
+
+    document.querySelectorAll('.va-sale-inline-remove').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            if (!confirm('Törlöd az akciós árat?')) return;
+            var postId = this.dataset.postId;
+            var row = document.getElementById('va-sale-row-' + postId);
+            saveSalePrice(postId, 0, '', this);
+        });
+    });
+
+    document.querySelectorAll('.va-sale-inline-cancel').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId = this.dataset.postId;
+            var row = document.getElementById('va-sale-row-' + postId);
+            if (row) row.style.display = 'none';
+        });
+    });
 
 })();
 </script>
