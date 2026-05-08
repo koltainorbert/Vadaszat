@@ -2,6 +2,25 @@
 
 ---
 
+## 2026. 05. 08. – Session #272 (checkpoint holnapi folytatáshoz)
+
+### Hol tartunk most
+- Exact query SEO erosites kesz a hirdetesoldalakon (title + meta elejen a pontos hirdetescim)
+- Duplikalt OG/meta kimenet megszuntetve a single templatekben (`VA_SEO` aktiv esetben legacy blokk nem fut)
+- Landing SEO rendszer aktiv (brand/model landing context, belso linkeles, landing sitemap)
+- Source + mirrorok szinkronban, Deploy All lefutott
+
+### Holnap innen folytassuk (prioritas)
+1. Elo URL-ellenorzes a konkret hirdetesre: index/noindex, canonical, title, meta, schema
+2. Search Console URL Inspection + ujraindexeles (a pontos hirdetes URL-re)
+3. Search Console sitemap ujrakuldes + indexelési státusz követés
+4. Ha 7-14 napon belul nincs javulas exact queryre, tovabbi erosites: ugyanarra a konkret modellre plusz belso linkek a kapcsolodo oldalakrol
+
+### Fontos megjegyzes
+A jelenlegi elso helyes konkurens (hasznaltauto.hu) domain ereje joval nagyobb, ezert a kodszintu SEO javitas utan is kell indexelesi ido es kulso jel (Search Console + linkjel) a poziciohoz.
+
+---
+
 ## 2026. 05. 08. – Session #271 (exact query SEO erosites: egyedi hirdetesnev)
 
 ### Mit csinaltunk [x]
