@@ -2,6 +2,24 @@
 
 ---
 
+## 2026. 05. 08. – Session #240 (Geo popup + letoltes/nyomtatas + validitas javitas)
+
+### Mit csinaltunk [x]
+- [x] Admin listaban a Megtekintes oszlop szem linkje uj oldal helyett popupot nyit
+- [x] Fiókom > Hirdeteseim tablaban a Geo gomb egy sorba es azonos meretre igazítva a kis szem badge-del
+- [x] Modern popup bevezetve frontend + admin oldalon: tablazat, osszesites, hiba/ures allapot
+- [x] Popupban uj funkciok: CSV letoltes + nyomtatas
+- [x] Uj AJAX endpoint: `va_get_view_geo_report` (nonce + admin jogosultsag ellenorzes)
+- [x] Validitas javitas: ugyanaz az IP 6 oran belul csak egyszer novel lokacios statisztikat hirdetesenkent
+- [x] Modal figyelmeztetes ha tul magas top lokacio arany (koncentracio)
+- [x] Source + plugin mirror fajlok szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A geo riport most mar nem uj oldalra dob, hanem modern popupban jelenik meg, letoltheto/nyomtathato formatumban. A torz lokacios szamok ellen bekerult IP-idoszakos deduplikacio.
+
+---
+
 ## 2026. 05. 08. – Session #239 (Admin megtekintes lokacio riport, IP alapu)
 
 ### Mit csinaltunk [x]
