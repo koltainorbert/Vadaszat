@@ -1065,6 +1065,8 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
   font-weight: 900;
   margin: 0 0 8px;
   letter-spacing: -.02em;
+  color: #fff !important;
+  text-shadow: 0 2px 14px rgba(0,0,0,.45);
 }
 .va-credits-sub {
   font-size: 14px;

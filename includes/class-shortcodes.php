@@ -116,7 +116,10 @@ class VA_Shortcodes {
 
         // Hero szövegek DB-ből
         $hero_eyebrow = (string) get_option( 'va_pc_eyebrow',  'Átlátható csomagok' );
-        $hero_title   = (string) get_option( 'va_pc_title',    'Rang Alapú Vásárlás' );
+        $hero_title   = (string) get_option( 'va_pc_title',    'VÁSÁRLÁS' );
+        if ( $hero_title === '' || $hero_title === 'Rang Alapú Vásárlás' || $hero_title === 'Rang Alapu Vasarlas' ) {
+            $hero_title = 'VÁSÁRLÁS';
+        }
         $hero_sub     = (string) get_option( 'va_pc_subtitle', 'Válassz csomagot a rangok szerint, és fizess azonnal bankkártyával.' );
 
         // Kártyák DB-ből
