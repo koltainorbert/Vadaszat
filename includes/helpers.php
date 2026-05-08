@@ -140,7 +140,7 @@ function va_lookup_geo_by_ip( string $ip ): array {
     return $result;
 }
 
-function va_record_view_geo( int $post_id ): void {
+function va_record_view_geo( int $post_id, ?array $gps_data = null ): void {
     if ( $post_id <= 0 ) {
         return;
     }
@@ -158,12 +158,34 @@ function va_record_view_geo( int $post_id ): void {
     }
     set_transient( $dedupe_key, 1, 30 * DAY_IN_SECONDS );
 
-    $geo   = va_lookup_geo_by_ip( $ip );
+    $has_gps = is_array( $gps_data )
+        && isset( $gps_data['lat'], $gps_data['lng'] )
+        && is_numeric( $gps_data['lat'] )
+        && is_numeric( $gps_data['lng'] )
+        && (float) $gps_data['lat'] >= -90
+        && (float) $gps_data['lat'] <= 90
+        && (float) $gps_data['lng'] >= -180
+        && (float) $gps_data['lng'] <= 180;
 
-    $country_code = substr( strtoupper( (string) ( $geo['country_code'] ?? '--' ) ), 0, 2 );
-    $country      = va_normalize_geo_text( (string) ( $geo['country'] ?? '' ), 100 );
-    $region       = va_normalize_geo_text( (string) ( $geo['region'] ?? '' ), 120 );
-    $city         = va_normalize_geo_text( (string) ( $geo['city'] ?? '' ), 120 );
+    if ( $has_gps ) {
+        $lat = (float) $gps_data['lat'];
+        $lng = (float) $gps_data['lng'];
+        $acc = isset( $gps_data['accuracy'] ) && is_numeric( $gps_data['accuracy'] )
+            ? max( 0.0, (float) $gps_data['accuracy'] )
+            : 0.0;
+
+        $country_code = 'GP';
+        $country      = 'GPS (eszkoz)';
+        $region       = $acc > 0 ? 'Pontossag: ' . (string) round( $acc ) . ' m' : 'Pontossag: ismeretlen';
+        $city         = sprintf( '%.5f, %.5f', $lat, $lng );
+    } else {
+        $geo = va_lookup_geo_by_ip( $ip );
+
+        $country_code = substr( strtoupper( (string) ( $geo['country_code'] ?? '--' ) ), 0, 2 );
+        $country      = va_normalize_geo_text( (string) ( $geo['country'] ?? '' ), 100 );
+        $region       = va_normalize_geo_text( (string) ( $geo['region'] ?? '' ), 120 );
+        $city         = va_normalize_geo_text( (string) ( $geo['city'] ?? '' ), 120 );
+    }
     $geo_hash     = md5( $country_code . '|' . $country . '|' . $region . '|' . $city );
     $now          = current_time( 'mysql' );
     $today        = current_time( 'Y-m-d' );
