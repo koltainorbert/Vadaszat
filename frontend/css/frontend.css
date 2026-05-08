@@ -415,6 +415,7 @@
 .va-grid--list .va-card__price { font-size: 20px; margin-bottom: 8px; }
 .va-grid--list .va-card__meta  { flex-wrap: wrap; gap: 10px; }
 .va-grid--list .va-card__badge { top: 10px; left: 10px; }
+.va-grid--list .va-card__badge--new { left: auto; right: 10px; }
 
 /* Plan rang badge – single listing feladó blokkban */
 .sl__plan-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; letter-spacing: .04em; margin-top: 5px; }
