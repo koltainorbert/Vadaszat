@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #248 (GPS koordinatabol helysegnev)
+
+### Mit csinaltunk [x]
+- [x] Uj helper: `va_lookup_geo_by_coords(lat,lng)` reverse geokodolas (Nominatim)
+- [x] GPS-es nezet rogzitese mar nem csak koordinatat ment, hanem orszag/regio/helyseg nevet is
+- [x] Ha a helyseg nem oldhato fel, fallback marad a koordinata formatum
+- [x] GPS pontossag tovabbra is latszik a regio mezoben (`GPS, ±Xm`)
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+GPS engedely mellett a riport mar helysegnevet mutat a koordinata alapjan, nem csak nyers lat/lng erteket.
+
+---
+
 ## 2026. 05. 08. – Session #247 (Geo popup a sajat admin hirdeteslistan is)
 
 ### Mit csinaltunk [x]

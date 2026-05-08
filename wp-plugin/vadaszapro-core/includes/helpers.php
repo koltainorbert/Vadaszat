@@ -140,6 +140,101 @@ function va_lookup_geo_by_ip( string $ip ): array {
     return $result;
 }
 
+function va_lookup_geo_by_coords( float $lat, float $lng ): array {
+    if ( $lat < -90 || $lat > 90 || $lng < -180 || $lng > 180 ) {
+        return [
+            'country_code' => '--',
+            'country'      => 'Ismeretlen',
+            'region'       => 'Ismeretlen',
+            'city'         => 'Ismeretlen',
+        ];
+    }
+
+    $cache_key = 'va_gpsgeo_' . md5( round( $lat, 4 ) . '|' . round( $lng, 4 ) );
+    $cached    = get_transient( $cache_key );
+    if ( is_array( $cached ) ) {
+        return $cached;
+    }
+
+    $fallback = [
+        'country_code' => '--',
+        'country'      => 'GPS (eszkoz)',
+        'region'       => 'Ismeretlen',
+        'city'         => sprintf( '%.5f, %.5f', $lat, $lng ),
+    ];
+
+    $url = add_query_arg(
+        [
+            'format'         => 'jsonv2',
+            'lat'            => (string) $lat,
+            'lon'            => (string) $lng,
+            'zoom'           => '14',
+            'addressdetails' => '1',
+        ],
+        'https://nominatim.openstreetmap.org/reverse'
+    );
+
+    $response = wp_remote_get( $url, [
+        'timeout'    => 2.0,
+        'redirection'=> 1,
+        'user-agent' => 'Vadaszapro/1.0; ' . home_url( '/' ),
+        'headers'    => [
+            'Accept-Language' => 'hu,en;q=0.8',
+        ],
+    ] );
+
+    if ( is_wp_error( $response ) ) {
+        set_transient( $cache_key, $fallback, DAY_IN_SECONDS );
+        return $fallback;
+    }
+
+    $body = wp_remote_retrieve_body( $response );
+    $data = json_decode( (string) $body, true );
+    if ( ! is_array( $data ) ) {
+        set_transient( $cache_key, $fallback, DAY_IN_SECONDS );
+        return $fallback;
+    }
+
+    $address = is_array( $data['address'] ?? null ) ? $data['address'] : [];
+
+    $country_code = strtoupper( (string) ( $address['country_code'] ?? '--' ) );
+    $country_code = preg_replace( '/[^A-Z]/', '', $country_code );
+    $country_code = substr( (string) $country_code, 0, 2 );
+    if ( $country_code === '' ) {
+        $country_code = '--';
+    }
+
+    $city = (string) (
+        $address['city']
+        ?? $address['town']
+        ?? $address['village']
+        ?? $address['hamlet']
+        ?? $address['municipality']
+        ?? ''
+    );
+
+    $region = (string) (
+        $address['county']
+        ?? $address['state_district']
+        ?? $address['state']
+        ?? ''
+    );
+
+    $result = [
+        'country_code' => $country_code,
+        'country'      => va_normalize_geo_text( (string) ( $address['country'] ?? '' ), 100 ),
+        'region'       => va_normalize_geo_text( $region, 120 ),
+        'city'         => va_normalize_geo_text( $city, 120 ),
+    ];
+
+    if ( $result['city'] === 'Ismeretlen' ) {
+        $result['city'] = sprintf( '%.5f, %.5f', $lat, $lng );
+    }
+
+    set_transient( $cache_key, $result, DAY_IN_SECONDS * 30 );
+    return $result;
+}
+
 function va_record_view_geo( int $post_id, ?array $gps_data = null ): void {
     if ( $post_id <= 0 ) {
         return;
@@ -174,10 +269,14 @@ function va_record_view_geo( int $post_id, ?array $gps_data = null ): void {
             ? max( 0.0, (float) $gps_data['accuracy'] )
             : 0.0;
 
-        $country_code = 'GP';
-        $country      = 'GPS (eszkoz)';
-        $region       = $acc > 0 ? 'Pontossag: ' . (string) round( $acc ) . ' m' : 'Pontossag: ismeretlen';
-        $city         = sprintf( '%.5f, %.5f', $lat, $lng );
+        $geo          = va_lookup_geo_by_coords( $lat, $lng );
+        $country_code = substr( strtoupper( (string) ( $geo['country_code'] ?? '--' ) ), 0, 2 );
+        $country      = va_normalize_geo_text( (string) ( $geo['country'] ?? '' ), 100 );
+        $region_base  = va_normalize_geo_text( (string) ( $geo['region'] ?? '' ), 120 );
+        $city         = va_normalize_geo_text( (string) ( $geo['city'] ?? '' ), 120 );
+        $region       = $acc > 0
+            ? va_normalize_geo_text( $region_base . ' (GPS, ±' . (string) round( $acc ) . ' m)', 120 )
+            : va_normalize_geo_text( $region_base . ' (GPS)', 120 );
     } else {
         $geo = va_lookup_geo_by_ip( $ip );
 
