@@ -296,40 +296,192 @@ class VA_Listing_Columns {
 
         ob_start();
         ?>
-        <div style="max-width:1100px;margin:24px auto;padding:0 16px;">
-            <h1 style="margin:0 0 8px;">Megtekintési lokációk</h1>
-            <p style="margin:0 0 14px;color:#555;">Hirdetés: <strong><?php echo esc_html( $title ?: ( 'ID: ' . $post_id ) ); ?></strong></p>
-            <p style="margin:0 0 18px;color:#555;">Összesített lokációs nézettség: <strong><?php echo esc_html( number_format_i18n( $total ) ); ?></strong></p>
-            <p style="margin:0 0 16px;"><a class="button" href="<?php echo esc_url( $back_url ); ?>">Vissza a listához</a></p>
+        <style>
+            :root {
+                --va-bg: rgb(6, 6, 6);
+                --va-bg-soft: #0b0b0b;
+                --va-border: rgba(255, 0, 0, .55);
+                --va-border-soft: rgba(255, 0, 0, .24);
+                --va-accent: #ff0000;
+                --va-text: #fff;
+                --va-muted: rgba(255, 255, 255, .78);
+            }
+            html, body {
+                margin: 0;
+                padding: 0;
+                min-height: 100%;
+                background:
+                    radial-gradient(circle at 1px 1px, rgba(255,255,255,.08) 1px, transparent 1px) 0 0/18px 18px,
+                    var(--va-bg);
+                color: var(--va-text);
+            }
+            #wpcontent, #wpbody-content {
+                background: transparent;
+            }
+            .va-geo-report-page {
+                max-width: 1120px;
+                margin: 28px auto;
+                padding: 0 16px;
+                box-sizing: border-box;
+            }
+            .va-geo-report-panel {
+                background: linear-gradient(180deg, rgba(10,10,10,.95), rgba(4,4,4,.95));
+                border: 1px solid var(--va-border);
+                border-radius: 14px;
+                box-shadow: 0 18px 40px rgba(0,0,0,.5), 0 0 0 1px rgba(255,0,0,.14) inset;
+                overflow: hidden;
+            }
+            .va-geo-report-head {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 18px 20px;
+                border-bottom: 1px solid var(--va-border-soft);
+            }
+            .va-geo-report-title {
+                margin: 0;
+                font-size: 34px;
+                line-height: 1;
+                letter-spacing: .02em;
+                font-weight: 800;
+                color: var(--va-text);
+            }
+            .va-geo-report-meta {
+                margin: 10px 0 0;
+                color: var(--va-muted);
+                font-size: 16px;
+                line-height: 1.45;
+            }
+            .va-geo-report-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                border: 1px solid var(--va-border);
+                background: rgba(20, 20, 20, .92);
+                color: var(--va-text);
+                border-radius: 10px;
+                text-decoration: none;
+                padding: 8px 12px;
+                font-weight: 700;
+                font-size: 13px;
+                line-height: 1;
+                transition: background .15s ease, transform .15s ease;
+            }
+            .va-geo-report-btn:hover {
+                background: rgba(255, 0, 0, .2);
+                transform: translateY(-1px);
+                color: #fff;
+            }
+            .va-geo-report-body {
+                padding: 18px 20px 14px;
+            }
+            .va-geo-report-empty {
+                border: 1px solid var(--va-border-soft);
+                border-radius: 10px;
+                background: var(--va-bg-soft);
+                padding: 14px 16px;
+                color: var(--va-muted);
+            }
+            .va-geo-report-table-wrap {
+                border: 1px solid var(--va-border-soft);
+                border-radius: 10px;
+                overflow: auto;
+                background: rgba(0,0,0,.28);
+            }
+            .va-geo-report-table {
+                width: 100%;
+                border-collapse: collapse;
+                min-width: 760px;
+                color: var(--va-text);
+            }
+            .va-geo-report-table th,
+            .va-geo-report-table td {
+                text-align: left;
+                padding: 10px 12px;
+                border-bottom: 1px solid rgba(255,255,255,.11);
+            }
+            .va-geo-report-table th {
+                color: #f2f2f2;
+                background: rgba(255,255,255,.05);
+                font-size: 13px;
+                font-weight: 700;
+            }
+            .va-geo-report-table td {
+                font-size: 17px;
+                line-height: 1.35;
+                color: #fff;
+            }
+            .va-geo-report-code {
+                font-weight: 800;
+                letter-spacing: .02em;
+            }
+            .va-geo-report-country {
+                color: var(--va-muted);
+                font-size: 15px;
+                display: block;
+                margin-top: 2px;
+            }
+            @media (max-width: 800px) {
+                .va-geo-report-head {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+                .va-geo-report-title {
+                    font-size: 28px;
+                }
+                .va-geo-report-meta {
+                    font-size: 15px;
+                }
+            }
+        </style>
 
-            <?php if ( empty( $rows ) ) : ?>
-                <div style="padding:14px 16px;background:#fff;border:1px solid #dcdcde;border-radius:8px;">Még nincs lokációs adat ennél a hirdetésnél.</div>
-            <?php else : ?>
-                <div style="background:#fff;border:1px solid #dcdcde;border-radius:8px;overflow:auto;">
-                    <table class="widefat fixed striped" style="margin:0;border:none;">
-                        <thead>
-                            <tr>
-                                <th style="width:70px;">Ország</th>
-                                <th>Régió</th>
-                                <th>Város</th>
-                                <th style="width:140px;">Megtekintés</th>
-                                <th style="width:190px;">Utolsó</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <?php foreach ( $rows as $row ) : ?>
-                            <tr>
-                                <td><strong><?php echo esc_html( (string) ( $row['country_code'] ?? '--' ) ); ?></strong><br><span style="color:#666;"><?php echo esc_html( (string) ( $row['country'] ?? '' ) ); ?></span></td>
-                                <td><?php echo esc_html( (string) ( $row['region'] ?? 'Ismeretlen' ) ); ?></td>
-                                <td><?php echo esc_html( (string) ( $row['city'] ?? 'Ismeretlen' ) ); ?></td>
-                                <td><strong><?php echo esc_html( number_format_i18n( (int) ( $row['views'] ?? 0 ) ) ); ?></strong></td>
-                                <td><?php echo esc_html( (string) ( $row['last_seen'] ?? '' ) ); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                        </tbody>
-                    </table>
+        <div class="va-geo-report-page">
+            <div class="va-geo-report-panel">
+                <div class="va-geo-report-head">
+                    <div>
+                        <h1 class="va-geo-report-title">Megtekintési lokációk</h1>
+                        <p class="va-geo-report-meta">Hirdetés: <strong><?php echo esc_html( $title ?: ( 'ID: ' . $post_id ) ); ?></strong></p>
+                        <p class="va-geo-report-meta">Összes megtekintés: <strong><?php echo esc_html( number_format_i18n( $total ) ); ?></strong></p>
+                    </div>
+                    <a class="va-geo-report-btn" href="<?php echo esc_url( $back_url ); ?>">Vissza a listához</a>
                 </div>
-            <?php endif; ?>
+
+                <div class="va-geo-report-body">
+                    <?php if ( empty( $rows ) ) : ?>
+                        <div class="va-geo-report-empty">Még nincs lokációs adat ennél a hirdetésnél.</div>
+                    <?php else : ?>
+                        <div class="va-geo-report-table-wrap">
+                            <table class="va-geo-report-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:180px;">Ország</th>
+                                        <th>Régió</th>
+                                        <th>Város</th>
+                                        <th style="width:150px;">Megtekintés</th>
+                                        <th style="width:220px;">Utolsó</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                <?php foreach ( $rows as $row ) : ?>
+                                    <tr>
+                                        <td>
+                                            <span class="va-geo-report-code"><?php echo esc_html( (string) ( $row['country_code'] ?? '--' ) ); ?></span>
+                                            <span class="va-geo-report-country"><?php echo esc_html( (string) ( $row['country'] ?? '' ) ); ?></span>
+                                        </td>
+                                        <td><?php echo esc_html( (string) ( $row['region'] ?? 'Ismeretlen' ) ); ?></td>
+                                        <td><?php echo esc_html( (string) ( $row['city'] ?? 'Ismeretlen' ) ); ?></td>
+                                        <td><strong><?php echo esc_html( number_format_i18n( (int) ( $row['views'] ?? 0 ) ) ); ?></strong></td>
+                                        <td><?php echo esc_html( (string) ( $row['last_seen'] ?? '' ) ); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
         <?php
         wp_die( (string) ob_get_clean(), 'Megtekintési lokációk', [ 'response' => 200 ] );
