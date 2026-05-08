@@ -226,6 +226,7 @@
   inset: 0;
   border-radius: inherit;
   border: 1px solid transparent;
+  z-index: 2;
   pointer-events: none;
   transition: border-color var(--va-transition), box-shadow var(--va-transition);
 }
