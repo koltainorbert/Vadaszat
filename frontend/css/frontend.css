@@ -1166,7 +1166,7 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
 }
 
 /* Rang-specifikus accent */
-.va-pkg-card--basic    { --va-rank-accent: #9aa8b0; --va-rank-glow: rgba(154,168,176,.22); }
+.va-pkg-card--basic    { --va-rank-accent: #4d9fff; --va-rank-glow: rgba(77,159,255,.22); }
 .va-pkg-card--silver   { --va-rank-accent: #c8d8e0; --va-rank-glow: rgba(192,220,224,.25); }
 .va-pkg-card--gold     { --va-rank-accent: #ffd34f; --va-rank-glow: rgba(255,211,79,.28);  }
 .va-pkg-card--platinum { --va-rank-accent: #d4a6ff; --va-rank-glow: rgba(212,166,255,.28); }
@@ -1205,7 +1205,7 @@ html.va-js .va-animate.visible { opacity: 1; transform: none; }
   border: 1px solid rgba(255,255,255,.1);
   box-shadow: 0 4px 16px var(--va-rank-glow, rgba(255,255,255,.1));
 }
-.va-pkg-card--basic    .va-pkg-icon-wrap { background: linear-gradient(135deg, rgba(154,168,176,.20), rgba(154,168,176,.07)); }
+.va-pkg-card--basic    .va-pkg-icon-wrap { background: linear-gradient(135deg, rgba(77,159,255,.20), rgba(77,159,255,.07)); }
 .va-pkg-card--silver   .va-pkg-icon-wrap { background: linear-gradient(135deg, rgba(192,220,224,.22), rgba(192,220,224,.07)); }
 .va-pkg-card--gold     .va-pkg-icon-wrap { background: linear-gradient(135deg, rgba(255,211,79,.25),  rgba(255,180,0,.07)); }
 .va-pkg-card--platinum .va-pkg-icon-wrap { background: linear-gradient(135deg, rgba(212,166,255,.25), rgba(160,80,255,.07)); }
