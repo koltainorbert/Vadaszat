@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #238 (404 olvashatosag fix, vilagos szoveg)
+
+### Mit csinaltunk [x]
+- [x] A 404 oldalon a fo tipografia szinei vilagosra kenyszeritve (`!important`)
+- [x] A `404` felirat fallback feher szint kapott minden bongeszore
+- [x] `background-clip` tamogatasnal marad a csikozott hatas, tamogatas nelkul is olvashato
+- [x] Cim es leiras eros kontrasztot kapott (vilagos szin + text-shadow)
+- [x] Root + theme `404.php` mindket helyen frissitve
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A feliratok most mar sotet hatteren is egyertelmuen olvashatok, nem tudnak fekete/sotet szinre visszaesni.
+
+---
+
 ## 2026. 05. 08. – Session #237 (404 full-screen referencia kozeli verzio)
 
 ### Mit csinaltunk [x]
