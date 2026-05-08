@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 08. – Session #263 (Admin Geo felirat atnevezes Geotech-re)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` oldalon a `Geo` gombfelirat `Geotech`-re cserelve
+- [x] A kapcsolodo tooltip/ARIA szoveg is frissitve (`Geotech riport`)
+- [x] Source + plugin mirror (`admin/class-listing-edit.php`) szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Az admin hirdeteslistaban a korabbi `Geo` felirat mostantol `Geotech`-kent jelenik meg.
+
+---
+
 ## 2026. 05. 08. – Session #262 (Admin szem/Geo pill ujabb 50% csokkentes)
 
 ### Mit csinaltunk [x]
