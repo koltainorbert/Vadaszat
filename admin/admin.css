@@ -139,7 +139,7 @@
 .va-le-geo-wrap {
     display: inline-flex;
     align-items: center;
-    gap: 1px;
+    gap: 3px;
     white-space: nowrap;
 }
 
@@ -147,11 +147,11 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 1px;
+    gap: 3px;
     min-height: 0;
-    height: 5px;
+    height: auto;
     box-sizing: border-box;
-    font-size: 4px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: .02em;
     color: #fff;
@@ -159,7 +159,7 @@
     border: 1px solid rgba(255, 0, 0, .9);
     background: linear-gradient(180deg, rgba(10, 10, 10, .98), rgba(6, 6, 6, .98));
     box-shadow: 0 0 0 1px rgba(255, 0, 0, .12) inset;
-    padding: 0 4px;
+    padding: 3px 9px;
     border-radius: 999px;
     line-height: 1;
     font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
@@ -192,9 +192,9 @@
 }
 
 .va-le-geo-pill .va-ico {
-    width: 4px;
-    height: 4px;
-    stroke-width: 1.5;
+    width: 10px;
+    height: 10px;
+    stroke-width: 2;
     flex: 0 0 auto;
 }
 
