@@ -35,6 +35,8 @@ class VA_SEO {
         add_filter( 'rank_math/opengraph/twitter/title', [ __CLASS__, 'rank_math_social_title' ] );
         add_filter( 'rank_math/opengraph/facebook/description', [ __CLASS__, 'rank_math_social_description' ] );
         add_filter( 'rank_math/opengraph/twitter/description', [ __CLASS__, 'rank_math_social_description' ] );
+        add_filter( 'rank_math/frontend/title', [ __CLASS__, 'rank_math_social_title' ] );
+        add_filter( 'rank_math/frontend/description', [ __CLASS__, 'rank_math_social_description' ] );
     }
 
     public static function rank_math_social_title( $title ): string {
@@ -45,7 +47,10 @@ class VA_SEO {
         if ( is_singular( 'va_listing' ) ) {
             return self::sanitize_seo_copy( self::social_description() );
         }
-        $desc = is_string( $description ) && $description !== '' ? $description : self::meta_description();
+        $desc = is_string( $description ) ? trim( wp_strip_all_tags( $description ) ) : '';
+        if ( $desc === '' || preg_match( '/^\[[^\]]+\]$/', $desc ) ) {
+            $desc = self::meta_description();
+        }
         return self::sanitize_seo_copy( $desc );
     }
 
