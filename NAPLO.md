@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #266 (SEO tisztitas: vadasz kulcsszavak kivezetese)
+
+### Mit csinaltunk [x]
+- [x] A `class-seo.php` (source + plugin mirror) SEO leirasai atirva auto/motor fokuszra
+- [x] Rank Math hookok bovitve: `rank_math/frontend/title` es `rank_math/frontend/description`
+- [x] Beepitett SEO szovegtisztitas (`sanitize_seo_copy`) a vadasz temaju kulcsszavak kivezetesere
+- [x] Singular fallback javitas: shortcode-ok (`[va_buy_credits]`) kiszurese a meta description szovegbol
+- [x] Deploy All sikeres (LocalWP cel)
+
+### Hol tartunk
+Kodszinten a SEO szovegek auto/motor iranyra alltak at, de a publikus domain csak akkor mutatja ezt, ha a termelesi szerverre is kikerulnek a valtozasok es Rank Math cache ujraepul.
+
+---
+
 ## 2026. 05. 08. – Session #265 (Pill meretfix cache-bust + osztalyparitas)
 
 ### Mit csinaltunk [x]
