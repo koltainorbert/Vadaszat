@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 08. – Session #267 (SEO erosites: autohirdetes title/meta/schema)
+
+### Mit csinaltunk [x]
+- [x] A jarmu hirdetesoldalak sajat browser title logikat kaptak (`document_title_parts`)
+- [x] Uj, auto-specifikus SEO title sablon: marka + modell + karosszeria + evjarat
+- [x] Uj meta description sablon a jarmu metaadatokbol: ar, evjarat, km, uzemanyag, valto, lokacio
+- [x] Az archiv es taxonomy leirasok is erositve lettek keszlet-/ajanlatfokuszu szovegekre
+- [x] A `Product` schema gazdagitva: `brand`, `model`, `releaseDate`, `mileageFromOdometer`, `fuelType`, `vehicleTransmission`, `bodyType`, `color`
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A SEO reteg mar kozelebb kerult a Hasznaltauto jellegu autoportal mintahoz: erosebb title-ek, jobban strukturalt descriptionok es reszletesebb product schema adatmezo-k kerulnek ki.
+
+---
+
 ## 2026. 05. 08. – Session #266 (SEO tisztitas: vadasz kulcsszavak kivezetese)
 
 ### Mit csinaltunk [x]
