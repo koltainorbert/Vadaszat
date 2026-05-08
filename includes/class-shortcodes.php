@@ -239,11 +239,10 @@ class VA_Shortcodes {
                         <li>Boost újratöltés: <?php echo esc_html( (string) $plan_boost_cd ); ?> nap</li>
                         <?php endif; ?>
                         <?php if ( $slug === 'gold' || $slug === 'platinum' ): ?>
-                        <li>📊 Hirdetés statisztika hozzáférés</li>
+                        <li>Hirdetés statisztika hozzáférés</li>
                         <?php endif; ?>
                         <?php if ( $slug === 'platinum' ): ?>
-                        <li>👁 Megtekintési számok láthatók</li>
-                        <li>🌍 Geo megtekintési riport</li>
+                        <li>Geo megtekintési riport</li>
                         <?php endif; ?>
                     </ul>
                     <?php if ( $is_active ): ?>
