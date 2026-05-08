@@ -69,6 +69,26 @@
     return '\ufeff' + lines.join('\n');
   }
 
+  function vaFormatBudapestDateTime(value) {
+    if (!value) return '-';
+    var raw = String(value).trim();
+    if (!raw) return '-';
+    var date = new Date(raw.replace(' ', 'T') + 'Z');
+    if (isNaN(date.getTime())) {
+      return raw;
+    }
+    return new Intl.DateTimeFormat('hu-HU', {
+      timeZone: 'Europe/Budapest',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false
+    }).format(date);
+  }
+
   function vaOpenGeoReportModal(postId, nonce, ajaxUrl) {
     var existing = document.querySelector('.va-geo-modal');
     if (existing) {
@@ -140,7 +160,8 @@
       } else {
         var html = ''
           + warnHtml
-          + '<div class="va-geo-modal__meta">Osszes megtekintes: <strong>' + total + '</strong> | Kezdet: ' + vaEscapeHtml(report.from_datetime || '-') + ' | Frissitve: ' + vaEscapeHtml(report.generated_at || '-') + '</div>'
+          + '<div class="va-geo-modal__meta">Osszes megtekintes: <strong>' + total + '</strong> | Kezdet: ' + vaEscapeHtml(vaFormatBudapestDateTime(report.from_datetime || '-')) + ' | Frissitve: ' + vaEscapeHtml(vaFormatBudapestDateTime(report.generated_at || '-')) + ' (Europe/Budapest)</div>'
+          + '<div class="va-geo-modal__meta" style="opacity:.8;">Megjegyzes: IP-alapu becsles. Mobilhalozatnal gyakori, hogy a szolgaltato budapesti kilepesi pontja latszik, nem a tenyleges GPS hely.</div>'
           + '<div class="va-geo-modal__table-wrap">'
           + '<table class="va-geo-modal__table">'
           + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';
@@ -151,7 +172,7 @@
             + '<td>' + vaEscapeHtml(row.region || 'Ismeretlen') + '</td>'
             + '<td>' + vaEscapeHtml(row.city || 'Ismeretlen') + '</td>'
             + '<td><strong>' + vaEscapeHtml(String(row.views || 0)) + '</strong></td>'
-            + '<td>' + vaEscapeHtml(row.last_seen || '-') + '</td>'
+            + '<td>' + vaEscapeHtml(vaFormatBudapestDateTime(row.last_seen || '-')) + '</td>'
             + '</tr>';
         });
 

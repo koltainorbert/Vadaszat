@@ -337,6 +337,26 @@
         return '\ufeff' + lines.join('\n');
     }
 
+    function vaAdminFormatBudapestDateTime(value) {
+        if (!value) return '-';
+        var raw = String(value).trim();
+        if (!raw) return '-';
+        var date = new Date(raw.replace(' ', 'T') + 'Z');
+        if (isNaN(date.getTime())) {
+            return raw;
+        }
+        return new Intl.DateTimeFormat('hu-HU', {
+            timeZone: 'Europe/Budapest',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }).format(date);
+    }
+
     function vaOpenAdminGeoModal(postId, nonce) {
         var ajaxEndpoint = (typeof ajaxurl !== 'undefined') ? ajaxurl : '';
         if (!ajaxEndpoint) {
@@ -402,7 +422,8 @@
             } else {
                 var table = ''
                     + warn
-                    + '<div class="va-admin-geo-modal__meta">Osszes: <strong>' + total + '</strong> | Kezdet: ' + vaAdminEscapeHtml(report.from_datetime || '-') + ' | Frissitve: ' + vaAdminEscapeHtml(report.generated_at || '-') + '</div>'
+                    + '<div class="va-admin-geo-modal__meta">Osszes: <strong>' + total + '</strong> | Kezdet: ' + vaAdminEscapeHtml(vaAdminFormatBudapestDateTime(report.from_datetime || '-')) + ' | Frissitve: ' + vaAdminEscapeHtml(vaAdminFormatBudapestDateTime(report.generated_at || '-')) + ' (Europe/Budapest)</div>'
+                    + '<div class="va-admin-geo-modal__meta" style="opacity:.8;">Megjegyzes: IP-alapu becsles. Mobilhalozatnal a szolgaltato kilepesi pontja (gyakran Budapest) latszik, nem a valos GPS hely.</div>'
                     + '<div class="va-admin-geo-modal__table-wrap">'
                     + '<table class="widefat striped">'
                     + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';
@@ -413,7 +434,7 @@
                         + '<td>' + vaAdminEscapeHtml(row.region || 'Ismeretlen') + '</td>'
                         + '<td>' + vaAdminEscapeHtml(row.city || 'Ismeretlen') + '</td>'
                         + '<td><strong>' + vaAdminEscapeHtml(String(row.views || 0)) + '</strong></td>'
-                        + '<td>' + vaAdminEscapeHtml(row.last_seen || '-') + '</td>'
+                        + '<td>' + vaAdminEscapeHtml(vaAdminFormatBudapestDateTime(row.last_seen || '-')) + '</td>'
                         + '</tr>';
                 });
 
