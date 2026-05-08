@@ -63,6 +63,142 @@ function va_display_views( int $post_id ): int {
     return va_apply_views_floor( $post_id, $display_views );
 }
 
+/* ── Megtekintés lokáció (IP -> ország/régió/város) ─── */
+function va_is_public_ip( string $ip ): bool {
+    return (bool) filter_var(
+        $ip,
+        FILTER_VALIDATE_IP,
+        FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE
+    );
+}
+
+function va_normalize_geo_text( string $value, int $max_len = 120 ): string {
+    $value = sanitize_text_field( $value );
+    if ( $value === '' ) {
+        return 'Ismeretlen';
+    }
+    return substr( $value, 0, $max_len );
+}
+
+function va_lookup_geo_by_ip( string $ip ): array {
+    if ( ! va_is_public_ip( $ip ) ) {
+        return [
+            'country_code' => '--',
+            'country'      => 'Helyi / privát hálózat',
+            'region'       => 'Ismeretlen',
+            'city'         => 'Ismeretlen',
+        ];
+    }
+
+    $cache_key = 'va_geoip_' . md5( $ip );
+    $cached    = get_transient( $cache_key );
+    if ( is_array( $cached ) ) {
+        return $cached;
+    }
+
+    $fallback = [
+        'country_code' => '--',
+        'country'      => 'Ismeretlen',
+        'region'       => 'Ismeretlen',
+        'city'         => 'Ismeretlen',
+    ];
+
+    $url      = 'https://ipwho.is/' . rawurlencode( $ip );
+    $response = wp_remote_get( $url, [
+        'timeout'    => 1.5,
+        'redirection'=> 1,
+        'user-agent' => 'Vadaszapro/1.0; ' . home_url( '/' ),
+    ] );
+
+    if ( is_wp_error( $response ) ) {
+        set_transient( $cache_key, $fallback, DAY_IN_SECONDS );
+        return $fallback;
+    }
+
+    $body = wp_remote_retrieve_body( $response );
+    $data = json_decode( (string) $body, true );
+    if ( ! is_array( $data ) || empty( $data['success'] ) ) {
+        set_transient( $cache_key, $fallback, DAY_IN_SECONDS );
+        return $fallback;
+    }
+
+    $country_code = strtoupper( (string) ( $data['country_code'] ?? '--' ) );
+    $country_code = preg_replace( '/[^A-Z]/', '', $country_code );
+    $country_code = substr( (string) $country_code, 0, 2 );
+    if ( $country_code === '' ) {
+        $country_code = '--';
+    }
+
+    $result = [
+        'country_code' => $country_code,
+        'country'      => va_normalize_geo_text( (string) ( $data['country'] ?? '' ), 100 ),
+        'region'       => va_normalize_geo_text( (string) ( $data['region'] ?? '' ), 120 ),
+        'city'         => va_normalize_geo_text( (string) ( $data['city'] ?? '' ), 120 ),
+    ];
+
+    set_transient( $cache_key, $result, DAY_IN_SECONDS * 30 );
+    return $result;
+}
+
+function va_record_view_geo( int $post_id ): void {
+    if ( $post_id <= 0 ) {
+        return;
+    }
+
+    global $wpdb;
+
+    $table = $wpdb->prefix . 'va_view_geo';
+    $ip    = va_client_ip();
+    $geo   = va_lookup_geo_by_ip( $ip );
+
+    $country_code = substr( strtoupper( (string) ( $geo['country_code'] ?? '--' ) ), 0, 2 );
+    $country      = va_normalize_geo_text( (string) ( $geo['country'] ?? '' ), 100 );
+    $region       = va_normalize_geo_text( (string) ( $geo['region'] ?? '' ), 120 );
+    $city         = va_normalize_geo_text( (string) ( $geo['city'] ?? '' ), 120 );
+    $geo_hash     = md5( $country_code . '|' . $country . '|' . $region . '|' . $city );
+    $now          = current_time( 'mysql' );
+
+    $wpdb->query( $wpdb->prepare(
+        "INSERT INTO {$table}
+            (post_id, country_code, country, region, city, geo_hash, views, last_seen)
+         VALUES
+            (%d, %s, %s, %s, %s, %s, 1, %s)
+         ON DUPLICATE KEY UPDATE
+            views = views + 1,
+            last_seen = VALUES(last_seen)",
+        $post_id,
+        $country_code,
+        $country,
+        $region,
+        $city,
+        $geo_hash,
+        $now
+    ) );
+}
+
+function va_get_view_geo_breakdown( int $post_id, int $limit = 100 ): array {
+    global $wpdb;
+
+    if ( $post_id <= 0 ) {
+        return [];
+    }
+
+    $limit = max( 1, min( 500, $limit ) );
+    $table = $wpdb->prefix . 'va_view_geo';
+
+    $rows = $wpdb->get_results( $wpdb->prepare(
+        "SELECT country_code, country, region, city, views, last_seen
+         FROM {$table}
+         WHERE post_id = %d
+         ORDER BY views DESC, last_seen DESC
+         LIMIT %d",
+        $post_id,
+        $limit
+    ), ARRAY_A );
+
+    return is_array( $rows ) ? $rows : [];
+}
+
 /* ── Social Media SVG ikonok (hivatalos brand logók) ─── */
 function va_social_svg( string $platform, int $size = 20 ): string {
     $s = esc_attr( (string) $size );

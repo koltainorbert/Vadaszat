@@ -107,6 +107,19 @@ add_action( 'init', function () {
     }
 }, 2 );
 
+// Lokációs megtekintés tábla automatikus létrehozása/frissítése
+add_action( 'init', function () {
+    $schema_ver = '1.0.0';
+    if ( get_option( 'va_view_geo_table_ver' ) === $schema_ver ) {
+        return;
+    }
+
+    global $wpdb;
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    dbDelta( va_get_view_geo_table_sql( $wpdb->get_charset_collate() ) );
+    update_option( 'va_view_geo_table_ver', $schema_ver, false );
+}, 4 );
+
 // Demo minta hirdetesek betoltese uj telepiteskor
 add_action( 'init', function () {
     if ( ! get_option( 'va_demo_listings_seeded' ) ) {
@@ -136,6 +149,26 @@ add_filter( 'template_include', function ( $template ) {
 /* ── Activation / Deactivation ───────────────────── */
 register_activation_hook( __FILE__,   'va_activate'   );
 register_deactivation_hook( __FILE__, 'va_deactivate' );
+
+function va_get_view_geo_table_sql( string $charset ): string {
+    global $wpdb;
+    return "CREATE TABLE IF NOT EXISTS {$wpdb->prefix}va_view_geo (
+        id           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+        post_id      BIGINT UNSIGNED NOT NULL,
+        country_code CHAR(2)         NOT NULL DEFAULT '--',
+        country      VARCHAR(100)    NOT NULL DEFAULT '',
+        region       VARCHAR(120)    NOT NULL DEFAULT '',
+        city         VARCHAR(120)    NOT NULL DEFAULT '',
+        geo_hash     CHAR(32)        NOT NULL,
+        views        BIGINT UNSIGNED NOT NULL DEFAULT 0,
+        last_seen    DATETIME        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id),
+        UNIQUE KEY post_geo (post_id, geo_hash),
+        KEY post_id (post_id),
+        KEY country_code (country_code),
+        KEY views (views)
+    ) $charset;";
+}
 
 function va_activate() {
     VA_Post_Types::init();
@@ -197,10 +230,15 @@ function va_activate() {
         KEY cat_price (category_id, price)
     ) $charset;";
 
+    // Megtekintési lokáció aggregátum (ország/régió/város)
+    $sql4 = va_get_view_geo_table_sql( $charset );
+
     require_once ABSPATH . 'wp-admin/includes/upgrade.php';
     dbDelta( $sql );
     dbDelta( $sql2 );
     dbDelta( $sql3 );
+    dbDelta( $sql4 );
+    update_option( 'va_view_geo_table_ver', '1.0.0', false );
 
     // Alapértelmezett oldalak létrehozása ha nem léteznek
     va_create_default_pages();
