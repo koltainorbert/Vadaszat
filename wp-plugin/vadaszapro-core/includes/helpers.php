@@ -251,7 +251,7 @@ function va_is_premium_member( int $user_id ): bool {
     }
 
     $plan = VA_User_Roles::get_user_plan( $user_id );
-    return in_array( $plan, [ 'silver', 'gold', 'platinum' ], true );
+    return $plan === 'platinum';
 }
 
 function va_user_can_open_geo_report( int $user_id, int $post_id = 0 ): bool {

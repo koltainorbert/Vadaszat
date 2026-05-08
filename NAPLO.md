@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 08. – Session #244 (Geo jogosultsag: premiumbol csak Platinum)
+
+### Mit csinaltunk [x]
+- [x] A premium jogosultsag szigoritva: a geo riportot a fizetett csomagok kozul mar csak a `platinum` lathatja
+- [x] Admin jogosultsag valtozatlanul megmaradt (admin tovabbra is lathatja)
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A geo riport jogosultsag most: admin vagy platinum. Silver es Gold fiokok mar nem latjak.
+
+---
+
 ## 2026. 05. 08. – Session #243 (Geo jogosultsag: admin + premium)
 
 ### Mit csinaltunk [x]
