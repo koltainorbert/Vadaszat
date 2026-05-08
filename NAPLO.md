@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 08. – Session #243 (Geo jogosultsag: admin + premium)
+
+### Mit csinaltunk [x]
+- [x] Uj helper: `va_is_premium_member()` (silver/gold/platinum + admin)
+- [x] Uj helper: `va_user_can_open_geo_report()` (admin mindenhez, premium csak sajat hirdeteshez)
+- [x] Admin listaban a geo popup trigger kizarolag adminnak jelenik meg
+- [x] Admin legacy riport endpoint is admin-only-ra szigoritva
+- [x] Fiókom oldalon a geo gomb most admin + premium felhasznaloknak latszik
+- [x] AJAX geo riport jogosultsag atallitva a fenti szabalyokra
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A geo riport most mar pontosan szerepkor alapu: admin minden hirdeteshez hozzafer az admin feluleten, a sajat fiokban csak adminok es premium tagok latnak geo riportot, premium csak a sajat hirdeteseire.
+
+---
+
 ## 2026. 05. 08. – Session #242 (Geo riport felrakas idopontjatol)
 
 ### Mit csinaltunk [x]

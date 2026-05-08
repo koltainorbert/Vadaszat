@@ -862,7 +862,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?>
                             </span>
-                            <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                            <?php if ( function_exists( 'va_user_can_open_geo_report' ) && va_user_can_open_geo_report( (int) $user->ID, (int) $l->ID ) ) : ?>
                                 <button type="button"
                                         class="va-geo-report-trigger"
                                         data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"

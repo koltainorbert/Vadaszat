@@ -145,14 +145,18 @@ class VA_Listing_Columns {
                 break;
             case 'va_views':
                 $views = (int) ( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
-                $nonce = wp_create_nonce( 'va_view_geo_report_' . $post_id );
-                echo '<button type="button" class="button-link va-geo-report-trigger"'
-                    . ' data-post-id="' . esc_attr( (string) $post_id ) . '"'
-                    . ' data-geo-nonce="' . esc_attr( $nonce ) . '"'
-                    . ' title="Megtekintési helyek">'
-                    . '<span class="va-geo-report-eye">👁</span> '
-                    . esc_html( number_format_i18n( $views ) )
-                    . '</button>';
+                if ( current_user_can( 'manage_options' ) ) {
+                    $nonce = wp_create_nonce( 'va_view_geo_report_' . $post_id );
+                    echo '<button type="button" class="button-link va-geo-report-trigger"'
+                        . ' data-post-id="' . esc_attr( (string) $post_id ) . '"'
+                        . ' data-geo-nonce="' . esc_attr( $nonce ) . '"'
+                        . ' title="Megtekintési helyek">'
+                        . '<span class="va-geo-report-eye">👁</span> '
+                        . esc_html( number_format_i18n( $views ) )
+                        . '</button>';
+                } else {
+                    echo '<span><span class="va-geo-report-eye">👁</span> ' . esc_html( number_format_i18n( $views ) ) . '</span>';
+                }
                 break;
             case 'va_featured':
                 echo get_post_meta( $post_id, 'va_featured', true ) === '1' ? '⭐' : '–';
@@ -274,7 +278,7 @@ class VA_Listing_Columns {
             wp_die( 'Érvénytelen hirdetés azonosító.' );
         }
 
-        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'edit_post', $post_id ) ) {
             wp_die( 'Nincs jogosultságod ehhez a jelentéshez.' );
         }
 

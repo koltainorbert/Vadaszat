@@ -237,6 +237,44 @@ function va_get_view_geo_breakdown( int $post_id, int $limit = 100 ): array {
     return is_array( $rows ) ? $rows : [];
 }
 
+function va_is_premium_member( int $user_id ): bool {
+    if ( $user_id <= 0 ) {
+        return false;
+    }
+
+    if ( user_can( $user_id, 'manage_options' ) ) {
+        return true;
+    }
+
+    if ( ! class_exists( 'VA_User_Roles' ) ) {
+        return false;
+    }
+
+    $plan = VA_User_Roles::get_user_plan( $user_id );
+    return in_array( $plan, [ 'silver', 'gold', 'platinum' ], true );
+}
+
+function va_user_can_open_geo_report( int $user_id, int $post_id = 0 ): bool {
+    if ( $user_id <= 0 ) {
+        return false;
+    }
+
+    if ( user_can( $user_id, 'manage_options' ) ) {
+        return true;
+    }
+
+    if ( ! va_is_premium_member( $user_id ) ) {
+        return false;
+    }
+
+    if ( $post_id > 0 ) {
+        $author_id = (int) get_post_field( 'post_author', $post_id );
+        return $author_id === $user_id;
+    }
+
+    return true;
+}
+
 /* ── Social Media SVG ikonok (hivatalos brand logók) ─── */
 function va_social_svg( string $platform, int $size = 20 ): string {
     $s = esc_attr( (string) $size );

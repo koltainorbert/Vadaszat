@@ -932,7 +932,20 @@ class VA_Ajax {
             wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés.' ] );
         }
 
-        if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'edit_post', $post_id ) ) {
+        $user_id = get_current_user_id();
+        if ( $user_id <= 0 ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ], 403 );
+        }
+
+        $can_geo = function_exists( 'va_user_can_open_geo_report' )
+            ? va_user_can_open_geo_report( $user_id, $post_id )
+            : current_user_can( 'manage_options' );
+
+        if ( ! $can_geo ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ], 403 );
+        }
+
+        if ( current_user_can( 'manage_options' ) && ! current_user_can( 'edit_post', $post_id ) ) {
             wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ], 403 );
         }
 
