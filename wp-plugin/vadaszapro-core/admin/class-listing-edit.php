@@ -402,11 +402,16 @@ class VA_Listing_Edit {
                         <td><span class="va-le-pill" style="color:<?php echo $st_color;?>;background:<?php echo $st_bg;?>"><?php echo esc_html($st_label); ?></span></td>
                         <td class="va-le-td-muted">
                             <div style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
-                                <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;line-height:1;">
-                                    <span aria-hidden="true">👁</span>
-                                    <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
-                                </span>
                                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                                    <button type="button"
+                                            class="va-geo-report-trigger"
+                                            data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
+                                            data-geo-nonce="<?php echo esc_attr( wp_create_nonce( 'va_view_geo_report_' . $pid ) ); ?>"
+                                            title="Megtekintési helyek - geo riport"
+                                            style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;line-height:1;white-space:nowrap;cursor:pointer;">
+                                        <span aria-hidden="true">👁</span>
+                                        <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
+                                    </button>
                                     <button type="button"
                                             class="va-geo-report-trigger"
                                             data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
@@ -416,6 +421,11 @@ class VA_Listing_Edit {
                                         <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a14 14 0 0 1 0 18"></path><path d="M12 3a14 14 0 0 0 0 18"></path></svg>
                                         Geo
                                     </button>
+                                <?php else : ?>
+                                    <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;line-height:1;">
+                                        <span aria-hidden="true">👁</span>
+                                        <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
+                                    </span>
                                 <?php endif; ?>
                             </div>
                         </td>
