@@ -177,6 +177,107 @@ class VA_SEO {
             && ( self::requested_brand() !== '' || self::requested_model() !== '' );
     }
 
+    private static function normalize_search_key( string $value ): string {
+        $value = trim( $value );
+        if ( $value === '' ) {
+            return '';
+        }
+        return function_exists( 'mb_strtolower' )
+            ? (string) mb_strtolower( $value, 'UTF-8' )
+            : strtolower( $value );
+    }
+
+    private static function brand_seo_variants(): array {
+        return [
+            'bmw' => [
+                'seo_heading' => 'Eladó BMW hirdetések és ár-összehasonlítás',
+                'seo_text'    => 'A BMW landing oldalon egy helyen látod a legfrissebb ajánlatokat, így gyorsabban tudsz dönteni ár, évjárat, futásteljesítmény és felszereltség alapján.',
+                'seo_points'  => [
+                    'Friss BMW hirdetések országosan, szűrhető listában.',
+                    'Gyors összevetés ár, évjárat és kilométer alapján.',
+                    'Közvetlen továbblépés BMW modellekre egy kattintással.',
+                ],
+            ],
+            'mercedes-benz' => [
+                'seo_heading' => 'Eladó Mercedes-Benz modellek részletes adatokkal',
+                'seo_text'    => 'A Mercedes-Benz ajánlatoknál kiemelten látható a teljesítmény, felszereltség és futásteljesítmény, így a prémium modellek összehasonlítása gyorsabb és tisztább.',
+                'seo_points'  => [
+                    'Aktuális Mercedes-Benz készlet folyamatosan frissítve.',
+                    'Ár és évjárat alapú gyors szűrés a keresőben.',
+                    'Kapcsolódó modellekre vezető belső linkek egy helyen.',
+                ],
+            ],
+            'audi' => [
+                'seo_heading' => 'Eladó Audi hirdetések ár és évjárat szerint',
+                'seo_text'    => 'Az Audi landing oldal célja, hogy gyorsan lehessen szűkíteni a találatokat modell, állapot, ár és futásteljesítmény alapján, így kevesebb kattintásból megvan a releváns kör.',
+                'seo_points'  => [
+                    'Friss Audi ajánlatok egyetlen céloldalon.',
+                    'Modellek közti gyors átjárás landing linkekkel.',
+                    'Részletes járműadatok és összehasonlítható árak.',
+                ],
+            ],
+            'volkswagen' => [
+                'seo_heading' => 'Eladó Volkswagen hirdetések, gyors modellszűréssel',
+                'seo_text'    => 'A Volkswagen kínálat modellszinten böngészhető, így egyszerűbb megtalálni a jó ár-érték arányú ajánlatokat akár városi, akár családi autót keresel.',
+                'seo_points'  => [
+                    'Volkswagen hirdetések modell és üzemanyag szerint szűrve.',
+                    'Ár és futásteljesítmény szerinti gyors összehasonlítás.',
+                    'Kapcsolódó Volkswagen modellek elérése egy helyről.',
+                ],
+            ],
+            'toyota' => [
+                'seo_heading' => 'Eladó Toyota hirdetések, kiemelten hibrid opciókkal',
+                'seo_text'    => 'A Toyota landing oldalon a gazdaságos és hibrid modellek gyorsan szűrhetők, így könnyebb megtalálni a fenntarthatóbb és alacsony fenntartású ajánlatokat.',
+                'seo_points'  => [
+                    'Friss Toyota ajánlatok országos lefedettséggel.',
+                    'Hibrid és benzines modellek gyors szűrése.',
+                    'Ár, évjárat és futásteljesítmény alapú összevetés.',
+                ],
+            ],
+        ];
+    }
+
+    private static function model_seo_variants(): array {
+        return [
+            'bmw|x5' => [
+                'seo_heading' => 'Eladó BMW X5 hirdetések, prémium SUV kínálat',
+                'seo_text'    => 'A BMW X5 oldalon egy helyen látod a prémium SUV ajánlatokat, így gyorsan összehasonlítható az ár, évjárat, futásteljesítmény és felszereltség.',
+                'seo_points'  => [
+                    'BMW X5 ajánlatok részletes műszaki adatokkal.',
+                    'Gyors ár-összehasonlítás és állapot szerinti szűrés.',
+                    'Kapcsolódó BMW modellek azonnali eléréssel.',
+                ],
+            ],
+            'volkswagen|golf' => [
+                'seo_heading' => 'Eladó Volkswagen Golf hirdetések, valós piaci árakkal',
+                'seo_text'    => 'A Volkswagen Golf keresőoldal segít gyorsan átlátni a kínálatot, hogy melyik évjárat és felszereltség adja a legjobb ár-érték arányt.',
+                'seo_points'  => [
+                    'Volkswagen Golf hirdetések folyamatosan frissülve.',
+                    'Évjárat és futásteljesítmény szerinti gyors összevetés.',
+                    'Modellek közötti belső átjárás egy kattintással.',
+                ],
+            ],
+            'audi|a4' => [
+                'seo_heading' => 'Eladó Audi A4 hirdetések, összehasonlítható ajánlatokkal',
+                'seo_text'    => 'Az Audi A4 oldalon tisztán összehasonlíthatóak a különböző évjáratok és motorváltozatok, így gyorsabban kiválasztható a megfelelő autó.',
+                'seo_points'  => [
+                    'Audi A4 ajánlatok részletes adatokkal és fotókkal.',
+                    'Gyors szűrés ár, futásteljesítmény és üzemanyag szerint.',
+                    'Kapcsolódó Audi modellek közvetlen linkekkel.',
+                ],
+            ],
+            'toyota|corolla' => [
+                'seo_heading' => 'Eladó Toyota Corolla hirdetések, megbízható modellek egy helyen',
+                'seo_text'    => 'A Toyota Corolla ajánlatok külön céloldalon jelennek meg, így egyszerűbb kiválasztani a jó állapotú, jól árazott példányokat.',
+                'seo_points'  => [
+                    'Toyota Corolla hirdetések országos kínálatból.',
+                    'Ár és évjárat szerinti áttekinthető szűrés.',
+                    'Kapcsolódó Toyota modellek gyors elérése.',
+                ],
+            ],
+        ];
+    }
+
     public static function get_search_landing_context(): array {
         $brand = self::requested_brand();
         $model = self::requested_model();
@@ -207,6 +308,12 @@ class VA_SEO {
                 'Gyors összehasonlítás ár, évjárat és kilométer alapján.',
                 'Kapcsolódó keresések ugyanazon márkán belül további modellekre.',
             ];
+
+            $model_variants = self::model_seo_variants();
+            $model_key = self::normalize_search_key( $brand ) . '|' . self::normalize_search_key( $model );
+            if ( isset( $model_variants[ $model_key ] ) ) {
+                $context = array_merge( $context, $model_variants[ $model_key ] );
+            }
         } elseif ( $brand !== '' ) {
             $context['title'] = 'Eladó ' . $brand;
             $context['intro'] = 'Aktuális ' . $brand . ' ajánlatok részletes adatokkal, árakkal és szűrőzhető találatokkal.';
@@ -218,6 +325,12 @@ class VA_SEO {
                 'Gyors továbblépés a leggyakoribb modellekre.',
                 'Szűrhető találatok ár, évjárat és futásteljesítmény szerint.',
             ];
+
+            $brand_variants = self::brand_seo_variants();
+            $brand_key = self::normalize_search_key( $brand );
+            if ( isset( $brand_variants[ $brand_key ] ) ) {
+                $context = array_merge( $context, $brand_variants[ $brand_key ] );
+            }
         }
 
         return $context;
@@ -609,7 +722,7 @@ class VA_SEO {
         }
 
         if ( is_front_page() ) {
-            return 'Weingartner Autó - eladó használt autók és motorok részletes adatokkal, friss hirdetésekkel és gyors márka-modell kereséssel.';
+            return 'Eladó használt autók és motorok - Weingartner Autó. Friss hirdetések, márka és modell alapú keresés, részletes járműadatok és valós piaci árak egy helyen.';
         }
 
         if ( is_singular( 'va_listing' ) ) {
