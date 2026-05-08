@@ -29,6 +29,7 @@ class VA_SEO {
 
         add_filter( 'wp_robots', [ __CLASS__, 'filter_wp_robots' ] );
         add_filter( 'robots_txt', [ __CLASS__, 'filter_robots_txt' ], 10, 2 );
+        add_filter( 'document_title_parts', [ __CLASS__, 'filter_document_title_parts' ] );
 
         // Rank Math felülírhatja az OG/Twitter title-t, ezért közvetlenül ide is bekötjük.
         add_filter( 'rank_math/opengraph/facebook/title', [ __CLASS__, 'rank_math_social_title' ] );
@@ -52,6 +53,28 @@ class VA_SEO {
             $desc = self::meta_description();
         }
         return self::sanitize_seo_copy( $desc );
+    }
+
+    public static function filter_document_title_parts( array $parts ): array {
+        if ( is_singular( 'va_listing' ) ) {
+            $parts['title'] = self::listing_browser_title( get_queried_object_id() );
+            unset( $parts['tagline'] );
+            return $parts;
+        }
+
+        if ( is_post_type_archive( 'va_listing' ) ) {
+            $parts['title'] = 'Eladó autók és motorok';
+            return $parts;
+        }
+
+        if ( is_tax( 'va_category' ) ) {
+            $term = get_queried_object();
+            if ( $term instanceof WP_Term ) {
+                $parts['title'] = 'Eladó ' . $term->name;
+            }
+        }
+
+        return $parts;
     }
 
     private static function sanitize_seo_copy( string $text ): string {
@@ -380,14 +403,7 @@ class VA_SEO {
     private static function meta_description(): string {
         if ( is_singular( 'va_listing' ) ) {
             $id = get_queried_object_id();
-            $title = get_the_title( $id );
-            $price = get_post_meta( $id, 'va_price', true );
-            $price_txt = is_numeric( $price ) ? number_format( (float) $price, 0, ',', ' ' ) . ' Ft' : 'ár egyeztetéssel';
-            $county = wp_get_post_terms( $id, 'va_county', [ 'fields' => 'names' ] );
-            $county_txt = ! empty( $county[0] ) ? (string) $county[0] : 'Magyarország';
-
-            $desc = $title . ' - ' . $price_txt . '. ' . $county_txt . ' területén elérhető autós hirdetés.';
-            return wp_strip_all_tags( $desc );
+            return self::listing_meta_description( $id );
         }
 
         if ( is_singular( 'va_auction' ) ) {
@@ -410,7 +426,9 @@ class VA_SEO {
         }
 
         if ( is_post_type_archive( 'va_listing' ) ) {
-            return 'Autó és motor hirdetések országosan, folyamatosan frissülő kínálattal és részletes adatokkal.';
+            $count = wp_count_posts( 'va_listing' );
+            $published = isset( $count->publish ) ? (int) $count->publish : 0;
+            return 'Eladó autók és motorok a Weingartner Autónál. ' . number_format( $published, 0, ',', ' ' ) . ' hirdetés részletes adatokkal és friss kínálattal.';
         }
 
         if ( is_post_type_archive( 'va_auction' ) ) {
@@ -424,7 +442,7 @@ class VA_SEO {
                 if ( is_string( $d ) && trim( wp_strip_all_tags( $d ) ) !== '' ) {
                     return wp_trim_words( wp_strip_all_tags( $d ), 28, '...' );
                 }
-                return $term->name . ' kategória autó és motor ajánlatokkal.';
+                return 'Eladó ' . $term->name . ' ajánlatok a Weingartner Autónál, részletes adatokkal és aktuális készlettel.';
             }
         }
 
@@ -432,7 +450,7 @@ class VA_SEO {
     }
 
     private static function listing_social_title( int $post_id ): string {
-        $title = wp_strip_all_tags( (string) get_the_title( $post_id ) );
+        $title = self::listing_base_title( $post_id );
         $price_raw = get_post_meta( $post_id, 'va_price', true );
         $price_type = (string) get_post_meta( $post_id, 'va_price_type', true );
         $sale_raw = get_post_meta( $post_id, 'va_sale_price', true );
@@ -470,38 +488,81 @@ class VA_SEO {
     }
 
     private static function listing_social_description( int $post_id ): string {
-        $price_raw = get_post_meta( $post_id, 'va_price', true );
-        $price_type = (string) get_post_meta( $post_id, 'va_price_type', true );
-        $sale_raw = get_post_meta( $post_id, 'va_sale_price', true );
-        $sale_end_raw = (string) get_post_meta( $post_id, 'va_sale_price_end', true );
-        $content = wp_trim_words( wp_strip_all_tags( (string) get_post_field( 'post_content', $post_id ) ), 22, '...' );
+        return self::listing_meta_description( $post_id );
+    }
 
-        $parts = [ 'Eladó hirdetés.' ];
+    private static function listing_browser_title( int $post_id ): string {
+        return self::listing_base_title( $post_id ) . ' | Weingartner Autó';
+    }
 
+    private static function listing_base_title( int $post_id ): string {
+        $title = wp_strip_all_tags( (string) get_the_title( $post_id ) );
+        $brand = trim( (string) get_post_meta( $post_id, 'va_brand', true ) );
+        $model = trim( (string) get_post_meta( $post_id, 'va_model', true ) );
+        $year  = trim( (string) get_post_meta( $post_id, 'va_year', true ) );
+        $body  = trim( (string) get_post_meta( $post_id, 'va_body_type', true ) );
+
+        $parts = [];
+        if ( $brand !== '' ) $parts[] = strtoupper( $brand );
+        if ( $model !== '' ) $parts[] = $model;
+        if ( $body !== '' ) $parts[] = $body;
+
+        $base = trim( implode( ' ', $parts ) );
+        if ( $base === '' ) {
+            $base = $title;
+        }
+
+        if ( $year !== '' ) {
+            $base .= ' (' . $year . ')';
+        }
+
+        return trim( preg_replace( '/\s+/', ' ', $base ) ?: $base );
+    }
+
+    private static function listing_meta_description( int $post_id ): string {
+        $price_raw     = get_post_meta( $post_id, 'va_price', true );
+        $price_type    = (string) get_post_meta( $post_id, 'va_price_type', true );
+        $brand         = trim( (string) get_post_meta( $post_id, 'va_brand', true ) );
+        $model         = trim( (string) get_post_meta( $post_id, 'va_model', true ) );
+        $year          = trim( (string) get_post_meta( $post_id, 'va_year', true ) );
+        $mileage       = trim( (string) get_post_meta( $post_id, 'va_mileage', true ) );
+        $fuel_type     = trim( (string) get_post_meta( $post_id, 'va_fuel_type', true ) );
+        $transmission  = trim( (string) get_post_meta( $post_id, 'va_transmission', true ) );
+        $location      = trim( (string) get_post_meta( $post_id, 'va_location', true ) );
+        $county        = wp_get_post_terms( $post_id, 'va_county', [ 'fields' => 'names' ] );
+        $county_txt    = ! empty( $county[0] ) ? (string) $county[0] : '';
+        $summary       = wp_trim_words( wp_strip_all_tags( (string) get_post_field( 'post_content', $post_id ) ), 18, '...' );
+
+        $name = trim( implode( ' ', array_filter( [ $brand, $model ] ) ) );
+        if ( $name === '' ) {
+            $name = wp_strip_all_tags( (string) get_the_title( $post_id ) );
+        }
+
+        $parts = [ 'Eladó ' . $name . '.' ];
+
+        if ( $year !== '' ) {
+            $parts[] = 'Évjárat: ' . $year . '.';
+        }
         if ( is_numeric( $price_raw ) && $price_type !== 'ask' ) {
             $parts[] = 'Ár: ' . number_format( (float) $price_raw, 0, ',', ' ' ) . ' Ft.';
         }
-
-        $sale_active = false;
-        if ( is_numeric( $sale_raw ) && (float) $sale_raw > 0 ) {
-            $sale_active = true;
-            if ( $sale_end_raw !== '' ) {
-                $sale_end_ts = strtotime( $sale_end_raw . ' 23:59:59' );
-                if ( $sale_end_ts && $sale_end_ts < current_time( 'timestamp' ) ) {
-                    $sale_active = false;
-                }
-            }
+        if ( $mileage !== '' && is_numeric( $mileage ) ) {
+            $parts[] = 'Kilométer: ' . number_format( (float) $mileage, 0, ',', ' ' ) . ' km.';
+        }
+        if ( $fuel_type !== '' ) {
+            $parts[] = 'Üzemanyag: ' . $fuel_type . '.';
+        }
+        if ( $transmission !== '' ) {
+            $parts[] = 'Váltó: ' . $transmission . '.';
+        }
+        if ( $location !== '' || $county_txt !== '' ) {
+            $parts[] = 'Elérhető: ' . trim( implode( ', ', array_filter( [ $location, $county_txt ] ) ) ) . '.';
+        }
+        if ( $summary !== '' ) {
+            $parts[] = $summary;
         }
 
-        if ( $sale_active ) {
-            $parts[] = 'Akciós ár: ' . number_format( (float) $sale_raw, 0, ',', ' ' ) . ' Ft.';
-        }
-
-        if ( $content !== '' ) {
-            $parts[] = $content;
-        }
-
-        return trim( implode( ' ', $parts ) );
+        return self::sanitize_seo_copy( trim( implode( ' ', $parts ) ) );
     }
 
     private static function social_title( string $default_title ): string {
@@ -643,16 +704,53 @@ class VA_SEO {
         $price = get_post_meta( $id, 'va_price', true );
         $price_type = (string) get_post_meta( $id, 'va_price_type', true );
         $image = get_the_post_thumbnail_url( $id, 'full' );
+        $brand = trim( (string) get_post_meta( $id, 'va_brand', true ) );
+        $model = trim( (string) get_post_meta( $id, 'va_model', true ) );
+        $year = trim( (string) get_post_meta( $id, 'va_year', true ) );
+        $mileage = trim( (string) get_post_meta( $id, 'va_mileage', true ) );
+        $fuel_type = trim( (string) get_post_meta( $id, 'va_fuel_type', true ) );
+        $transmission = trim( (string) get_post_meta( $id, 'va_transmission', true ) );
+        $body_type = trim( (string) get_post_meta( $id, 'va_body_type', true ) );
+        $color = trim( (string) get_post_meta( $id, 'va_color', true ) );
 
         $graph = [
             '@type' => 'Product',
-            'name' => get_the_title( $id ),
+            'name' => self::listing_base_title( $id ),
             'url' => get_permalink( $id ),
-            'description' => wp_trim_words( wp_strip_all_tags( (string) get_post_field( 'post_content', $id ) ), 40, '...' ),
+            'description' => self::listing_meta_description( $id ),
         ];
 
         if ( $image ) {
             $graph['image'] = [ $image ];
+        }
+
+        if ( $brand !== '' ) {
+            $graph['brand'] = [ '@type' => 'Brand', 'name' => $brand ];
+        }
+        if ( $model !== '' ) {
+            $graph['model'] = $model;
+        }
+        if ( $year !== '' ) {
+            $graph['releaseDate'] = $year;
+        }
+        if ( $mileage !== '' && is_numeric( $mileage ) ) {
+            $graph['mileageFromOdometer'] = [
+                '@type' => 'QuantitativeValue',
+                'value' => (float) $mileage,
+                'unitCode' => 'KMT',
+            ];
+        }
+        if ( $fuel_type !== '' ) {
+            $graph['fuelType'] = $fuel_type;
+        }
+        if ( $transmission !== '' ) {
+            $graph['vehicleTransmission'] = $transmission;
+        }
+        if ( $body_type !== '' ) {
+            $graph['bodyType'] = $body_type;
+        }
+        if ( $color !== '' ) {
+            $graph['color'] = $color;
         }
 
         if ( is_numeric( $price ) && $price_type !== 'ask' ) {
