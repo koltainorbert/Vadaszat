@@ -159,7 +159,7 @@
     border: 1px solid rgba(255, 0, 0, .9);
     background: linear-gradient(180deg, rgba(10, 10, 10, .98), rgba(6, 6, 6, .98));
     box-shadow: 0 0 0 1px rgba(255, 0, 0, .12) inset;
-    padding: 0 5px;
+    padding: 0 7px;
     border-radius: 999px;
     line-height: 1;
     font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
@@ -272,7 +272,7 @@ body.va-admin-page .va-le-geo-wrap a.va-le-geo-pill:active {
 body.va-admin-page html,
 body.va-admin-page {
     margin-top: 0 !important;
-    background: #6f00ff !important;
+    background: var(--va-bg) !important;
     color: var(--va-text) !important;
     font-family: var(--va-font) !important;
     font-size: var(--va-font-size, 13px) !important;
