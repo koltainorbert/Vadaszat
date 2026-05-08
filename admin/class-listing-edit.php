@@ -404,7 +404,9 @@ class VA_Listing_Edit {
                         <td><span class="va-le-pill" style="color:<?php echo $st_color;?>;background:<?php echo $st_bg;?>"><?php echo esc_html($st_label); ?></span></td>
                         <td class="va-le-td-muted">
                             <div class="va-le-geo-wrap">
-                                <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                                <?php
+                                $is_admin_or_platinum = current_user_can( 'manage_options' ) || ( class_exists( 'VA_User_Roles' ) && in_array( VA_User_Roles::get_user_plan( get_current_user_id() ), [ 'platinum' ], true ) );
+                                if ( $is_admin_or_platinum ) : ?>
                                     <a href="<?php echo $geo_url; ?>"
                                             class="va-geo-report-trigger va-le-pill va-le-geo-pill va-le-geo-pill--views"
                                             data-post-id="<?php echo esc_attr( (string) $pid ); ?>"

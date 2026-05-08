@@ -482,6 +482,10 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                     </div>
                 </div>
 
+                <?php
+                $can_see_stats = current_user_can( 'manage_options' ) || in_array( $user_plan, [ 'platinum', 'gold' ], true );
+                if ( $can_see_stats ) :
+                ?>
                 <section class="va-crm" aria-label="Hirdetés statisztika">
                     <div class="va-crm__head">
                         <div>
