@@ -111,6 +111,56 @@
     background: rgba(255, 255, 255, 0.04);
 }
 
+/* Saját admin hirdetéslista (vadaszapro-listings) - nézet/geo gombok */
+.va-le-geo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+.va-le-geo-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: #fff;
+    border: 1px solid rgba(255, 0, 0, .35);
+    background: linear-gradient(135deg, rgba(255, 0, 0, .12), rgba(90, 0, 0, .10));
+    box-shadow: 0 0 0 1px rgba(255, 0, 0, .08) inset;
+    padding: 4px 10px;
+    border-radius: 999px;
+    line-height: 1;
+}
+
+button.va-le-geo-pill {
+    cursor: pointer;
+    transition: transform .12s ease, border-color .12s ease, background .12s ease;
+}
+
+button.va-le-geo-pill:hover {
+    border-color: rgba(255, 50, 50, .55);
+    background: linear-gradient(135deg, rgba(255, 0, 0, .20), rgba(110, 0, 0, .16));
+    transform: translateY(-1px);
+}
+
+button.va-le-geo-pill:focus-visible {
+    outline: 2px solid rgba(255, 70, 70, .55);
+    outline-offset: 1px;
+}
+
+.va-le-geo-pill--views {
+    min-width: 56px;
+    justify-content: center;
+}
+
+.va-le-geo-pill--geo {
+    min-width: 60px;
+    justify-content: center;
+}
+
 @media print {
     body * {
         visibility: hidden !important;

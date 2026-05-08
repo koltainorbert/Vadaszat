@@ -357,8 +357,8 @@
         }).format(date);
     }
 
-    function vaOpenAdminGeoModal(postId, nonce) {
-        var ajaxEndpoint = (typeof ajaxurl !== 'undefined') ? ajaxurl : '';
+    window.vaOpenAdminGeoModal = function(postId, nonce, forcedAjaxUrl) {
+        var ajaxEndpoint = forcedAjaxUrl || (typeof ajaxurl !== 'undefined' ? ajaxurl : '');
         if (!ajaxEndpoint) {
             window.vaAdminToast('Nincs ajax endpoint.', 'error');
             return;
@@ -466,17 +466,18 @@
         }).fail(function() {
             $body.html('<div class="va-admin-geo-modal__error">Halozati hiba a geo riport lekeresenel.</div>');
         });
-    }
+    };
 
     $(document).on('click', '.va-geo-report-trigger', function(e) {
         e.preventDefault();
         var postId = parseInt($(this).data('post-id') || 0, 10);
         var nonce = ($(this).data('geo-nonce') || '').toString();
+        var ajaxUrl = ($(this).data('ajax-url') || '').toString();
         if (!postId || !nonce) {
             window.vaAdminToast('Geo riport most nem elerheto.', 'error');
             return;
         }
-        vaOpenAdminGeoModal(postId, nonce);
+        window.vaOpenAdminGeoModal(postId, nonce, ajaxUrl);
     });
 
 

@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #251 (Admin lista popup fix + design tisztitas)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` oldalon a Geo popup nyitas robusztusitva: explicit `admin-ajax.php` endpoint + inline fallback hivas
+- [x] A szem badge es Geo gomb uj, letisztultabb kapszula dizajnt kapott (kevesebb glow, tisztabb allapotok)
+- [x] A popup hivas globalisan is elerheto (`window.vaOpenAdminGeoModal`) az egyedi listahoz
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Az admin hirdeteslistan a Geo popup nyitas most mar megbizhato, es a nezetseg oszlop vizualisan rendezettebb.
+
+---
+
 ## 2026. 05. 08. – Session #250 (Admin listaban a szem is popupot nyit)
 
 ### Mit csinaltunk [x]
