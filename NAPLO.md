@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 05. 08. – Session #257 (Prod irany + asset cache bust)
+
+### Mit csinaltunk [x]
+- [x] Tisztazva: a `Deploy All` LocalWP celutvonalra masol, nem publikus szerverre
+- [x] Asset cache-bust miatt `VA_VERSION` emelve `1.1.2` -> `1.1.3`
+- [x] Verzioemeles mind source, mind mirror plugin fajlban megtortent
+
+### Hol tartunk
+Az uj CSS/JS csak ott latszik azonnal, ahol a friss plugin kod tenylegesen telepitve van; cache-bust verzio mar felkeszitve.
+
+---
+
 ## 2026. 05. 08. – Session #256 (Geo kapszula felülírás fix a listában)
 
 ### Mit csinaltunk [x]
