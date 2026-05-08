@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 08. – Session #252 (Admin popup biztos fallback + Fiók-stilus kapszula)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` egyedi admin tablaban a szem es Geo trigger `button` helyett `a` link lett, nonce-os riport URL fallbackkel
+- [x] Ha JS mukodik: ugyanugy popup nyilik (`.va-geo-report-trigger` intercept)
+- [x] Ha JS nem fut: a link biztosan megnyitja a riportot (nem marad "kattintok es semmi")
+- [x] A szem kapszula emoji helyett SVG szemet kapott, vizualisan kozelebb kerult a Fiók oldalhoz
+- [x] `admin.css` finomitas: kapszulaknal `text-decoration: none` a tiszta, gombszeru megjeleneshez
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A popup nyitas most fail-safe: JS mellett modal, JS hiba eseten URL fallback riport. A nezetseg/Geo kapszula megjelenes kozelebb van a Fiók oldali mintahoz.
+
+---
+
 ## 2026. 05. 08. – Session #251 (Admin lista popup fix + design tisztitas)
 
 ### Mit csinaltunk [x]
