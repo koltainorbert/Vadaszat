@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #245 (Geo riport idozona + IP pontossag jelzes)
+
+### Mit csinaltunk [x]
+- [x] Frontend geo popup idopontjai Europe/Budapest lokal idore formalva (kezdet, frissites, utolso)
+- [x] Admin geo popup idopontjai Europe/Budapest lokal idore formalva
+- [x] Beepitett figyelmeztetes: IP-alapu geolokacio mobilhalozatnal a szolgaltato kilepesi pontjat mutathatja (pl. Budapest), nem GPS-t
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A riport idok most mar helyi (Budapest) idozonaban jelennek meg, es egyertelmu jelzes van a geolokacio pontossagi korlatrol.
+
+---
+
 ## 2026. 05. 08. – Session #244 (Geo jogosultsag: premiumbol csak Platinum)
 
 ### Mit csinaltunk [x]
