@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #232 (Egyedi 404 hibaoldal)
+
+### Mit csinaltunk [x]
+- [x] Uj, teljesen egyedi theme 404 sablon letrehozva (`404.php`)
+- [x] Dizajn a projekt arculathoz igazítva (fekete alap, piros accent, dot-grid hatter)
+- [x] Beepitett gyors muveletek: fooldal, hirdetes keresese, kapcsolat
+- [x] Kereso mező kerult a hibakepernyore, hogy azonnal lehessen tovabb lepni
+- [x] Mobilbarat elrendezes + hover allapotok beallitva
+- [x] Theme mirror fajlba is atvezetve + Deploy All sikeres
+
+### Hol tartunk
+A `/404/` oldal most mar nem alap WordPress hibaoldal, hanem markahu, hasznalhato landing jellegu oldal, ami tovabblepteti a latogatot.
+
+---
+
 ## 2026. 05. 07. – Session #231 (CookieYes keret karcsúsítás + belső szöveg beljebb)
 
 ### Mit csinaltunk [x]
