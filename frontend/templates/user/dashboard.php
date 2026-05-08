@@ -882,6 +882,19 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <?php endif; ?>
                             </td>
                             <td style="padding:10px 8px;">
+                            <td style="padding:10px 8px;">
+                                <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;white-space:nowrap;">
+                                    <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?>
+                                </span>
+                                <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                                    <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?action=va_view_geo_report&post=' . $l->ID ), 'va_view_geo_report_' . $l->ID ) ); ?>"
+                                       title="Megtekintési helyek – geo riport"
+                                       target="_blank"
+                                       style="display:inline-flex;align-items:center;gap:4px;font-size:10px;margin-left:5px;color:rgba(255,255,255,.45);text-decoration:none;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:2px 7px;white-space:nowrap;vertical-align:middle;">&#127759; Geo</a>
+                                <?php endif; ?>
+                            </td>
+                            <td style="padding:10px 8px;">
                             <?php
                             // Boost gomb
                             if ( class_exists( 'VA_User_Roles' ) ) :
