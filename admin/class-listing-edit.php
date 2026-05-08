@@ -383,6 +383,8 @@ class VA_Listing_Edit {
                         $approve_url = esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=va_listing_approve&id=' . $pid ), 'va_listing_approve_' . $pid ) );
                         $delete_url  = esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=va_listing_delete&id='  . $pid ), 'va_listing_delete_'  . $pid ) );
                         $view_url    = esc_url( get_permalink( $pid ) );
+                        $geo_nonce   = wp_create_nonce( 'va_view_geo_report_' . $pid );
+                        $geo_url     = esc_url( wp_nonce_url( admin_url( 'admin.php?action=va_view_geo_report&post=' . $pid ), 'va_view_geo_report_' . $pid ) );
                     ?>
                     <tr>
                         <td class="va-le-col-img">
@@ -403,28 +405,26 @@ class VA_Listing_Edit {
                         <td class="va-le-td-muted">
                             <div class="va-le-geo-wrap">
                                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
-                                    <button type="button"
+                                    <a href="<?php echo $geo_url; ?>"
                                             class="va-geo-report-trigger va-le-geo-pill va-le-geo-pill--views"
                                             data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
-                                            data-geo-nonce="<?php echo esc_attr( wp_create_nonce( 'va_view_geo_report_' . $pid ) ); ?>"
+                                            data-geo-nonce="<?php echo esc_attr( $geo_nonce ); ?>"
                                             data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
                                             title="Megtekintési helyek - geo riport"
-                                            onclick="if(window.vaOpenAdminGeoModal){window.vaOpenAdminGeoModal(<?php echo (int) $pid; ?>, '<?php echo esc_js( wp_create_nonce( 'va_view_geo_report_' . $pid ) ); ?>', '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>'); return false;}"
                                             aria-label="Megtekintési helyek megnyitása">
-                                        <span aria-hidden="true">👁</span>
+                                        <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
                                         <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
-                                    </button>
-                                    <button type="button"
+                                    </a>
+                                    <a href="<?php echo $geo_url; ?>"
                                             class="va-geo-report-trigger va-le-geo-pill va-le-geo-pill--geo"
                                             data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
-                                            data-geo-nonce="<?php echo esc_attr( wp_create_nonce( 'va_view_geo_report_' . $pid ) ); ?>"
+                                            data-geo-nonce="<?php echo esc_attr( $geo_nonce ); ?>"
                                             data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
                                             title="Megtekintési helyek - geo riport"
-                                            onclick="if(window.vaOpenAdminGeoModal){window.vaOpenAdminGeoModal(<?php echo (int) $pid; ?>, '<?php echo esc_js( wp_create_nonce( 'va_view_geo_report_' . $pid ) ); ?>', '<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>'); return false;}"
                                             aria-label="Geo riport megnyitása">
                                         <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a14 14 0 0 1 0 18"></path><path d="M12 3a14 14 0 0 0 0 18"></path></svg>
                                         Geo
-                                    </button>
+                                    </a>
                                 <?php else : ?>
                                     <span class="va-le-geo-pill va-le-geo-pill--views">
                                         <span aria-hidden="true">👁</span>
