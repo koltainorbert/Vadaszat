@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #258 (Geo/View pill meret az Aktiv badge-hez)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` oldalon a szem/Geo kapszulak merete az `Aktív` badge-hez igazitva
+- [x] `font-size`, `font-weight`, `padding` es ikonmeret visszaallitva badge-meretre
+- [x] A korabbi nagy `min-width` ertekek eltavolitva, hogy ne legyen tul nagy a kapszula
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A szem es Geo kapszula most mar magassagban az Aktiv badge-hez illeszkedik, nem nagyobb "gomb" meretben jelenik meg.
+
+---
+
 ## 2026. 05. 08. – Session #257 (Prod irany + asset cache bust)
 
 ### Mit csinaltunk [x]
