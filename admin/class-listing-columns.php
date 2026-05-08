@@ -24,6 +24,7 @@ class VA_Listing_Columns {
         // Admin duplikálás hirdetésekhez
         add_filter( 'post_row_actions', [ __CLASS__, 'add_duplicate_row_action' ], 10, 2 );
         add_action( 'admin_action_va_duplicate_listing', [ __CLASS__, 'handle_duplicate_action' ] );
+        add_action( 'admin_action_va_view_geo_report', [ __CLASS__, 'handle_view_geo_report_action' ] );
         add_action( 'admin_notices', [ __CLASS__, 'duplicate_admin_notice' ] );
     }
 
@@ -143,7 +144,12 @@ class VA_Listing_Columns {
                 echo $terms ? esc_html( $terms[0]->name ) : '–';
                 break;
             case 'va_views':
-                echo esc_html( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
+                $views = (int) ( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
+                $url   = wp_nonce_url(
+                    admin_url( 'admin.php?action=va_view_geo_report&post=' . $post_id ),
+                    'va_view_geo_report_' . $post_id
+                );
+                echo '<a href="' . esc_url( $url ) . '" title="Megtekintési helyek">👁 ' . esc_html( number_format_i18n( $views ) ) . '</a>';
                 break;
             case 'va_featured':
                 echo get_post_meta( $post_id, 'va_featured', true ) === '1' ? '⭐' : '–';
@@ -257,5 +263,68 @@ class VA_Listing_Columns {
         if ( $tax_query ) {
             $query->set( 'tax_query', array_merge( [ 'relation' => 'AND' ], $tax_query ) );
         }
+    }
+
+    public static function handle_view_geo_report_action(): void {
+        $post_id = isset( $_GET['post'] ) ? (int) $_GET['post'] : 0;
+        if ( $post_id <= 0 ) {
+            wp_die( 'Érvénytelen hirdetés azonosító.' );
+        }
+
+        if ( ! current_user_can( 'edit_post', $post_id ) ) {
+            wp_die( 'Nincs jogosultságod ehhez a jelentéshez.' );
+        }
+
+        check_admin_referer( 'va_view_geo_report_' . $post_id );
+
+        $rows      = function_exists( 'va_get_view_geo_breakdown' ) ? va_get_view_geo_breakdown( $post_id, 150 ) : [];
+        $post_type = get_post_type( $post_id ) ?: 'va_listing';
+        $title     = get_the_title( $post_id );
+        $back_url  = admin_url( 'edit.php?post_type=' . $post_type );
+
+        $total = 0;
+        foreach ( $rows as $row ) {
+            $total += (int) ( $row['views'] ?? 0 );
+        }
+
+        ob_start();
+        ?>
+        <div style="max-width:1100px;margin:24px auto;padding:0 16px;">
+            <h1 style="margin:0 0 8px;">Megtekintési lokációk</h1>
+            <p style="margin:0 0 14px;color:#555;">Hirdetés: <strong><?php echo esc_html( $title ?: ( 'ID: ' . $post_id ) ); ?></strong></p>
+            <p style="margin:0 0 18px;color:#555;">Összesített lokációs nézettség: <strong><?php echo esc_html( number_format_i18n( $total ) ); ?></strong></p>
+            <p style="margin:0 0 16px;"><a class="button" href="<?php echo esc_url( $back_url ); ?>">Vissza a listához</a></p>
+
+            <?php if ( empty( $rows ) ) : ?>
+                <div style="padding:14px 16px;background:#fff;border:1px solid #dcdcde;border-radius:8px;">Még nincs lokációs adat ennél a hirdetésnél.</div>
+            <?php else : ?>
+                <div style="background:#fff;border:1px solid #dcdcde;border-radius:8px;overflow:auto;">
+                    <table class="widefat fixed striped" style="margin:0;border:none;">
+                        <thead>
+                            <tr>
+                                <th style="width:70px;">Ország</th>
+                                <th>Régió</th>
+                                <th>Város</th>
+                                <th style="width:140px;">Megtekintés</th>
+                                <th style="width:190px;">Utolsó</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach ( $rows as $row ) : ?>
+                            <tr>
+                                <td><strong><?php echo esc_html( (string) ( $row['country_code'] ?? '--' ) ); ?></strong><br><span style="color:#666;"><?php echo esc_html( (string) ( $row['country'] ?? '' ) ); ?></span></td>
+                                <td><?php echo esc_html( (string) ( $row['region'] ?? 'Ismeretlen' ) ); ?></td>
+                                <td><?php echo esc_html( (string) ( $row['city'] ?? 'Ismeretlen' ) ); ?></td>
+                                <td><strong><?php echo esc_html( number_format_i18n( (int) ( $row['views'] ?? 0 ) ) ); ?></strong></td>
+                                <td><?php echo esc_html( (string) ( $row['last_seen'] ?? '' ) ); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php
+        wp_die( (string) ob_get_clean(), 'Megtekintési lokációk', [ 'response' => 200 ] );
     }
 }
