@@ -714,6 +714,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         </div>
                     </details>
                 </section>
+                <?php endif; // can_see_stats ?>
 
                 <?php if ( $listings ): ?>
                 <!-- Sort controls -->
