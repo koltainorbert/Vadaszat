@@ -65,7 +65,7 @@ get_header();
 .va-404__center {
     width: min(980px, 100%);
     text-align: center;
-    color: #fff;
+    color: #fff !important;
     z-index: 2;
 }
 .va-404__digits {
@@ -85,9 +85,18 @@ get_header();
     );
     -webkit-background-clip: text;
     background-clip: text;
-    color: transparent;
+    color: #f2f2f2 !important;
+    -webkit-text-fill-color: #f2f2f2;
     filter: drop-shadow(0 8px 20px rgba(0,0,0,.58));
     animation: va404-glitch 10s linear infinite;
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    .va-404__digits {
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent !important;
+        -webkit-text-fill-color: transparent;
+    }
 }
 .va-404__line {
     width: min(420px, 80%);
@@ -102,12 +111,14 @@ get_header();
     line-height: 1.2;
     font-weight: 800;
     text-transform: uppercase;
-    color: rgba(255,255,255,.86);
+    color: #f6f6f6 !important;
+    text-shadow: 0 2px 10px rgba(0,0,0,.55);
 }
 .va-404__lead {
     margin: 22px auto 0;
     max-width: 700px;
-    color: rgba(255,255,255,.5);
+    color: rgba(255,255,255,.88) !important;
+    text-shadow: 0 1px 8px rgba(0,0,0,.45);
     font-size: clamp(16px, 1.5vw, 30px);
     line-height: 1.65;
     font-weight: 600;
