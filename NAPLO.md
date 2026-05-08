@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #246 (GPS-pontos hely mentes, IP fallback)
+
+### Mit csinaltunk [x]
+- [x] Listing megnyitasnal geolocation engedely eseten GPS koordinata + pontossag bekerul az AJAX keressel
+- [x] Szerver oldalon `increment_views` fogadja a `gps_lat/gps_lng/gps_accuracy` mezoket
+- [x] `va_record_view_geo` bovitve: GPS adat elsoseget kap, csak ennek hianyaban hasznal IP geolokaciot
+- [x] Riport tablaban GPS sorok egyertelmu jelolese (`GP - GPS (eszkoz)`)
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Ha a bongeszo helyhozzaferest kap, a riport mar eszkoz-GPS alapjan ment, vagyis a tenyleges helyedet mutatja (nem szolgaltatoi IP-kilepesi pontot). Hozzaferes tiltasa eseten IP fallback marad.
+
+---
+
 ## 2026. 05. 08. – Session #245 (Geo riport idozona + IP pontossag jelzes)
 
 ### Mit csinaltunk [x]

@@ -916,8 +916,24 @@ class VA_Ajax {
 
         $views = intval( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
         update_post_meta( $post_id, 'va_views', $views + 1 );
+
+        $gps_payload = null;
+        if ( isset( $_POST['gps_lat'], $_POST['gps_lng'] ) ) {
+            $gps_lat = floatval( wp_unslash( $_POST['gps_lat'] ) );
+            $gps_lng = floatval( wp_unslash( $_POST['gps_lng'] ) );
+            $gps_acc = isset( $_POST['gps_accuracy'] ) ? floatval( wp_unslash( $_POST['gps_accuracy'] ) ) : 0.0;
+
+            if ( $gps_lat >= -90 && $gps_lat <= 90 && $gps_lng >= -180 && $gps_lng <= 180 ) {
+                $gps_payload = [
+                    'lat'      => $gps_lat,
+                    'lng'      => $gps_lng,
+                    'accuracy' => max( 0.0, $gps_acc ),
+                ];
+            }
+        }
+
         if ( function_exists( 'va_record_view_geo' ) ) {
-            va_record_view_geo( $post_id );
+            va_record_view_geo( $post_id, $gps_payload );
         }
         $display_views = function_exists( 'va_display_views' ) ? va_display_views( $post_id ) : ( $views + 1 );
         wp_send_json_success( [

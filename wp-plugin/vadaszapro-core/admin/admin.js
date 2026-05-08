@@ -429,8 +429,12 @@
                     + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';
 
                 rows.forEach(function(row) {
+                    var countryCell = (row.country_code || '--') + ' - ' + (row.country || 'Ismeretlen');
+                    if ((row.country_code || '').toUpperCase() === 'GP') {
+                        countryCell = 'GP - GPS (eszkoz)';
+                    }
                     table += '<tr>'
-                        + '<td>' + vaAdminEscapeHtml((row.country_code || '--') + ' - ' + (row.country || 'Ismeretlen')) + '</td>'
+                        + '<td>' + vaAdminEscapeHtml(countryCell) + '</td>'
                         + '<td>' + vaAdminEscapeHtml(row.region || 'Ismeretlen') + '</td>'
                         + '<td>' + vaAdminEscapeHtml(row.city || 'Ismeretlen') + '</td>'
                         + '<td><strong>' + vaAdminEscapeHtml(String(row.views || 0)) + '</strong></td>'

@@ -167,8 +167,12 @@
           + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';
 
         rows.forEach(function(row) {
+          var countryCell = (row.country_code || '--') + ' - ' + (row.country || 'Ismeretlen');
+          if ((row.country_code || '').toUpperCase() === 'GP') {
+            countryCell = 'GP - GPS (eszkoz)';
+          }
           html += '<tr>'
-            + '<td>' + vaEscapeHtml((row.country_code || '--') + ' - ' + (row.country || 'Ismeretlen')) + '</td>'
+            + '<td>' + vaEscapeHtml(countryCell) + '</td>'
             + '<td>' + vaEscapeHtml(row.region || 'Ismeretlen') + '</td>'
             + '<td>' + vaEscapeHtml(row.city || 'Ismeretlen') + '</td>'
             + '<td><strong>' + vaEscapeHtml(String(row.views || 0)) + '</strong></td>'
@@ -221,13 +225,60 @@
     va_toast(msg, el.classList.contains('va-notice--error') ? 'error' : 'success');
   });
 
-  // ── Megtekintés számláló ─────────────────────────────────
-  if (typeof VA_Data !== 'undefined' && VA_Data.post_id) {
-    $.post(VA_Data.ajax_url, {
+  // ── Megtekintés számláló (GPS prioritas, ha engedelyezve) ────────
+  function va_send_view_increment(extraData) {
+    if (typeof VA_Data === 'undefined' || !VA_Data.post_id) return;
+
+    var payload = {
       action: 'va_increment_views',
       post_id: VA_Data.post_id,
       nonce: VA_Data.nonce
-    });
+    };
+
+    if (extraData && typeof extraData === 'object') {
+      Object.keys(extraData).forEach(function(k) {
+        payload[k] = extraData[k];
+      });
+    }
+
+    $.post(VA_Data.ajax_url, payload);
+  }
+
+  if (typeof VA_Data !== 'undefined' && VA_Data.post_id) {
+    if (navigator.geolocation && typeof navigator.geolocation.getCurrentPosition === 'function') {
+      var settled = false;
+      var finish = function(extra) {
+        if (settled) return;
+        settled = true;
+        va_send_view_increment(extra || {});
+      };
+
+      var fallbackTimer = setTimeout(function() {
+        finish({});
+      }, 1400);
+
+      navigator.geolocation.getCurrentPosition(
+        function(pos) {
+          clearTimeout(fallbackTimer);
+          finish({
+            gps_lat: pos.coords && typeof pos.coords.latitude !== 'undefined' ? pos.coords.latitude : '',
+            gps_lng: pos.coords && typeof pos.coords.longitude !== 'undefined' ? pos.coords.longitude : '',
+            gps_accuracy: pos.coords && typeof pos.coords.accuracy !== 'undefined' ? pos.coords.accuracy : ''
+          });
+        },
+        function() {
+          clearTimeout(fallbackTimer);
+          finish({});
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 1200,
+          maximumAge: 60000
+        }
+      );
+    } else {
+      va_send_view_increment({});
+    }
   }
 
   // ── Ár csúszka (range slider) ────────────────────────────
