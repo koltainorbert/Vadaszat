@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #255 (Szem + Geo kapszula pixelpontos stilus)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` nezet/Geo kapszulak stilusa a kuldott referenciahoz igazítva
+- [x] Eroteljes piros korvonal + sotet belso felulet + finom glow effekt beallitva
+- [x] Kapszula meretek, spacing, ikon meret/stroke es tipografia atallitva a referencia jellegre
+- [x] Anchor trigger hover/focus allapotok pontositva
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A szem (`305`) es `Geo` kapszula megjelenese most a kuldott mintahoz van igazítva: eros kontur, sotet belso felulet, kozepre igazított ikon+felirat.
+
+---
+
 ## 2026. 05. 08. – Session #254 (Admin popup 1:1 Fiók stilus + CSV/Nyomtatas parity)
 
 ### Mit csinaltunk [x]
