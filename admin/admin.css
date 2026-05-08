@@ -149,6 +149,8 @@
     justify-content: center;
     gap: 4px;
     min-height: 0;
+    height: 20px;
+    box-sizing: border-box;
     font-size: 10px;
     font-weight: 700;
     letter-spacing: .02em;
@@ -156,8 +158,8 @@
     text-decoration: none;
     border: 1px solid rgba(255, 0, 0, .9);
     background: linear-gradient(180deg, rgba(10, 10, 10, .98), rgba(6, 6, 6, .98));
-    box-shadow: 0 0 0 1px rgba(255, 0, 0, .12) inset, 0 0 14px rgba(255, 0, 0, .20);
-    padding: 3px 9px;
+    box-shadow: 0 0 0 1px rgba(255, 0, 0, .12) inset;
+    padding: 0 9px;
     border-radius: 999px;
     line-height: 1;
     font-family: "Montserrat", "Segoe UI", Arial, sans-serif;

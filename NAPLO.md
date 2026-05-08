@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 08. – Session #259 (Szem/Geo pill fix magassag az Aktivhoz)
+
+### Mit csinaltunk [x]
+- [x] A szem/Geo kapszula fix magassagra allitva (`height: 20px`), hogy az Aktiv badge meretere alljon
+- [x] Belső padding atallitva (`0 9px`) a badge-jelleghez
+- [x] Kulso glow eltavolitva (csak belso kontur maradt), hogy vizualis meretben se legyen nagyobb
+- [x] Source + plugin mirror szinkronizalva
+
+### Hol tartunk
+A szem es Geo kapszula most fix magassaggal fut, az Aktiv badge magassagaval egyezo celmeretre allitva.
+
+---
+
 ## 2026. 05. 08. – Session #258 (Geo/View pill meret az Aktiv badge-hez)
 
 ### Mit csinaltunk [x]
