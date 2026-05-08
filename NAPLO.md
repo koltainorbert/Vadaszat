@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #247 (Geo popup a sajat admin hirdeteslistan is)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` egyedi admin listaban a nezetseg oszlopba bekerult a Geo popup trigger
+- [x] Gomb csak admin szerepkornel jelenik meg, mas szerepkornel sima nezetseg szam marad
+- [x] Minden hirdetes soraban mukodik (nem csak sajat hirdeteseknel)
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A geo riport most mar az egyedi admin hirdeteslista oldalon is elerheto, ahol az osszes hirdetes latszik.
+
+---
+
 ## 2026. 05. 08. – Session #246 (GPS-pontos hely mentes, IP fallback)
 
 ### Mit csinaltunk [x]
