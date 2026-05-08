@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 08. – Session #236 (404 brutalis redesign, split hero)
+
+### Mit csinaltunk [x]
+- [x] A 404 sablon teljes vizualis ujraepitese split-layout hero szerkezetre
+- [x] Bal oldalon nagyméretu 404 tipografia + 10s glitch hatas (cyan/red szetcsuszas)
+- [x] Jobb oldalon status panel blokkok modern card stílussal
+- [x] Erősebb fenyek, kontrasztos hatter, premium border + glow
+- [x] Mobilon egyoszlopos torés, teljes magassaghoz igazított blokk
+- [x] Root es theme 404 fajl azonos tartalomra szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A 404 oldal most sokkal agresszivebb, karakteresebb vizuált ad, es hangulatban kozel van a kert referenciastilushoz, de sajat implementacio.
+
+---
+
 ## 2026. 05. 08. – Session #235 (Vásárlás hero full-screen + 10s glitch)
 
 ### Mit csinaltunk [x]
