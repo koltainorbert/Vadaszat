@@ -1,3 +1,150 @@
+/* Geo riport modal */
+.va-geo-modal-open {
+  overflow: hidden;
+}
+
+.va-geo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+}
+
+.va-geo-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(2px);
+}
+
+.va-geo-modal__panel {
+  position: relative;
+  width: min(980px, calc(100vw - 28px));
+  margin: 22px auto;
+  max-height: calc(100vh - 44px);
+  background: #0b0b0b;
+  color: #fff;
+  border: 1px solid rgba(255, 0, 0, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 0, 0, 0.1) inset;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.va-geo-modal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.va-geo-modal__title {
+  font-weight: 700;
+}
+
+.va-geo-modal__actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.va-geo-modal__btn {
+  border: 1px solid rgba(255, 0, 0, 0.45);
+  background: rgba(255, 0, 0, 0.14);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.va-geo-modal__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.va-geo-modal__btn--close {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.va-geo-modal__body {
+  padding: 14px;
+  overflow: auto;
+}
+
+.va-geo-modal__loading,
+.va-geo-modal__empty,
+.va-geo-modal__error {
+  padding: 16px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.va-geo-modal__warning {
+  margin-bottom: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 90, 90, 0.45);
+  background: rgba(255, 0, 0, 0.15);
+}
+
+.va-geo-modal__meta {
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.va-geo-modal__table-wrap {
+  overflow: auto;
+}
+
+.va-geo-modal__table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 680px;
+}
+
+.va-geo-modal__table th,
+.va-geo-modal__table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+}
+
+.va-geo-modal__table th {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  .va-geo-modal,
+  .va-geo-modal * {
+    visibility: visible !important;
+  }
+
+  .va-geo-modal {
+    position: static !important;
+  }
+
+  .va-geo-modal__backdrop,
+  .va-geo-modal__actions {
+    display: none !important;
+  }
+
+  .va-geo-modal__panel {
+    margin: 0 !important;
+    width: 100% !important;
+    max-height: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
+  }
+}
 /* ============================================================
    VadászApró – Frontend CSS
    SDH Design: #ff0000 accent | rgb(6,6,6) háttér | dot grid

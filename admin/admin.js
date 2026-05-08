@@ -309,6 +309,151 @@
     // (legacy stub)
     function vaCommitRgba() {}
 
+    function vaAdminEscapeHtml(value) {
+        return String(value || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/\"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function vaAdminBuildGeoCsv(report) {
+        var lines = ['Orszagkod;Orszag;Regio;Varos;Megtekintes;Utolso'];
+        (report.rows || []).forEach(function(row) {
+            var cols = [
+                row.country_code || '--',
+                row.country || 'Ismeretlen',
+                row.region || 'Ismeretlen',
+                row.city || 'Ismeretlen',
+                String(parseInt(row.views || 0, 10)),
+                row.last_seen || ''
+            ].map(function(cell) {
+                var safe = String(cell).replace(/\"/g, '\"\"');
+                return '\"' + safe + '\"';
+            });
+            lines.push(cols.join(';'));
+        });
+        return '\ufeff' + lines.join('\n');
+    }
+
+    function vaOpenAdminGeoModal(postId, nonce) {
+        var ajaxEndpoint = (typeof ajaxurl !== 'undefined') ? ajaxurl : '';
+        if (!ajaxEndpoint) {
+            window.vaAdminToast('Nincs ajax endpoint.', 'error');
+            return;
+        }
+
+        $('.va-admin-geo-modal').remove();
+
+        var html = ''
+            + '<div class="va-admin-geo-modal">'
+            + '  <div class="va-admin-geo-modal__backdrop" data-close="1"></div>'
+            + '  <div class="va-admin-geo-modal__panel" role="dialog" aria-modal="true">'
+            + '    <div class="va-admin-geo-modal__head">'
+            + '      <div class="va-admin-geo-modal__title">Geo riport betoltese...</div>'
+            + '      <div class="va-admin-geo-modal__actions">'
+            + '        <button type="button" class="button button-secondary" data-action="download" disabled>Letoltes CSV</button>'
+            + '        <button type="button" class="button button-secondary" data-action="print" disabled>Nyomtatas</button>'
+            + '        <button type="button" class="button" data-close="1">Bezar</button>'
+            + '      </div>'
+            + '    </div>'
+            + '    <div class="va-admin-geo-modal__body"><div class="va-admin-geo-modal__loading">Betoltes...</div></div>'
+            + '  </div>'
+            + '</div>';
+
+        $('body').append(html).addClass('va-admin-geo-modal-open');
+        var $modal = $('.va-admin-geo-modal');
+        var $body = $modal.find('.va-admin-geo-modal__body');
+        var $title = $modal.find('.va-admin-geo-modal__title');
+        var $download = $modal.find('[data-action="download"]');
+        var $print = $modal.find('[data-action="print"]');
+
+        $modal.on('click', '[data-close="1"]', function() {
+            $('body').removeClass('va-admin-geo-modal-open');
+            $modal.remove();
+        });
+
+        $.post(ajaxEndpoint, {
+            action: 'va_get_view_geo_report',
+            post_id: postId,
+            nonce: nonce
+        }).done(function(res) {
+            if (!res || !res.success || !res.data) {
+                $body.html('<div class="va-admin-geo-modal__error">Nem sikerult a geo riport lekerese.</div>');
+                return;
+            }
+
+            var report = res.data;
+            var rows = report.rows || [];
+            var total = parseInt(report.total_views || 0, 10);
+            var topViews = rows.length ? parseInt(rows[0].views || 0, 10) : 0;
+            var topShare = total > 0 ? Math.round((topViews / total) * 100) : 0;
+            var warn = '';
+
+            if (topShare >= 70 && rows.length > 0) {
+                warn = '<div class="va-admin-geo-modal__warning">Top lokacio aranya magas (' + topShare + '%). Ugyanaz az IP 6 oran belul csak 1x szamit.</div>';
+            }
+
+            $title.text('Geo riport: ' + (report.post_title || ('#' + postId)));
+
+            if (!rows.length) {
+                $body.html(warn + '<div class="va-admin-geo-modal__empty">Nincs meg lokacios adat ehhez a hirdeteshez.</div>');
+            } else {
+                var table = ''
+                    + warn
+                    + '<div class="va-admin-geo-modal__meta">Osszes: <strong>' + total + '</strong> | Frissitve: ' + vaAdminEscapeHtml(report.generated_at || '-') + '</div>'
+                    + '<div class="va-admin-geo-modal__table-wrap">'
+                    + '<table class="widefat striped">'
+                    + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';
+
+                rows.forEach(function(row) {
+                    table += '<tr>'
+                        + '<td>' + vaAdminEscapeHtml((row.country_code || '--') + ' - ' + (row.country || 'Ismeretlen')) + '</td>'
+                        + '<td>' + vaAdminEscapeHtml(row.region || 'Ismeretlen') + '</td>'
+                        + '<td>' + vaAdminEscapeHtml(row.city || 'Ismeretlen') + '</td>'
+                        + '<td><strong>' + vaAdminEscapeHtml(String(row.views || 0)) + '</strong></td>'
+                        + '<td>' + vaAdminEscapeHtml(row.last_seen || '-') + '</td>'
+                        + '</tr>';
+                });
+
+                table += '</tbody></table></div>';
+                $body.html(table);
+            }
+
+            $download.prop('disabled', false);
+            $print.prop('disabled', false);
+
+            $download.off('click').on('click', function() {
+                var csv = vaAdminBuildGeoCsv(report);
+                var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'geo-riport-' + postId + '.csv';
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+            });
+
+            $print.off('click').on('click', function() {
+                window.print();
+            });
+        }).fail(function() {
+            $body.html('<div class="va-admin-geo-modal__error">Halozati hiba a geo riport lekeresenel.</div>');
+        });
+    }
+
+    $(document).on('click', '.va-geo-report-trigger', function(e) {
+        e.preventDefault();
+        var postId = parseInt($(this).data('post-id') || 0, 10);
+        var nonce = ($(this).data('geo-nonce') || '').toString();
+        if (!postId || !nonce) {
+            window.vaAdminToast('Geo riport most nem elerheto.', 'error');
+            return;
+        }
+        vaOpenAdminGeoModal(postId, nonce);
+    });
+
 
 
     /* ── Toast helper ─────────────────────────────────────────── */
