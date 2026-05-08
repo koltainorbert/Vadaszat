@@ -286,7 +286,7 @@ class VA_Shortcodes {
             'basic'    => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>',
             'silver'   => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>',
             'gold'     => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>',
-            'platinum' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l4 8h12l4-8"/><path d="M6 12v8h12v-8"/><path d="M12 12v8"/></svg>',
+            'platinum' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18"/><path d="M5 20l2-13 5 6 2-9 2 9 5-6 2 13"/><circle cx="5" cy="7" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="3" r="1.2" fill="currentColor" stroke="none"/><circle cx="19" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg>',
         ];
         return $icons[ $slug ] ?? $icons['basic'];
     }
