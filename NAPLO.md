@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #249 (Admin hirdeteslista: Fiók-stilu Geo gomb)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` egyedi admin tablaban a nezetseg oszlop ujraepitve Fiók-stilusra
+- [x] Kulon szem badge + kulon `Geo` gomb (azonos kapszula dizajn)
+- [x] A popupot most mar egyertelmuen a `Geo` gomb nyitja
+- [x] Admin-only megjelenites megtartva
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Az admin listaban most mar ugyanaz a vizualis es mukodesi minta van, mint a sajat fiokban: szem badge kulon, kattinthato Geo gomb kulon.
+
+---
+
 ## 2026. 05. 08. – Session #248 (GPS koordinatabol helysegnev)
 
 ### Mit csinaltunk [x]
