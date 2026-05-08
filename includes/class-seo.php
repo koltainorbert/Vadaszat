@@ -394,7 +394,13 @@ class VA_SEO {
         }
 
         if ( is_singular() ) {
-            $excerpt = has_excerpt() ? get_the_excerpt() : wp_trim_words( wp_strip_all_tags( (string) get_post_field( 'post_content', get_queried_object_id() ) ), 28, '...' );
+            if ( has_excerpt() ) {
+                $excerpt = get_the_excerpt();
+            } else {
+                $raw = (string) get_post_field( 'post_content', get_queried_object_id() );
+                $raw = strip_shortcodes( $raw );
+                $excerpt = wp_trim_words( wp_strip_all_tags( $raw ), 28, '...' );
+            }
             return wp_strip_all_tags( $excerpt );
         }
 
