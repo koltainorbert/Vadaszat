@@ -420,10 +420,10 @@ class VA_Listing_Edit {
                                             data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
                                             data-geo-nonce="<?php echo esc_attr( $geo_nonce ); ?>"
                                             data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
-                                            title="Megtekintési helyek - geo riport"
-                                            aria-label="Geo riport megnyitása">
+                                            title="Megtekintési helyek - Geotech riport"
+                                            aria-label="Geotech riport megnyitása">
                                         <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a14 14 0 0 1 0 18"></path><path d="M12 3a14 14 0 0 0 0 18"></path></svg>
-                                        Geo
+                                        Geotech
                                     </a>
                                 <?php else : ?>
                                     <span class="va-le-geo-pill va-le-geo-pill--views">
