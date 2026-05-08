@@ -2,6 +2,23 @@
 
 ---
 
+## 2026. 05. 08. – Session #268 (SEO landingek + belso linkeles + landing sitemap)
+
+### Mit csinaltunk [x]
+- [x] A keresooldal brand/model query alapon SEO-landingkent is mukodik (`brand`, `model`)
+- [x] A keresooldal kapott landing intro blokkot es crawlolhato marka/model linkeket
+- [x] A frontend szuro JS automatikusan elotolti a `brand` / `model` landing parametereket
+- [x] A hirdetes reszletes oldalak uj belso SEO linkblokkot kaptak (marka / modell / uzemanyag / hely)
+- [x] Uj landing sitemap kerult be: brand- es modellalapu landing URL-ek bekerulnek a sitemap indexbe
+- [x] Cache-bust + rewrite flush: `VA_VERSION` 1.1.4 -> 1.1.5, `VA_REWRITE_VER` 1.0.7 -> 1.0.8
+- [x] Source + plugin/theme mirrorok szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Az SEO reteg mar nem csak meta szinten erosodott, hanem strukturaban is: uj hirdetesek automatikusan erositik a marka/model landingeket, a sitemapet es a belso linkhalot.
+
+---
+
 ## 2026. 05. 08. – Session #267 (SEO erosites: autohirdetes title/meta/schema)
 
 ### Mit csinaltunk [x]

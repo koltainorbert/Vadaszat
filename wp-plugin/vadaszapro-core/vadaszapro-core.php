@@ -11,8 +11,8 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'VA_VERSION',        '1.1.4' );
-define( 'VA_REWRITE_VER',   '1.0.7' );   // Növeld meg ha CPT/tax slug változik!
+define( 'VA_VERSION',        '1.1.5' );
+define( 'VA_REWRITE_VER',   '1.0.8' );   // Növeld meg ha CPT/tax slug változik!
 define( 'VA_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'VA_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'VA_TEXT_DOMAIN', 'vadaszapro' );
