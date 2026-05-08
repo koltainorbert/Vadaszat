@@ -400,7 +400,21 @@ class VA_Listing_Edit {
                         <td><span class="va-le-tag"><?php echo esc_html($cat); ?></span></td>
                         <td><?php echo $price > 0 ? '<strong class="va-le-price">' . number_format($price,0,',','&nbsp;') . ' Ft</strong>' : '<span class="va-le-muted">—</span>'; ?></td>
                         <td><span class="va-le-pill" style="color:<?php echo $st_color;?>;background:<?php echo $st_bg;?>"><?php echo esc_html($st_label); ?></span></td>
-                        <td class="va-le-td-muted"><?php echo number_format($views,0,',','&nbsp;'); ?></td>
+                        <td class="va-le-td-muted">
+                            <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                                <button type="button"
+                                        class="va-geo-report-trigger"
+                                        data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
+                                        data-geo-nonce="<?php echo esc_attr( wp_create_nonce( 'va_view_geo_report_' . $pid ) ); ?>"
+                                        title="Megtekintési helyek"
+                                        style="display:inline-flex;align-items:center;gap:4px;background:transparent;border:1px solid rgba(255,255,255,.2);color:inherit;border-radius:999px;padding:2px 8px;cursor:pointer;">
+                                    <span aria-hidden="true">👁</span>
+                                    <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
+                                </button>
+                            <?php else : ?>
+                                <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
+                            <?php endif; ?>
+                        </td>
                         <td class="va-le-td-muted"><?php echo esc_html(get_the_date('m.d H:i')); ?></td>
                         <td>
                             <div class="va-le-actions">
