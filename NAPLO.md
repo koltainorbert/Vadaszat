@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #271 (exact query SEO erosites: egyedi hirdetesnev)
+
+### Mit csinaltunk [x]
+- [x] A hirdetes oldali browser title elejere az exact hirdetes cim kerul (nem csak normalizalt brand/model)
+- [x] A hirdetes meta description elejere az exact hirdetes cim kerul
+- [x] A single template legacy OG/meta blokk csak akkor fut, ha a kozponti `VA_SEO` nincs aktivan betoltve (duplikalt meta konfliktus megszuntetve)
+- [x] Source + plugin/theme mirror szinkronban
+- [x] Hibakontroll rendben, Deploy All sikeres
+
+### Eredmeny
+Az egyedi hirdetes URL-ek pontos keresokifejezesre jobban optimalizalt title/meta jelet adnak, es megszunt a duplikalt meta kimenetbol adodo bizonytalansag.
+
+---
+
 ## 2026. 05. 08. – Session #270 (célzott márka/modell SEO variációk)
 
 ### Mit csinaltunk [x]

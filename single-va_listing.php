@@ -14,8 +14,8 @@
 
 
 // ── Open Graph / Twitter Card meta tagok ────────────────
-
-
+// Központi SEO réteg mellett ne duplázzuk a meta tageket.
+if ( ! class_exists( 'VA_SEO' ) ) {
 add_action( 'wp_head', function() {
 
 
@@ -185,6 +185,7 @@ add_action( 'wp_head', function() {
 
 
 }, 1 ); // priority 1 = wp_head legeleje
+}
 
 
 
