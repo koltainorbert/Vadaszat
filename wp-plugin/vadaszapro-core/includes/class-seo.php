@@ -38,14 +38,35 @@ class VA_SEO {
     }
 
     public static function rank_math_social_title( $title ): string {
-        return self::social_title( is_string( $title ) ? $title : wp_get_document_title() );
+        return self::sanitize_seo_copy( self::social_title( is_string( $title ) ? $title : wp_get_document_title() ) );
     }
 
     public static function rank_math_social_description( $description ): string {
         if ( is_singular( 'va_listing' ) ) {
-            return self::social_description();
+            return self::sanitize_seo_copy( self::social_description() );
         }
-        return is_string( $description ) && $description !== '' ? $description : self::meta_description();
+        $desc = is_string( $description ) && $description !== '' ? $description : self::meta_description();
+        return self::sanitize_seo_copy( $desc );
+    }
+
+    private static function sanitize_seo_copy( string $text ): string {
+        $clean = trim( wp_strip_all_tags( $text ) );
+        if ( $clean === '' ) {
+            return $clean;
+        }
+
+        $replacements = [
+            'VadászApró' => 'Weingartner Autó',
+            'Vadaszapro' => 'Weingartner Auto',
+            'Vadászati'  => 'Autós',
+            'vadászati'  => 'autós',
+            'Vadász'     => 'Autós',
+            'vadász'     => 'autós',
+            'Fegyver'    => 'Jármű',
+            'fegyver'    => 'jármű',
+        ];
+
+        return strtr( $clean, $replacements );
     }
 
     public static function start_social_meta_buffer(): void {
@@ -360,7 +381,7 @@ class VA_SEO {
             $county = wp_get_post_terms( $id, 'va_county', [ 'fields' => 'names' ] );
             $county_txt = ! empty( $county[0] ) ? (string) $county[0] : 'Magyarország';
 
-            $desc = $title . ' - ' . $price_txt . '. ' . $county_txt . ' területén elérhető vadászati apróhirdetés.';
+            $desc = $title . ' - ' . $price_txt . '. ' . $county_txt . ' területén elérhető autós hirdetés.';
             return wp_strip_all_tags( $desc );
         }
 
@@ -369,7 +390,7 @@ class VA_SEO {
             $title = get_the_title( $id );
             $end = (int) get_post_meta( $id, 'va_auction_end', true );
             $end_txt = $end > 0 ? date_i18n( 'Y.m.d H:i', $end ) : 'hamarosan';
-            return wp_strip_all_tags( $title . ' - VadászApró aukció. Lejárat: ' . $end_txt . '.' );
+            return wp_strip_all_tags( $title . ' - Online aukció. Lejárat: ' . $end_txt . '.' );
         }
 
         if ( is_singular() ) {
@@ -378,11 +399,11 @@ class VA_SEO {
         }
 
         if ( is_post_type_archive( 'va_listing' ) ) {
-            return 'Vadászati apróhirdetések országosan: fegyver, optika, felszerelés, jármű és kiegészítők. Friss hirdetések naponta.';
+            return 'Autó és motor hirdetések országosan, folyamatosan frissülő kínálattal és részletes adatokkal.';
         }
 
         if ( is_post_type_archive( 'va_auction' ) ) {
-            return 'Aktuális vadászati aukciók valós licittel, folyamatosan frissülő kínálattal és részletes termékadatokkal.';
+            return 'Aktuális jármű aukciók valós licittel, folyamatosan frissülő kínálattal és részletes adatokkal.';
         }
 
         if ( is_tax() || is_category() || is_tag() ) {
@@ -392,11 +413,11 @@ class VA_SEO {
                 if ( is_string( $d ) && trim( wp_strip_all_tags( $d ) ) !== '' ) {
                     return wp_trim_words( wp_strip_all_tags( $d ), 28, '...' );
                 }
-                return $term->name . ' kategória vadászati hirdetések és ajánlatok.';
+                return $term->name . ' kategória autó és motor ajánlatokkal.';
             }
         }
 
-        return 'VadászApró - vadászati hirdetések, aukciók és felszerelések egy helyen.';
+        return 'Weingartner Autó - autó és motor hirdetések egy helyen.';
     }
 
     private static function listing_social_title( int $post_id ): string {
@@ -480,7 +501,7 @@ class VA_SEO {
             }
         }
 
-        return $default_title;
+        return self::sanitize_seo_copy( $default_title );
     }
 
     private static function social_description(): string {
@@ -491,7 +512,7 @@ class VA_SEO {
             }
         }
 
-        return self::meta_description();
+        return self::sanitize_seo_copy( self::meta_description() );
     }
 
     public static function render_head_meta(): void {
