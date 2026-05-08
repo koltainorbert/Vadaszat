@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #233 (404 oldal dögösebb redesign)
+
+### Mit csinaltunk [x]
+- [x] A frissen letrehozott 404 oldal teljes vizualis ujratervezese premium hero stilusra
+- [x] Nagy tipografia (`404` digits), erosebb fenyek, filmesebb hatter es zajreteg
+- [x] Uj CTA hierarchia: hirdetes kereses (primary), fooldal, kapcsolat
+- [x] Gyorslink capsule sor + hangsulyos keresosav a hero blokkban
+- [x] Root es theme 404 sablon szinkronizalva + Deploy All sikeres
+
+### Hol tartunk
+A 404 oldal most mar sokkal karakteresebb, modern es brand-kompatibilis landing jellegu felulet, nem alap hibaablak hatasu.
+
+---
+
 ## 2026. 05. 08. – Session #232 (Egyedi 404 hibaoldal)
 
 ### Mit csinaltunk [x]
