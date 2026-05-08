@@ -2,6 +2,18 @@
 
 ---
 
+## 2026. 05. 08. – Session #261 (Teszt szinek visszaallitasa)
+
+### Mit csinaltunk [x]
+- [x] A frontend teszt miatt beallitott feher hatter visszaallitva (`background: var(--bg)`) a tema `style.css` fajljaban
+- [x] Az admin oldal hattere megerositve eredeti temavaltozora (`background: var(--va-bg)`)
+- [x] A teszt kozben letrejott felesleges `frontend/css/style.css` fajl torolve
+
+### Hol tartunk
+Az oldal szinvilaga visszaallt az eredeti sotet designra, teszt override nem maradt bent.
+
+---
+
 ## 2026. 05. 08. – Session #260 (Adminban szem/Geo pill 50% meret)
 
 ### Mit csinaltunk [x]
