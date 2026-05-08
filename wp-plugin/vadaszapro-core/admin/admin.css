@@ -196,6 +196,19 @@
     flex: 0 0 auto;
 }
 
+/* Globális admin link szabályok felülírása ezen a komponensen */
+body.va-admin-page .va-le-geo-wrap a.va-le-geo-pill {
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+body.va-admin-page .va-le-geo-wrap a.va-le-geo-pill:hover,
+body.va-admin-page .va-le-geo-wrap a.va-le-geo-pill:focus,
+body.va-admin-page .va-le-geo-wrap a.va-le-geo-pill:active {
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
 @media print {
     body * {
         visibility: hidden !important;
