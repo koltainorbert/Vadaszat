@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #256 (Geo kapszula felülírás fix a listában)
+
+### Mit csinaltunk [x]
+- [x] Azonositva: globális `body.va-admin-page a { ... !important }` szabaly felulirta a kapszula link stilust
+- [x] Célzott felülírás bekerült: `body.va-admin-page .va-le-geo-wrap a.va-le-geo-pill` (color + text-decoration `!important`)
+- [x] Hover/focus/active állapotokra is fixen kapszula stilus marad
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A `vadaszapro-listings` oldalon a szem/Geo elem mar nem tud visszaesni narancs, aláhúzott sima link megjelenésre.
+
+---
+
 ## 2026. 05. 08. – Session #255 (Szem + Geo kapszula pixelpontos stilus)
 
 ### Mit csinaltunk [x]
