@@ -682,12 +682,16 @@
 
   // ── Oldal betöltésekor szűrő init ────────────────────────
   if ($('#va-filter-form').length && $('#va-listing-results').length) {
-    va_update_model_options('');
     if (typeof VA_Data !== 'undefined') {
       if (VA_Data.initial_s)          { $('#va-kw').val(VA_Data.initial_s); }
       if (parseInt(VA_Data.initial_cat) > 0)        { $('#va-cat').val(VA_Data.initial_cat); }
       if (VA_Data.initial_author_id)  { $('#va-filter-form').data('author-id', VA_Data.initial_author_id); }
       if (VA_Data.initial_post_type)  { $('#va-filter-form').data('post-type', VA_Data.initial_post_type); }
+      if (VA_Data.initial_brand)      { $('#va-brand-search').val(VA_Data.initial_brand); }
+      va_update_model_options(VA_Data.initial_model || '');
+      if (VA_Data.initial_model)      { $('#va-model-search').val(VA_Data.initial_model); }
+    } else {
+      va_update_model_options('');
     }
     va_load_listings(1);
   }

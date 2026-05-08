@@ -13,6 +13,8 @@ $url_s           = sanitize_text_field( wp_unslash( $_GET['s']           ?? '' )
 $url_q           = sanitize_text_field( wp_unslash( $_GET['q']           ?? '' ) ); // user_search módban
 $url_cat         = intval( $_GET['cat']         ?? 0 );
 $url_author_id   = intval( $_GET['author_id']   ?? 0 );
+$url_brand       = sanitize_text_field( wp_unslash( $_GET['brand']       ?? '' ) );
+$url_model       = sanitize_text_field( wp_unslash( $_GET['model']       ?? '' ) );
 $url_user_search = ! empty( $_GET['user_search'] );
 $allowed_post_types = [ 'va_listing' ];
 if ( function_exists( 'va_auctions_enabled' ) && va_auctions_enabled() ) {
@@ -50,6 +52,21 @@ $vehicle_fuel_types   = [
     'egyeb'    => 'Egyéb',
 ];
 $vehicle_conditions   = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_vehicle_condition_options() : [];
+$search_page         = get_page_by_path( 'va-hirdetes-kereses' );
+$search_url          = $search_page ? get_permalink( $search_page ) : home_url( '/va-hirdetes-kereses/' );
+$landing_title       = 'Eladó autók és motorok';
+$landing_intro       = 'Böngészd a friss autó- és motorhirdetéseket részletes szűrőkkel, aktuális árakkal és járműadatokkal.';
+$top_brand_links     = array_slice( $vehicle_brands, 0, 24 );
+$top_model_links     = [];
+if ( $url_brand !== '' && ! empty( $vehicle_brand_models[ $url_brand ] ) && is_array( $vehicle_brand_models[ $url_brand ] ) ) {
+    $top_model_links = array_slice( $vehicle_brand_models[ $url_brand ], 0, 24 );
+    $landing_title = $url_model !== ''
+        ? 'Eladó ' . $url_brand . ' ' . $url_model
+        : 'Eladó ' . $url_brand;
+    $landing_intro = $url_model !== ''
+        ? 'Aktuális ' . $url_brand . ' ' . $url_model . ' ajánlatok részletes adatokkal, árakkal és szűrőzhető találatokkal.'
+        : 'Aktuális ' . $url_brand . ' ajánlatok részletes adatokkal, árakkal és szűrőzhető találatokkal.';
+}
 
 // ── Felhasználó-kereső mód ────────────────────────────────────
 if ( $url_user_search ) {
@@ -65,8 +82,6 @@ if ( $url_user_search ) {
         $user_args['search_columns'] = [ 'user_login', 'display_name' ];
     }
     $users = get_users( $user_args );
-    $search_page = get_page_by_path( 'va-hirdetes-kereses' );
-    $search_url  = $search_page ? get_permalink( $search_page ) : home_url( '/va-hirdetes-kereses/' );
     ?>
     <div class="va-wrap">
         <?php va_display_flash(); ?>
@@ -108,6 +123,8 @@ wp_localize_script( 'va-frontend', 'VA_Data', [
     'initial_cat'      => $url_cat,
     'initial_author_id'=> $url_author_id,
     'initial_post_type'=> $url_post_type,
+    'initial_brand'    => $url_brand,
+    'initial_model'    => $url_model,
     'slider_max'       => $lp_slider_max,
     'slider_step'      => $lp_slider_step,
     'empty_text'       => $lp_empty_text,
@@ -118,6 +135,29 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
 <div class="va-wrap">
     <?php va_display_flash(); ?>
 
+    <section class="va-search-landing" style="margin-bottom:22px;padding:18px 20px;border:1px solid rgba(255,255,255,.08);border-radius:18px;background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));">
+        <h1 style="margin:0 0 8px;font-size:clamp(24px,4vw,38px);line-height:1.1;color:#fff;"><?php echo esc_html( $landing_title ); ?></h1>
+        <p style="margin:0 0 16px;color:rgba(255,255,255,.72);max-width:860px;"><?php echo esc_html( $landing_intro ); ?></p>
+
+        <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+            <?php foreach ( $top_brand_links as $brand_link ): ?>
+                <a href="<?php echo esc_url( add_query_arg( 'brand', (string) $brand_link, $search_url ) ); ?>" style="display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:#fff;text-decoration:none;background:rgba(255,255,255,.03);">
+                    <?php echo esc_html( (string) $brand_link ); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+
+        <?php if ( ! empty( $top_model_links ) ) : ?>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <?php foreach ( $top_model_links as $model_link ): ?>
+                <a href="<?php echo esc_url( add_query_arg( [ 'brand' => $url_brand, 'model' => (string) $model_link ], $search_url ) ); ?>" style="display:inline-flex;align-items:center;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,0,0,.28);color:#fff;text-decoration:none;background:rgba(255,0,0,.08);">
+                    <?php echo esc_html( (string) $model_link ); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
+    </section>
+
     <!-- Szűrő sáv -->
     <div class="va-filter-bar">
         <div class="va-filter-bar__title"><?php echo esc_html( $lp_filter_title ); ?></div>
@@ -126,7 +166,7 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
                 <select id="va-brand-search" class="va-select">
                     <option value="">Márka: Mindegy</option>
                     <?php foreach ( $vehicle_brands as $brand ): ?>
-                        <option value="<?php echo esc_attr( (string) $brand ); ?>"><?php echo esc_html( (string) $brand ); ?></option>
+                        <option value="<?php echo esc_attr( (string) $brand ); ?>"<?php selected( $url_brand, (string) $brand ); ?>><?php echo esc_html( (string) $brand ); ?></option>
                     <?php endforeach; ?>
                 </select>
 

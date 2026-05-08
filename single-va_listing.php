@@ -2002,6 +2002,55 @@ if ( $related->have_posts() ):
 </div>
 <?php endif; ?>
 
+<?php
+$seo_search_page = get_page_by_path( 'va-hirdetes-kereses' );
+$seo_search_url  = $seo_search_page ? get_permalink( $seo_search_page ) : home_url( '/va-hirdetes-kereses/' );
+$seo_internal_links = [];
+
+if ( ! empty( $brand ) ) {
+    $seo_internal_links[] = [
+        'label' => $brand . ' ajánlatok',
+        'url'   => add_query_arg( 'brand', $brand, $seo_search_url ),
+    ];
+}
+
+if ( ! empty( $brand ) && ! empty( $model ) ) {
+    $seo_internal_links[] = [
+        'label' => $brand . ' ' . $model . ' ajánlatok',
+        'url'   => add_query_arg( [ 'brand' => $brand, 'model' => $model ], $seo_search_url ),
+    ];
+}
+
+if ( ! empty( $fuel_type ) ) {
+    $seo_internal_links[] = [
+        'label' => $fuel_type . ' járművek',
+        'url'   => add_query_arg( 'fuel_type', $fuel_type, $seo_search_url ),
+    ];
+}
+
+if ( ! empty( $location ) ) {
+    $seo_internal_links[] = [
+        'label' => $location . ' környéki ajánlatok',
+        'url'   => add_query_arg( 's', $location, $seo_search_url ),
+    ];
+}
+
+if ( ! empty( $seo_internal_links ) ):
+?>
+<div class="sl__related-wrap" style="max-width:<?php echo esc_attr((string)$sl_content_max); ?>px;margin:18px auto 0;padding:0 16px;">
+    <div class="sl__card" style="margin-bottom:0;">
+        <div class="sl__card-title" style="margin-bottom:14px;">Kapcsolódó keresések</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            <?php foreach ( $seo_internal_links as $seo_link ): ?>
+                <a href="<?php echo esc_url( (string) $seo_link['url'] ); ?>" style="display:inline-flex;align-items:center;padding:9px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03);color:#fff;text-decoration:none;">
+                    <?php echo esc_html( (string) $seo_link['label'] ); ?>
+                </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
 
 
 
