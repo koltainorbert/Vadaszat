@@ -406,7 +406,7 @@ class VA_Listing_Edit {
                             <div class="va-le-geo-wrap">
                                 <?php if ( current_user_can( 'manage_options' ) ) : ?>
                                     <a href="<?php echo $geo_url; ?>"
-                                            class="va-geo-report-trigger va-le-geo-pill va-le-geo-pill--views"
+                                            class="va-geo-report-trigger va-le-pill va-le-geo-pill va-le-geo-pill--views"
                                             data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
                                             data-geo-nonce="<?php echo esc_attr( $geo_nonce ); ?>"
                                             data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
@@ -416,7 +416,7 @@ class VA_Listing_Edit {
                                         <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
                                     </a>
                                     <a href="<?php echo $geo_url; ?>"
-                                            class="va-geo-report-trigger va-le-geo-pill va-le-geo-pill--geo"
+                                            class="va-geo-report-trigger va-le-pill va-le-geo-pill va-le-geo-pill--geo"
                                             data-post-id="<?php echo esc_attr( (string) $pid ); ?>"
                                             data-geo-nonce="<?php echo esc_attr( $geo_nonce ); ?>"
                                             data-ajax-url="<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>"
@@ -426,7 +426,7 @@ class VA_Listing_Edit {
                                         Geotech
                                     </a>
                                 <?php else : ?>
-                                    <span class="va-le-geo-pill va-le-geo-pill--views">
+                                    <span class="va-le-pill va-le-geo-pill va-le-geo-pill--views">
                                         <span aria-hidden="true">👁</span>
                                         <?php echo number_format( $views, 0, ',', '&nbsp;' ); ?>
                                     </span>

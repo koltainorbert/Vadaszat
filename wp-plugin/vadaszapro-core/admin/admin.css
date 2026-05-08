@@ -10,7 +10,7 @@
 
 .column-va_views .va-geo-report-eye {
     font-size: 12px;
-    line-height: 1;
+    line-height: normal;
 }
 
 .va-geo-modal-open {
@@ -161,7 +161,7 @@
     box-shadow: 0 0 0 1px rgba(255, 0, 0, .12) inset;
     padding: 3px 9px;
     border-radius: 999px;
-    line-height: 1;
+    line-height: normal;
     font-family: "Montserrat", "Segoe UI", Arial, sans-serif;
 }
 

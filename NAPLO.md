@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 08. – Session #265 (Pill meretfix cache-bust + osztalyparitas)
+
+### Mit csinaltunk [x]
+- [x] A szem/Geotech elemek megkaptak a `va-le-pill` osztalyt is, hogy garantaltan az `Aktiv` pill meretstilusat orokoljek
+- [x] A `va-le-geo-pill` line-height `normal`-ra allitva a pontosabb meretparitashoz
+- [x] Cache-bust: `VA_VERSION` emelve `1.1.3` -> `1.1.4` (source + plugin mirror)
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A szem es Geotech pill meret most mar strukturailag es cache-szinten is az Aktiv pillhez van kotve.
+
+---
+
 ## 2026. 05. 08. – Session #264 (Szem/Geotech pill meretparitas az Aktivval)
 
 ### Mit csinaltunk [x]
