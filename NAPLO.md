@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 08. – Session #239 (Admin megtekintes lokacio riport, IP alapu)
+
+### Mit csinaltunk [x]
+- [x] Uj adatbazis tabla bevezetve: `wp_va_view_geo` (post + orszag/regio/varos aggregalt nezettseg)
+- [x] IP-alapu geolokacio lookup bevezetve `ipwho.is` API-val, transient cache-sel (gyorsitas)
+- [x] Megtekintes noveleskor (`va_increment_views`) automatikus lokacio logolas
+- [x] Admin hirdetes listaban a `Megtekintes` oszlop kattinthatora allitva (`👁 szam`)
+- [x] Kattintasra uj admin riport oldal nyilik, ahol latszik orszag/regio/varos bontas + utolso nezes
+- [x] Source + plugin mirror fajlok szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Mostantol hirdetesenkent az admin listaban a szem ikonra kattintva megnezed, hogy orszagosan (orszag/regio/varos bontasban) honnan neztek a hirdetest.
+
+---
+
 ## 2026. 05. 08. – Session #238 (404 olvashatosag fix, vilagos szoveg)
 
 ### Mit csinaltunk [x]
