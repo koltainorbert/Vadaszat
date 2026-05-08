@@ -133,6 +133,7 @@ class VA_SEO {
         add_rewrite_rule( '^sitemap\.xml$', 'index.php?va_sitemap=index', 'top' );
         add_rewrite_rule( '^sitemap-([a-z0-9_-]+)-([0-9]+)\.xml$', 'index.php?va_sitemap=post&va_sitemap_type=$matches[1]&va_sitemap_page=$matches[2]', 'top' );
         add_rewrite_rule( '^sitemap-tax-([a-z0-9_-]+)-([0-9]+)\.xml$', 'index.php?va_sitemap=tax&va_sitemap_type=$matches[1]&va_sitemap_page=$matches[2]', 'top' );
+        add_rewrite_rule( '^sitemap-landing-([0-9]+)\.xml$', 'index.php?va_sitemap=landing&va_sitemap_page=$matches[1]', 'top' );
     }
 
     public static function register_query_vars( array $vars ): array {
@@ -140,6 +141,112 @@ class VA_SEO {
         $vars[] = 'va_sitemap_type';
         $vars[] = 'va_sitemap_page';
         return $vars;
+    }
+
+    private static function listing_search_page_url(): string {
+        $page = get_page_by_path( 'va-hirdetes-kereses' );
+        return $page ? (string) get_permalink( $page ) : home_url( '/va-hirdetes-kereses/' );
+    }
+
+    private static function requested_brand(): string {
+        $brand = sanitize_text_field( wp_unslash( $_GET['brand'] ?? '' ) );
+        return trim( $brand );
+    }
+
+    private static function requested_model(): string {
+        $model = sanitize_text_field( wp_unslash( $_GET['model'] ?? '' ) );
+        return trim( $model );
+    }
+
+    private static function is_listing_search_landing(): bool {
+        return function_exists( 'va_is_page' )
+            && va_is_page( 'va-hirdetes-kereses' )
+            && ( self::requested_brand() !== '' || self::requested_model() !== '' );
+    }
+
+    private static function landing_url( string $brand = '', string $model = '' ): string {
+        $args = [];
+        if ( $brand !== '' ) {
+            $args['brand'] = $brand;
+        }
+        if ( $model !== '' ) {
+            $args['model'] = $model;
+        }
+        return $args ? add_query_arg( $args, self::listing_search_page_url() ) : self::listing_search_page_url();
+    }
+
+    private static function landing_rows(): array {
+        global $wpdb;
+
+        $posts = $wpdb->posts;
+        $pm_brand = $wpdb->postmeta;
+        $pm_model = $wpdb->postmeta;
+
+        $rows = [];
+
+        $brand_rows = $wpdb->get_results(
+            "SELECT pb.meta_value AS brand, COUNT(DISTINCT p.ID) AS cnt
+             FROM {$posts} p
+             INNER JOIN {$pm_brand} pb ON pb.post_id = p.ID AND pb.meta_key = 'va_brand'
+             WHERE p.post_type = 'va_listing' AND p.post_status = 'publish' AND pb.meta_value <> ''
+             GROUP BY pb.meta_value
+             HAVING cnt > 0
+             ORDER BY cnt DESC, pb.meta_value ASC",
+            ARRAY_A
+        );
+
+        if ( is_array( $brand_rows ) ) {
+            foreach ( $brand_rows as $row ) {
+                $brand = trim( (string) ( $row['brand'] ?? '' ) );
+                if ( $brand === '' ) {
+                    continue;
+                }
+                $rows[] = [
+                    'url' => self::landing_url( $brand ),
+                    'lastmod' => gmdate( 'c' ),
+                ];
+            }
+        }
+
+        $model_rows = $wpdb->get_results(
+            "SELECT pb.meta_value AS brand, pm.meta_value AS model, COUNT(DISTINCT p.ID) AS cnt
+             FROM {$posts} p
+             INNER JOIN {$pm_brand} pb ON pb.post_id = p.ID AND pb.meta_key = 'va_brand'
+             INNER JOIN {$pm_model} pm ON pm.post_id = p.ID AND pm.meta_key = 'va_model'
+             WHERE p.post_type = 'va_listing' AND p.post_status = 'publish' AND pb.meta_value <> '' AND pm.meta_value <> ''
+             GROUP BY pb.meta_value, pm.meta_value
+             HAVING cnt > 0
+             ORDER BY cnt DESC, pb.meta_value ASC, pm.meta_value ASC",
+            ARRAY_A
+        );
+
+        if ( is_array( $model_rows ) ) {
+            foreach ( $model_rows as $row ) {
+                $brand = trim( (string) ( $row['brand'] ?? '' ) );
+                $model = trim( (string) ( $row['model'] ?? '' ) );
+                if ( $brand === '' || $model === '' ) {
+                    continue;
+                }
+                $rows[] = [
+                    'url' => self::landing_url( $brand, $model ),
+                    'lastmod' => gmdate( 'c' ),
+                ];
+            }
+        }
+
+        return $rows;
+    }
+
+    private static function landing_page_count(): int {
+        $rows = self::landing_rows();
+        if ( empty( $rows ) ) {
+            return 0;
+        }
+        return (int) ceil( count( $rows ) / self::SITEMAP_PER_PAGE );
+    }
+
+    private static function sitemap_index_url_for_landing( int $page ): string {
+        return home_url( '/sitemap-landing-' . $page . '.xml' );
     }
 
     public static function maybe_render_sitemap(): void {
@@ -159,6 +266,10 @@ class VA_SEO {
 
         if ( $mode === 'tax' && $type !== '' ) {
             self::render_taxonomy_sitemap( $type, $page );
+        }
+
+        if ( $mode === 'landing' ) {
+            self::render_landing_sitemap( $page );
         }
 
         status_header( 404 );
@@ -260,6 +371,17 @@ class VA_SEO {
             }
         }
 
+        $landing_pages = self::landing_page_count();
+        if ( $landing_pages > 0 ) {
+            $lastmod = gmdate( 'c' );
+            for ( $i = 1; $i <= $landing_pages; $i++ ) {
+                echo '<sitemap>';
+                echo '<loc>' . esc_url( self::sitemap_index_url_for_landing( $i ) ) . '</loc>';
+                echo '<lastmod>' . esc_html( $lastmod ) . '</lastmod>';
+                echo '</sitemap>';
+            }
+        }
+
         echo '</sitemapindex>';
         exit;
     }
@@ -332,6 +454,23 @@ class VA_SEO {
         exit;
     }
 
+    public static function render_landing_sitemap( int $page ): void {
+        $rows = self::landing_rows();
+        $chunks = array_chunk( $rows, self::SITEMAP_PER_PAGE );
+        $selected = $chunks[ $page - 1 ] ?? [];
+
+        self::xml_header();
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+        foreach ( $selected as $row ) {
+            echo '<url>';
+            echo '<loc>' . esc_url( (string) $row['url'] ) . '</loc>';
+            echo '<lastmod>' . esc_html( (string) $row['lastmod'] ) . '</lastmod>';
+            echo '</url>';
+        }
+        echo '</urlset>';
+        exit;
+    }
+
     public static function filter_wp_robots( array $robots ): array {
         if ( is_search() || is_404() ) {
             $robots['noindex'] = true;
@@ -356,6 +495,10 @@ class VA_SEO {
     }
 
     private static function current_canonical(): string {
+        if ( self::is_listing_search_landing() ) {
+            return self::landing_url( self::requested_brand(), self::requested_model() );
+        }
+
         if ( is_singular() ) {
             $url = get_permalink();
             return is_string( $url ) ? $url : home_url( '/' );
@@ -401,6 +544,17 @@ class VA_SEO {
     }
 
     private static function meta_description(): string {
+        if ( self::is_listing_search_landing() ) {
+            $brand = self::requested_brand();
+            $model = self::requested_model();
+            if ( $brand !== '' && $model !== '' ) {
+                return 'Eladó ' . $brand . ' ' . $model . ' ajánlatok a Weingartner Autónál. Részletes adatok, friss készlet és aktuális árak egy helyen.';
+            }
+            if ( $brand !== '' ) {
+                return 'Eladó ' . $brand . ' autók és motorok a Weingartner Autónál. Friss készlet, részletes adatok és aktuális ajánlatok egy helyen.';
+            }
+        }
+
         if ( is_singular( 'va_listing' ) ) {
             $id = get_queried_object_id();
             return self::listing_meta_description( $id );
@@ -566,6 +720,17 @@ class VA_SEO {
     }
 
     private static function social_title( string $default_title ): string {
+        if ( self::is_listing_search_landing() ) {
+            $brand = self::requested_brand();
+            $model = self::requested_model();
+            if ( $brand !== '' && $model !== '' ) {
+                return 'Eladó ' . $brand . ' ' . $model . ' | Weingartner Autó';
+            }
+            if ( $brand !== '' ) {
+                return 'Eladó ' . $brand . ' | Weingartner Autó';
+            }
+        }
+
         if ( is_singular( 'va_listing' ) ) {
             $id = get_queried_object_id();
             if ( $id > 0 ) {
