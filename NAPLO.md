@@ -13,7 +13,8 @@
 - [x] Push kesz (`main`)
 
 ### Hol tartunk
-+A szem es Geo pill az admin listaban most latvanyosan kisebb meretben jelenik meg.
++A szem es Geo pill az admin listaban az admin panelen korekten atmegyeit  50% kisebb meretre allitva.
+- **DEPLOYMENT ISSUE:** Prod szerver (weingartnerauto.hu) 0% valtozas - GitHub es LocalWP deploy sikeres, de live URL nem frissul. Deploy infrastruktura tisztazas szukseges.
 
 ---
 
