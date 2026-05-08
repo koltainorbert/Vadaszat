@@ -56,6 +56,18 @@ class VA_SEO {
     }
 
     public static function filter_document_title_parts( array $parts ): array {
+        if ( self::is_listing_search_landing() ) {
+            $brand = self::requested_brand();
+            $model = self::requested_model();
+            if ( $brand !== '' && $model !== '' ) {
+                $parts['title'] = 'Eladó ' . $brand . ' ' . $model;
+            } elseif ( $brand !== '' ) {
+                $parts['title'] = 'Eladó ' . $brand;
+            }
+            unset( $parts['tagline'] );
+            return $parts;
+        }
+
         if ( is_singular( 'va_listing' ) ) {
             $parts['title'] = self::listing_browser_title( get_queried_object_id() );
             unset( $parts['tagline'] );
