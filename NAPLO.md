@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 08. – Session #235 (Vásárlás hero full-screen + 10s glitch)
+
+### Mit csinaltunk [x]
+- [x] A rang alapú vásárlás hero blokk teljes képernyős magasságot kapott
+- [x] A középső cím rétegezése megerősítve, hogy biztosan látható maradjon
+- [x] Erős TikTok-szerű glitch animáció hozzáadva a címhez
+- [x] Animáció ciklus: 10 másodperc, végtelen ismétlés
+- [x] Mobilon is viewport-közeli magasságra igazítva
+- [x] Módosítás átvezetve source + plugin mirror CSS fájlokba
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A vásárlási hero most full-screen hatású, a cím középen jól olvasható, és a kért erős, 10s-es ismétlődő glitch effekt fut rajta.
+
+---
+
 ## 2026. 05. 08. – Session #234 (Vásárlás hero cím fix)
 
 ### Mit csinaltunk [x]
