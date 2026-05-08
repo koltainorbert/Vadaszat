@@ -149,6 +149,14 @@ function va_record_view_geo( int $post_id ): void {
 
     $table = $wpdb->prefix . 'va_view_geo';
     $ip    = va_client_ip();
+
+    // Validabb statisztika: ugyanaz az IP ne tudja percek alatt felpumpálni a lokációs számot.
+    $dedupe_key = 'va_geo_seen_' . md5( $post_id . '|' . $ip );
+    if ( get_transient( $dedupe_key ) ) {
+        return;
+    }
+    set_transient( $dedupe_key, 1, 6 * HOUR_IN_SECONDS );
+
     $geo   = va_lookup_geo_by_ip( $ip );
 
     $country_code = substr( strtoupper( (string) ( $geo['country_code'] ?? '--' ) ), 0, 2 );
