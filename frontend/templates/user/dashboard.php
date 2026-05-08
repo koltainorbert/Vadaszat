@@ -2198,7 +2198,11 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     gap:6px;
     flex-wrap:nowrap;
 }
-.va-table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.va-table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; padding-bottom:4px; }
+.va-table-scroll::-webkit-scrollbar { height:5px; }
+.va-table-scroll::-webkit-scrollbar-track { background:rgba(255,255,255,.04); border-radius:99px; }
+.va-table-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); border-radius:99px; }
+.va-table-scroll::-webkit-scrollbar-thumb:hover { background:rgba(255,255,255,.32); }
 .va-boost-btn {
     display:inline-flex;
     align-items:center;
