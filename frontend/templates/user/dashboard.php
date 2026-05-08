@@ -862,7 +862,13 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 <?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?>
                             </span>
                         </td>
-                        <td style="padding:10px 8px;">
+                            <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                                <a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin.php?action=va_view_geo_report&post=' . $l->ID ), 'va_view_geo_report_' . $l->ID ) ); ?>"
+                                   title="Megtekintési helyek – geo riport"
+                                   target="_blank"
+                                   style="display:inline-flex;align-items:center;gap:4px;font-size:10px;margin-left:6px;color:rgba(255,255,255,.5);text-decoration:none;border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:2px 7px;white-space:nowrap;vertical-align:middle;">&#127759; Geo</a>
+                            <?php endif; ?>
+                            <td style="padding:10px 8px;vertical-align:middle;">
                             <?php
                             // Boost gomb
                             if ( class_exists( 'VA_User_Roles' ) ) :
