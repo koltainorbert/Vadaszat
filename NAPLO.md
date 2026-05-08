@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #250 (Admin listaban a szem is popupot nyit)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` oldalon a szem badge kattinthato lett, ugyanugy geo popupot nyit mint a `Geo` gomb
+- [x] A kulon `Geo` gomb megmaradt
+- [x] Nem-adminnal csak vizualis nezettség badge marad
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Admin oldalon mar barmelyik badge-re (szem vagy Geo) kattintva nyilik a geo riport popup.
+
+---
+
 ## 2026. 05. 08. – Session #249 (Admin hirdeteslista: Fiók-stilu Geo gomb)
 
 ### Mit csinaltunk [x]
