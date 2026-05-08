@@ -147,8 +147,9 @@ function va_record_view_geo( int $post_id ): void {
 
     global $wpdb;
 
-    $table = $wpdb->prefix . 'va_view_geo';
-    $ip    = va_client_ip();
+    $table       = $wpdb->prefix . 'va_view_geo';
+    $table_daily = $wpdb->prefix . 'va_view_geo_daily';
+    $ip          = va_client_ip();
 
     // Validabb statisztika: ugyanaz az IP ne tudja percek alatt felpumpálni a lokációs számot.
     $dedupe_key = 'va_geo_seen_' . md5( $post_id . '|' . $ip );
@@ -165,6 +166,7 @@ function va_record_view_geo( int $post_id ): void {
     $city         = va_normalize_geo_text( (string) ( $geo['city'] ?? '' ), 120 );
     $geo_hash     = md5( $country_code . '|' . $country . '|' . $region . '|' . $city );
     $now          = current_time( 'mysql' );
+    $today        = current_time( 'Y-m-d' );
 
     $wpdb->query( $wpdb->prepare(
         "INSERT INTO {$table}
@@ -182,6 +184,25 @@ function va_record_view_geo( int $post_id ): void {
         $geo_hash,
         $now
     ) );
+
+    // Napi idősoros aggregátum a felrakás óta történő riporthoz.
+    $wpdb->query( $wpdb->prepare(
+        "INSERT INTO {$table_daily}
+            (post_id, country_code, country, region, city, geo_hash, view_date, views, last_seen)
+         VALUES
+            (%d, %s, %s, %s, %s, %s, %s, 1, %s)
+         ON DUPLICATE KEY UPDATE
+            views = views + 1,
+            last_seen = VALUES(last_seen)",
+        $post_id,
+        $country_code,
+        $country,
+        $region,
+        $city,
+        $geo_hash,
+        $today,
+        $now
+    ) );
 }
 
 function va_get_view_geo_breakdown( int $post_id, int $limit = 100 ): array {
@@ -192,15 +213,24 @@ function va_get_view_geo_breakdown( int $post_id, int $limit = 100 ): array {
     }
 
     $limit = max( 1, min( 500, $limit ) );
-    $table = $wpdb->prefix . 'va_view_geo';
+    $table = $wpdb->prefix . 'va_view_geo_daily';
+
+    $post_created = (string) get_post_field( 'post_date', $post_id );
+    if ( $post_created === '' ) {
+        $post_created = '1970-01-01 00:00:00';
+    }
+    $from_date = substr( $post_created, 0, 10 );
 
     $rows = $wpdb->get_results( $wpdb->prepare(
-        "SELECT country_code, country, region, city, views, last_seen
+        "SELECT country_code, country, region, city, SUM(views) AS views, MAX(last_seen) AS last_seen
          FROM {$table}
          WHERE post_id = %d
+           AND view_date >= %s
+         GROUP BY country_code, country, region, city
          ORDER BY views DESC, last_seen DESC
          LIMIT %d",
         $post_id,
+        $from_date,
         $limit
     ), ARRAY_A );
 
