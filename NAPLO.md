@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #260 (Adminban szem/Geo pill 50% meret)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` oldalon a szem/Geo pill kb. 50%-kal kisebbre allitva
+- [x] Csokkentett ertekek: `height: 10px`, `font-size: 8px`, kisebb ikon es kisebb horizontalis padding
+- [x] Soron beluli spacing is felezve (`gap`)
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+- [x] Push kesz (`main`)
+
+### Hol tartunk
++A szem es Geo pill az admin listaban most latvanyosan kisebb meretben jelenik meg.
+
+---
+
 ## 2026. 05. 08. – Session #259 (Szem/Geo pill fix magassag az Aktivhoz)
 
 ### Mit csinaltunk [x]
