@@ -272,7 +272,7 @@ body.va-admin-page .va-le-geo-wrap a.va-le-geo-pill:active {
 body.va-admin-page html,
 body.va-admin-page {
     margin-top: 0 !important;
-    background: var(--va-bg) !important;
+    background: #6f00ff !important;
     color: var(--va-text) !important;
     font-family: var(--va-font) !important;
     font-size: var(--va-font-size, 13px) !important;
