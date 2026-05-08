@@ -1,4 +1,142 @@
-﻿/* ================================================================
+﻿/* Geo riport trigger + modal */
+.column-va_views .va-geo-report-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.column-va_views .va-geo-report-eye {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.va-admin-geo-modal-open {
+    overflow: hidden;
+}
+
+.va-admin-geo-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100000;
+}
+
+.va-admin-geo-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(2px);
+}
+
+.va-admin-geo-modal__panel {
+    position: relative;
+    width: min(980px, calc(100vw - 28px));
+    max-height: calc(100vh - 44px);
+    margin: 22px auto;
+    background: #0b0b0b;
+    color: #fff;
+    border: 1px solid rgba(255, 0, 0, 0.35);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.va-admin-geo-modal__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.va-admin-geo-modal__title {
+    font-weight: 700;
+}
+
+.va-admin-geo-modal__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.va-admin-geo-modal__body {
+    padding: 14px;
+    overflow: auto;
+}
+
+.va-admin-geo-modal__loading,
+.va-admin-geo-modal__empty,
+.va-admin-geo-modal__error {
+    padding: 16px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.va-admin-geo-modal__warning {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 90, 90, 0.45);
+    background: rgba(255, 0, 0, 0.15);
+}
+
+.va-admin-geo-modal__meta {
+    margin-bottom: 10px;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.va-admin-geo-modal__table-wrap {
+    overflow: auto;
+}
+
+.va-admin-geo-modal .widefat {
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.va-admin-geo-modal .widefat thead th,
+.va-admin-geo-modal .widefat td {
+    color: #fff;
+    border-bottom-color: rgba(255, 255, 255, 0.12);
+    background: transparent;
+}
+
+.va-admin-geo-modal .striped > tbody > :nth-child(odd),
+.va-admin-geo-modal .alternate,
+.va-admin-geo-modal ul.striped > :nth-child(odd) {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+@media print {
+    body * {
+        visibility: hidden !important;
+    }
+
+    .va-admin-geo-modal,
+    .va-admin-geo-modal * {
+        visibility: visible !important;
+    }
+
+    .va-admin-geo-modal {
+        position: static !important;
+    }
+
+    .va-admin-geo-modal__backdrop,
+    .va-admin-geo-modal__actions {
+        display: none !important;
+    }
+
+    .va-admin-geo-modal__panel {
+        margin: 0 !important;
+        width: 100% !important;
+        max-height: none !important;
+        border: 0 !important;
+    }
+}
+/* ================================================================
    VadászApró – Admin Dark SaaS Theme
    Teljesen lefedi a WordPress admin UI-t
    ================================================================ */

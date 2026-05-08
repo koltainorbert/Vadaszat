@@ -41,6 +41,158 @@
   // Kulso template scriptek is tudjanak push toastot inditani
   window.va_toast = va_toast;
 
+  function vaEscapeHtml(value) {
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function vaBuildGeoCsv(report) {
+    var lines = ['Orszagkod;Orszag;Regio;Varos;Megtekintes;Utolso'];
+    (report.rows || []).forEach(function(row) {
+      var parts = [
+        row.country_code || '--',
+        row.country || 'Ismeretlen',
+        row.region || 'Ismeretlen',
+        row.city || 'Ismeretlen',
+        String(parseInt(row.views || 0, 10)),
+        row.last_seen || ''
+      ].map(function(cell) {
+        var safe = String(cell).replace(/"/g, '""');
+        return '"' + safe + '"';
+      });
+      lines.push(parts.join(';'));
+    });
+    return '\ufeff' + lines.join('\n');
+  }
+
+  function vaOpenGeoReportModal(postId, nonce, ajaxUrl) {
+    var existing = document.querySelector('.va-geo-modal');
+    if (existing) {
+      existing.remove();
+    }
+
+    var modal = document.createElement('div');
+    modal.className = 'va-geo-modal';
+    modal.innerHTML = ''
+      + '<div class="va-geo-modal__backdrop" data-close="1"></div>'
+      + '<div class="va-geo-modal__panel" role="dialog" aria-modal="true" aria-label="Geo riport">'
+      + '  <div class="va-geo-modal__head">'
+      + '    <div class="va-geo-modal__title">Geo riport betoltese...</div>'
+      + '    <div class="va-geo-modal__actions">'
+      + '      <button type="button" class="va-geo-modal__btn" data-action="download" disabled>Letoltes CSV</button>'
+      + '      <button type="button" class="va-geo-modal__btn" data-action="print" disabled>Nyomtatas</button>'
+      + '      <button type="button" class="va-geo-modal__btn va-geo-modal__btn--close" data-close="1">Bezar</button>'
+      + '    </div>'
+      + '  </div>'
+      + '  <div class="va-geo-modal__body"><div class="va-geo-modal__loading">Betoltes...</div></div>'
+      + '</div>';
+
+    document.body.appendChild(modal);
+    document.body.classList.add('va-geo-modal-open');
+
+    function closeModal() {
+      document.body.classList.remove('va-geo-modal-open');
+      modal.remove();
+    }
+
+    modal.addEventListener('click', function(e) {
+      if (e.target && e.target.getAttribute('data-close') === '1') {
+        closeModal();
+      }
+    });
+
+    var bodyEl = modal.querySelector('.va-geo-modal__body');
+    var titleEl = modal.querySelector('.va-geo-modal__title');
+    var btnDownload = modal.querySelector('[data-action="download"]');
+    var btnPrint = modal.querySelector('[data-action="print"]');
+
+    $.post(ajaxUrl, {
+      action: 'va_get_view_geo_report',
+      post_id: postId,
+      nonce: nonce
+    }).done(function(res) {
+      if (!res || !res.success || !res.data) {
+        bodyEl.innerHTML = '<div class="va-geo-modal__error">Nem sikerult a geo riport lekerese.</div>';
+        return;
+      }
+
+      var report = res.data;
+      var rows = report.rows || [];
+      var total = parseInt(report.total_views || 0, 10);
+      var topViews = rows.length ? parseInt(rows[0].views || 0, 10) : 0;
+      var topShare = total > 0 ? Math.round((topViews / total) * 100) : 0;
+      var warnHtml = '';
+
+      if (topShare >= 70 && rows.length > 0) {
+        warnHtml = '<div class="va-geo-modal__warning">'
+          + 'A top lokacio aranya magas (' + topShare + '%). Mostantol ugyanaz az IP 6 oran belul csak 1x szamit bele.'
+          + '</div>';
+      }
+
+      titleEl.textContent = 'Geo riport: ' + (report.post_title || ('#' + postId));
+
+      if (!rows.length) {
+        bodyEl.innerHTML = warnHtml + '<div class="va-geo-modal__empty">Nincs meg lokacios adat ehhez a hirdeteshez.</div>';
+      } else {
+        var html = ''
+          + warnHtml
+          + '<div class="va-geo-modal__meta">Osszes megtekintes: <strong>' + total + '</strong> | Frissitve: ' + vaEscapeHtml(report.generated_at || '-') + '</div>'
+          + '<div class="va-geo-modal__table-wrap">'
+          + '<table class="va-geo-modal__table">'
+          + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';
+
+        rows.forEach(function(row) {
+          html += '<tr>'
+            + '<td>' + vaEscapeHtml((row.country_code || '--') + ' - ' + (row.country || 'Ismeretlen')) + '</td>'
+            + '<td>' + vaEscapeHtml(row.region || 'Ismeretlen') + '</td>'
+            + '<td>' + vaEscapeHtml(row.city || 'Ismeretlen') + '</td>'
+            + '<td><strong>' + vaEscapeHtml(String(row.views || 0)) + '</strong></td>'
+            + '<td>' + vaEscapeHtml(row.last_seen || '-') + '</td>'
+            + '</tr>';
+        });
+
+        html += '</tbody></table></div>';
+        bodyEl.innerHTML = html;
+      }
+
+      btnDownload.disabled = false;
+      btnPrint.disabled = false;
+
+      btnDownload.addEventListener('click', function() {
+        var csv = vaBuildGeoCsv(report);
+        var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'geo-riport-' + postId + '.csv';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      });
+
+      btnPrint.addEventListener('click', function() {
+        window.print();
+      });
+    }).fail(function() {
+      bodyEl.innerHTML = '<div class="va-geo-modal__error">Halozati hiba a geo riport lekeresenel.</div>';
+    });
+  }
+
+  $(document).on('click', '.va-geo-report-trigger', function(e) {
+    e.preventDefault();
+    var postId = parseInt($(this).data('post-id') || 0, 10);
+    var nonce = ($(this).data('geo-nonce') || '').toString();
+    var ajaxUrl = (typeof VA_Data !== 'undefined' && VA_Data.ajax_url) ? VA_Data.ajax_url : '';
+    if (!postId || !nonce || !ajaxUrl) {
+      va_toast('Geo riport most nem elerheto.', 'error');
+      return;
+    }
+    vaOpenGeoReportModal(postId, nonce, ajaxUrl);
+  });
+
   // Szerver oldali notice-okbol is csinalunk push visszajelzest
   document.querySelectorAll('.va-notice--success, .va-notice--error').forEach(function(el) {
     var msg = (el.textContent || '').trim();

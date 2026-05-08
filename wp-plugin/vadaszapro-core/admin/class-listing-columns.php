@@ -145,11 +145,14 @@ class VA_Listing_Columns {
                 break;
             case 'va_views':
                 $views = (int) ( get_post_meta( $post_id, 'va_views', true ) ?: 0 );
-                $url   = wp_nonce_url(
-                    admin_url( 'admin.php?action=va_view_geo_report&post=' . $post_id ),
-                    'va_view_geo_report_' . $post_id
-                );
-                echo '<a href="' . esc_url( $url ) . '" title="Megtekintési helyek">👁 ' . esc_html( number_format_i18n( $views ) ) . '</a>';
+                $nonce = wp_create_nonce( 'va_view_geo_report_' . $post_id );
+                echo '<button type="button" class="button-link va-geo-report-trigger"'
+                    . ' data-post-id="' . esc_attr( (string) $post_id ) . '"'
+                    . ' data-geo-nonce="' . esc_attr( $nonce ) . '"'
+                    . ' title="Megtekintési helyek">'
+                    . '<span class="va-geo-report-eye">👁</span> '
+                    . esc_html( number_format_i18n( $views ) )
+                    . '</button>';
                 break;
             case 'va_featured':
                 echo get_post_meta( $post_id, 'va_featured', true ) === '1' ? '⭐' : '–';

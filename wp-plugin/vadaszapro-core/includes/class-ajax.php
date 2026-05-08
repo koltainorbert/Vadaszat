@@ -24,6 +24,7 @@ class VA_Ajax {
         // Megtekintés számláló (nem bejelentkezett is)
         add_action( 'wp_ajax_va_increment_views',        [ __CLASS__, 'increment_views' ] );
         add_action( 'wp_ajax_nopriv_va_increment_views', [ __CLASS__, 'increment_views' ] );
+        add_action( 'wp_ajax_va_get_view_geo_report',    [ __CLASS__, 'get_view_geo_report' ] );
 
         // Szűrő AJAX
         add_action( 'wp_ajax_va_filter_listings',        [ __CLASS__, 'filter_listings' ] );
@@ -922,6 +923,39 @@ class VA_Ajax {
         wp_send_json_success( [
             'views'         => $views + 1,
             'display_views' => $display_views,
+        ] );
+    }
+
+    public static function get_view_geo_report(): void {
+        $post_id = absint( $_POST['post_id'] ?? 0 );
+        if ( $post_id <= 0 ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés.' ] );
+        }
+
+        if ( ! current_user_can( 'manage_options' ) || ! current_user_can( 'edit_post', $post_id ) ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ], 403 );
+        }
+
+        $nonce = sanitize_text_field( wp_unslash( $_POST['nonce'] ?? '' ) );
+        if ( ! wp_verify_nonce( $nonce, 'va_view_geo_report_' . $post_id ) ) {
+            wp_send_json_error( [ 'message' => 'Lejárt vagy érvénytelen token.' ], 403 );
+        }
+
+        $rows = function_exists( 'va_get_view_geo_breakdown' )
+            ? va_get_view_geo_breakdown( $post_id, 300 )
+            : [];
+
+        $total_views = 0;
+        foreach ( $rows as $row ) {
+            $total_views += (int) ( $row['views'] ?? 0 );
+        }
+
+        wp_send_json_success( [
+            'post_id'      => $post_id,
+            'post_title'   => get_the_title( $post_id ),
+            'rows'         => $rows,
+            'total_views'  => $total_views,
+            'generated_at' => current_time( 'mysql' ),
         ] );
     }
 
