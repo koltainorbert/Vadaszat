@@ -2,6 +2,19 @@
 
 ---
 
+## 2026. 05. 08. – Session #264 (Szem/Geotech pill meretparitas az Aktivval)
+
+### Mit csinaltunk [x]
+- [x] A `vadaszapro-listings` oldalon a szem + Geotech pill merete az `Aktiv` pill meretere visszaallitva
+- [x] Egyeztetett ertekek: `font-size: 10px`, `padding: 3px 9px`, normalizalt `gap`, nagyobb ikonmeret
+- [x] Source + plugin mirror (`admin/admin.css`) szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A szem es Geotech pill most mar az Aktiv statusz pilllel azonos vizualis meretben jelenik meg.
+
+---
+
 ## 2026. 05. 08. – Session #263 (Admin Geo felirat atnevezes Geotech-re)
 
 ### Mit csinaltunk [x]
