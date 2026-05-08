@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #269 (fooldali SEO + brand/model landing szovegblokkok)
+
+### Mit csinaltunk [x]
+- [x] A fooldal kulon SEO title/social title es meta description logikat kapott a kozponti SEO retegben
+- [x] A brand/model landing oldalak szovegezese kozponti helperbe kerult, igy a title/meta/social + lathato oldalblokk ugyanabbol a logikabol epul
+- [x] A keresooldal landing resze kapott lathato H2 + SEO szovegblokk + tamogato bulletpontokat
+- [x] Source + plugin mirror frissitve
+- [x] Hibakontroll rendben, Deploy All sikeres
+
+### Eredmeny
+A landing oldalak mar nem csak technikai SEO-s URL-ek, hanem sajat, relevans szoveges tartalmat is kapnak. Ez javitja az indexelhetoseget es a keresesi szandekra adott oldalminoseget.
+
+---
+
 ## 2026. 05. 08. – Session #268 (SEO landingek + belso linkeles + landing sitemap)
 
 ### Mit csinaltunk [x]
