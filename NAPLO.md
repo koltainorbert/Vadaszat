@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #241 (Geo badge egyforma + 30 napos IP validitas)
+
+### Mit csinaltunk [x]
+- [x] Fiókom > Megtekintes oszlopban a szem es Geo kapszula teljesen egy sorban, azonos merettel/stilussal
+- [x] Geo ikon emoji helyett azonos meretu SVG iconra cserelve (vizualisan konzisztens)
+- [x] IP deduplikacio szigoritas: ugyanaz az IP 30 napig csak 1x novelheti a geo statot hirdetesenkent
+- [x] Frontend/admin popup figyelmezteto szoveg frissitve az uj 30 napos validitas szabalyra
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A ket badge most mar tenylegesen egyforma es egy sorban jelenik meg. A lokacios stat validitasa szigoritva: egy IP 30 napig csak egyszer szamit.
+
+---
+
 ## 2026. 05. 08. – Session #240 (Geo popup + letoltes/nyomtatas + validitas javitas)
 
 ### Mit csinaltunk [x]

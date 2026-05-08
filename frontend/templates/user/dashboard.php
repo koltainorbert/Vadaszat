@@ -857,7 +857,8 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         <td style="padding:10px 8px;"><?php echo $statuses[ $l->post_status ] ?? esc_html( $l->post_status ); ?></td>
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
                         <td style="padding:10px 8px;">
-                            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;white-space:nowrap;vertical-align:middle;">
+                            <div style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
+                            <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;line-height:1;">
                                 <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?>
                             </span>
@@ -867,11 +868,12 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                         data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
                                         data-geo-nonce="<?php echo esc_attr( wp_create_nonce( 'va_view_geo_report_' . $l->ID ) ); ?>"
                                         title="Megtekintési helyek - geo riport"
-                                        style="display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;letter-spacing:.02em;margin-left:5px;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;white-space:nowrap;vertical-align:middle;cursor:pointer;">
-                                    <span aria-hidden="true">&#127759;</span>
+                                        style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;line-height:1;white-space:nowrap;cursor:pointer;">
+                                    <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18"></path><path d="M12 3a14 14 0 0 1 0 18"></path><path d="M12 3a14 14 0 0 0 0 18"></path></svg>
                                     Geo
                                 </button>
                             <?php endif; ?>
+                            </div>
                         </td>
                         <td style="padding:10px 8px;">
                             <?php

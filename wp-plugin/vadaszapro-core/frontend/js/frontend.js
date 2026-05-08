@@ -129,7 +129,7 @@
 
       if (topShare >= 70 && rows.length > 0) {
         warnHtml = '<div class="va-geo-modal__warning">'
-          + 'A top lokacio aranya magas (' + topShare + '%). Mostantol ugyanaz az IP 6 oran belul csak 1x szamit bele.'
+          + 'A top lokacio aranya magas (' + topShare + '%). Mostantol ugyanaz az IP 30 napig csak 1x szamit bele.'
           + '</div>';
       }
 

@@ -155,7 +155,7 @@ function va_record_view_geo( int $post_id ): void {
     if ( get_transient( $dedupe_key ) ) {
         return;
     }
-    set_transient( $dedupe_key, 1, 6 * HOUR_IN_SECONDS );
+    set_transient( $dedupe_key, 1, 30 * DAY_IN_SECONDS );
 
     $geo   = va_lookup_geo_by_ip( $ip );
 

@@ -392,7 +392,7 @@
             var warn = '';
 
             if (topShare >= 70 && rows.length > 0) {
-                warn = '<div class="va-admin-geo-modal__warning">Top lokacio aranya magas (' + topShare + '%). Ugyanaz az IP 6 oran belul csak 1x szamit.</div>';
+                warn = '<div class="va-admin-geo-modal__warning">Top lokacio aranya magas (' + topShare + '%). Ugyanaz az IP 30 napig csak 1x szamit.</div>';
             }
 
             $title.text('Geo riport: ' + (report.post_title || ('#' + postId)));
