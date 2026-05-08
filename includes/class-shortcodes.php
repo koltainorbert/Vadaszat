@@ -238,6 +238,13 @@ class VA_Shortcodes {
                         <?php if ( $plan_boost_cd > 0 ): ?>
                         <li>Boost újratöltés: <?php echo esc_html( (string) $plan_boost_cd ); ?> nap</li>
                         <?php endif; ?>
+                        <?php if ( $slug === 'gold' || $slug === 'platinum' ): ?>
+                        <li>📊 Hirdetés statisztika hozzáférés</li>
+                        <?php endif; ?>
+                        <?php if ( $slug === 'platinum' ): ?>
+                        <li>👁 Megtekintési számok láthatók</li>
+                        <li>🌍 Geo megtekintési riport</li>
+                        <?php endif; ?>
                     </ul>
                     <?php if ( $is_active ): ?>
                     <button type="button" class="va-pkg-buy-btn va-pkg-buy-btn--current" disabled>Aktív csomag</button>
