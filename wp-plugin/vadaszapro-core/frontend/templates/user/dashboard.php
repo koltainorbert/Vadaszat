@@ -863,6 +863,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         <td style="padding:10px 8px;color:rgba(255,255,255,0.5);"><?php echo esc_html( get_the_date( 'Y.m.d', $l ) ); ?></td>
                         <td style="padding:10px 8px;">
                             <div style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
+                            <?php if ( current_user_can( 'manage_options' ) || $user_plan === 'platinum' ) : ?>
                             <span style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.02em;background:linear-gradient(135deg,rgba(255,0,0,.20),rgba(90,0,0,.20));color:#fff;border:1px solid rgba(255,0,0,.55);box-shadow:0 0 8px rgba(255,0,0,.18);padding:3px 9px;border-radius:999px;line-height:1;">
                                 <svg class="va-ico" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                 <?php echo esc_html( number_format( $valid_views, 0, ',', ' ' ) ); ?>
@@ -878,6 +879,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                     Geo
                                 </button>
                             <?php endif; ?>
+                            <?php endif; // admin + platinum: szem + geo ?>
                             </div>
                         </td>
                         <td style="padding:10px 8px;">
