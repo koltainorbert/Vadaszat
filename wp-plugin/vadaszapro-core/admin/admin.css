@@ -1,4 +1,4 @@
-﻿/* Geo riport trigger + modal */
+﻿/* Geo riport trigger + modal (azonos a Fiókom popup stilussal) */
 .column-va_views .va-geo-report-trigger {
     display: inline-flex;
     align-items: center;
@@ -13,71 +13,93 @@
     line-height: 1;
 }
 
-.va-admin-geo-modal-open {
+.va-geo-modal-open {
     overflow: hidden;
 }
 
-.va-admin-geo-modal {
+.va-geo-modal {
     position: fixed;
     inset: 0;
     z-index: 100000;
 }
 
-.va-admin-geo-modal__backdrop {
+.va-geo-modal__backdrop {
     position: absolute;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.72);
     -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
 }
 
-.va-admin-geo-modal__panel {
-    position: relative;
+.va-geo-modal__panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: min(980px, calc(100vw - 28px));
     max-height: calc(100vh - 44px);
-    margin: 22px auto;
     background: #0b0b0b;
     color: #fff;
     border: 1px solid rgba(255, 0, 0, 0.35);
     border-radius: 14px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 0, 0, 0.1) inset;
     overflow: hidden;
     display: flex;
     flex-direction: column;
 }
 
-.va-admin-geo-modal__head {
+.va-geo-modal__head {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
+    gap: 12px;
     padding: 12px 14px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.va-admin-geo-modal__title {
+.va-geo-modal__title {
     font-weight: 700;
 }
 
-.va-admin-geo-modal__actions {
+.va-geo-modal__actions {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
 }
 
-.va-admin-geo-modal__body {
+.va-geo-modal__btn {
+    border: 1px solid rgba(255, 0, 0, 0.45);
+    background: rgba(255, 0, 0, 0.14);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.va-geo-modal__btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.va-geo-modal__btn--close {
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.va-geo-modal__body {
     padding: 14px;
     overflow: auto;
 }
 
-.va-admin-geo-modal__loading,
-.va-admin-geo-modal__empty,
-.va-admin-geo-modal__error {
+.va-geo-modal__loading,
+.va-geo-modal__empty,
+.va-geo-modal__error {
     padding: 16px;
     border-radius: 10px;
     background: rgba(255, 255, 255, 0.05);
 }
 
-.va-admin-geo-modal__warning {
+.va-geo-modal__warning {
     margin-bottom: 10px;
     padding: 10px 12px;
     border-radius: 10px;
@@ -85,29 +107,31 @@
     background: rgba(255, 0, 0, 0.15);
 }
 
-.va-admin-geo-modal__meta {
+.va-geo-modal__meta {
     margin-bottom: 10px;
     color: rgba(255, 255, 255, 0.82);
 }
 
-.va-admin-geo-modal__table-wrap {
+.va-geo-modal__table-wrap {
     overflow: auto;
 }
 
-.va-admin-geo-modal .widefat {
-    border-color: rgba(255, 255, 255, 0.18);
+.va-geo-modal__table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 680px;
 }
 
-.va-admin-geo-modal .widefat thead th,
-.va-admin-geo-modal .widefat td {
-    color: #fff;
-    border-bottom-color: rgba(255, 255, 255, 0.12);
-    background: transparent;
+.va-geo-modal__table th,
+.va-geo-modal__table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: left;
 }
 
-.va-admin-geo-modal .striped > tbody > :nth-child(odd),
-.va-admin-geo-modal .alternate,
-.va-admin-geo-modal ul.striped > :nth-child(odd) {
+.va-geo-modal__table th {
+    color: rgba(255, 255, 255, 0.72);
+    font-weight: 600;
     background: rgba(255, 255, 255, 0.04);
 }
 
@@ -136,18 +160,19 @@
     line-height: 1;
 }
 
-button.va-le-geo-pill {
+.va-le-geo-pill {
     cursor: pointer;
     transition: transform .12s ease, border-color .12s ease, background .12s ease;
 }
 
-button.va-le-geo-pill:hover {
+.va-le-geo-pill:hover {
     border-color: rgba(255, 50, 50, .55);
     background: linear-gradient(135deg, rgba(255, 0, 0, .20), rgba(110, 0, 0, .16));
     transform: translateY(-1px);
+    color: #fff;
 }
 
-button.va-le-geo-pill:focus-visible {
+.va-le-geo-pill:focus-visible {
     outline: 2px solid rgba(255, 70, 70, .55);
     outline-offset: 1px;
 }
@@ -167,25 +192,30 @@ button.va-le-geo-pill:focus-visible {
         visibility: hidden !important;
     }
 
-    .va-admin-geo-modal,
-    .va-admin-geo-modal * {
+    .va-geo-modal,
+    .va-geo-modal * {
         visibility: visible !important;
     }
 
-    .va-admin-geo-modal {
+    .va-geo-modal {
         position: static !important;
     }
 
-    .va-admin-geo-modal__backdrop,
-    .va-admin-geo-modal__actions {
+    .va-geo-modal__backdrop,
+    .va-geo-modal__actions {
         display: none !important;
     }
 
-    .va-admin-geo-modal__panel {
+    .va-geo-modal__panel {
         margin: 0 !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        position: static !important;
         width: 100% !important;
         max-height: none !important;
         border: 0 !important;
+        box-shadow: none !important;
     }
 }
 /* ================================================================

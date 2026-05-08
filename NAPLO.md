@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 08. – Session #254 (Admin popup 1:1 Fiók stilus + CSV/Nyomtatas parity)
+
+### Mit csinaltunk [x]
+- [x] Az admin geo popup JS markupja/osztalyai 1:1 frontend (Fiók) modal szerkezetre allitva (`va-geo-modal*`)
+- [x] A gombok (`Letoltes CSV`, `Nyomtatas`, `Bezar`) ugyanazzal a strukturaval es viselkedessel futnak
+- [x] A tabla rendereles `va-geo-modal__table` osztalyra valtva (widefat helyett), mint a Fiók oldalon
+- [x] A modal panel kozepre igazitva (`top/left 50% + transform`)
+- [x] A kapszula linkek hover/focus stilusa javitva (anchorra is)
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Az admin popup most mar ugyanazt a modal strukturat es stilusnyelvet hasznalja, mint a `va-fiok` oldali Geo riport, beleertve a CSV export es nyomtatas gombok mukodeset.
+
+---
+
 ## 2026. 05. 08. – Session #253 (Fallback geo riport oldal teljes redesign)
 
 ### Mit csinaltunk [x]

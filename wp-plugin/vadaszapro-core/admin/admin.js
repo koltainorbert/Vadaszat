@@ -364,33 +364,33 @@
             return;
         }
 
-        $('.va-admin-geo-modal').remove();
+        $('.va-geo-modal').remove();
 
         var html = ''
-            + '<div class="va-admin-geo-modal">'
-            + '  <div class="va-admin-geo-modal__backdrop" data-close="1"></div>'
-            + '  <div class="va-admin-geo-modal__panel" role="dialog" aria-modal="true">'
-            + '    <div class="va-admin-geo-modal__head">'
-            + '      <div class="va-admin-geo-modal__title">Geo riport betoltese...</div>'
-            + '      <div class="va-admin-geo-modal__actions">'
-            + '        <button type="button" class="button button-secondary" data-action="download" disabled>Letoltes CSV</button>'
-            + '        <button type="button" class="button button-secondary" data-action="print" disabled>Nyomtatas</button>'
-            + '        <button type="button" class="button" data-close="1">Bezar</button>'
+            + '<div class="va-geo-modal">'
+            + '  <div class="va-geo-modal__backdrop" data-close="1"></div>'
+            + '  <div class="va-geo-modal__panel" role="dialog" aria-modal="true" aria-label="Geo riport">'
+            + '    <div class="va-geo-modal__head">'
+            + '      <div class="va-geo-modal__title">Geo riport betoltese...</div>'
+            + '      <div class="va-geo-modal__actions">'
+            + '        <button type="button" class="va-geo-modal__btn" data-action="download" disabled>Letoltes CSV</button>'
+            + '        <button type="button" class="va-geo-modal__btn" data-action="print" disabled>Nyomtatas</button>'
+            + '        <button type="button" class="va-geo-modal__btn va-geo-modal__btn--close" data-close="1">Bezar</button>'
             + '      </div>'
             + '    </div>'
-            + '    <div class="va-admin-geo-modal__body"><div class="va-admin-geo-modal__loading">Betoltes...</div></div>'
+            + '    <div class="va-geo-modal__body"><div class="va-geo-modal__loading">Betoltes...</div></div>'
             + '  </div>'
             + '</div>';
 
-        $('body').append(html).addClass('va-admin-geo-modal-open');
-        var $modal = $('.va-admin-geo-modal');
-        var $body = $modal.find('.va-admin-geo-modal__body');
-        var $title = $modal.find('.va-admin-geo-modal__title');
+        $('body').append(html).addClass('va-geo-modal-open');
+        var $modal = $('.va-geo-modal');
+        var $body = $modal.find('.va-geo-modal__body');
+        var $title = $modal.find('.va-geo-modal__title');
         var $download = $modal.find('[data-action="download"]');
         var $print = $modal.find('[data-action="print"]');
 
         $modal.on('click', '[data-close="1"]', function() {
-            $('body').removeClass('va-admin-geo-modal-open');
+            $('body').removeClass('va-geo-modal-open');
             $modal.remove();
         });
 
@@ -400,7 +400,7 @@
             nonce: nonce
         }).done(function(res) {
             if (!res || !res.success || !res.data) {
-                $body.html('<div class="va-admin-geo-modal__error">Nem sikerult a geo riport lekerese.</div>');
+                $body.html('<div class="va-geo-modal__error">Nem sikerult a geo riport lekerese.</div>');
                 return;
             }
 
@@ -412,20 +412,20 @@
             var warn = '';
 
             if (topShare >= 70 && rows.length > 0) {
-                warn = '<div class="va-admin-geo-modal__warning">Top lokacio aranya magas (' + topShare + '%). Ugyanaz az IP 30 napig csak 1x szamit.</div>';
+                warn = '<div class="va-geo-modal__warning">A top lokacio aranya magas (' + topShare + '%). Mostantol ugyanaz az IP 30 napig csak 1x szamit bele.</div>';
             }
 
             $title.text('Geo riport: ' + (report.post_title || ('#' + postId)));
 
             if (!rows.length) {
-                $body.html(warn + '<div class="va-admin-geo-modal__empty">Nincs meg lokacios adat ehhez a hirdeteshez.</div>');
+                $body.html(warn + '<div class="va-geo-modal__empty">Nincs meg lokacios adat ehhez a hirdeteshez.</div>');
             } else {
                 var table = ''
                     + warn
-                    + '<div class="va-admin-geo-modal__meta">Osszes: <strong>' + total + '</strong> | Kezdet: ' + vaAdminEscapeHtml(vaAdminFormatBudapestDateTime(report.from_datetime || '-')) + ' | Frissitve: ' + vaAdminEscapeHtml(vaAdminFormatBudapestDateTime(report.generated_at || '-')) + ' (Europe/Budapest)</div>'
-                    + '<div class="va-admin-geo-modal__meta" style="opacity:.8;">Megjegyzes: IP-alapu becsles. Mobilhalozatnal a szolgaltato kilepesi pontja (gyakran Budapest) latszik, nem a valos GPS hely.</div>'
-                    + '<div class="va-admin-geo-modal__table-wrap">'
-                    + '<table class="widefat striped">'
+                    + '<div class="va-geo-modal__meta">Osszes megtekintes: <strong>' + total + '</strong> | Kezdet: ' + vaAdminEscapeHtml(vaAdminFormatBudapestDateTime(report.from_datetime || '-')) + ' | Frissitve: ' + vaAdminEscapeHtml(vaAdminFormatBudapestDateTime(report.generated_at || '-')) + ' (Europe/Budapest)</div>'
+                    + '<div class="va-geo-modal__meta" style="opacity:.8;">Megjegyzes: IP-alapu becsles. Mobilhalozatnal gyakori, hogy a szolgaltato budapesti kilepesi pontja latszik, nem a tenyleges GPS hely.</div>'
+                    + '<div class="va-geo-modal__table-wrap">'
+                    + '<table class="va-geo-modal__table">'
                     + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';
 
                 rows.forEach(function(row) {
@@ -464,7 +464,7 @@
                 window.print();
             });
         }).fail(function() {
-            $body.html('<div class="va-admin-geo-modal__error">Halozati hiba a geo riport lekeresenel.</div>');
+            $body.html('<div class="va-geo-modal__error">Halozati hiba a geo riport lekeresenel.</div>');
         });
     };
 
