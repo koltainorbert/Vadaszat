@@ -2,6 +2,20 @@
 
 ---
 
+## 2026. 05. 08. – Session #234 (Vásárlás hero cím fix)
+
+### Mit csinaltunk [x]
+- [x] A vásárlási hero főcím fix fehér színt kapott (`.va-credits-title`)
+- [x] Az alapértelmezett cím értéke `VÁSÁRLÁS`-ra állítva
+- [x] Legacy fallback: ha régi cím (`Rang Alapú Vásárlás`) van mentve, automatikusan `VÁSÁRLÁS` jelenik meg
+- [x] Módosítás átvezetve source + plugin mirror fájlokba
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A középső főcím most minden esetben jól olvasható fehér, és a kért felirat `VÁSÁRLÁS`.
+
+---
+
 ## 2026. 05. 08. – Session #233 (404 oldal dögösebb redesign)
 
 ### Mit csinaltunk [x]
