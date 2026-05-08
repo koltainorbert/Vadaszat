@@ -816,6 +816,10 @@ class VA_SEO {
     }
 
     private static function listing_browser_title( int $post_id ): string {
+        $exact_title = wp_strip_all_tags( (string) get_the_title( $post_id ) );
+        if ( $exact_title !== '' ) {
+            return $exact_title . ' | Weingartner Autó';
+        }
         return self::listing_base_title( $post_id ) . ' | Weingartner Autó';
     }
 
@@ -846,6 +850,7 @@ class VA_SEO {
     private static function listing_meta_description( int $post_id ): string {
         $price_raw     = get_post_meta( $post_id, 'va_price', true );
         $price_type    = (string) get_post_meta( $post_id, 'va_price_type', true );
+        $exact_title   = wp_strip_all_tags( (string) get_the_title( $post_id ) );
         $brand         = trim( (string) get_post_meta( $post_id, 'va_brand', true ) );
         $model         = trim( (string) get_post_meta( $post_id, 'va_model', true ) );
         $year          = trim( (string) get_post_meta( $post_id, 'va_year', true ) );
@@ -862,7 +867,12 @@ class VA_SEO {
             $name = wp_strip_all_tags( (string) get_the_title( $post_id ) );
         }
 
-        $parts = [ 'Eladó ' . $name . '.' ];
+        $parts = [];
+        if ( $exact_title !== '' ) {
+            $parts[] = $exact_title . ' - eladó jármű.';
+        } else {
+            $parts[] = 'Eladó ' . $name . '.';
+        }
 
         if ( $year !== '' ) {
             $parts[] = 'Évjárat: ' . $year . '.';
