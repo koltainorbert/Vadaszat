@@ -54,18 +54,22 @@ $vehicle_fuel_types   = [
 $vehicle_conditions   = class_exists( 'VA_Vehicle_Catalog' ) ? VA_Vehicle_Catalog::get_vehicle_condition_options() : [];
 $search_page         = get_page_by_path( 'va-hirdetes-kereses' );
 $search_url          = $search_page ? get_permalink( $search_page ) : home_url( '/va-hirdetes-kereses/' );
-$landing_title       = 'Eladó autók és motorok';
-$landing_intro       = 'Böngészd a friss autó- és motorhirdetéseket részletes szűrőkkel, aktuális árakkal és járműadatokkal.';
+$landing_context     = class_exists( 'VA_SEO' ) ? VA_SEO::get_search_landing_context() : [
+    'title'       => 'Eladó autók és motorok',
+    'intro'       => 'Böngészd a friss autó- és motorhirdetéseket részletes szűrőkkel, aktuális árakkal és járműadatokkal.',
+    'seo_heading' => 'Autó- és motorhirdetések országosan',
+    'seo_text'    => 'Részletes szűrés márka, modell, ár és futásteljesítmény szerint.',
+    'seo_points'  => [],
+];
+$landing_title       = (string) $landing_context['title'];
+$landing_intro       = (string) $landing_context['intro'];
+$landing_seo_heading = (string) $landing_context['seo_heading'];
+$landing_seo_text    = (string) $landing_context['seo_text'];
+$landing_seo_points  = ! empty( $landing_context['seo_points'] ) && is_array( $landing_context['seo_points'] ) ? $landing_context['seo_points'] : [];
 $top_brand_links     = array_slice( $vehicle_brands, 0, 24 );
 $top_model_links     = [];
 if ( $url_brand !== '' && ! empty( $vehicle_brand_models[ $url_brand ] ) && is_array( $vehicle_brand_models[ $url_brand ] ) ) {
     $top_model_links = array_slice( $vehicle_brand_models[ $url_brand ], 0, 24 );
-    $landing_title = $url_model !== ''
-        ? 'Eladó ' . $url_brand . ' ' . $url_model
-        : 'Eladó ' . $url_brand;
-    $landing_intro = $url_model !== ''
-        ? 'Aktuális ' . $url_brand . ' ' . $url_model . ' ajánlatok részletes adatokkal, árakkal és szűrőzhető találatokkal.'
-        : 'Aktuális ' . $url_brand . ' ajánlatok részletes adatokkal, árakkal és szűrőzhető találatokkal.';
 }
 
 // ── Felhasználó-kereső mód ────────────────────────────────────
@@ -156,6 +160,18 @@ wp_enqueue_style( 'va-frontend', VA_PLUGIN_URL . 'frontend/css/frontend.css', []
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
+
+        <div style="margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.08);max-width:920px;">
+            <h2 style="margin:0 0 10px;font-size:clamp(18px,2.6vw,26px);line-height:1.2;color:#fff;"><?php echo esc_html( $landing_seo_heading ); ?></h2>
+            <p style="margin:0;color:rgba(255,255,255,.72);line-height:1.7;"><?php echo esc_html( $landing_seo_text ); ?></p>
+            <?php if ( ! empty( $landing_seo_points ) ) : ?>
+                <ul style="margin:14px 0 0;padding-left:18px;color:rgba(255,255,255,.82);line-height:1.7;">
+                    <?php foreach ( $landing_seo_points as $landing_point ) : ?>
+                        <li><?php echo esc_html( (string) $landing_point ); ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+        </div>
     </section>
 
     <!-- Szűrő sáv -->

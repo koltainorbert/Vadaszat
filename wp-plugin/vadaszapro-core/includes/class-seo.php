@@ -57,13 +57,14 @@ class VA_SEO {
 
     public static function filter_document_title_parts( array $parts ): array {
         if ( self::is_listing_search_landing() ) {
-            $brand = self::requested_brand();
-            $model = self::requested_model();
-            if ( $brand !== '' && $model !== '' ) {
-                $parts['title'] = 'Eladó ' . $brand . ' ' . $model;
-            } elseif ( $brand !== '' ) {
-                $parts['title'] = 'Eladó ' . $brand;
-            }
+            $landing = self::get_search_landing_context();
+            $parts['title'] = $landing['title'];
+            unset( $parts['tagline'] );
+            return $parts;
+        }
+
+        if ( is_front_page() ) {
+            $parts['title'] = 'Eladó autók és motorok | Weingartner Autó';
             unset( $parts['tagline'] );
             return $parts;
         }
@@ -174,6 +175,52 @@ class VA_SEO {
         return function_exists( 'va_is_page' )
             && va_is_page( 'va-hirdetes-kereses' )
             && ( self::requested_brand() !== '' || self::requested_model() !== '' );
+    }
+
+    public static function get_search_landing_context(): array {
+        $brand = self::requested_brand();
+        $model = self::requested_model();
+
+        $context = [
+            'brand'       => $brand,
+            'model'       => $model,
+            'title'       => 'Eladó autók és motorok',
+            'intro'       => 'Böngészd a friss autó- és motorhirdetéseket részletes szűrőkkel, aktuális árakkal és járműadatokkal.',
+            'description' => 'Eladó használt autók és motorok a Weingartner Autónál. Márka, modell, ár, évjárat és futásteljesítmény szerint szűrhető ajánlatok egy helyen.',
+            'seo_heading' => 'Autó- és motorhirdetések országosan',
+            'seo_text'    => 'A keresőoldal úgy lett felépítve, hogy márka, modell, ár, évjárat és állapot szerint is gyorsan lehessen szűrni. Így nem csak több hirdetést látsz, hanem könnyebben megtalálod a valóban releváns ajánlatokat.',
+            'seo_points'  => [
+                'Friss autó- és motorhirdetések egyetlen keresőoldalon.',
+                'Részletes szűrés márka, modell, ár, kilométer és üzemanyag szerint.',
+                'Gyors átjárás a kapcsolódó márka- és modelloldalak között.',
+            ],
+        ];
+
+        if ( $brand !== '' && $model !== '' ) {
+            $context['title'] = 'Eladó ' . $brand . ' ' . $model;
+            $context['intro'] = 'Aktuális ' . $brand . ' ' . $model . ' ajánlatok részletes adatokkal, árakkal és szűrőzhető találatokkal.';
+            $context['description'] = 'Eladó ' . $brand . ' ' . $model . ' ajánlatok a Weingartner Autónál. Ár, évjárat, kilométer és felszereltség szerint böngészhető készlet egy helyen.';
+            $context['seo_heading'] = $brand . ' ' . $model . ' hirdetések, árak és járműadatok';
+            $context['seo_text'] = 'Ez az oldal a ' . $brand . ' ' . $model . ' ajánlatokat gyűjti össze egy helyre, hogy gyorsan össze lehessen vetni az árakat, évjáratokat, futásteljesítményt és a fontosabb műszaki adatokat.';
+            $context['seo_points'] = [
+                'Összegyűjtött ' . $brand . ' ' . $model . ' hirdetések egy helyen.',
+                'Gyors összehasonlítás ár, évjárat és kilométer alapján.',
+                'Kapcsolódó keresések ugyanazon márkán belül további modellekre.',
+            ];
+        } elseif ( $brand !== '' ) {
+            $context['title'] = 'Eladó ' . $brand;
+            $context['intro'] = 'Aktuális ' . $brand . ' ajánlatok részletes adatokkal, árakkal és szűrőzhető találatokkal.';
+            $context['description'] = 'Eladó ' . $brand . ' autók és motorok a Weingartner Autónál. Friss készlet, részletes adatok és aktuális ajánlatok egy helyen.';
+            $context['seo_heading'] = $brand . ' hirdetések és kapcsolódó modellek';
+            $context['seo_text'] = 'A ' . $brand . ' landing oldal célja, hogy egy helyre gyűjtse a márkához tartozó friss hirdetéseket és modelleket. Így könnyebb továbbmenni a legkeresettebb típusokra és gyorsabban szűkíteni a találatokat.';
+            $context['seo_points'] = [
+                'Eladó ' . $brand . ' ajánlatok folyamatosan frissülő listában.',
+                'Gyors továbblépés a leggyakoribb modellekre.',
+                'Szűrhető találatok ár, évjárat és futásteljesítmény szerint.',
+            ];
+        }
+
+        return $context;
     }
 
     private static function landing_url( string $brand = '', string $model = '' ): string {
@@ -557,14 +604,12 @@ class VA_SEO {
 
     private static function meta_description(): string {
         if ( self::is_listing_search_landing() ) {
-            $brand = self::requested_brand();
-            $model = self::requested_model();
-            if ( $brand !== '' && $model !== '' ) {
-                return 'Eladó ' . $brand . ' ' . $model . ' ajánlatok a Weingartner Autónál. Részletes adatok, friss készlet és aktuális árak egy helyen.';
-            }
-            if ( $brand !== '' ) {
-                return 'Eladó ' . $brand . ' autók és motorok a Weingartner Autónál. Friss készlet, részletes adatok és aktuális ajánlatok egy helyen.';
-            }
+            $landing = self::get_search_landing_context();
+            return $landing['description'];
+        }
+
+        if ( is_front_page() ) {
+            return 'Weingartner Autó - eladó használt autók és motorok részletes adatokkal, friss hirdetésekkel és gyors márka-modell kereséssel.';
         }
 
         if ( is_singular( 'va_listing' ) ) {
@@ -733,14 +778,12 @@ class VA_SEO {
 
     private static function social_title( string $default_title ): string {
         if ( self::is_listing_search_landing() ) {
-            $brand = self::requested_brand();
-            $model = self::requested_model();
-            if ( $brand !== '' && $model !== '' ) {
-                return 'Eladó ' . $brand . ' ' . $model . ' | Weingartner Autó';
-            }
-            if ( $brand !== '' ) {
-                return 'Eladó ' . $brand . ' | Weingartner Autó';
-            }
+            $landing = self::get_search_landing_context();
+            return $landing['title'] . ' | Weingartner Autó';
+        }
+
+        if ( is_front_page() ) {
+            return 'Eladó autók és motorok | Weingartner Autó';
         }
 
         if ( is_singular( 'va_listing' ) ) {
@@ -754,6 +797,10 @@ class VA_SEO {
     }
 
     private static function social_description(): string {
+        if ( self::is_listing_search_landing() || is_front_page() ) {
+            return self::meta_description();
+        }
+
         if ( is_singular( 'va_listing' ) ) {
             $id = get_queried_object_id();
             if ( $id > 0 ) {
