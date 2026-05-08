@@ -941,7 +941,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 : get_edit_post_link( $l->ID );
                             ?>
                             <?php if ( $suspended_by_plan ): ?>
-                            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;">
+                            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
                                 <a href="<?php echo esc_url( $buy_url ); ?>" class="va-btn va-btn--sm" style="background:linear-gradient(135deg,rgba(255,60,60,.25),rgba(200,0,0,.25));border:1px solid rgba(255,60,60,.5);color:#ff6060;white-space:nowrap;font-weight:600;">Kredit vásárlás →</a>
                                 <form method="post" style="margin:0;" onsubmit="return confirm('Biztosan törlöd ezt a hirdetést?');">
                                     <?php wp_nonce_field( 'va_delete_listing', 'va_delete_listing_nonce' ); ?>
@@ -951,7 +951,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 </form>
                             </div>
                             <?php else: ?>
-                            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;">
+                            <div style="display:flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:nowrap;">
                                 <a href="<?php echo esc_url( $edit_url ); ?>" class="va-btn va-btn--sm" style="background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);color:#fff;white-space:nowrap;">Szerkesztés</a>
                                 <?php if ( $l->post_status === 'publish' ): ?>
                                 <button class="va-refresh-btn va-btn va-btn--sm"
@@ -2196,7 +2196,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
     display:flex;
     align-items:center;
     gap:6px;
-    flex-wrap:wrap;
+    flex-wrap:nowrap;
 }
 .va-table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .va-boost-btn {
