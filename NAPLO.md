@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #270 (célzott márka/modell SEO variációk)
+
+### Mit csinaltunk [x]
+- [x] A központi SEO landing context márka- és modellspecifikus variációs réteget kapott
+- [x] Kiemelt márkákhoz (BMW, Mercedes-Benz, Audi, Volkswagen, Toyota) egyedi SEO heading + szöveg + bullet készlet került
+- [x] Kiemelt modellekhez (BMW X5, VW Golf, Audi A4, Toyota Corolla) egyedi SEO szövegvariáció került
+- [x] A főoldali meta description pénzesebb kulcsszavas hangsúlyt kapott (eladó használt autók és motorok)
+- [x] Source + plugin mirror szinkronban
+- [x] Hibakontroll rendben, Deploy All sikeres
+
+### Eredmeny
+A landing oldalak tartalma most már nem általános sablonszöveg, hanem márka/modell intenthez illeszkedő SEO tartalom, ami jobb relevanciát ad a fő keresési szándékokra.
+
+---
+
 ## 2026. 05. 08. – Session #269 (fooldali SEO + brand/model landing szovegblokkok)
 
 ### Mit csinaltunk [x]
