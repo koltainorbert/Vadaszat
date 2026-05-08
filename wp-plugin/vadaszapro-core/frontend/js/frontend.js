@@ -140,7 +140,7 @@
       } else {
         var html = ''
           + warnHtml
-          + '<div class="va-geo-modal__meta">Osszes megtekintes: <strong>' + total + '</strong> | Frissitve: ' + vaEscapeHtml(report.generated_at || '-') + '</div>'
+          + '<div class="va-geo-modal__meta">Osszes megtekintes: <strong>' + total + '</strong> | Kezdet: ' + vaEscapeHtml(report.from_datetime || '-') + ' | Frissitve: ' + vaEscapeHtml(report.generated_at || '-') + '</div>'
           + '<div class="va-geo-modal__table-wrap">'
           + '<table class="va-geo-modal__table">'
           + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';

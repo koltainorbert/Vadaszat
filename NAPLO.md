@@ -2,6 +2,22 @@
 
 ---
 
+## 2026. 05. 08. – Session #242 (Geo riport felrakas idopontjatol)
+
+### Mit csinaltunk [x]
+- [x] Uj idosoros tabla bevezetve: `wp_va_view_geo_daily` (napi geo aggregatum)
+- [x] Migracio automatikusan fut: `va_view_geo_table_ver` -> `1.1.0`
+- [x] Geo logolas most mar egyszerre ket helyre megy: osszesitett + napi tabla
+- [x] Riport lekerdezes atallitva napi tablara, a hirdetes `post_date` (felrakas ideje) kezdettel
+- [x] Popupokban metadatak: kezdo idopont (`from_datetime`) + frissitesi ido
+- [x] Source + plugin mirror szinkronizalva
+- [x] Deploy All sikeres
+
+### Hol tartunk
+A geo riport idoszakkezdete most a hirdetes felrakasi ideje, es idosoros adatokbol szamol. A fejlesztes alatti korabbi osszemosott statok nem keverednek az uj modos tartomanyba.
+
+---
+
 ## 2026. 05. 08. – Session #241 (Geo badge egyforma + 30 napos IP validitas)
 
 ### Mit csinaltunk [x]

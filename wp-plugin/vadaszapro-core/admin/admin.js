@@ -402,7 +402,7 @@
             } else {
                 var table = ''
                     + warn
-                    + '<div class="va-admin-geo-modal__meta">Osszes: <strong>' + total + '</strong> | Frissitve: ' + vaAdminEscapeHtml(report.generated_at || '-') + '</div>'
+                    + '<div class="va-admin-geo-modal__meta">Osszes: <strong>' + total + '</strong> | Kezdet: ' + vaAdminEscapeHtml(report.from_datetime || '-') + ' | Frissitve: ' + vaAdminEscapeHtml(report.generated_at || '-') + '</div>'
                     + '<div class="va-admin-geo-modal__table-wrap">'
                     + '<table class="widefat striped">'
                     + '<thead><tr><th>Orszag</th><th>Regio</th><th>Varos</th><th>Megtekintes</th><th>Utolso</th></tr></thead><tbody>';

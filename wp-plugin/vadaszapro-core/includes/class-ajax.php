@@ -944,6 +944,7 @@ class VA_Ajax {
         $rows = function_exists( 'va_get_view_geo_breakdown' )
             ? va_get_view_geo_breakdown( $post_id, 300 )
             : [];
+        $from_datetime = (string) get_post_field( 'post_date', $post_id );
 
         $total_views = 0;
         foreach ( $rows as $row ) {
@@ -955,6 +956,7 @@ class VA_Ajax {
             'post_title'   => get_the_title( $post_id ),
             'rows'         => $rows,
             'total_views'  => $total_views,
+            'from_datetime'=> $from_datetime,
             'generated_at' => current_time( 'mysql' ),
         ] );
     }
