@@ -2,6 +2,21 @@
 
 ---
 
+## 2026. 05. 08. – Session #237 (404 full-screen referencia kozeli verzio)
+
+### Mit csinaltunk [x]
+- [x] 404 oldal teljes viewportos (full-screen) kozepponti kompoziciora allitva
+- [x] Nagy, csikozott `404` tipografia + 10s-es glitch animacio megtartva
+- [x] HUD jellegu sarkok, oldalso status szovegek es finom zajreteg beallitva
+- [x] Minimalista egyetlen fo CTA gomb (`VISSZA A FOOLDALRA`)
+- [x] Root es theme `404.php` tartalom teljesen szinkronban
+- [x] Deploy All sikeres
+
+### Hol tartunk
+Az uj 404 oldal most mar teljes kepernyos, referencia-hangulatu, eros vizualis fokusz a kozepso tartalommal.
+
+---
+
 ## 2026. 05. 08. – Session #236 (404 brutalis redesign, split hero)
 
 ### Mit csinaltunk [x]
