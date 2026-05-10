@@ -740,11 +740,35 @@ class VA_User_Roles {
 
         if ( $mode === 'off' || ( $mode === 'toggle' && $active ) ) {
             delete_post_meta( $post_id, 'va_sold' );
+
+            $prev_price = get_post_meta( $post_id, 'va_price_before_sold', true );
+            $prev_type  = get_post_meta( $post_id, 'va_price_type_before_sold', true );
+            if ( $prev_price !== '' ) {
+                update_post_meta( $post_id, 'va_price', $prev_price );
+                delete_post_meta( $post_id, 'va_price_before_sold' );
+            }
+            if ( $prev_type !== '' ) {
+                update_post_meta( $post_id, 'va_price_type', $prev_type );
+                delete_post_meta( $post_id, 'va_price_type_before_sold' );
+            }
+
             wp_send_json_success( [
                 'message' => '"Eladva" kikapcsolva.',
                 'active'  => false,
             ] );
         }
+
+        $cur_price = get_post_meta( $post_id, 'va_price', true );
+        $cur_type  = get_post_meta( $post_id, 'va_price_type', true );
+        if ( get_post_meta( $post_id, 'va_price_before_sold', true ) === '' ) {
+            update_post_meta( $post_id, 'va_price_before_sold', $cur_price );
+        }
+        if ( get_post_meta( $post_id, 'va_price_type_before_sold', true ) === '' ) {
+            update_post_meta( $post_id, 'va_price_type_before_sold', $cur_type );
+        }
+
+        update_post_meta( $post_id, 'va_price', 0 );
+        update_post_meta( $post_id, 'va_price_type', 'fixed' );
 
         update_post_meta( $post_id, 'va_sold', '1' );
         wp_send_json_success( [

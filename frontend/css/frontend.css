@@ -510,14 +510,26 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
 }
 .va-card__badge--boost { background: rgba(255,42,42,.18); color: #ff2a2a; border: 1px solid rgba(255,42,42,.4); }
 .va-card__badge--new { right: 10px; left: auto; background: #ff0000; color: #fff; border: 1px solid rgba(255,255,255,.22); }
-.va-card__badge--sold {
-  right: 10px;
-  left: auto;
-  background: linear-gradient(135deg, #ff2a2a 0%, #a50000 100%);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,.34);
+.va-card__sold-ribbon {
+  position: absolute;
+  top: 12px;
+  right: -52px;
+  z-index: 4;
+  min-width: 182px;
+  height: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-transform: uppercase;
-  letter-spacing: .06em;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  color: #fff;
+  background: linear-gradient(135deg, #ff2a2a 0%, #a70000 100%);
+  border: 1px solid rgba(255,255,255,.34);
+  box-shadow: 0 9px 18px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.24);
+  transform: rotate(38deg);
+  pointer-events: none;
 }
 .va-card__watchlist {
   position: static;

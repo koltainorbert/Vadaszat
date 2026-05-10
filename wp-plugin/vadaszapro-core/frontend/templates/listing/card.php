@@ -27,6 +27,12 @@ $county    = get_the_terms( $post_id, 'va_county' );
 $watching  = va_user_watches( $post_id );
 $author_name = get_the_author_meta( 'display_name', get_post_field( 'post_author', $post_id ) );
 
+if ( $is_sold ) {
+    $has_sale = false;
+    $price = 0;
+    $price_type = 'fixed';
+}
+
 $meta_rows = (int) get_option( 'va_card_meta_rows', '2' );
 if ( $meta_rows < 1 ) {
     $meta_rows = 1;
@@ -153,13 +159,14 @@ if ( ! $card_image_html ) {
     <?php if ( $is_boosted && $show_boost_badge ): ?>
         <span class="va-card__badge va-card__badge--boost"><?php echo esc_html( $boost_badge_text ); ?></span>
     <?php endif; ?>
-    <?php if ( $is_sold ): ?>
-        <span class="va-card__badge va-card__badge--sold">ELADVA</span>
-    <?php elseif ( $is_new_pill ): ?>
+    <?php if ( ! $is_sold && $is_new_pill ): ?>
         <span class="va-card__badge va-card__badge--new">Új</span>
     <?php endif; ?>
 
     <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
+        <?php if ( $is_sold ): ?>
+            <span class="va-card__sold-ribbon">ELADVA</span>
+        <?php endif; ?>
         <?php if ( $card_image_html ):
             echo $card_image_html;
         else: ?>
