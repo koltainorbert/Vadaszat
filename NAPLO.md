@@ -5089,19 +5089,3 @@ Az "ELADVA" szöveg szimmetrikus a szalag teljes hosszában és magasságában.
 
 ---
 
-## 2026. 05. 10. – Session: ELADVA ribbon szöveg spacing finomhangolás
-
-### Mit csináltunk [x]
-- [x] letter-spacing: .25em -> .18em (visszavéve mérsékeltebb méretre)
-- [x] A szöveg most nem olyan szétterített, de középre marad
-- [x] "ELADVA" felirat center-aligned balra-jobbra és felül-alul
-- [x] Root + plugin CSS mirror és minified asset frissítve
-
-### Hol tartunk
-A szöveg mérsékelt betűközzel középen helyezkedik el a szalagon.
-
-### TODO
-- [ ] Vizualis ellenorzes desktop + mobil nezetben
-
----
-

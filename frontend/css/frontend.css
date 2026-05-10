@@ -532,7 +532,7 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
   text-transform: uppercase;
   font-size: 17px;
   font-weight: 800;
-  letter-spacing: .18em;
+  letter-spacing: .25em;
   line-height: 1;
   color: #fff;
   background: linear-gradient(135deg, #ff2a2a 0%, #a70000 100%);
