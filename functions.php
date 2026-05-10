@@ -1086,7 +1086,7 @@ add_action( 'wp_enqueue_scripts', function () {
     $tax_hero_count      = va_design_int_option( 'va_size_tax_hero_count', 14, 10, 34 );
 
 add_filter( 'style_loader_tag', function ( string $html, string $handle, string $href, string $media ) : string {
-    if ( $handle !== 'va-custom-fonts' || is_admin() ) {
+    if ( is_admin() || ! in_array( $handle, [ 'va-custom-fonts', 'va-frontend' ], true ) ) {
         return $html;
     }
 

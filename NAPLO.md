@@ -5171,3 +5171,19 @@ A funkcio nem valtozott (cookie beleegyezes ugyanugy mukodik), csak a mobil rend
 
 ---
 
+## 2026. 05. 10. – Session: Mobil render-blocking csokkentes (frontend CSS preload)
+
+### Mit csinaltunk [x]
+- [x] `va-frontend` stylesheet preload+onload módra állítva a root és theme kódban
+- [x] A theme fő CSS maradt blokkoló, hogy a layout stabil maradjon
+- [x] A korábbi font preload és a mobil cookie banner könnyítés megmaradt
+- [x] Szintaxis ellenőrzés tiszta
+
+### Hol tartunk
+Ez már közvetlenül a PSI-ben látott 920 ms-os render-blocking tétel csökkentését célozza, de még óvatosan, csak a frontend CSS oldalán.
+
+### TODO
+- [ ] Új mobil PSI futtatás és összevetés az előző 85/86-os eredménnyel
+
+---
+
