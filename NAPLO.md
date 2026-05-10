@@ -2,6 +2,28 @@
 
 ---
 
+## 2026. 05. 10. – Session #301 (ELADVA pill + ferde sarokszalag)
+
+### Mi volt a keres
+- A fiokban a meglvo `Kiemeles` es `Uj pill` melle kellett egy uj, ki/be kapcsolhato `Eladva` pill
+- Ha a hirdetes `Eladva` allapotot kap, a termekoldali fokepon jelenjen meg egy ferde piros `ELADVA` sarokszalag
+
+### Mit javitottunk [x]
+- [x] Uj backend allapot bevezetve: `va_sold` post meta
+- [x] Uj helper: `VA_User_Roles::is_sold( $post_id )`
+- [x] Uj AJAX vegpont: `va_toggle_sold_pill` (sajat hirdetesen ki/be kapcsolhato)
+- [x] Dashboard tablazatban uj pill gomb: `Eladva: KI/BE`
+- [x] Dashboardhoz uj CSS + JS toggle kezeles bekerult (root + plugin mirror)
+- [x] Listing kartyan uj badge: `ELADVA`
+- [x] Single oldalon a fokepre ferde piros szalag kerult: `ELADVA` (jobb felso sarok, sreh)
+- [x] Root + plugin + theme mirror fajlok szinkronban frissitve
+
+### Eredmeny
+- A hirdeto a fiokjabol egy kattintassal allitja az `Eladva` allapotot
+- Aktiv allapotnal lathato az `ELADVA` jelzes a kartyan es a termekoldali fokepon is
+
+---
+
 ## 2026. 05. 09. – Session #300 (Munkafolyamat preferencia: auto repo push + biztonsag)
 
 ### Mi tortent
