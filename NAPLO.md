@@ -4892,6 +4892,21 @@ Az ELADVA diagonál piros szalag a kiskártyán is a termékoldali megjelenéshe
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA teljes felirat fehérítés
+
+### Mit csináltunk [x]
+- [x] A sold kártyára külön `va-card--sold` osztály került
+- [x] A sold kártyán minden felirat, szám és címke fehérre van kényszerítve
+- [x] Root + plugin template és CSS mirror együtt frissítve
+
+### Hol tartunk
+Az ELADVA állapotú kártyán minden szöveg jól olvasható, egységes fehér kontraszttal jelenik meg.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
 ## 2026. 05. 10. – Session: ELADVA cím kontraszt javítás
 
 ### Mit csináltunk [x]
