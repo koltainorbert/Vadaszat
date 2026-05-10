@@ -1043,6 +1043,35 @@ add_action( 'wp_enqueue_scripts', function () {
     $tax_hero_title      = va_design_int_option( 'va_size_tax_hero_title', 48, 18, 100 );
     $tax_hero_lead       = va_design_int_option( 'va_size_tax_hero_lead', 16, 10, 40 );
     $tax_hero_count      = va_design_int_option( 'va_size_tax_hero_count', 14, 10, 34 );
+
+add_filter( 'style_loader_tag', function ( string $html, string $handle, string $href, string $media ) : string {
+    if ( $handle !== 'va-custom-fonts' || is_admin() ) {
+        return $html;
+    }
+
+    $href_attr  = esc_url( $href );
+    $media_attr = esc_attr( $media ?: 'all' );
+
+    return '<link rel="preload" as="style" href="' . $href_attr . '" onload="this.onload=null;this.rel=\'stylesheet\'" media="' . $media_attr . '">'
+        . '<noscript><link rel="stylesheet" href="' . $href_attr . '" media="' . $media_attr . '"></noscript>';
+}, 10, 4 );
+
+add_filter( 'wp_resource_hints', function ( array $urls, string $relation_type ) : array {
+    if ( is_admin() ) {
+        return $urls;
+    }
+
+    if ( ! wp_style_is( 'va-custom-fonts', 'enqueued' ) ) {
+        return $urls;
+    }
+
+    if ( $relation_type === 'preconnect' ) {
+        $urls[] = 'https://fonts.googleapis.com';
+        $urls[] = [ 'href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous' ];
+    }
+
+    return $urls;
+}, 10, 2 );
     $contact_hero_badge  = va_design_int_option( 'va_size_contact_hero_badge', 11, 8, 32 );
     $contact_hero_title  = va_design_int_option( 'va_size_contact_hero_title', 62, 20, 120 );
     $contact_hero_lead   = va_design_int_option( 'va_size_contact_hero_lead', 16, 10, 40 );
