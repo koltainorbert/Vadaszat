@@ -512,23 +512,23 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
 .va-card__badge--new { right: 10px; left: auto; background: #ff0000; color: #fff; border: 1px solid rgba(255,255,255,.22); }
 .va-card__sold-ribbon {
   position: absolute;
-  top: 12px;
-  right: -52px;
+  top: 8px;
+  right: -42px;
   z-index: 4;
-  min-width: 182px;
-  height: 30px;
+  min-width: 150px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
-  letter-spacing: .14em;
+  letter-spacing: .12em;
   color: #fff;
   background: linear-gradient(135deg, #ff2a2a 0%, #a70000 100%);
   border: 1px solid rgba(255,255,255,.34);
   box-shadow: 0 9px 18px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.24);
-  transform: rotate(38deg);
+  transform: rotate(37deg);
   pointer-events: none;
 }
 .va-card__watchlist {
