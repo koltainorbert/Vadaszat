@@ -118,6 +118,9 @@
                 ?>
                     <a href="<?php echo esc_url($item['url']); ?>" class="<?php echo esc_attr($cls); ?>"><?php echo esc_html($item['label']); ?></a>
                 <?php endforeach; ?>
+                <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                    <a href="<?php echo esc_url( home_url( '/va-fiok/' ) ); ?>" class="va-nav__item va-nav__item--admin-mobile">Fiokom</a>
+                <?php endif; ?>
                 <!-- Mobil kereső a nav alján -->
                 <form class="va-nav__search" role="search" action="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" method="get" autocomplete="off">
                     <input class="va-nav__search-input" id="va-nav-search-input" type="text" name="s" placeholder="<?php echo esc_attr( $header_search_placeholder ); ?>" autocomplete="off" value="<?php echo esc_attr( get_search_query() ); ?>">

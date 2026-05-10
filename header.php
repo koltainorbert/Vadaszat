@@ -117,6 +117,9 @@
                 ?>
                     <a href="<?php echo esc_url($item['url']); ?>" class="<?php echo esc_attr($cls); ?>"><?php echo esc_html($item['label']); ?></a>
                 <?php endforeach; ?>
+                <?php if ( current_user_can( 'manage_options' ) ) : ?>
+                    <a href="<?php echo esc_url( home_url( '/va-fiok/' ) ); ?>" class="va-nav__item va-nav__item--admin-mobile">Fiokom</a>
+                <?php endif; ?>
             </nav>
 
             <!-- Kereső -->

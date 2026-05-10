@@ -322,6 +322,7 @@ html, body {
   text-decoration: none;
   display: inline-block;
 }
+.va-nav__item--admin-mobile { display: none !important; }
 .va-nav li > a::after,
 .va-nav__item::after {
   content: '';
@@ -601,6 +602,7 @@ body { top:0 !important; }
     border-bottom: none;
     text-align: center;
   }
+  .va-nav__item--admin-mobile { display: inline-block !important; }
   .va-nav__item:hover { background: rgba(255,136,0,.12); }
   .va-nav__item::after { display: none; }
   .va-hamburger { display: flex !important; flex: 0 0 auto; margin-right: 5px; }
