@@ -4892,6 +4892,21 @@ Az ELADVA diagonál piros szalag a kiskártyán is a termékoldali megjelenéshe
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA blur és ribbon arány finomhangolás
+
+### Mit csináltunk [x]
+- [x] A kiskép blur-je vissza lett véve nagyon enyhére
+- [x] Az ELADVA ribbon nagyobb és szimmetrikusabb lett
+- [x] Root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+A sold kártyán a blur csak finom, a szalag pedig nagyobb és kiegyensúlyozottabb.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
 ## 2026. 05. 10. – Session: ELADVA ribbon és dátum finomhangolás
 
 ### Mit csináltunk [x]

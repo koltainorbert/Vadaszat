@@ -516,22 +516,23 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
 }
 .va-card--sold .va-card__thumb,
 .va-card--sold .va-card__thumb-placeholder {
-  filter: blur(10px);
+  filter: blur(1px);
 }
 .va-card__sold-ribbon {
   position: absolute;
-  top: 8px;
-  right: -38px;
+  top: 6px;
+  right: -72px;
   z-index: 4;
-  min-width: 128px;
-  height: 24px;
+  width: 214px;
+  height: 36px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 800;
-  letter-spacing: .10em;
+  letter-spacing: .12em;
+  line-height: 1;
   color: #fff;
   background: linear-gradient(135deg, #ff2a2a 0%, #a70000 100%);
   border: 1px solid rgba(255,255,255,.34);
