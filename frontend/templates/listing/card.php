@@ -163,21 +163,37 @@ if ( ! $card_image_html ) {
         <span class="va-card__badge va-card__badge--new">Új</span>
     <?php endif; ?>
 
-    <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
-        <?php if ( $is_sold ): ?>
+    <?php if ( $is_sold ): ?>
+        <div class="va-card__img-wrap">
             <span class="va-card__sold-ribbon">ELADVA</span>
-        <?php endif; ?>
-        <?php if ( $card_image_html ):
-            echo $card_image_html;
-        else: ?>
-            <div class="va-card__thumb-placeholder">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="40" height="40" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
-            </div>
-        <?php endif; ?>
-    </a>
+            <?php if ( $card_image_html ):
+                echo $card_image_html;
+            else: ?>
+                <div class="va-card__thumb-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="40" height="40" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php else: ?>
+        <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="va-card__img-wrap">
+            <?php if ( $card_image_html ):
+                echo $card_image_html;
+            else: ?>
+                <div class="va-card__thumb-placeholder">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" width="40" height="40" opacity=".25"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                </div>
+            <?php endif; ?>
+        </a>
+    <?php endif; ?>
 
     <div class="va-card__body">
-        <h3 class="va-card__title"><a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php the_title(); ?></a></h3>
+        <h3 class="va-card__title">
+            <?php if ( $is_sold ): ?>
+                <span><?php the_title(); ?></span>
+            <?php else: ?>
+                <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php the_title(); ?></a>
+            <?php endif; ?>
+        </h3>
 
         <?php if ( $is_auction ): ?>
             <?php $cur_bid = get_post_meta( $post_id, 'va_current_bid', true ); ?>
@@ -197,7 +213,9 @@ if ( ! $card_image_html ) {
         <?php else: ?>
             <div class="va-card__price-row">
                 <div class="va-card__price">
-                    <?php if ( $has_sale ): ?>
+                    <?php if ( $is_sold ): ?>
+                        <span style="color:#ff3333;font-weight:800;"><?php echo esc_html( '0 Ft' ); ?></span>
+                    <?php elseif ( $has_sale ): ?>
                         <del style="color:rgba(255,255,255,.35);font-size:11px;font-weight:400;display:block;line-height:1.2;"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></del>
                         <span style="color:#ff3333;font-weight:800;"><?php echo esc_html( number_format( floatval( $sale_price ), 0, ',', ' ' ) . ' Ft' ); ?></span>
                         <span style="font-size:9px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;background:rgba(255,0,0,.25);border:1px solid rgba(255,0,0,.5);border-radius:4px;padding:1px 5px;color:#ff8888;vertical-align:middle;margin-left:4px;">AKCIÓ</span>
