@@ -81,6 +81,8 @@ class VA_User_Roles {
         add_action( 'wp_ajax_va_boost_listing', [ __CLASS__, 'ajax_boost_listing' ] );
         // Frontend AJAX: felhasználó "Új" pillt kapcsol egy hirdetésen
         add_action( 'wp_ajax_va_toggle_new_pill', [ __CLASS__, 'ajax_toggle_new_pill' ] );
+        // Frontend AJAX: felhasználó "Eladva" pillt kapcsol egy hirdetésen
+        add_action( 'wp_ajax_va_toggle_sold_pill', [ __CLASS__, 'ajax_toggle_sold_pill' ] );
 
         // Új hirdetésnél automatikusan induljon az "Új" pill 7 napos ablaka
         add_action( 'save_post_va_listing', [ __CLASS__, 'ensure_new_pill_on_create' ], 10, 3 );
@@ -355,6 +357,13 @@ class VA_User_Roles {
         $ts = (int) get_post_meta( $post_id, 'va_new_pill_time', true );
         if ( $ts <= 0 ) return false;
         return ( time() - $ts ) < ( max( 1, $window_days ) * DAY_IN_SECONDS );
+    }
+
+    /**
+     * "Eladva" állapot aktív-e.
+     */
+    public static function is_sold( int $post_id ): bool {
+        return get_post_meta( $post_id, 'va_sold', true ) === '1';
     }
 
     /**
@@ -698,6 +707,48 @@ class VA_User_Roles {
         update_post_meta( $post_id, 'va_new_pill_time', time() );
         wp_send_json_success( [
             'message' => '"Új" pill bekapcsolva (7 nap).',
+            'active'  => true,
+        ] );
+    }
+
+    /* ══ AJAX: Felhasználó "Eladva" pillt kapcsol ══════════════ */
+
+    public static function ajax_toggle_sold_pill(): void {
+        check_ajax_referer( 'va_user_nonce', 'nonce' );
+
+        if ( ! is_user_logged_in() ) {
+            wp_send_json_error( [ 'message' => 'Nincs jogosultság.' ] );
+        }
+
+        $user_id = get_current_user_id();
+        $post_id = absint( $_POST['post_id'] ?? 0 );
+        if ( ! $post_id ) {
+            wp_send_json_error( [ 'message' => 'Érvénytelen hirdetés azonosító.' ] );
+        }
+
+        $post = get_post( $post_id );
+        if ( ! $post || $post->post_type !== 'va_listing' ) {
+            wp_send_json_error( [ 'message' => 'Hirdetés nem található.' ] );
+        }
+
+        if ( (int) $post->post_author !== $user_id ) {
+            wp_send_json_error( [ 'message' => 'Csak saját hirdetésen kapcsolhatsz "Eladva" állapotot.' ] );
+        }
+
+        $mode   = sanitize_key( (string) ( $_POST['mode'] ?? 'toggle' ) );
+        $active = self::is_sold( $post_id );
+
+        if ( $mode === 'off' || ( $mode === 'toggle' && $active ) ) {
+            delete_post_meta( $post_id, 'va_sold' );
+            wp_send_json_success( [
+                'message' => '"Eladva" kikapcsolva.',
+                'active'  => false,
+            ] );
+        }
+
+        update_post_meta( $post_id, 'va_sold', '1' );
+        wp_send_json_success( [
+            'message' => '"Eladva" bekapcsolva.',
             'active'  => true,
         ] );
     }
