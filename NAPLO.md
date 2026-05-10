@@ -38,6 +38,23 @@
 - A `Fiokom` menulink most csak adminnak latszik, csak mobil hamburger menuben
 - Felhasznalok es desktop nezet nem kapjak meg ezt a plusz menupontot
 
+## 2026. 05. 10. – Session #306 (Fiok dashboard: stat koz +5px, jobb-bal 2pc)
+
+### Mi volt a keres
+- A fiok szekcio es a statisztika blokk koze kellett 5px tavolsag
+- Jobb-bal oldali igazitas/padding: 2pc
+
+### Mit javitottunk [x]
+- [x] `va-dashboard__section .va-crm` blokkra `margin-top: 5px`
+- [x] `va-dashboard__content` blokkra `padding-left/right: 2pc`
+- [x] Mobilon is megtartottuk a 2pc jobb-bal spacinget
+- [x] Root + plugin + theme mirror frontend CSS fajlokban szinkronban atvezetve
+- [x] Minified frontend CSS fajlokban is atvezetve azonnali ervenyesuleshez
+
+### Eredmeny
+- A fiok dashboardon a statisztika szekcio 5px-el lejjebb kerult
+- A dashboard tartalom jobb-bal oldalon 2pc igazitasban jelenik meg
+
 ## 2026. 05. 10. – Session #302 (ELADVA pill + ferde sarokszalag)
 
 ### Mi volt a keres
