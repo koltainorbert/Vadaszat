@@ -2,7 +2,7 @@
 
 ---
 
-## 2026. 05. 10. – Session #301 (ELADVA pill + ferde sarokszalag)
+## 2026. 05. 10. – Session #302 (ELADVA pill + ferde sarokszalag)
 
 ### Mi volt a keres
 - A fiokban a meglvo `Kiemeles` es `Uj pill` melle kellett egy uj, ki/be kapcsolhato `Eladva` pill
@@ -21,6 +21,18 @@
 ### Eredmeny
 - A hirdeto a fiokjabol egy kattintassal allitja az `Eladva` allapotot
 - Aktiv allapotnal lathato az `ELADVA` jelzes a kartyan es a termekoldali fokepon is
+
+## 2026. 05. 09. – Session #301 (Header login/regisztracio/vasarlas + deploy helyreallitas)
+
+### Mi tortent [x]
+- [x] Headerben eltavolitva a Weingartner Trans fix menupont
+- [x] Header jobb oldalon a `Bejelentkezes` + `Regisztracio` + `Vasarlas` linkek allandoan latszanak (belepve es kijelentkezve is)
+- [x] Push kozben non-fast-forward es rebase konfliktusok feloldva (`header.php`, `wp-theme/vadaszapro-theme/header.php`)
+- [x] A remote-ban levo mukodo FTP workflow megorizve (`.github/workflows/deploy.yml`)
+- [x] Valtozasok pusholva `main` branchre, ezzel az FTP Action triggerelve lett
+
+### Hol tartunk
+A javitasok fent vannak GitHubon, a deploy Action futasa utan a `vadkarvadasz.hu` oldalon latszodnia kell a 3 linknek.
 
 ---
 
@@ -1833,6 +1845,20 @@ A `Sugo` menupont ujra megjelenik a lablecben, es a `/sugo` oldalra mutat (ha a 
 
 ### Hol tartunk
 A Sugo oldal most teljes, atfogo es ugyfelbarat hasznalati utmutato, amely csak olyan funkciokat es adatokat ir le, amiket a felhasznalo a feluleten is lat.
+
+---
+
+## 2026. 05. 09. – Session #180 (Header: auth + vásárlás linkek mindig láthatók)
+
+### Mit csinaltunk [x]
+- [x] A bejelentkezett állapot header ágába is bekerült a `Bejelentkezés` link
+- [x] A bejelentkezett állapot header ágába is bekerült a `Regisztráció` link
+- [x] A `Vásárlás` link mindkét állapotban megmaradt láthatónak
+- [x] Módosítás tükrözve source + theme mirror fájlokban
+- [x] Hibavizsgálat lefuttatva, nincs új hiba
+
+### Hol tartunk
+A headerben most minden állapotban látszik a `Bejelentkezés`, `Regisztráció` és `Vásárlás`.
 
 ---
 
