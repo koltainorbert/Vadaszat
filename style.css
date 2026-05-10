@@ -2113,6 +2113,14 @@ body.sl-viewer-open { overflow: hidden; }
   filter: blur(80px);
   opacity: .16;
   pointer-events: none;
+@media (max-width: 960px) {
+  body.va-page-fiok .va-wrap {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+}
 }
 .va-contact-page__hero-glow--1 {
   width: 360px;

@@ -627,6 +627,9 @@ add_filter( 'body_class', function( array $classes ): array {
     if ( va_get_preview_width() > 0 ) {
         $classes[] = 'va-preview-active';
     }
+    if ( is_page( 'va-fiok' ) ) {
+        $classes[] = 'va-page-fiok';
+    }
     return $classes;
 } );
 
