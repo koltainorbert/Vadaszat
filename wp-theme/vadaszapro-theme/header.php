@@ -188,25 +188,15 @@
                     }
                 });
 
-                // Mobil nav kereső – ugyanaz a logika
+                // Mobil nav kereső
                 var mInput    = document.getElementById('va-nav-search-input');
                 var mDropdown = document.getElementById('va-nav-search-dropdown');
-                var mNav      = document.getElementById('va-main-nav');
                 var mTimer;
-                function syncMobileNavSpace(){
-                    if (!mNav) return;
-                    if (!mDropdown || mDropdown.hidden) {
-                        mNav.style.paddingBottom = '';
-                        return;
-                    }
-                    var extra = mDropdown.offsetHeight + 52;
-                    mNav.style.paddingBottom = extra + 'px';
-                }
                 if (mInput && mDropdown) {
                     mInput.addEventListener('input', function(){
                         clearTimeout(mTimer);
                         var q = this.value.trim();
-                        if (q.length < 2) { mDropdown.hidden = true; syncMobileNavSpace(); return; }
+                        if (q.length < 2) { mDropdown.hidden = true; return; }
                         mTimer = setTimeout(function(){
                             var fd = new FormData();
                             fd.append('action', 'va_live_search');
@@ -214,7 +204,7 @@
                             fetch(ajaxUrl, { method:'POST', body:fd })
                                 .then(function(r){ return r.json(); })
                                 .then(function(d){
-                                    if (!d.success || !d.data.length) { mDropdown.hidden = true; syncMobileNavSpace(); return; }
+                                    if (!d.success || !d.data.length) { mDropdown.hidden = true; return; }
                                     var baseUrl = '<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>';
                                     mDropdown.innerHTML = d.data.map(function(r){
                                         var body = (r.thumb ? '<img class="va-sd__thumb" src="'+r.thumb+'" alt="" loading="lazy">' : '<span class="va-sd__no-img"></span>')
@@ -225,17 +215,14 @@
                                         return r.sold ? '<div class="va-sd__item va-sd__item--sold">'+body+'</div>' : '<a class="va-sd__item" href="'+r.url+'">'+body+'</a>';
                                     }).join('') + '<a class="va-sd__all" href="'+baseUrl+'?s='+encodeURIComponent(mInput.value)+'">Összes találat →</a>';
                                     mDropdown.hidden = false;
-                                    syncMobileNavSpace();
                                 });
                         }, 220);
                     });
                     document.addEventListener('click', function(e){
                         if (!mInput.closest('form').contains(e.target)) {
                             mDropdown.hidden = true;
-                            syncMobileNavSpace();
                         }
                     });
-                    window.addEventListener('resize', syncMobileNavSpace);
                 }
             })();
             </script>
