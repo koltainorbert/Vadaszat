@@ -4877,3 +4877,18 @@ A dashboardon az ikonok és feliratok már nem érnek össze, a vizuális ritmus
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA szalag egységesítés kiskártyán
+
+### Mit csináltunk [x]
+- [x] A kiskártya ELADVA szalag geometriája finomhangolva (`top/right`, szélesség, magasság, dőlés)
+- [x] Root + plugin `frontend.css` szinkron frissítése
+- [x] A hiányzó stílus hozzáadása mindkét `frontend.min.css` fájlhoz, hogy futó környezetben is biztosan érvényesüljön
+
+### Hol tartunk
+Az ELADVA diagonál piros szalag a kiskártyán is a termékoldali megjelenéshez igazítva jelenik meg, és a minifikált asset útvonalon is aktív.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
