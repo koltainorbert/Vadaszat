@@ -1294,12 +1294,12 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
   margin-left: calc(var(--va-dash-side-gap) + var(--va-dash-nav-w) + var(--va-dash-gutter));
   margin-right: var(--va-dash-side-gap);
   min-height: calc(100vh - var(--nav, 66px));
-  padding-left: 5pc;
-  padding-right: 5pc;
+  padding-left: 2pc;
+  padding-right: 2pc;
 }
-.va-dashboard__section .va-crm { margin-top: 15px; }
+.va-dashboard__section .va-crm { margin-top: 5px; }
 @media (max-width: 768px) {
-  .va-dashboard__content { margin-left: 0; margin-right: 0; padding-left: 5pc; padding-right: 5pc; }
+  .va-dashboard__content { margin-left: 0; margin-right: 0; padding-left: 2pc; padding-right: 2pc; }
 }
 .va-dashboard__section { display: none; }
 .va-dashboard__section.active { display: block; }
