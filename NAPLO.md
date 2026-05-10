@@ -4996,3 +4996,18 @@ A sold hirdetés kártya most nem nyitható meg kattintással, és az ár minden
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon és live search finomhangolás
+
+### Mit csináltunk [x]
+- [x] A sold keresési találat most nem kattintható blokk
+- [x] A sold ribbon középre húzva, szimmetrikusabb pozícióra került
+- [x] Root + theme header, valamint root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+A sold elemek következetesen nem kattinthatók, a ribbon a középpont felől ül a helyére, a vizuális elcsúszás megszűnt.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
