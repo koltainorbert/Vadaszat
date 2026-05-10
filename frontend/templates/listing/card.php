@@ -189,7 +189,7 @@ if ( ! $card_image_html ) {
     <div class="va-card__body">
         <h3 class="va-card__title">
             <?php if ( $is_sold ): ?>
-                <span><?php the_title(); ?></span>
+                <span style="color:#000;font-weight:800;"><?php the_title(); ?></span>
             <?php else: ?>
                 <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php the_title(); ?></a>
             <?php endif; ?>
