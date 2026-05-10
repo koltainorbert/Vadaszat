@@ -5138,3 +5138,19 @@ A valtozasok nem modositanak uzleti logikat, csak helyfoglalast stabilizalnak be
 
 ---
 
+## 2026. 05. 10. – Session: Mobil CWV rendes optimalizalas (render-blocking + LCP)
+
+### Mit csinaltunk [x]
+- [x] Google Fonts nem-blokkolo betoltes beallitasa (`preload` + `noscript` fallback)
+- [x] Font domainekhez preconnect hint (`fonts.googleapis.com`, `fonts.gstatic.com`)
+- [x] Front page logokep preload (`va_header_logo_url` / fallback `va_brand_icon_url`) az LCP javitasara
+- [x] Ellenorzes: syntax es error panel tiszta
+
+### Hol tartunk
+Mobil riportban a legnagyobb tetel a render-blocking volt, erre celzott, alacsony kockazatu javitas kerult be. A vizualis layout logikahoz nem nyultunk.
+
+### TODO
+- [ ] Mobil PageSpeed ujrafuttatas es az uj LCP / render-blocking ertekek ellenorzese
+
+---
+

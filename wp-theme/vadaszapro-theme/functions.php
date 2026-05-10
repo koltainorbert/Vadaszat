@@ -174,6 +174,22 @@ add_action( 'wp_head', function () {
     echo '<link rel="dns-prefetch" href="//s.gravatar.com">' . "\n";
 }, 1 );
 
+add_action( 'wp_head', function () {
+    if ( is_admin() || ! is_front_page() ) {
+        return;
+    }
+
+    $header_logo = trim( (string) get_option( 'va_header_logo_url', '' ) );
+    $brand_icon  = trim( (string) get_option( 'va_brand_icon_url', '' ) );
+    $preload_url = $header_logo !== '' ? $header_logo : $brand_icon;
+
+    if ( $preload_url === '' ) {
+        return;
+    }
+
+    echo '<link rel="preload" as="image" href="' . esc_url( $preload_url ) . '">' . "\n";
+}, 1 );
+
 // CookieYes dizájn felülírás, hogy jobban illeszkedjen az oldal fekete-piros vizuáljához.
 add_action( 'wp_head', function () {
     ?>
