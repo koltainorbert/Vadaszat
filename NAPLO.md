@@ -20,6 +20,24 @@
 - ELADVA jelolesnel a hirdetes ara automatikusan 0-ra valtozik, es kikapcsolaskor visszaall az elozo ertek
 - A lista kartyakon a vizualis jeloles mar egyezik a termekoldali megjelenessel (ferde piros sarokszalag)
 
+## 2026. 05. 10. – Session #304 (Admin-only Fiokom link mobil hamburger keresoben)
+
+### Mi volt a keres
+- A mobil hamburger keresoben kellett egy uj menupont: `Fiokom`
+- A link csak admin jogosultsaggal latszodhat, normal felhasznalo ne lassa
+- URL: `https://www.weingartnerauto.hu/va-fiok`
+
+### Mit javitottunk [x]
+- [x] Header nav-ba bekerult az admin-only menupont (`Fiokom`) `current_user_can('manage_options')` feltetellel
+- [x] Kizarolag mobil hamburger nezetben jelenik meg (`.va-nav__item--admin-mobile`)
+- [x] Desktopon explicit rejtve marad
+- [x] Root + theme mirror fajlokban szinkronban frissitve
+- [x] Minified CSS-ben is atvezetve, hogy production betoltesnel is azonnal ervenyes legyen
+
+### Eredmeny
+- A `Fiokom` menulink most csak adminnak latszik, csak mobil hamburger menuben
+- Felhasznalok es desktop nezet nem kapjak meg ezt a plusz menupontot
+
 ## 2026. 05. 10. – Session #302 (ELADVA pill + ferde sarokszalag)
 
 ### Mi volt a keres
