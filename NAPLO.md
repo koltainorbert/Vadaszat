@@ -5011,3 +5011,19 @@ A sold elemek következetesen nem kattinthatók, a ribbon a középpont felől �
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon pozícó jobb felső sarok
+
+### Mit csináltunk [x]
+- [x] A sold ribbon elmozdítva a jobb felső sarok felé
+- [x] top: 18%, left: 76% pozícióra állítva
+- [x] A felirat középre marad a szalagon (transform-origin megmarad)
+- [x] Root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+A sold ribbon most a jobb felső sarok felé van pozícionálva, a szöveg középre van a szalagon.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
