@@ -5105,3 +5105,19 @@ Az "ELADVA" szöveg nagy betűközzel, szimmetrikusan középre helyezkedik el a
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon szöveg jobbra és sortáv
+
+### Mit csináltunk [x]
+- [x] justify-content: center -> justify-content: flex-end (szöveg jobbra)
+- [x] line-height: 1 -> line-height: 1.2 (sortáv alapértelmezésre)
+- [x] Az "ELADVA" szöveg jobbra helyezkedik el a szalagon
+- [x] Root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+A szöveg jobbra van a szalagon, sortáva alapértelmezett.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
