@@ -138,7 +138,7 @@ if ( ! $card_image_html ) {
     if ( $demo_image_rel !== '' ) {
         $demo_image_url  = trailingslashit( get_template_directory_uri() ) . ltrim( $demo_image_rel, '/' );
         $card_image_html = sprintf(
-            '<img src="%1$s" class="va-card__thumb" alt="%2$s" loading="lazy" decoding="async">',
+            '<img src="%1$s" class="va-card__thumb" alt="%2$s" width="600" height="450" loading="lazy" decoding="async">',
             esc_url( $demo_image_url ),
             esc_attr( get_the_title( $post_id ) )
         );

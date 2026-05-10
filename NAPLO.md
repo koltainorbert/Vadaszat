@@ -5121,3 +5121,20 @@ A szöveg jobbra van a szalagon, sortáva alapértelmezett.
 
 ---
 
+## 2026. 05. 10. – Session: Biztonsagos CWV finomhangolas (width/height)
+
+### Mit csinaltunk [x]
+- [x] Biztonsagos, alacsony kockazatu Lighthouse javitas: explicit kepmeretek ahol fix meret adott
+- [x] `frontend/templates/listing/card.php`: demo fallback kartya kephez `width="600" height="450"`
+- [x] `wp-plugin/vadaszapro-core/frontend/templates/listing/card.php`: ugyanaz a javitas mirrorban
+- [x] `page-kategoria.php`: kategoriakepekhez `width="220" height="220"`
+- [x] `wp-theme/vadaszapro-theme/page-kategoria.php`: ugyanaz a javitas mirrorban
+
+### Hol tartunk
+A valtozasok nem modositanak uzleti logikat, csak helyfoglalast stabilizalnak betolteskor, igy csokkenhet az "Image elements do not have explicit width and height" jelzes.
+
+### TODO
+- [ ] PageSpeed ujrafuttatas desktop + mobil, es eredmenyek osszevetese
+
+---
+

@@ -35,7 +35,7 @@ function va_cat_icon( string $name ): string {
     ];
     $id  = $photos[ $name ] ?? '1513836279014-a89f7a76ae86';
     $url = 'https://images.unsplash.com/photo-' . $id . '?w=220&h=220&fit=crop&crop=entropy&auto=format&q=80';
-    return '<img src="' . esc_url( $url ) . '" alt="' . esc_attr( $name ) . '" loading="lazy">';
+    return '<img src="' . esc_url( $url ) . '" alt="' . esc_attr( $name ) . '" width="220" height="220" loading="lazy">';
 }
 
 /* ── Top-level kategóriák lekérése ─────────────────────────────────────── */
