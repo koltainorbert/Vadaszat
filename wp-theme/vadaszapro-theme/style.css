@@ -541,19 +541,24 @@ body { top:0 !important; }
   .va-nav.open .va-nav__search {
     display: flex !important;
     align-items: center;
+    flex-wrap: wrap;
     border: 1px solid #ff8800;
     border-radius: 999px;
-    padding: 0 10px 0 18px;
-    height: 44px;
+    padding: 0 10px 12px 18px;
+    height: auto;
     box-sizing: border-box;
     background: rgba(255,255,255,.02);
     position: relative;
     margin-top: 8px;
   }
   .va-nav-search-dropdown {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0; right: 0;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    flex: 0 0 100%;
+    width: 100%;
+    margin-top: 8px;
     z-index: 10000;
     max-height: calc(5 * 72px);
     overflow-y: auto;

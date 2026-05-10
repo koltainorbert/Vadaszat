@@ -212,20 +212,13 @@
 
     // Hamburger toggle
     if(hbtn && nav){
-        function setNavTop(){
-            if(hdr && window.innerWidth <= 1024){
-                nav.style.top = hdr.getBoundingClientRect().bottom + 'px';
-            }
-        }
         hbtn.addEventListener('click', function(){
-            setNavTop();
             var open = nav.classList.toggle('open');
             hbtn.classList.toggle('open', open);
             hbtn.setAttribute('aria-expanded', open ? 'true' : 'false');
             document.body.style.overflow = open ? 'hidden' : '';
             document.body.classList.toggle('nav-open', open);
             if (!open) {
-                nav.style.paddingBottom = '';
                 var dd = document.getElementById('va-nav-search-dropdown');
                 if (dd) dd.hidden = true;
             }
@@ -238,12 +231,10 @@
                 hbtn.setAttribute('aria-expanded','false');
                 document.body.style.overflow = '';
                 document.body.classList.remove('nav-open');
-                nav.style.paddingBottom = '';
                 var dd = document.getElementById('va-nav-search-dropdown');
                 if (dd) dd.hidden = true;
             }
         });
-        window.addEventListener('resize', function(){ if(nav.classList.contains('open')) setNavTop(); });
     }
 
     // Aktiv nav item
