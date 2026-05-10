@@ -4892,6 +4892,21 @@ Az ELADVA diagonál piros szalag a kiskártyán is a termékoldali megjelenéshe
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon nagyítás és kép blur
+
+### Mit csináltunk [x]
+- [x] Az ELADVA szalag nagyobb és hangsúlyosabb lett a kiskártyán
+- [x] A sold kártya bélyegképe 10px blur-t kapott
+- [x] Root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+A sold kártyák vizuálisan erősebbek, a kis kép elmosottabb, a szalag nagyobb és feltűnőbb.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
 ## 2026. 05. 10. – Session: ELADVA teljes felirat fehérítés
 
 ### Mit csináltunk [x]
