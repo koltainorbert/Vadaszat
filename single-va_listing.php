@@ -252,6 +252,9 @@ $expires     = get_post_meta( $post_id, 'va_expires',     true );
 $featured    = get_post_meta( $post_id, 'va_featured',    true ) === '1';
 
 
+$is_sold     = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_sold( $post_id ) : false;
+
+
 $verified    = get_post_meta( $post_id, 'va_verified',    true ) === '1';
 
 
@@ -701,6 +704,72 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 .sl .sl__main-img { object-fit: <?php echo esc_attr( $sl_gallery_fit ); ?>; }
 
 
+.sl .sl__main-wrap { position: relative; overflow: hidden; }
+
+
+.sl__sold-ribbon {
+
+
+    position: absolute;
+
+
+    top: 14px;
+
+
+    right: -56px;
+
+
+    z-index: 3;
+
+
+    min-width: 200px;
+
+
+    height: 34px;
+
+
+    display: inline-flex;
+
+
+    align-items: center;
+
+
+    justify-content: center;
+
+
+    text-transform: uppercase;
+
+
+    font-size: 12px;
+
+
+    font-weight: 800;
+
+
+    letter-spacing: .16em;
+
+
+    color: #fff;
+
+
+    background: linear-gradient(135deg, #ff2727 0%, #b00000 100%);
+
+
+    border: 1px solid rgba(255,255,255,.36);
+
+
+    box-shadow: 0 10px 22px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.24);
+
+
+    transform: rotate(38deg);
+
+
+    pointer-events: none;
+
+
+}
+
+
 .sl .sl__thumb {
 
 
@@ -999,6 +1068,15 @@ if ( $wpdb->get_var( "SHOW TABLES LIKE '$wl_table'" ) === $wl_table ) {
 
 
                 <div class="sl__main-wrap">
+
+
+                    <?php if ( $is_sold ) : ?>
+
+
+                        <span class="sl__sold-ribbon">ELADVA</span>
+
+
+                    <?php endif; ?>
 
 
                     <?php if ( ! empty($attachment_ids) ):
