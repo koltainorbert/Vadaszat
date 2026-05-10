@@ -510,6 +510,10 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
 }
 .va-card__badge--boost { background: rgba(255,42,42,.18); color: #ff2a2a; border: 1px solid rgba(255,42,42,.4); }
 .va-card__badge--new { right: 10px; left: auto; background: #ff0000; color: #fff; border: 1px solid rgba(255,255,255,.22); }
+.va-card--sold,
+.va-card--sold * {
+  color: #fff !important;
+}
 .va-card__sold-ribbon {
   position: absolute;
   top: 8px;

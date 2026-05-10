@@ -149,7 +149,7 @@ if ( ! $card_image_html ) {
     }
 }
 ?>
-<div class="va-card va-animate" data-post-id="<?php echo esc_attr( $post_id ); ?>">
+<div class="va-card va-animate<?php echo $is_sold ? ' va-card--sold' : ''; ?>" data-post-id="<?php echo esc_attr( $post_id ); ?>">
 
     <?php if ( $featured ): ?>
         <span class="va-card__badge va-card__badge--featured"><svg width="9" height="9" viewBox="0 0 24 24" fill="#ffc840" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>Kiemelt</span>
@@ -189,7 +189,7 @@ if ( ! $card_image_html ) {
     <div class="va-card__body">
         <h3 class="va-card__title">
             <?php if ( $is_sold ): ?>
-                <span style="color:#000;font-weight:800;"><?php the_title(); ?></span>
+                <span style="font-weight:800;"><?php the_title(); ?></span>
             <?php else: ?>
                 <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>"><?php the_title(); ?></a>
             <?php endif; ?>
@@ -214,7 +214,7 @@ if ( ! $card_image_html ) {
             <div class="va-card__price-row">
                 <div class="va-card__price">
                     <?php if ( $is_sold ): ?>
-                        <span style="color:#ff3333;font-weight:800;"><?php echo esc_html( '0 Ft' ); ?></span>
+                        <span style="font-weight:800;"><?php echo esc_html( '0 Ft' ); ?></span>
                     <?php elseif ( $has_sale ): ?>
                         <del style="color:rgba(255,255,255,.35);font-size:11px;font-weight:400;display:block;line-height:1.2;"><?php echo esc_html( va_format_price( $price, $price_type ) ); ?></del>
                         <span style="color:#ff3333;font-weight:800;"><?php echo esc_html( number_format( floatval( $sale_price ), 0, ',', ' ' ) . ' Ft' ); ?></span>
