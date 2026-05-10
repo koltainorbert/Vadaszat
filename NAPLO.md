@@ -5057,3 +5057,19 @@ A szöveg most megfelelő pozícióban van a szalagon, nem húzódik fel.
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon szöveg tökéletes centering
+
+### Mit csináltunk [x]
+- [x] A padding eltávolítva (padding: 0)
+- [x] display: inline-flex -> display: flex
+- [x] Tiszta flexbox centering: align-items center + justify-content center
+- [x] Root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+Az "ELADVA" szöveg most teljesen középre van a szalagon, az E betű is látszik.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
