@@ -5027,3 +5027,18 @@ A sold ribbon most a jobb felső sarok felé van pozícionálva, a szöveg köz�
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon szöveg nagyítás és középre igazítás
+
+### Mit csináltunk [x]
+- [x] A ribbon szöveg font-size: 13px -> 17px-re növelve
+- [x] Vertikális középre igazítás biztosítva (align-items: center, justify-content: center)
+- [x] Root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+Az "ELADVA" felirat most nagyobb és pontosan középre van igazítva a szalagon.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
