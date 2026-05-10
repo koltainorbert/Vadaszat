@@ -4892,3 +4892,18 @@ Az ELADVA diagonál piros szalag a kiskártyán is a termékoldali megjelenéshe
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA kártya kattinthatóság és árjavítás
+
+### Mit csináltunk [x]
+- [x] Az ELADVA kiskártya img és cím linkje eltávolítva sold állapotban
+- [x] Sold esetén az ár megjelenítése explicit `0 Ft` lett, nem a helper fallbackje
+- [x] Root + plugin listing card template szinkronban frissítve
+
+### Hol tartunk
+A sold hirdetés kártya most nem nyitható meg kattintással, és az ár mindenhol 0 Ft-ként jelenik meg.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
