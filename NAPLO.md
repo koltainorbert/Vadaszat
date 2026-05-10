@@ -38,21 +38,6 @@
 - A `Fiokom` menulink most csak adminnak latszik, csak mobil hamburger menuben
 - Felhasznalok es desktop nezet nem kapjak meg ezt a plusz menupontot
 
-## 2026. 05. 10. – Session #305 (Fiok oldal mobil oldalso +10px spacing)
-
-### Mi volt a keres
-- Mobilon a fiok oldal jobb es bal oldalan kellett +10px hely
-- Csak a fiok oldalon hasson, mas oldalon ne
-
-### Mit javitottunk [x]
-- [x] Uj body class kerult a fiok oldalra: `va-page-fiok` (`is_page('va-fiok')`)
-- [x] Mobil-only CSS szabaly kerult be: `@media (max-width:960px)` alatt `body.va-page-fiok .va-wrap`
-- [x] Bal/jobb oldali spacing beallitva: `padding-left/right: 10px` (es margin nullazva)
-- [x] Root + theme mirror + minified CSS fajlokban is szinkronban atvezetve
-
-### Eredmeny
-- A +10px oldalhely csak mobilon es csak a fiok oldalon ervenyesul
-
 ## 2026. 05. 10. – Session #302 (ELADVA pill + ferde sarokszalag)
 
 ### Mi volt a keres
