@@ -542,6 +542,14 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
   transform: translate(-50%, -50%) rotate(38deg);
   pointer-events: none;
 }
+@media (max-width: 600px) {
+  .va-card__sold-ribbon {
+    width: 160px;
+    height: 26px;
+    font-size: 11px;
+    padding: 0 48px 0 0;
+  }
+}
 .va-card__watchlist {
   position: static;
   background: rgba(0, 0, 0, 0.62);
