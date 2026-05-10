@@ -72,6 +72,16 @@
       "group": "none",
       "isBackground": true,
       "problemMatcher": []
+    },
+    {
+      "label": "Sync CSS",
+      "type": "shell",
+      "command": "powershell -ExecutionPolicy Bypass -File .vscode/sync-css.ps1",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "none",
+      "problemMatcher": []
     }
   ]
 }
