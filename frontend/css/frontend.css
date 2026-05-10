@@ -517,6 +517,11 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
 .va-card--sold .va-card__thumb,
 .va-card--sold .va-card__thumb-placeholder {
   filter: blur(1px);
+  border-radius: inherit;
+}
+.va-card--sold .va-card__img-wrap {
+  border-radius: var(--va-radius) var(--va-radius) 0 0;
+  overflow: hidden;
 }
 .va-card__sold-ribbon {
   position: absolute;
