@@ -136,13 +136,12 @@
                 function render(items) {
                     if (!items.length) { dropdown.hidden = true; return; }
                     dropdown.innerHTML = items.map(function(r){
-                        return '<a class="va-sd__item" href="'+r.url+'">'
-                            + (r.thumb ? '<img class="va-sd__thumb" src="'+r.thumb+'" alt="" loading="lazy">' : '<span class="va-sd__no-img"></span>')
+                        var body = (r.thumb ? '<img class="va-sd__thumb" src="'+r.thumb+'" alt="" loading="lazy">' : '<span class="va-sd__no-img"></span>')
                             + '<span class="va-sd__info"><span class="va-sd__title">'+r.title+'</span>'
                             + (r.price ? '<span class="va-sd__price">'+r.price+'</span>' : '')
                             + '</span>'
-                            + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':r.type==='category'?'Kategória':r.type==='user'?'Felhasználó':'Hirdetés')+'</span>'
-                            + '</a>';
+                            + '<span class="va-sd__badge va-sd__badge--'+r.type+'">'+(r.type==='va_auction'?'Aukció':r.type==='category'?'Kategória':r.type==='user'?'Felhasználó':'Hirdetés')+'</span>';
+                        return r.sold ? '<div class="va-sd__item va-sd__item--sold">'+body+'</div>' : '<a class="va-sd__item" href="'+r.url+'">'+body+'</a>';
                     }).join('') + '<a class="va-sd__all" href="<?php echo esc_url( home_url('/va-hirdetes-kereses') ); ?>" id="va-sd-all-link">Összes találat →</a>';
                     // "Összes találat" link prioritás: kategória → aukció → user → kulcsszó
                     var catItem     = items.find(function(r){ return r.type === 'category'; });
