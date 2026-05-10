@@ -528,7 +528,7 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
+  padding: 0 0 6px 0;
   text-transform: uppercase;
   font-size: 17px;
   font-weight: 800;

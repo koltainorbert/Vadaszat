@@ -5042,3 +5042,18 @@ Az "ELADVA" felirat most nagyobb és pontosan középre van igazítva a szalagon
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon szöveg lecsúsztatása
+
+### Mit csináltunk [x]
+- [x] A szöveg felhúzódása javítva padding: 0 0 6px 0 hozzáadásával
+- [x] Az "ELADVA" felirat most lejjebb helyezkedik el a szalagon
+- [x] Root + plugin CSS mirror és minified asset frissítve
+
+### Hol tartunk
+A szöveg most megfelelő pozícióban van a szalagon, nem húzódik fel.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
