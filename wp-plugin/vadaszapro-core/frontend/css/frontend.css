@@ -520,24 +520,26 @@ html > .os-scrollbar-vertical:active .os-scrollbar-handle {
 }
 .va-card__sold-ribbon {
   position: absolute;
-  top: 6px;
-  right: -72px;
+  top: 4px;
+  right: -86px;
   z-index: 4;
-  width: 214px;
-  height: 36px;
+  width: 252px;
+  height: 40px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 800;
-  letter-spacing: .12em;
+  letter-spacing: .14em;
   line-height: 1;
   color: #fff;
   background: linear-gradient(135deg, #ff2a2a 0%, #a70000 100%);
   border: 1px solid rgba(255,255,255,.34);
   box-shadow: 0 9px 18px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.24);
-  transform: rotate(37deg);
+  transform-origin: center;
+  transform: rotate(38deg);
   pointer-events: none;
 }
 .va-card__watchlist {
