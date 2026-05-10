@@ -1313,6 +1313,7 @@ class VA_Ajax {
             $price     = get_post_meta( $post->ID, 'va_price', true );
             $thumb_id  = get_post_thumbnail_id( $post->ID );
             $thumb_url = $thumb_id ? wp_get_attachment_image_url( $thumb_id, 'thumbnail' ) : '';
+            $is_sold   = class_exists( 'VA_User_Roles' ) && VA_User_Roles::is_sold( (int) $post->ID );
             $results[] = [
                 'id'    => $post->ID,
                 'title' => get_the_title( $post ),
@@ -1320,6 +1321,7 @@ class VA_Ajax {
                 'price' => $price ? number_format( (float) $price, 0, ',', ' ' ) . ' Ft' : '',
                 'thumb' => $thumb_url,
                 'type'  => $post->post_type,
+                'sold'  => $is_sold,
             ];
         }
 
