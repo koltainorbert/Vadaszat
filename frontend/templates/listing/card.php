@@ -98,10 +98,6 @@ if ( $show_views ) {
 if ( $show_author && $author_name ) {
     $meta_items_by_row[ $row_author ][] = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" style="vertical-align:-1px;margin-right:2px;flex-shrink:0"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span class="va-card__meta-item--author">' . esc_html( $author_name ) . '</span>';
 }
-if ( $show_date ) {
-    $meta_items_by_row[ $row_date ][] = '🗓 ' . esc_html( get_the_date( 'Y.m.d', $post_id ) );
-}
-
 $meta_style = '--va-card-meta-col-gap:' . $meta_col_gap . 'px;--va-card-meta-row-gap:' . $meta_row_gap . 'px;--va-card-meta-stack-gap:' . $meta_stack_gap . 'px;';
 
 $card_image_html = '';

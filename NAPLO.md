@@ -4892,6 +4892,21 @@ Az ELADVA diagonál piros szalag a kiskártyán is a termékoldali megjelenéshe
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA ribbon és dátum finomhangolás
+
+### Mit csináltunk [x]
+- [x] A kártyáról kikerült a dátum sor, hogy kompaktabb legyen
+- [x] Az ELADVA ribbon kisebb, közelebb ül a sarokhoz, kevésbé csúszik el
+- [x] Root + plugin template és CSS mirror frissítve
+
+### Hol tartunk
+A sold kártya most tömörebb, a ribbon kisebb és tisztább, a dátum pedig nem foglal helyet.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
 ## 2026. 05. 10. – Session: ELADVA ribbon nagyítás és kép blur
 
 ### Mit csináltunk [x]
