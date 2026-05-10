@@ -255,6 +255,24 @@ $featured    = get_post_meta( $post_id, 'va_featured',    true ) === '1';
 $is_sold     = class_exists( 'VA_User_Roles' ) ? VA_User_Roles::is_sold( $post_id ) : false;
 
 
+if ( $is_sold ) {
+
+
+    $has_sale = false;
+
+
+    $sale_price = 0;
+
+
+    $price = 0;
+
+
+    $price_type = 'fixed';
+
+
+}
+
+
 $verified    = get_post_meta( $post_id, 'va_verified',    true ) === '1';
 
 

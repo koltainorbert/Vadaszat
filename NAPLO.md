@@ -2,6 +2,24 @@
 
 ---
 
+## 2026. 05. 10. – Session #303 (ELADVA: 0 Ft ar + kartya sarokszalag)
+
+### Mi volt a keres
+- ELADVA allapotnal az ar legyen 0
+- A kis kartyakon is jobb felso sarokban, sreh piros `ELADVA` szalag jelenjen meg (mint a termekoldali kepen)
+
+### Mit javitottunk [x]
+- [x] `va_toggle_sold_pill` bekapcsolasnal az ar 0-ra all (`va_price=0`, `va_price_type=fixed`)
+- [x] Kikapcsolasnal visszaall az eredeti ar es ar-tipus (backup meta: `va_price_before_sold`, `va_price_type_before_sold`)
+- [x] Kartyakon az ELADVA badge cserelve lett ferde jobb-felso sarokszalagra (`va-card__sold-ribbon`)
+- [x] Kartyak ar-megjelenitese ELADVA allapotban biztosan 0 Ft (akkor is, ha regi adat maradt)
+- [x] Single oldalon is biztos 0 Ft render ELADVA allapotban
+- [x] Root + plugin + theme mirror fajlok szinkronban frissitve
+
+### Eredmeny
+- ELADVA jelolesnel a hirdetes ara automatikusan 0-ra valtozik, es kikapcsolaskor visszaall az elozo ertek
+- A lista kartyakon a vizualis jeloles mar egyezik a termekoldali megjelenessel (ferde piros sarokszalag)
+
 ## 2026. 05. 10. – Session #302 (ELADVA pill + ferde sarokszalag)
 
 ### Mi volt a keres
