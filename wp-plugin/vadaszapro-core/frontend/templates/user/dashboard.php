@@ -890,6 +890,7 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                 $boost_info = VA_User_Roles::can_boost( $user->ID, $l->ID );
                                 $is_boosted_now = VA_User_Roles::is_boosted( $l->ID );
                                 $is_new_pill_now = VA_User_Roles::is_new_pill( $l->ID );
+                                $is_sold_now = VA_User_Roles::is_sold( $l->ID );
                                 if ( $is_boosted_now ):
                             ?>
                             <button class="va-boost-btn va-boost-btn--on"
@@ -947,6 +948,26 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                                     data-mode="on"
                                     aria-pressed="false">
                                 <span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: KI
+                            </button>
+                            <?php endif; ?>
+
+                            <?php if ( $is_sold_now ) : ?>
+                            <button class="va-soldpill-btn va-soldpill-btn--on"
+                                    data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                    data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                    data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    data-mode="off"
+                                    aria-pressed="true">
+                                <span class="va-soldpill-btn__dot" aria-hidden="true"></span>Eladva: BE
+                            </button>
+                            <?php else: ?>
+                            <button class="va-soldpill-btn va-soldpill-btn--off"
+                                    data-post-id="<?php echo esc_attr( (string) $l->ID ); ?>"
+                                    data-nonce="<?php echo esc_attr( $boost_nonce ); ?>"
+                                    data-ajax-url="<?php echo esc_url( $ajax_url ); ?>"
+                                    data-mode="on"
+                                    aria-pressed="false">
+                                <span class="va-soldpill-btn__dot" aria-hidden="true"></span>Eladva: KI
                             </button>
                             <?php endif;
                                 echo '</div>';
@@ -2299,6 +2320,44 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
 .va-newpill-btn:hover { filter:brightness(1.06); transform:translateY(-1px); }
 .va-newpill-btn:disabled { opacity:.65;cursor:not-allowed;transform:none; }
 
+.va-soldpill-btn {
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    min-width:106px;
+    height:30px;
+    padding:0 10px;
+    border-radius:999px;
+    border:1px solid transparent;
+    font-size:11px;
+    font-weight:700;
+    line-height:1;
+    letter-spacing:.02em;
+    white-space:nowrap;
+    cursor:pointer;
+    transition:all .2s ease;
+}
+.va-soldpill-btn__dot {
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:currentColor;
+    box-shadow:0 0 8px currentColor;
+}
+.va-soldpill-btn--on {
+    color:#fff;
+    border-color:#ff4444;
+    background:linear-gradient(135deg,rgba(255,34,34,.95),rgba(140,0,0,.95));
+}
+.va-soldpill-btn--off {
+    color:#ff9b9b;
+    border-color:#ff3a3a;
+    background:linear-gradient(135deg,rgba(255,34,34,.2),rgba(80,0,0,.2));
+}
+.va-soldpill-btn:hover { filter:brightness(1.06); transform:translateY(-1px); }
+.va-soldpill-btn:disabled { opacity:.65;cursor:not-allowed;transform:none; }
+
 /* ── Veszélyes zóna ── */
 .va-danger-zone {
     padding:20px;
@@ -2849,6 +2908,60 @@ $membership_days = (int) floor( ( time() - strtotime( $user->user_registered ) )
                         self.classList.remove('va-newpill-btn--on');
                         self.classList.add('va-newpill-btn--off');
                         self.innerHTML = '<span class="va-newpill-btn__dot" aria-hidden="true"></span>Új pill: KI';
+                    }
+                } else {
+                    self.disabled = false;
+                    self.textContent = originalText;
+                    alert(res.data && res.data.message ? res.data.message : 'Hiba történt.');
+                }
+            })
+            .catch(function(){
+                self.disabled = false;
+                self.textContent = originalText;
+            });
+        });
+    });
+
+    document.querySelectorAll('.va-soldpill-btn').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var postId   = this.dataset.postId;
+            var nonce    = this.dataset.nonce;
+            var ajaxUrl  = this.dataset.ajaxUrl;
+            var mode     = this.dataset.mode || 'toggle';
+            var self     = this;
+            var originalText = self.textContent;
+
+            self.disabled = true;
+            self.textContent = 'Mentés...';
+
+            var data = new URLSearchParams({
+                action  : 'va_toggle_sold_pill',
+                nonce   : nonce,
+                post_id : postId,
+                mode    : mode
+            });
+
+            fetch(ajaxUrl, {
+                method  : 'POST',
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body    : data.toString()
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(res){
+                if(res.success){
+                    self.disabled = false;
+                    if (res.data && res.data.active) {
+                        self.dataset.mode = 'off';
+                        self.setAttribute('aria-pressed', 'true');
+                        self.classList.remove('va-soldpill-btn--off');
+                        self.classList.add('va-soldpill-btn--on');
+                        self.innerHTML = '<span class="va-soldpill-btn__dot" aria-hidden="true"></span>Eladva: BE';
+                    } else {
+                        self.dataset.mode = 'on';
+                        self.setAttribute('aria-pressed', 'false');
+                        self.classList.remove('va-soldpill-btn--on');
+                        self.classList.add('va-soldpill-btn--off');
+                        self.innerHTML = '<span class="va-soldpill-btn__dot" aria-hidden="true"></span>Eladva: KI';
                     }
                 } else {
                     self.disabled = false;
