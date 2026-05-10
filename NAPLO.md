@@ -5154,3 +5154,20 @@ Mobil riportban a legnagyobb tetel a render-blocking volt, erre celzott, alacson
 
 ---
 
+## 2026. 05. 10. – Session: Mobil LCP celzott javitas (Cookie banner lightweight)
+
+### Mit csinaltunk [x]
+- [x] A mobil CookieYes banner vizualis terhelese csokkentve (`@media (max-width:900px)`)
+- [x] Kevesebb festesi koltseg: blur/backdrop-filter kikapcsolva mobilon
+- [x] Kompaktabb panel: kisebb padding, radius, kisebb tipomeret, kisebb gombok
+- [x] Banner magassag korlat + overflow auto (`max-height: 62vh`)
+- [x] Root + theme mirror frissitve
+
+### Hol tartunk
+A funkcio nem valtozott (cookie beleegyezes ugyanugy mukodik), csak a mobil render koltseg es a potencialis LCP elem merete csokkent.
+
+### TODO
+- [ ] Uj mobil PSI futtatas, LCP es render-blocking osszehasonlitas az elozo 4.1s / 910ms ertekkel
+
+---
+

@@ -391,31 +391,56 @@ add_action( 'wp_head', function () {
             }
 
             .cky-consent-bar {
-                padding: 14px 14px 12px !important;
-                border-radius: 18px !important;
+                padding: 10px 10px 8px !important;
+                border-radius: 14px !important;
+                background: rgba(10,10,10,.97) !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                box-shadow: 0 8px 22px rgba(0,0,0,.28) !important;
+                max-height: 62vh !important;
+                overflow: auto !important;
             }
 
             .cky-notice-group,
             .cky-notice-des,
             .cky-notice-btn-wrapper {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
             }
 
             .cky-notice-title,
             .cky-title,
             .cky-modal-title {
-                font-size: 20px !important;
+                font-size: 17px !important;
+            }
+
+            .cky-notice-des,
+            .cky-notice-des p,
+            .cky-cookie-des,
+            .cky-policy,
+            .cky-policy p {
+                font-size: 13px !important;
+                line-height: 1.45 !important;
             }
 
             .cky-notice-btn-wrapper,
             .cky-footer-wrapper {
                 flex-direction: column !important;
+                gap: 8px !important;
             }
 
             .cky-consent-container .cky-btn,
             .cky-modal .cky-btn {
                 width: 100% !important;
+                min-height: 40px !important;
+                padding: 10px 12px !important;
+                border-radius: 10px !important;
+                box-shadow: none !important;
+            }
+
+            .cky-consent-bar .cky-banner-btn-close {
+                width: 28px !important;
+                height: 28px !important;
             }
         }
     </style>
