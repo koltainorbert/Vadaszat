@@ -4892,6 +4892,20 @@ Az ELADVA diagonál piros szalag a kiskártyán is a termékoldali megjelenéshe
 
 ---
 
+## 2026. 05. 10. – Session: ELADVA cím kontraszt javítás
+
+### Mit csináltunk [x]
+- [x] A sold kártya címe fekete színre állítva a jobb olvashatóságért
+- [x] Root + plugin listing card template szinkronban frissítve
+
+### Hol tartunk
+A sold kártyán a név most fekete, így jobban olvasható a fehér háttéren.
+
+### TODO
+- [ ] Vizualis ellenorzes desktop + mobil nezetben
+
+---
+
 ## 2026. 05. 10. – Session: ELADVA kártya kattinthatóság és árjavítás
 
 ### Mit csináltunk [x]
