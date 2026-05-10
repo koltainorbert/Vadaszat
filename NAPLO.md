@@ -55,6 +55,22 @@
 - A fiok dashboardon a statisztika szekcio 5px-el lejjebb kerult
 - A dashboard tartalom jobb-bal oldalon 2pc igazitasban jelenik meg
 
+## 2026. 05. 10. – Session #307 (Fiok dashboard finomhangolas: 15px es 5pc)
+
+### Mi volt a keres
+- A fiok szekcio es statisztika blokk koze 15px tavolsag kell
+- A dashboard tartalom jobb-bal align 5pc legyen
+
+### Mit javitottunk [x]
+- [x] `va-dashboard__section .va-crm` tavolsag `15px`-re allitva
+- [x] `va-dashboard__content` jobb-bal padding `5pc`-re allitva
+- [x] Mobil media alatt is `5pc` marad
+- [x] Root + plugin + theme frontend CSS, valamint minified fajlokban is szinkronban atvezetve
+
+### Eredmeny
+- A fiok es statisztika blokk kozti tavolsag most 15px
+- A dashboard tartalom jobb-bal igazitas most 5pc
+
 ## 2026. 05. 10. – Session #302 (ELADVA pill + ferde sarokszalag)
 
 ### Mi volt a keres
